@@ -3,11 +3,11 @@
 
 //#######################################
 //### Raspberry 7" Display ###
-#define GUI                         1                       // Wenn die RSCP-Applikation ohne Display genutzt werden soll 0, wenn das Display genutzt wird 1
+#define GUI                         1         //Wichtig!    // Wenn die RSCP-Applikation ohne Display genutzt werden soll 0, wenn das Display genutzt wird 1
 
 //#######################################
 //### E3DC S10 Einstellungen ###
-#define E3DC_S10                    1                       // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic gentzt werden dann 0
+#define E3DC_S10                    1         //Wichtig!    // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic gentzt werden dann 0
 #define SleepTime                   1                       // Abfrageintervall für die RSCP-Applikation
 // S10 Einstellungen wie IP-Adresse, Benutzername, Passwort und RSCP-Schlüssel
 #define SERVER_IP                   "192.168.178.xxx"       // IP-Adresse vom S10
@@ -16,7 +16,7 @@
 #define AES_PASS                    "1234567890"            // RSCP-Schlüssel wie am Display vom S10 eingestellt
 //#######################################
 //### Homematic Einstellungen für RSCP-Applikation ###
-#define Homematic_E3DC              1                       // Sollen die Daten zur Homematic gesendet werden? Daten senden 1 eintragen sonst 0
+#define Homematic_E3DC              1         //Wichtig!    // Sollen die Daten zur Homematic gesendet werden? Daten senden 1 eintragen sonst 0
 #define HM_IP                       "192.168.178.yyy"       // IP-Adresse von der Homematic
 #define HM_Intervall                15                      // Sendeintervall der E3DC Daten zur Homematic und Abfrageintevall für Display
 // ISE-ID der diversen Systemvariablen
@@ -51,11 +51,11 @@
 
 //#######################################
 //### GuiMain Parameter ###
-#define ScreenSaverTime             180      // Zeit bis sich der Bilschirmschoner aktiviert (in Sekunden)
+#define ScreenSaverTime             180                     // Zeit bis sich der Bilschirmschoner aktiviert (in Sekunden)
 //Einstellungen Langzeitanzeige (15 Minuten Mittelwerte in duchrlaufender 24 Stundenanzeige)
-#define PowerMax                    5400     // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
-#define skalaLine                   1000     // Einteilung der Scala
-//Homematic Position  der Spalten für die Elemente
+#define PowerMax                    5400                    // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
+#define skalaLine                   1000                    // Einteilung der Scala
+//Homematic Position der Spalten für die Elemente auf dem Display
 #define  S0                         40
 #define  S1                         120
 #define  S2                         200
@@ -65,7 +65,7 @@
 #define  S6                         530
 #define  S7                         610
 #define  S8                         690
-//Homematic Position  der Reihen für die Elemente
+//Homematic Position der Reihen für die Elemente auf dem Display
 #define  R1                         120
 #define  R2                         200
 #define  R3                         280
@@ -95,7 +95,7 @@
 //#######################################
 //### Watchdog Einstellungen ###
 //Zeitdifferenz zur aktuellen Zeit bis zur Watchdog aktivierung (in Sekunden)
-#define WDdiff                      300    // Minimalwert 240
+#define WDdiff                      300                     // Minimalwert 240
 //Zeitinterval für die Abfragen des Watchdog (in Sekunden)
 #define sleepTimeWD                 120
 //Anzahl Programm Neustarts bis zum Reboot
@@ -105,12 +105,12 @@
 
 //#######################################
 // Homematic Parameter
-#define Homematic_GUI               0      //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
-//http://192.168.178.yyy/addons/hq/ui/#tabVariables  //Link um mit de HQ WebUi die Variable auszulesen
-//Allgemein (ohne Info alle mit 4 Zeichen)
+#define Homematic_GUI               0         //Wichtig!    //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
+//http://192.168.178.yyy/addons/hq/ui/#tabVariables         //Link um mit de HQ WebUi die Variable auszulesen
+//Allgemein
 #define ISE_UnixTime                43674  //10 Zeichen
 #define ISE_TimestampHM             43756  //16 Zeichen
-#define ISE_HMCPU                   43784
+#define ISE_HMCPU                   43784  //Alle ohne Info mit 4 Zeichen
 #define ISE_HMupTage                44564
 #define ISE_HMupStd                 44565
 #define ISE_AussenTemp              2122
@@ -146,7 +146,6 @@
 #define ISE_EGWJal                  8288
 #define ISE_EGSJal                  20111
 #define ISE_EGWCJal                 20301
-
 //Obergeschoss
 #define ISE_OGParty                 26807
 #define ISE_Send_OGPARTY            26807
@@ -166,13 +165,11 @@
 #define ISE_OGWJalBt                21695
 #define ISE_OGBJal                  20179
 #define ISE_OGEJal                  23163
-
 //Dachgeschoss
 #define ISE_DGSTemp                 2166
 #define ISE_DGSFli                  1946
 #define ISE_DGSFre                  1946
 #define ISE_DGTF                    36567
-
 //Garage
 #define ISE_GarageTemp              19538
 #define ISE_Garagentor              27968
