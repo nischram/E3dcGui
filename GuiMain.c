@@ -51,11 +51,14 @@ int main(){
 
   screenOn();
   writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
-	if(E3DC_S10 ==1){
+	if(E3DC_S10 == 1){
 		writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
 	}
-	else{
+	else if(Homematic_GUI == 1){
 		writeData("/mnt/RAMDisk/ScreenChange.txt", "12\n");
+	}
+	else{
+		writeData("/mnt/RAMDisk/ScreenChange.txt", "11\n");
 	}
 	writeData("/mnt/RAMDisk/ScreenShutdown.txt", "5\n");
   writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
@@ -997,7 +1000,7 @@ int main(){
 		}
 //####################################################
 	//WatchdogHM Daten für WD schreiben
-		if(counter == 0){
+		if(counter == 0 && Homematic_GUI == 1){
 			char Value[20];
 			read_HM(ISE_UnixTime, 10, Value);
 			UnixTime = atoi(Value);
