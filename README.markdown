@@ -191,7 +191,7 @@ Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic u
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).
 
 ### Bildschirmschoner
-Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: #define ScreenSaverTime             180
+Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: `#define ScreenSaverTime             180`
 Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display (zum Teil wegen der Empfindlichkeit auch zwei Tipp's), dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der  Bereich ist hier zu sehen:   
 <img src="https://s20.postimg.org/f1apu9lp9/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
 Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
