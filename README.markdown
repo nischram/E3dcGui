@@ -189,6 +189,14 @@ Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp
 Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.
 Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).
+
+### Bildschirmschoner
+Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: #define ScreenSaverTime             180
+Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display (zum Teil wegen der Empfindlichkeit auch zwei Tipp's), dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der  Bereich ist hier zu sehen:   
+<img src="https://s20.postimg.org/f1apu9lp9/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
+Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
+<img src="https://s20.postimg.org/lg9qqxsf1/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
+ 
 ## Werte in der HomeMatic nutzen
 Nun können diverse Programme, Funktionen und Anzeigen mit den Werten in der HomeMatic realisiert werden. In dieser Anleitung gehen wir nur auf Möglichkeiten ein, die mit vorhandenen Mitteln getestet wurden und im täglichen Praxiseinsatz sind. Die folgenden Vorschläge sind als Hilfestellung gedacht und können jederzeit abgeändert werden.
 
