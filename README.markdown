@@ -69,7 +69,7 @@ Dies sind die Einstellungen:
 6    #define GUI                         1
 10   #define E3DC_S10                    1
 19   #define Homematic_E3DC              1
-108  #define Homematic_GUI               1
+108  #define Homematic_GUI               0
 ```
 Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen willst oder nicht und ob die eine HomeMatic anbinden willst oder nicht. Wenn du eine Funktion nutzen willst trag bitte eine „1“ ein sonst eine „0“.
 
