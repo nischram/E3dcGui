@@ -196,7 +196,7 @@ Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display (zum Teil we
 <img src="https://s20.postimg.org/f1apu9lp9/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
 Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
 <img src="https://s20.postimg.org/lg9qqxsf1/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
- 
+
 ## Werte in der HomeMatic nutzen
 Nun können diverse Programme, Funktionen und Anzeigen mit den Werten in der HomeMatic realisiert werden. In dieser Anleitung gehen wir nur auf Möglichkeiten ein, die mit vorhandenen Mitteln getestet wurden und im täglichen Praxiseinsatz sind. Die folgenden Vorschläge sind als Hilfestellung gedacht und können jederzeit abgeändert werden.
 
@@ -449,3 +449,7 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 [Link](https://s10.e3dc.com/s10/module/download/get.php?dl=3408) (Benutzerdaten erforderlich)
 #### Grafiken
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
+
+## Changelog
+
+14.08.2016 Repository neu erstellt
