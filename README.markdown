@@ -174,7 +174,7 @@ Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, werden au
 <img src="https://s20.postimg.org/xgbuievx9/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
-Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet.
+Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 #### 4. Monitor
 <img src="https://s20.postimg.org/f752o3qxp/Monitor.jpg" alt="Monitor">  
 Hier werden Informationen zum Raspberry Pi ausgegeben.
