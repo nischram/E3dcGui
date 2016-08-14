@@ -2,7 +2,7 @@
 
 # E3DC to HomeMatic mit GUI
 
-Hier beschreibe ich wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
+Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
 Als Schnittstelle zwischen S10 und HomeMatic dient ein Raspberry Pi. Die Applikation, kann auf dem Raspberry PI vielseitig eingesetzt werden.
 
@@ -13,7 +13,7 @@ __Daten von der HomeMatic auf dem Display darstellen__
 
 Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, um die Daten vom S10 zu holen und/oder zur HomeMatic senden.
-Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um die diverse Daten darzustellen.  
+Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
 <img src="https://s20.postimg.org/fidc9dsm5/E3_DC_Display.jpg" alt="E3DC-Display">  
 Hier ein Foto mit der Software auf dem 7-Zoll Display.
@@ -24,9 +24,9 @@ Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Tou
 
 In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen. Da ich mich erst seit kurzen mit der Programmierung beschäftige, sind die Änderungen eventuell noch etwas unprofessionell, aber bislang erfüllen sie ihren Zweck.
 
-Die Abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet.
+Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet.
 
-Wenn ein Display genutzt wird, kommen C Programme zum Einsatz die diverse Grafiken erstellen.
+Wenn ein Display genutzt wird, kommen C Programme zum Einsatz, um die diversen Grafiken zu erstellen.
 
 ## Vorbereitung am S10
 Hauptmenü > Einstellungen
@@ -39,10 +39,10 @@ Ich erkläre hier nicht die Erstinstallation eines Raspberry Pi beschrieben. Die
 ### Netzwerk
 Es ist Wichtig darauf zu achten, dass der Raspberry Pi im selben Netzwerk wie das S10 installiert ist. Der IP-Adressbereich muss gleich sein, zum Beispiel so: 192.168.178.xxx
 
-Auch darf die Verbindung zwischen S10 und Raspberry Pi nicht über eine VPN Verbindung hergestellt werden.
+Auch darf die Verbindung zwischen S10 und Raspberry Pi nicht über eine VPN-Verbindung hergestellt werden.
 
 ### Applikation auf den Raspberry kopieren
-Jetzt wird der lokale oder der SSH-Zugang zum Raspberry benötigt. Ich mache dies mit dem per SSH mit „Terminal“ für MAC.
+Jetzt wird der lokale oder der SSH-Zugang zum Raspberry benötigt. Ich mache dies per SSH mit dem „Terminal“ für MAC.
 Jetzt folgt der Download vom Github:
 ```shell
 git clone git://github.com/nischram/E3dcGui.git ~/E3dcGui
@@ -50,7 +50,7 @@ git clone git://github.com/nischram/E3dcGui.git ~/E3dcGui
 
 ### Einstellungen vornehmen
 
-In der Datei „parameter.h“ im Ordner E3dcGui kann nun alles Eingestellt werden, was du zum Nutzten der Sofware benötigst. Entweder öffnet man die Datei mit einem externen Editor. Hier können diverse Editoren zum Einsatz kommen, ich nutze auf meinem Mac „Atom“ und lade die Datei runter mit „Cyberduck“, unter Windows ist das runterladen und bearbeiten mit z.B. WinSCP möglich. Allternativ kann man die Datei direkt auf dem Raspberry bearbeiten, dies beschreibe ich jetzt.
+In der Datei „parameter.h“ im Ordner E3dcGui kann nun alles eingestellt werden, was du zum nutzen der Software benötigst. Entweder öffnet man die Datei mit einem externen Editor. Hier können diverse Editoren zum Einsatz kommen, ich nutze auf meinem Mac „Atom“ und lade die Datei runter mit „Cyberduck“, unter Windows ist das runterladen und bearbeiten mit z.B. WinSCP möglich. Alternativ kann man die Datei direkt auf dem Raspberry bearbeiten, dies beschreibe ich jetzt.
 Zuerst mit folgendem Befehl in den Ordner E3dcGui wechseln: (auf Groß und Kleinschreibung achten)
 ```shell
 pi@raspberrypi:~ $  cd E3dcGui
@@ -63,7 +63,7 @@ Es wird jetzt die Datei im Bearbeitungsprogramm „nano“ geöffnet.
 
 ### Inhalt der „parameter.h“
 
-Da ich ich der Datei eigentlich alles Beschrieben habe, gehe ich jetzt nur auf das wichtigste ein.
+Da ich in der Datei eigentlich alles Beschrieben habe, gehe ich jetzt nur auf das wichtigste ein.
 Dies sind die Einstellungen:
 ```shell
 6    #define GUI                         1
@@ -96,7 +96,7 @@ Benötigt werden folgende Systemvariablen:
 
 <img src="http://s20.postimg.org/jcd18h9ul/HM_IMG_001.png" alt="HM_IMG_001">
 
-Weil die HomeMatic in Programmen keine negativen Werte auswerten kann, werden die Variablen „NET_IN“ und „NET_OUT“ benötigt. Weiter ist es zum Beispiel bei einem Anzeige-Display sinnvoller, mit einem einzelnen Parameter zu arbeiten. Hierfür wird die Variable „GRID“ benötigt.
+Weil die HomeMatic in den Programmen keine negativen Werte auswerten kann, werden die Variablen „NET_IN“ und „NET_OUT“ benötigt. Weiter ist es zum Beispiel bei einem Anzeige-Display sinnvoller, mit einem einzelnen Parameter zu arbeiten. Hierfür wird die Variable „GRID“ benötigt.
 Die Variable für die externe Quelle „ADD“ wird natürlich nur benötigt wenn ein Leistungsmesser für die externe Quelle eingesetzt ist.
 Auch die Variable für die Wallbox „WB_ALL“ wird natürlich nur bei verwendeter Wallbox benötigt.
 Die Variable „Time“ nutzte ich, um die Aktualität der letzten Übertragung zu prüfen.
@@ -108,7 +108,7 @@ Zusätzlich sind noch Variablen wie z.B. Autarky oder Eigenstrom möglich.
 
 ### XML-API einrichten
 Damit der Raspberry Pi die Werte des S10 zur HomeMatic senden kann, benötigt die HomeMatic die Zusatz-Software „XML-API“.
-Aller technischen Informationen entnehmen Sie bitte der Anleitung des Anbieters.
+Alle technischen Informationen entnehmen Sie bitte der Anleitung des Anbieters.
 Den Download und eine Installationsanleitung finden Sie unter dem folgenden Link:
 [http://www.homematic-inside.de/software/xml-api]( http://www.homematic-inside.de/software/xml-api)
 Ich gehe hier nicht näher auf die Installation der XML-API ein.
@@ -133,8 +133,8 @@ In der HomeMatic WebUi kannst du nun im Bereich „Status und Bedienung“ die S
 <img src="http://s20.postimg.org/wj2h805jx/HM_IMG_002.png" alt="HM_IMG_002">
 
 ### Autostart der Applikation (durch Crontab-Job)
-Damit das Programm und die Variablen nun dauerhaft genutzt werden können, muss die Applikation auf dem Raspberry in den Autostart gebracht werden. Diese geschieht bei einem Raspberry Pi in dem ein Crontab-Job erstellt wird.
-Zuvor muss die Applikation gestoppt werden, hierfür kann man auch während das Stop-Programm ausführen. Eingabe: ./stop
+Damit das Programm und die Variablen nun dauerhaft genutzt werden können, muss die Applikation auf dem Raspberry in den Autostart gebracht werden. Dies geschieht bei einem Raspberry Pi in dem ein Crontab-Job erstellt wird.
+Zuvor muss die Applikation gestoppt werden, hierfür kann man auch während die Applikation läuft das Stop-Programm ausführen. Eingabe: `./stop`
 
 Die Crontab ruft man auf mit:
 ```shell
@@ -152,7 +152,7 @@ Weitere Informationen zur Crontab entnehmen Sie bitte aus Quellen wie z. B. dies
 [https://raspberry.tips/raspberrypi-einsteiger/cronjob-auf-dem-raspberry-pi-einrichten](https://raspberry.tips/raspberrypi-einsteiger/cronjob-auf-dem-raspberry-pi-einrichten)
 
 ### Raspberry Pi neu starten
-Damit die Applikation nun erneut gestartet wird, kann der Raspberry neu gestartet werden mit:
+Damit die Applikation gestartet wird, kann nun der Raspberry neu gestartet werden mit:
 ```shell
 pi@raspberrypi ~/e3dc-rscp $  sudo reboot
 ```
@@ -167,7 +167,7 @@ Hier kann die Software oder der PI neu gestartet werden.
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/avbvlcun1/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
-Die Aktuellen Werte des S10 werden im Sekundenrytmus aktualisiert (`SleepTime   1`).
+Die Aktuellen Werte des S10 werden im Sekundenrhytmus aktualisiert (`SleepTime   1`).
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, werden auch für diese Daten ein Symbol angezeigt.
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
@@ -181,13 +181,13 @@ Hier werden Informationen zum Raspberry Pi ausgegeben.
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/h0m810x7h/Homematic.jpg" alt="HomeMatic">  
-Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen definiert werden, sondern muss ggf auch im SourceCode einiges geändert werden.
+Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen definiert werden, sondern muss ggf. auch im Sourcecode einiges geändert werden.
 Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (am roten Punkt unten rechts zu erkennen).
 Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.
 Die Räume haben unterschiedliche Fenstereinteilungen es gibt zum Teil Räume mit zwei Fenster und Jalousien (im Foto an OG Wohnz. zu sehen).
 Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp auf's Symbol sendet einen einen Wert zur HomeMatic ( z.B. der Brunnen kann per Display eingeschaltet werden).
-Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmod usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.
-Ich biete den Teil der Software hier gerne an aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehler erstmal diesn Teil nicht zu nutzen, also `#define Homematic_GUI          0` eintragen.
+Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.
+Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).
 ## Werte in der HomeMatic nutzen
 Nun können diverse Programme, Funktionen und Anzeigen mit den Werten in der HomeMatic realisiert werden. In dieser Anleitung gehen wir nur auf Möglichkeiten ein, die mit vorhandenen Mitteln getestet wurden und im täglichen Praxiseinsatz sind. Die folgenden Vorschläge sind als Hilfestellung gedacht und können jederzeit abgeändert werden.
@@ -316,15 +316,15 @@ __Minimal- und Maximal-Werte SOC__
 Ich Speicher mir die Minimal- und Maximal-Werte des SOC (State Of Charge) auch.
 Passend dazu ist das Skript „S10-min-maxSOC.hm“ (_Datei Fehlt noch_) ist im Ordner „HM-Scripte“ zu finden. Das Skript „DATA-PV.hm“ gehört dazu und ersetzt hierbei das Script aus der täglichen Auslösung von PV_Max. Es trägt die Werte in eine zusätzliche Systemvariable für „Yesterday“ ein und speichert alle Werte in einer Datei. Zum Speichern der Datei wird die „CUxD“ verwendet. In dieser Anleitung gehen ich aber auf diese Funktion nicht weiter ein.
 
-## Watchdog
+## WatchDog
 
 Teilweise bleibt die RSCP-Applikation hängen und die Automatische re-connection in der Applikation funktioniert leider nicht immer. So wird ein Neustart der RSCP-Applikation nötig.
 
 Für dieses Problem habe ich einen einfachen WatchDog geschrieben. Damit der WatchDog den Betrieb der Applikation überwachen kann, lasse ich mit einem kleinen Teil in der RscpMain, eine Datei im RAMDisk erstellen. In der Datei ist die Unixtime des S10, diese wiederum liest der WatchDog ein und vergleicht diese mit einer definierten Differenz mit der aktuellen Zeit.  
 
-Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt werden auch diese Daten überwacht. Da ich die HomeMatic nicht so häufig abfrage sollten die Einstellungen zum WatchDog nicht großartig geändert werden.
-Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst eerkennen was der WatchDog neu gestartet hat.
-Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Komandozeile eingeben:
+Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt werden auch diese Daten überwacht. Da ich die HomeMatic nicht so häufig abfrage, sollten die Einstellungen zum WatchDog nicht großartig geändert werden.
+Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.
+Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über längere Zeit keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Kommandozeile eingeben:
 ```shell
 pi@raspberrypi:~ $ pkill watchdogHM
 ```
@@ -371,21 +371,21 @@ Diesen Teil zum RAMDisk habe ich von hier Kopiert:
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay und Standgehäuse.
 Hier die Artikelnummer von Conrad: [1437995-62](https://www.conrad.de/de/raspberry-pi-3-model-b-starter-set-1-gb-noobs-inkl-betriebssystem-noobs-inkl-gehaeuse-inkl-netzteil-inkl-software-1437995.html)
-Die Grundinstallation ist einfach, da es im Internet schon viele Anleitungen hierzu gib gehe ich nicht näher drauf ein.
+Die Grundinstallation ist einfach, da es im Internet schon viele Anleitungen hierzu gibt, gehe ich nicht näher drauf ein.
 
 ### Desktop deaktivieren
-Es sollte die Desktopanwendung „startx“ daktiviert werden, dies kannst du im Raspberry Konfigurator machen:
+Es sollte die Desktopanwendung „startx“ deaktiviert werden, dies kannst du im Raspberry Konfigurator machen:
 ```
 pi@raspberry:~$ sudo raspi-config
 ```
 Dort unter „Boot Options“ > „B2 Console Autologin Text console, automatically logged in as 'pi' user“ auswählen.
 
 ### W-Lan einrichten
-Zuvor kannst du dein W-Lan scannen um zu sehen ob der Pi empfang hat:
+Zuvor kannst du dein W-Lan scannen, um zu sehen ob der Pi empfang hat:
 ```
 sudo iwlist wlan0 scan | egrep "(ESSID|IEEE)"
 ```
-Dann wir mit folgendem Befehl ein Editor mit einer Datei geöffnet in der du eine W-Lan zugangsdaten eintragen kannst:
+Dann wird mit folgendem Befehl ein Editor mit einer Datei geöffnet, in der du eine W-Lan Zugangsdaten eintragen kannst:
 ```
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 ```
@@ -416,7 +416,7 @@ Für Loxone müsste es etwa so aussehen:
 snprintf(batch, sizeof(batch), "curl \"http://user:passwort@%s/​dev/sps/​io/%s/%i" > /dev/null 2>&1",HM_IP , id, value);
 ```
 Für HM_IP hast du zuvor in der "parameter.h" einfach deine Loxone IP eingetragen. Den "user" und "passwort" für Loxone musst du in der Ziele anpassen.
-Natürlich könnte man die "InstallParameter" und die Abfrage der "parameter.h" in der "RscpMain.cpp" auch umschreiben und den "user" und das "passwort" abfragen. Dann müsste die Zeile oben etwa so aussehen:
+Natürlich könnte man Abfrage der "parameter.h" für die "RscpMain.cpp" auch umschreiben und den "user" und das "passwort" abfragen. Dann müsste die Zeile oben etwa so aussehen:
 ```
 snprintf(batch, sizeof(batch), "curl \"http://%s:%s@%s/​dev/sps/​io/%s/%i" > /dev/null 2>&1", loxuser, lospassword, HM_IP , id, value);
 ```
