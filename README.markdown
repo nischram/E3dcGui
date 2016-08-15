@@ -263,7 +263,6 @@ Einstellung in der „parameter.h“ definierst du einfach die Einstellungen fü
 Die Zeile 64 sieht für HomeMatic so aus:
 ```
 snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%s&new_value=%i\" > /dev/null 2>&1",HM_IP , id, value);
-
 ```
 Für Loxone müsste es etwa so aussehen:
 ```
