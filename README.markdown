@@ -128,7 +128,8 @@ pi@raspberrypi ~/e3dc-rscp $  sudo reboot
 Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildschirmausgaben ausgeführt. Nach ca. 1 Minute werden die Werte der Systemvariablen der HomeMatic wieder aktualisiert. Oder das Display zeigt die Applikation
 
 ## Display bedienen
-Die Darstellung ist in 5 Bildschirmen unterteilt.
+Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole in der oberen Ziele abgerufen. Sollten Funktionen der Software nicht aktiviert sein, bleiben die Symbole ausgeblendet.
+
 #### 1. Setup
 <img src="https://s20.postimg.org/o8ibqnz19/Setup.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
@@ -251,9 +252,6 @@ network={
 ```
 Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board, bei einem älteren Pi musst du entweder per Kabel oder per W-Lan USB-Stick die Netzwerkverbindung herstellen.
 
-#### ToDo
-Weiteres zum Aufbau folgt noch.
-
 ## RSCP to Loxone
 
 Durch ein Forum bin ich auf die Möglichkeit aufmerksam gemacht worden, dass mit wenigen Änderungen auch eine Loxone Zentrale mit Daten versorgt werden kann.
@@ -287,7 +285,10 @@ pi@raspberrypi ~/E3dcGui $  cd make
 ```
 Jetzt sollte mit der "E3dcGui" deine Loxone Zentrale erreicht werden. Da ich keine Loxone sondern die HomeMatic besitze, habe ich es natürlich nicht getestet, bin also auf Rückmeldungen bei Problemen angewiesen.
 
-ToDo: Ich werde die Loxone noch komplett aufnehmen.
+## ToDo
+01 weiteres in der Aneitung zum Aufbau
+02 Dokumentation im Sourcecode
+03 Loxone Unterstützung aufnehmen
 
 ## Quelle
 
