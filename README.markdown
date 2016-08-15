@@ -15,7 +15,7 @@ Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zu
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, um die Daten vom S10 zu holen und/oder zur HomeMatic senden.
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
-<img src="https://s20.postimg.org/fidc9dsm5/E3_DC_Display.jpg" alt="E3DC-Display">  
+<img src="https://s20.postimg.org/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
 Hier ein Foto mit der Software auf dem 7-Zoll Display.
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
@@ -130,25 +130,25 @@ Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildsc
 ## Display bedienen
 Die Darstellung ist in 5 Bildschirmen unterteilt.
 #### 1. Setup
-<img src="https://s20.postimg.org/nwxkb7j19/Setup.jpg" alt="Setup">  
+<img src="https://s20.postimg.org/o8ibqnz19/Setup.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
-<img src="https://s20.postimg.org/avbvlcun1/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
+<img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Die Aktuellen Werte des S10 werden im Sekundenrhytmus aktualisiert (`SleepTime   1`).
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, werden auch für diese Daten ein Symbol angezeigt.
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
-<img src="https://s20.postimg.org/xgbuievx9/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
+<img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 #### 4. Monitor
-<img src="https://s20.postimg.org/f752o3qxp/Monitor.jpg" alt="Monitor">  
+<img src="https://s20.postimg.org/x7czhftb1/Monitor.jpg" alt="Monitor">  
 Hier werden Informationen zum Raspberry Pi ausgegeben.
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
-<img src="https://s20.postimg.org/h0m810x7h/Homematic.jpg" alt="HomeMatic">  
+<img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
 Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen definiert werden, sondern muss ggf. auch im Sourcecode einiges geändert werden.
 Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (am roten Punkt unten rechts zu erkennen).
 Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.
@@ -161,9 +161,9 @@ Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#de
 ### Bildschirmschoner
 Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: `#define ScreenSaverTime             180`
 Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display (zum Teil wegen der Empfindlichkeit auch zwei Tipp's), dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der  Bereich ist hier zu sehen:   
-<img src="https://s20.postimg.org/f1apu9lp9/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
+<img src="https://s20.postimg.org/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
 Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
-<img src="https://s20.postimg.org/lg9qqxsf1/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
+<img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
 
 ## Werte in der HomeMatic nutzen
 Das Nutzen der Werte in der HomeMatic, ist wieder in der Anleitung für HomeMatic in dem Ordner Homematic zu finden.
