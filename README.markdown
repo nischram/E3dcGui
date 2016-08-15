@@ -253,6 +253,9 @@ network={
 Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board, bei einem älteren Pi musst du entweder per Kabel oder per W-Lan USB-Stick die Netzwerkverbindung herstellen.
 
 ## RSCP to Loxone
+__Achtung__   
+Aktuell werden die ID aus der "paramter.h" nur als Integer verarbeitet. Für Loxone wird wie unten beschrieben ein char benötigt. Ich muss den Fehler im Quellcode noch suchen.
+Somit kann Loxone im Moment nicht genutzt werden.
 
 Durch ein Forum bin ich auf die Möglichkeit aufmerksam gemacht worden, dass mit wenigen Änderungen auch eine Loxone Zentrale mit Daten versorgt werden kann.
 
@@ -285,6 +288,7 @@ pi@raspberrypi ~/E3dcGui $  cd make
 Jetzt sollte mit der "E3dcGui" deine Loxone Zentrale erreicht werden. Da ich keine Loxone sondern die HomeMatic besitze, habe ich es natürlich nicht getestet, bin also auf Rückmeldungen bei Problemen angewiesen.
 
 ## ToDo
+00 Fehler bei der alternativen Loxonenutzung
 01 weiteres in der Aneitung zum Aufbau
 02 Dokumentation im Sourcecode
 03 Loxone Unterstützung aufnehmen
