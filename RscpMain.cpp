@@ -192,7 +192,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
 
         printf("\n____________________\nRequest cyclic data\n");
         // request data information
-        if(TAG_EMS_OUT_UNIXTIME == 0){
+        if(TAG_EMS_OUT_UNIXTIME == 0 || (Seriennummer == 1 && CounterHM == HM_Intervall)){
           protocol.appendValue(&rootValue, TAG_INFO_REQ_SERIAL_NUMBER);
         }
         protocol.appendValue(&rootValue, TAG_INFO_REQ_TIME);
