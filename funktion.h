@@ -93,39 +93,18 @@ void writeData(char filePath[100], char write[100]){
 	}
 }
 //Dateien lese Funktion für diverse Dateien aus dem RAMDisk
-int readData(char fileName[100], int fileNr, char* read01, char* read02, char* read03, char* read04, char* read05, char* read06, char* read07, char* read08){
+int readData(char fileName[100], int fileNr, char* read){
 	char filePath [100];
 	FILE *fp;
 	snprintf (filePath, (size_t)100, "/mnt/RAMDisk/%s.txt", fileName);
 	fp = fopen(filePath, "r");
 	if(fp == NULL) {
 		printf("Datei konnte NICHT geoeffnet werden.\n");
-		snprintf (read01, (size_t)20, "-");
-		snprintf (read02, (size_t)20, "-");
-		snprintf (read03, (size_t)20, "-");
-		snprintf (read04, (size_t)20, "-");
-		snprintf (read05, (size_t)20, "-");
-		snprintf (read06, (size_t)20, "-");
-		snprintf (read07, (size_t)20, "-");
-		snprintf (read08, (size_t)20, "-");
+		snprintf (read, (size_t)20, "-");
 	}
 	else {
-		fgets(read01,20,fp);
-		strtok(read01, "\n");
-		fgets(read02,20,fp);
-		strtok(read02, "\n");
-		fgets(read03,20,fp);
-		strtok(read03, "\n");
-		fgets(read04,20,fp);
-		strtok(read04, "\n");
-		fgets(read05,20,fp);
-		strtok(read05, "\n");
-		fgets(read06,20,fp);
-		strtok(read06, "\n");
-		fgets(read07,20,fp);
-		strtok(read07, "\n");
-		fgets(read08,20,fp);
-		strtok(read08, "\n");
+		fgets(read,20,fp);
+		strtok(read, "\n");
 		fclose(fp);
 	}
   return fileNr;

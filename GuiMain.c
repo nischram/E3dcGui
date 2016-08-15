@@ -79,18 +79,18 @@ int main(){
 		GuiTime = PiTime;
 		//Daten aus RAMDisk Datei einlesen
 		readRscpGui(TAG_Time,TAG_Date,TAG_PVI,TAG_Bat,TAG_Home,TAG_Grid,TAG_SOC,TAG_BatState,TAG_Autarky,TAG_SelfCon,TAG_SerialNr,TAG_UnixTime,TAG_ADD,TAG_WbAll,TAG_WbSolar,TAG_PVIState,TAG_PMState);
-		readData("ScreenCounter", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+		readData("ScreenCounter", 1, Value);
 		counter = atoi(Value) -1;
 		if(counter < 0){
 			counter = 0;
 		}
 		snprintf (OUT, (size_t)100, "%i", counter);
 		writeData("/mnt/RAMDisk/ScreenCounter.txt", OUT);
-		readData("ScreenChange", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+		readData("ScreenChange", 1, Value);
 		int screenChange = atoi(Value);
-		readData("ScreenShutdown", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+		readData("ScreenShutdown", 1, Value);
 		int screenShutdown = atoi(Value);
-		readData("ScreenState", 1, screenState,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+		readData("ScreenState", 1, screenState);
 //####################################
 		switch(screenChange){
 //####################################
@@ -342,7 +342,7 @@ int main(){
 				GuiTime = RscpTime;
 	 		  //Legende
 	 			int LegendeSOC, LegendeSolar, LegendeADD, LegendeHome, LegendeNetIn, LegendeNetOut, LegendeBatIn, LegendeBatOut;
-	 			readData("LegendeSOC", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeSOC", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(364,443,50,20, LTGREY);
 	 				LegendeSOC = 0;
@@ -352,7 +352,7 @@ int main(){
 	 				LegendeSOC = 1;
 	 			}
 	 			put_string(366,449," SOC", WHITE);
-	 			readData("LegendeSolar", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeSolar", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(417,443,50,20, LTGREY);
 	 				LegendeSolar = 0;
@@ -362,7 +362,7 @@ int main(){
 	 				LegendeSolar = 1;
 	 			}
 	 			put_string(419,449,"Solar", WHITE);
-	 			readData("LegendeHome", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeHome", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(470,443,50,20, LTGREY);
 	 				LegendeHome = 0;
@@ -372,7 +372,7 @@ int main(){
 	 				LegendeHome = 1;
 	 			}
 	 			put_string(471,449," Home", WHITE);
-	 			readData("LegendeNetIn", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeNetIn", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(523,443,50,20, LTGREY);
 	 				LegendeNetIn = 0;
@@ -382,7 +382,7 @@ int main(){
 	 				LegendeNetIn = 1;
 	 			}
 	 			put_string(526,449,"NetIn", WHITE);
-	 			readData("LegendeNetOut", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeNetOut", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(576,443,50,20, LTGREY);
 	 				LegendeNetOut = 0;
@@ -392,7 +392,7 @@ int main(){
 	 				LegendeNetOut = 1;
 	 			}
 	 			put_string(577,449,"NetOut", WHITE);
-	 			readData("LegendeBatIn", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeBatIn", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(629,443,50,20, LTGREY);
 	 				LegendeBatIn = 0;
@@ -402,7 +402,7 @@ int main(){
 	 				LegendeBatIn = 1;
 	 			}
 	 			put_string(632,449,"BatIn", WHITE);
-	 			readData("LegendeBatOut", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+	 			readData("LegendeBatOut", 1, Value);
 	 			if (strcmp ("false",Value) == 0){
 	 				drawSquare(682,443,50,20, LTGREY);
 	 				LegendeBatOut = 0;
@@ -413,7 +413,7 @@ int main(){
 	 			}
 	 			put_string(683,449,"BatOut", WHITE);
 				if(Additional == 1 ){
-					readData("LegendeADD", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+					readData("LegendeADD", 1, Value);
 		 			if (strcmp ("false",Value) == 0){
 		 				drawSquare(735,443,50,20, LTGREY);
 		 				LegendeADD = 0;
@@ -919,7 +919,7 @@ int main(){
 			//Setup Grafik erstellen
 			case ScreenSetup:{																												//Im ScreenSetup werden nur die Rückgaben per Datei aus dem "screenSave" Programm dargestellt
 				GuiTime = PiTime;
-				readData("ScreenShutdown", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);
+				readData("ScreenShutdown", 1, Value);
 				screenShutdown = atoi(Value);
 				if(counter == 0){
 					drawSquare(2,2,800,480,LTGREY);
@@ -1051,7 +1051,7 @@ int main(){
 			put_string(150,458, OUT, GREEN);
 		}
 		//Bildschirmschoner
-		readData("ScreenSaver", 1, Value,delValue,delValue,delValue,delValue,delValue,delValue,delValue);  //Zählerdatei für den Bildschirmschoner auslesen
+		readData("ScreenSaver", 1, Value);  //Zählerdatei für den Bildschirmschoner auslesen
 		ScreenSaverCounter = atoi(Value);
 		ScreenSaverCounter = ScreenSaverCounter +1;
 		if(ScreenSaverCounter == ScreenSaverTime){
