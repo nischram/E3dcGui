@@ -97,10 +97,8 @@ pi@raspberrypi ~/E3dcGui $  ./start
 ```
 Je nach Einstellungen startet nun nur die RSCP-Applikation oder mehrere Programme starten und das Display sollte die gewünschten Daten anzeigen.
 
-### Systemvariable prüfen
-In der HomeMatic WebUi kannst du nun im Bereich „Status und Bedienung“ die Systemvariable einsehen. Hier sollten nun Zahlen mit einem aktuellen Zeitstempel stehen. Diese Werte aktualisieren sich im Intervallrhythmus.
-
-<img src="http://s20.postimg.org/wj2h805jx/HM_IMG_002.png" alt="HM_IMG_002">
+#### Systemvariable prüfen
+Nun kannst du in der HomeMatic WebUi im Bereich „Status und Bedienung“ die Systemvariable überprüfen. (Anleitung Homematic)
 
 ### Autostart der Applikation (durch Crontab-Job)
 Damit das Programm und die Variablen nun dauerhaft genutzt werden können, muss die Applikation auf dem Raspberry in den Autostart gebracht werden. Dies geschieht bei einem Raspberry Pi in dem ein Crontab-Job erstellt wird.
