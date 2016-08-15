@@ -1,0 +1,126 @@
+!! Script für die Anzeige der S10 Daten auf einen Display "HM-Dis-WM55" von Homematic
+
+!! Universalprogramm zum Füllen
+!! Version 1.0
+!! Grund-Script von
+!! (c) DrTob, optimized by thkl
+
+!! Das Script holt sich jetzt die Seriennummer des Displays selbst aus der Auslösebedinung des Programms
+
+! Farben
+! 0x80 weiß
+! 0x81 rot
+! 0x82 orange
+! 0x83 gelb
+! 0x84 gruen
+! 0x85 blau
+
+! Symbole
+! 0x80 AUS
+! 0x81 EIN
+! 0x82 OFFEN
+! 0x83 geschlossen
+! 0x84 fehler
+! 0x85 alles ok
+! 0x86 information
+! 0x87 neue nachricht
+! 0x88 servicemeldung
+! 0x89 Signal grün
+! 0x8A Signal gelb
+! 0x8B Signal rot
+
+var v001 = dom.GetObject("S10_EMS_POWER_PV").State();
+var v002 = dom.GetObject("S10_EMS_POWER_BAT").State();
+var v003 = dom.GetObject("S10_EMS_POWER_GRID").State();
+var v004 = dom.GetObject("S10_EMS_POWER_HOME").State();
+var v005 = dom.GetObject("S10_BAT_SOC").State();
+time v006 = dom.GetObject("S10_RSCP_Time").ToTime();
+string v007 = v006.ToTime();
+time vTime = system.Date("%Y-%m-%d %H:%M:%S").ToTime();
+string v008 = vTime.ToInteger();
+
+string zeile1 = "PV"#" "# v001.ToString(0);
+string color1 = "0x80";
+if (v001 > 200) {color1 = "0x83";}
+string icon1  = "";
+
+string zeile2 = "GRID"#" "# v003.ToString(0);
+string color2 = "0x80";
+if (v003 < 15) {color2 = "0x84";}
+if (v003 > 15) {color2 = "0x82";}
+if (v003 < -20) {color2 = "0x85";}
+string icon2  = "";
+
+string zeile3 = "HOME"#" "# v004.ToString(0);
+string color3 = "0x80";
+string icon3  = "";
+
+string zeile4 = "BAT"#" "# v002.ToString(0);
+string color4 = "0x80";
+string icon4  = "";
+
+string zeile5 = "SOC"#" "# v005.ToString(1);
+string color5 = "0x80";
+string icon5  = "";
+
+string zeile6 = v007.Format("%d.%m. %H:%M");
+string color6 = "0x80";
+var khp = v008.ToInteger() - v007.ToInteger();
+if (khp < 120) {color6 = "0x84";}
+if (khp > 360) {color6 = "0x81";}
+string icon6  = "";
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! System Routine nicht bearbeiten !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+string splitter="|";
+string msgBuffer = zeile1 # splitter # color1 # splitter # icon1 # "\t";
+msgBuffer = msgBuffer # zeile2 # splitter # color2 # splitter # icon2 # "\t";
+msgBuffer = msgBuffer # zeile3 # splitter # color3 # splitter # icon3 # "\t";
+msgBuffer = msgBuffer # zeile4 # splitter # color4 # splitter # icon4 # "\t";
+msgBuffer = msgBuffer # zeile5 # splitter # color5 # splitter # icon5 # "\t";
+msgBuffer = msgBuffer # zeile6 # splitter # color6 # splitter # icon6;
+
+string substitutions = "A,0x41\tB,0x42\tC,0x43\tD,0x44\tE,0x45\tF,0x46\tG,0x47\tH,0x48\tI,0x49\tJ,0x4A\tK,0x4B\tL,0x4C\tM,0x4D\tN,0x4E\tO,0x4F\tP,0x50\tQ,0x51\tR,0x52\tS,0x53\tT,0x54\tU,0x55\tV,0x56\tW,0x57\tX,0x58\tY,0x59\tZ,0x5A";
+substitutions = substitutions # "\ta,0x61\tb,0x62\tc,0x63\td,0x64\te,0x65\tf,0x66\tg,0x67\th,0x68\ti,0x69\tj,0x6A\tk,0x6B\tl,0x6C\tm,0x6D\tn,0x6E\to,0x6F\tp,0x70\tq,0x71\tr,0x72\ts,0x73\tt,0x74\tu,0x75\tv,0x76\tw,0x77\tx,0x78\ty,0x79\tz,0x7A";
+substitutions = substitutions # "\t0,0x30\t1,0x31\t2,0x32\t3,0x33\t4,0x34\t5,0x35\t6,0x36\t7,0x37\t8,0x38\t9,0x39\t ,0x20\t!,0x21\t\",0x22\t%,0x25\t&,0x26\t=,0x27\t(,0x28\t),0x29\t*,0x2A\t+,0x2B\t,,0x2C\t-,0x2D\t.,0x2E\t/,0x2F";
+substitutions = substitutions # "\tÄ,0x5B\tÖ,0x23\tÜ,0x24\tä,0x7B\tö,0x7C\tü,0x7D\tß,0x5F\t:,0x3A\t;,0x3B\t@,0x40\t>,0x3E";
+
+string bufferLine;
+string substEntry;
+integer i;
+string char;
+string line;
+string icon;
+
+string command = "0x02";
+foreach(bufferLine, msgBuffer) {
+   line = bufferLine.StrValueByIndex(splitter, 0);
+   icon = bufferLine.StrValueByIndex(splitter, 2);
+   if ((line <> "") || (icon <> "")) {
+      command = command # ",0x12";
+      if ((line.Substr(0,2) == "0x") && (line.Length() == 4)) {
+         command = command # "," # line;
+       i = 12;
+      }
+      else {
+         i = 0;
+      }
+      while ((i < line.Length()) && (i < 12)) {
+         char = line.Substr(i, 1);
+         foreach(substEntry, substitutions){
+            if (char == substEntry.Substr(0,1)){command = command # substEntry.Substr(1,5);}
+         }
+         i = i + 1;
+      }
+      command = command # ",0x11," # bufferLine.StrValueByIndex(splitter, 1);
+      if (icon <> "") {
+         command = command # ",0x13," # icon;
+      }
+   }
+   command = command # ",0x0A";
+}
+command = command # ",0x03";
+
+dom.GetObject("BidCos-RF." # dom.GetObject("$src$").Name().StrValueByIndex(".",1) # ".SUBMIT").State(command);

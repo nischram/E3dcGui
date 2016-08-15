@@ -1,0 +1,28 @@
+var source = dom.GetObject("$src$");
+var v104 = dom.GetObject("S10_BAT_SOC");
+
+var v103 = dom.GetObject("S10_SOC-MAX");
+if (source)
+{
+if (source.Value() > v103.Variable())
+{
+v103.Variable(source.Value());
+}
+}
+else
+{
+v103.Variable(v104.Value());
+}
+
+var v109 = dom.GetObject("S10_SOC-MIN");
+if (source)
+{
+if (source.Value() < v109.Variable())
+{
+v109.Variable(source.Value());
+}
+}
+else
+{
+v109.Variable(v104.Value());
+}

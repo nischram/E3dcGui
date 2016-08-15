@@ -1,0 +1,33 @@
+string vDatum  = system.Date("%d.%m.%Y").ToString();
+string vZeit = system.Date("%H:%M").ToString();
+string vTimestamp = system.Date("%F %T").ToString();
+var v001= dom.GetObject("S10_PV-MAX");
+var v002= dom.GetObject("S10_PV-MAX-YDay");
+var v003= dom.GetObject("S10_SOC-MAX");
+var v004= dom.GetObject("S10_SOC-MAX-YDay");
+var v009= dom.GetObject("S10_SOC-MIN");
+var v010= dom.GetObject("S10_SOC-MIN-YDay");
+!Res3
+!Res4
+var v005 = v001.Value();
+var v006 = v002.Value();
+var v007 = v003.Value();
+var v008 = v004.Value();
+var v011 = v009.Value();
+var v012 = v010.Value();
+
+string stdout;
+string cmd;
+string datei = "data2016-PV-002.csv";
+string datatext;
+datatext = vDatum # ";" # vZeit # ";" # vTimestamp # ";" # v005.ToString(0) # ";" # v006.ToString(0) # ";" # v007.ToString(1) # ";" # v008.ToString(1) # ";" # v011.ToString(1) # ";" # v008.ToString(1) # ";" # "---" # ";" # "---";
+
+cmd = "echo \""  #datatext   #"\" >> /media/sd-mmcblk0/DATA/" #datei;
+dom.GetObject("CUxD.CUX2801001:13.CMD_EXEC").State(cmd);
+
+v002.Variable(v001.Value());
+v004.Variable(v003.Value());
+v010.Variable(v009.Value());
+v001.Variable("0");
+v003.Variable("0");
+v009.Variable("100");
