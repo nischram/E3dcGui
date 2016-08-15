@@ -144,7 +144,7 @@ pi@raspberrypi ~/e3dc-rscp $  crontab -e
 
 In der geöffneten Crontab wird eine neue Zeile mit diesem Inhalt eingefügt:
 ```shell
-@reboot /home/pi/E3dcGui/E3dcGui
+@reboot /home/pi/E3dcGui/start
 ```
 Die Änderung wird mit „STRG“ + „O“ gespeichert und die Crontab beendet mit
 „STRG“ + „X“.
