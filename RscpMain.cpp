@@ -49,24 +49,24 @@ char Path[100];
 int CounterHM, Solar900, SOC900, Home900, NetIn900, NetOut900, BatIn900, BatOut900, WBAll900, WBSolar900, Add900;
 int Counter900 = 0;
 
-void printsend(char id[20], int value){
+void printsend(int id, int value){
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%s&new_value=%i\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%i\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
       system(batch);
     }
   }
 }
 
-void printsendChar(char id[20], char value[32]){
+void printsendChar(int id, char value[32]){
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%s&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
       system(batch);
     }
