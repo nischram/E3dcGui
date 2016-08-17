@@ -214,6 +214,11 @@ int mymillis()
         gettimeofday(&tv, NULL);
         return (tv.tv_sec) * 1000 + (tv.tv_usec)/1000;
 }
+//Made By Nischram
+int madeBy(char *OUT){
+  snprintf (OUT, (size_t)100, "Made by Nischram  https://github.com/nischram/E3dcGui.git");
+  return 1;
+}
 //Killen der Applikationen
 int pkill()
 {

@@ -1049,6 +1049,8 @@ int main(){
 			strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
 			drawSquare(150,458,170,12,WHITE);
 			put_string(150,458, OUT, GREEN);
+			madeBy(OUT);
+			put_string(325,458, OUT, BLUE);
 		}
 		//Bildschirmschoner
 		readData("ScreenSaver", 1, Value);  //Zählerdatei für den Bildschirmschoner auslesen
