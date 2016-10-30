@@ -74,7 +74,7 @@ int main()
 	int buttonCordsSave[4] = {5,110,790,280};
 	int	buttonSave= BUTTON_OFF;
 	int buttonTimerSave = mymillis();
-	int buttonCordsSaveHalb[4] = {5,110,500,280};
+	int buttonCordsSaveHalb[4] = {5,110,400,280};
 	int	buttonSaveHalb= BUTTON_OFF;
 	int buttonTimerSaveHalb = mymillis();
 	int buttonCordsAktuell[4] = {270,10,80,90};
@@ -108,6 +108,9 @@ int main()
 	int buttonCordsHRS[4] = {120,300,180,30};
 	int	buttonHRS= BUTTON_OFF;
 	int buttonTimerHRS = mymillis();
+	int buttonCordstime_zone[4] = {470,200,180,30};
+	int	buttontime_zone= BUTTON_OFF;
+	int buttonTimertime_zone = mymillis();
 
 	int buttonCordsLeSOC[4] = {364,438,50,30};
 	int	buttonLeSOC= BUTTON_OFF;
@@ -146,6 +149,9 @@ int main()
 	int buttonCordsMac[4] = {(S8-3),(R2),(Fw+6),(21+3)};
 	int	buttonMac= BUTTON_OFF;
 	int buttonTimerMac = mymillis();
+	int buttonCordsJOGWST[4] = {(S5-3),(R2),(Fw+6),(21+3)};
+	int	buttonJOGWST= BUTTON_OFF;
+	int buttonTimerJOGWST = mymillis();
 
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
@@ -458,6 +464,51 @@ int main()
 						}
 					}
 				} // if ScreenShutdownRun
+				if((scaledX  > buttonCordstime_zone[X] && scaledX < (buttonCordstime_zone[X]+buttonCordstime_zone[W])) && (scaledY > buttonCordstime_zone[Y] && scaledY < (buttonCordstime_zone[Y]+buttonCordstime_zone[H]))){
+					if (mymillis() - buttonTimertime_zone > 600)
+					if(buttontime_zone){
+						buttontime_zone= BUTTON_OFF;
+						buttonTimertime_zone = mymillis();
+					}
+					else{
+						buttontime_zone= BUTTON_ON;
+						buttonTimertime_zone = mymillis();
+						char file_Path [100],file_read [100];
+						FILE *fp;
+						snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
+						fp = fopen(file_Path, "r");
+						if(fp == NULL) {
+							printf("Datei konnte NICHT geoeffnet werden.\n");
+							snprintf (file_read, (size_t)20, "Summertime");
+						}
+						else {
+							fgets(file_read,20,fp);
+							strtok(file_read, "\n");
+							fclose(fp);
+						}
+						if (strcmp ("Wintertime",file_read) == 0){
+							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Summertime");
+							drawSquare(450,200,180,30,GREY);
+							drawCorner(450,200,180,30, WHITE);
+							put_string(470,208, "Sommerzeit", GREEN);
+
+						}
+						else{
+							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Wintertime");
+							drawSquare(450,200,180,30,GREY);
+							drawCorner(450,200,180,30, WHITE);
+							put_string(470,208, "Winterzeit", GREEN);
+						}
+						writeData("/mnt/RAMDisk/ScreenShutdown.txt", "7\n");
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
+						sleep (2);
+						pkill();
+						system("/home/pi/E3dcGui/start &");
+						drawSquare(2,2,800,480,LTGREY);
+						system("pkill screenSave");
+						return 0;
+					}
+				}
 				if((scaledX  > buttonCordsSRS[X] && scaledX < (buttonCordsSRS[X]+buttonCordsSRS[W])) && (scaledY > buttonCordsSRS[Y] && scaledY < (buttonCordsSRS[Y]+buttonCordsSRS[H]))){
 					if (mymillis() - buttonTimerSRS > 3000)
 					if(buttonSRS){
@@ -534,7 +585,7 @@ int main()
 						buttonTimerSave = mymillis();
 					}
 				}
-				break; // ScreenSetup
+				break; // ScreenMonitor
 			}
 			case ScreenHM:{
 				if((scaledX  > buttonCordsSaveHalb[X] && scaledX < (buttonCordsSaveHalb[X]+buttonCordsSaveHalb[W])) && (scaledY > buttonCordsSaveHalb[Y] && scaledY < (buttonCordsSaveHalb[Y]+buttonCordsSaveHalb[H]))){
@@ -590,12 +641,12 @@ int main()
 					if(buttonKueche){
 						buttonKueche= BUTTON_OFF;
 						buttonTimerKueche = mymillis();
-						drawSquare(S7-3,R2,Fw+6,21+3,LTGREY);
+						drawSquare(S6-3,R2,Fw+6,21+3,LTGREY);
 					}
 					else{
 						buttonKueche= BUTTON_ON;
 						buttonTimerKueche = mymillis();
-						drawSquare(S7-3,R2,Fw+6,21+3,LIGHT_GREEN);
+						drawSquare(S6-3,R2,Fw+6,21+3,LIGHT_GREEN);
 						printsend(ISE_Send_OGKSpul, "true");
 						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					}
@@ -634,6 +685,28 @@ int main()
 						else if (strcmp ("fals",MacSchrank) == 0){
 							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_RED);
 							printsend(ISE_MacSchrank, "true");
+						}
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
+					}
+				}
+				if((scaledX  > buttonCordsJOGWST[X] && scaledX < (buttonCordsJOGWST[X]+buttonCordsJOGWST[W])) && (scaledY > buttonCordsJOGWST[Y] && scaledY < (buttonCordsJOGWST[Y]+buttonCordsJOGWST[H]))){
+					if (mymillis() - buttonTimerJOGWST > 500)
+					if(buttonJOGWST){
+						buttonJOGWST= BUTTON_OFF;
+						buttonTimerJOGWST = mymillis();
+					}
+					else{
+						buttonJOGWST= BUTTON_ON;
+						buttonTimerJOGWST = mymillis();
+						char OGWJalSt[20];
+						readJalou_HM(ISE_OGWJalSt, OGWJalSt);																//Jalousie Wert aus der Homematic Abfrage
+						if (strcmp ("100",OGWJalSt) == 0){
+							drawSquare(S5-3,R2,Fw+6,21+3,GREEN);
+							printsend(ISE_OGWJalSt, "0.50");
+						}
+						else {
+							drawSquare(S5-3,R2,Fw+6,21+3,GREY);
+							printsend(ISE_OGWJalSt, "1.00");
 						}
 						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					}

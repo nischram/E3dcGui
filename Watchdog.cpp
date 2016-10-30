@@ -40,7 +40,7 @@ char Path[100], DATE[40], TIME[40], OUT[100];
 
 int main()
 {
-    int counterReboot = 0,counterRebootHM = 0,resetCounter = 0;
+    int counterReboot = 0,counterRebootHM = 0,counterRebootGUI = 0,resetCounter = 0;
     int resetTime = resetMin *60 / sleepTimeWD;
     int jump = 0;
 
@@ -61,6 +61,11 @@ int main()
       ReadData(Path);
       int UnixTimeHM = atoi(response);
       int DiffTimeHM = AktuallTime - UnixTimeHM;
+      snprintf (Path, (size_t)100, "/mnt/RAMDisk/UnixtimeGUI.txt");
+      ReadData(Path);
+      int UnixTimeGUI = atoi(response);
+      int DiffTimeGUI = AktuallTime - UnixTimeGUI;
+
       if(DiffTimeE3dc > WDdiff && E3DC_S10 == 1){
         counterReboot ++;
         if (counterReboot == rebootCounter){
@@ -106,15 +111,41 @@ int main()
         snprintf (OUT, (size_t)100, "HM_GUI-pkill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
       }
+      else if(DiffTimeGUI > WDdiff && jump == 0 && (GUI == 1 || Homematic_GUI == 1)){
+        counterRebootGUI ++;
+        if (counterRebootGUI == rebootCounter){
+          snprintf (OUT, (size_t)100, "HM_GUI-reboot");
+          WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeGUI, resetCounter, OUT);
+          snprintf (Path, (size_t)100, "/mnt/RAMDisk/ScreenShutdown.txt");
+          snprintf (OUT, (size_t)100, "10");
+          WriteData(Path, OUT);
+          snprintf (Path, (size_t)100, "/mnt/RAMDisk/ScreenCounter.txt");
+          snprintf (OUT, (size_t)100, "0");
+          WriteData(Path, OUT);
+          sleep (5);
+          system("sudo reboot");
+          return(0);
+        }
+        system("pkill GuiMain");
+        system("pkill screenSave");
+        sleep(2);
+        system("/home/pi/E3dcGui/GuiMain &");
+        system("/home/pi/E3dcGui/screenSave &");
+        snprintf (OUT, (size_t)100, "GuiMain-pkill");
+        WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
+      }
       else {
         resetCounter ++;
         if(resetCounter == resetTime){
           counterReboot = 0;
           counterRebootHM = 0;
+          counterRebootGUI = 0;
           resetCounter = 0;
         }
       }
       jump = 0;
-      cout << "Watchdog: " << DATE << " ; " << TIME << "\n          PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << "\n          Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " \n" ;
+      cout << "Watchdog: " << DATE << " ; " << TIME << "\n";
+      cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
+      cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " ; GUI Zähler bis Reboot: " << counterRebootGUI << " \n" ;
     }
 }

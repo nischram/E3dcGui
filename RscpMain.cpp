@@ -48,6 +48,7 @@ int32_t TAG_EMS_OUT_PM_STATE = 0;
 char Path[100];
 int CounterHM, Solar900, SOC900, Home900, NetIn900, NetOut900, BatIn900, BatOut900, WBAll900, WBSolar900, Add900;
 int Counter900 = 0;
+int time_zone = 7200;
 
 void printsend(int id, int value){
   if(Homematic_E3DC == 1){
@@ -229,7 +230,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         SRscpValue PVIContainer;
         protocol.createContainerValue(&PVIContainer, TAG_PVI_REQ_DATA);
         protocol.appendValue(&PVIContainer, TAG_PVI_INDEX, (uint8_t)0);
-        protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DEVICE_STATE);
+        protocol.appendValue(&PVIContainer, TAG_PVI_REQ_ON_GRID);
         // append sub-container to root container
         protocol.appendValue(&rootValue, PVIContainer);
         // free memory of sub-container as it is now copied to rootValue
@@ -289,7 +290,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           TAG_EMS_OUT_UNIXTIME = protocol->getValueAsInt32(response);
           time_t timestamp;
           tm *sys;
-          TAG_EMS_OUT_UNIXTIME = TAG_EMS_OUT_UNIXTIME - 7200;
+          TAG_EMS_OUT_UNIXTIME = TAG_EMS_OUT_UNIXTIME - time_zone;
           timestamp = TAG_EMS_OUT_UNIXTIME;
           sys = localtime(&timestamp);
           strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
@@ -434,7 +435,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 ucPVIIndex = protocol->getValueAsUChar8(&PVIData[i]);
                 break;
             }
-            case TAG_PVI_DEVICE_STATE: {              // response for TAG_PVI_REQ_DEVICE_STATE
+            case TAG_PVI_ON_GRID: {              // response for TAG_PVI_REQ_ON_GRID
                 bool bState = protocol->getValueAsBool(&PVIData[i]);
                 TAG_EMS_OUT_PVI_STATE = bState;
                 cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
@@ -681,6 +682,28 @@ static void mainLoop(void)
 
 int main()
 {
+  char file_Path [100],file_read [100];
+	FILE *fp;
+	snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
+	fp = fopen(file_Path, "r");
+	if(fp == NULL) {
+		printf("Datei konnte NICHT geoeffnet werden.\n");
+		snprintf (file_read, (size_t)20, "Summertime");
+	}
+	else {
+		fgets(file_read,20,fp);
+		strtok(file_read, "\n");
+		fclose(fp);
+	}
+  if (strcmp ("Wintertime",file_read) == 0){
+    time_zone = 3600;
+  }
+  else{
+    time_zone = 7200;
+  }
+  printf("%i\n",time_zone);
+
+
     // endless application which re-connections to server on connection lost
     while(true){
 

@@ -20,7 +20,7 @@ Hier ein Foto mit der Software auf dem 7-Zoll Display.
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
-Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist unten ein Kapitel __Material__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2016-02.
+Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist unten ein Kapitel __Material__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2016-04.
 
 In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen. Da ich mich erst seit kurzen mit der Programmierung beschäftige, sind die Änderungen eventuell noch etwas unprofessionell, aber bislang erfüllen sie ihren Zweck.
 
@@ -30,7 +30,7 @@ Wenn ein Display genutzt wird, kommen C Programme zum Einsatz, um die diversen G
 
 ## Vorbereitung am S10
 Hauptmenü > Einstellungen
-Am S10 muss ein RSCP-Passwort vergeben werden. Im „Hauptmenü“ unter „Einstellungen“ kann ein RSCP-Passwort gesetzt werden. Das gesetzte Passwort wird später in der Parametern der Software benötigt.
+Am S10 muss ein RSCP-Passwort vergeben werden. Im „Hauptmenü“ unter „Einstellungen“ > "Personalisieren" kann ein RSCP-Passwort gesetzt werden. Das gesetzte Passwort wird später in der Parametern der Software benötigt.
 Im selben Menüfenster ist weiter oben auch die IP-Adresse des S10 zu finden.
 
 ## Raspberry Pi
@@ -252,6 +252,11 @@ network={
 ```
 Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board, bei einem älteren Pi musst du entweder per Kabel oder per W-Lan USB-Stick die Netzwerkverbindung herstellen.
 
+## Umschaltung Sommer-/ Winterzeit
+Auf der GUI im Menü Setup gibt es ein Umschaltbutton für die Umschaltung zwischen Sommerzeit und Winterzeit. Damit die Einstellung wirksam wird startet die Software nach dem betätigen des Button neu.
+
+Wenn diese Software ohne Display verwendet wird, muss die Einstellung der Sommer oder Winterzeit von Hand vorgenommen werden, dafür muss in der Datei "Timezone.txt" im Ordner "Data" entweder "Wintertime" oder "Summertime" eingetragen werden. 
+
 ## RSCP to Loxone
 __Achtung__   
 Aktuell werden die ID aus der "paramter.h" nur als Integer verarbeitet. Für Loxone wird wie unten beschrieben ein char benötigt. Ich muss den Fehler im Quellcode noch suchen.
@@ -288,7 +293,6 @@ pi@raspberrypi ~/E3dcGui $  cd make
 Jetzt sollte mit der "E3dcGui" deine Loxone Zentrale erreicht werden. Da ich keine Loxone sondern die HomeMatic besitze, habe ich es natürlich nicht getestet, bin also auf Rückmeldungen bei Problemen angewiesen.
 
 ## ToDo
-00 Fehler bei der alternativen Loxonenutzung
 01 weiteres in der Aneitung zum Aufbau
 02 Dokumentation im Sourcecode
 03 Loxone Unterstützung aufnehmen
@@ -305,3 +309,4 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 ## Changelog
 
 14.08.2016 Repository neu erstellt
+31.11.2016 Umschaltung Sommer- Winterzeit

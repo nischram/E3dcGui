@@ -832,6 +832,8 @@ int main(){
 				    }
 				    createWindow(S7, R2, Fw, "OG-Party", Party);
 						createWindow(S8, R2, Fw, "OG-Mac", MacSchrankValue);
+						createWindow(S5, R2, Fw, "Jal.50%", "");
+
 						//EG
 						createWindow(S1, R3, Fhw, "Wohnz.", EGWFli);
 						createWindow((S1+Fhw), R3, Fhw, "", EGWFre);
@@ -976,6 +978,29 @@ int main(){
 							screenShutdown = ShutdownRun;
 						}
 					}
+					char file_Path [100],file_read [100];
+					FILE *fp;
+					snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
+					fp = fopen(file_Path, "r");
+					if(fp == NULL) {
+						printf("Datei konnte NICHT geoeffnet werden.\n");
+						snprintf (file_read, (size_t)20, "Summertime");
+					}
+					else {
+						fgets(file_read,20,fp);
+						strtok(file_read, "\n");
+						fclose(fp);
+					}
+					if (strcmp ("Wintertime",file_read) == 0){
+						drawSquare(450,200,180,30,GREY);
+						drawCorner(450,200,180,30, WHITE);
+						put_string(470,208, "Winterzeit", WHITE);
+					}
+					else{
+						drawSquare(450,200,180,30,GREY);
+						drawCorner(450,200,180,30, WHITE);
+						put_string(470,208, "Sommerzeit", WHITE);
+					}
 					DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);
 					if(E3DC_S10 ==1){
 						DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
@@ -1007,6 +1032,12 @@ int main(){
 			read_HM(ISE_TimestampHM, 16,TimestampHM);
 			snprintf (writeTxt, (size_t)100, "%s \n%i", TimestampHM, UnixTime);
 			writeData("/mnt/RAMDisk/UnixtimeHM.txt", writeTxt);
+		}
+	//Watchdog GuiMain
+		if(counter == 0){
+			int AktuallTime = time(NULL);
+			snprintf (writeTxt, (size_t)100, "TimestampGuiMain \n%i", AktuallTime);
+			writeData("/mnt/RAMDisk/UnixtimeGUI.txt", writeTxt);
 		}
 	//Time
 		if(GuiTime == RscpTime && E3DC_S10 == 1){
@@ -1052,7 +1083,7 @@ int main(){
 			madeBy(OUT);
 			put_string(325,458, OUT, BLUE);
 		}
-		//Bildschirmschoner
+	//Bildschirmschoner
 		readData("ScreenSaver", 1, Value);  //Zählerdatei für den Bildschirmschoner auslesen
 		ScreenSaverCounter = atoi(Value);
 		ScreenSaverCounter = ScreenSaverCounter +1;
@@ -1068,7 +1099,7 @@ int main(){
 		}
 		snprintf (OUT, (size_t)100, "%i", ScreenSaverCounter);
 		writeData("/mnt/RAMDisk/ScreenSaver.txt", OUT);
-		//Abfrageintervall
+	//Abfrageintervall
 		sleep(1);
 	}
 }
