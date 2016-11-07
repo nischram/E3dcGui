@@ -234,6 +234,23 @@ pi@raspberry:~$ sudo raspi-config
 ```
 Dort unter „Boot Options“ > „B2 Console Autologin Text console, automatically logged in as 'pi' user“ auswählen.
 
+### Courser Blinken
+
+Ein blinkender Courser oder das Displayabschalten welches ein Raspberry von Haus aus aktiviert hat, kann folgendermassen deaktiviert werden.
+Mit dem Befehl:
+```
+sudo nano /etc/kbd/config
+```
+die Konfiguration öffnen und folgende Zeilen bearbeiten oder Hinzufügen:
+```
+BLANK_TIME=0
+BLANK_DPMS=off
+POWERDOWN_TIME=0
+setterm -blank 0
+```
+zum speichern „STRG“ + „O“ und zum beenden „STRG“ + „X“.
+Nun den Raspberry Pi neu starten.
+
 ### W-Lan einrichten
 Zuvor kannst du dein W-Lan scannen, um zu sehen ob der Pi empfang hat:
 ```
@@ -255,7 +272,7 @@ Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board, bei einem älteren Pi mu
 ## Umschaltung Sommer-/ Winterzeit
 Auf der GUI im Menü Setup gibt es ein Umschaltbutton für die Umschaltung zwischen Sommerzeit und Winterzeit. Damit die Einstellung wirksam wird startet die Software nach dem betätigen des Button neu.
 
-Wenn diese Software ohne Display verwendet wird, muss die Einstellung der Sommer oder Winterzeit von Hand vorgenommen werden, dafür muss in der Datei "Timezone.txt" im Ordner "Data" entweder "Wintertime" oder "Summertime" eingetragen werden. 
+Wenn diese Software ohne Display verwendet wird, muss die Einstellung der Sommer oder Winterzeit von Hand vorgenommen werden, dafür muss in der Datei "Timezone.txt" im Ordner "Data" entweder "Wintertime" oder "Summertime" eingetragen werden.
 
 ## RSCP to Loxone
 __Achtung__   
@@ -310,3 +327,4 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 14.08.2016 Repository neu erstellt
 31.11.2016 Umschaltung Sommer- Winterzeit
+07.11.2016 Courser Blinken abschalten
