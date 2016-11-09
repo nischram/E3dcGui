@@ -1,6 +1,5 @@
-## Noch im Aufbau, nur von mir getestet!
-
 # E3DC to HomeMatic mit GUI
+Stand: V1.3 09.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -88,7 +87,7 @@ Damit die SD-Karte des Raspberry Pi nicht übermäßig beansprucht wird, nutzt i
 
 Wenn du in den Einstellungen die Nutzung der HomeMatic aktiviert hast, muss die HomeMatic nun vorbereitet werden.
 Disen Teil der Anleitung habe ich separat in dem Ordner Homematic erstellt.
-Wenn das Display nur für das E3DC S10 genutzt wird, ist die Anleitung nicht nötig. Sollte die Nutzung aktiviert sein und die HM nicht vorbereitet dann würde die Applikation für jeden Sendebefehl mehrere Sekunden benötigen und nicht ordnungsgemäss laufen.
+Wenn das Display nur für das E3DC S10 genutzt wird, ist die Anleitung nicht nötig. Sollte die Nutzung aktiviert sein und die HM nicht vorbereitet dann würde die Applikation für jeden Sendebefehl mehrere Sekunden benötigen und nicht ordnungsgemäss laufen. Ausser alle ISE_ID's in der Datei "parameterHM.h" werden auf 0 gesetzt.
 
 ### Applikation starten
 Jetzt kann die Applikation für Tests gestartet werden.
@@ -150,14 +149,15 @@ Hier werden Informationen zum Raspberry Pi ausgegeben.
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
-Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen definiert werden, sondern muss ggf. auch im Sourcecode einiges geändert werden.
-Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (am roten Punkt unten rechts zu erkennen).
+Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.
+Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (Abfragezeit am roten Punkt unten rechts zu erkennen).
 Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.
 Die Räume haben unterschiedliche Fenstereinteilungen es gibt zum Teil Räume mit zwei Fenster und Jalousien (im Foto an OG Wohnz. zu sehen).
 Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp auf's Symbol sendet einen einen Wert zur HomeMatic ( z.B. der Brunnen kann per Display eingeschaltet werden).
 Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.
 Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).
+Damit du am Sorcecode eigene Änderungen vornehmen kannst aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung in eine extra Datei mit Funktion ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h` und `parameterHM.h` nicht aktualisieren.
 
 ### Bildschirmschoner
 Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: `#define ScreenSaverTime             180`
@@ -250,6 +250,9 @@ setterm -blank 0
 ```
 zum speichern „STRG“ + „O“ und zum beenden „STRG“ + „X“.
 Nun den Raspberry Pi neu starten.
+```
+sudo reboot
+```
 
 ### W-Lan einrichten
 Zuvor kannst du dein W-Lan scannen, um zu sehen ob der Pi empfang hat:
@@ -325,6 +328,9 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
-14.08.2016 Repository neu erstellt
-31.11.2016 Umschaltung Sommer- Winterzeit
-07.11.2016 Courser Blinken abschalten
+V1.0 14.08.2016 Repository neu erstellt
+V1.1 31.11.2016 Umschaltung Sommer- Winterzeit
+V1.2 07.11.2016 Courser Blinken abschalten
+V1.3 09.11.2016 Display temporär auf 16Bit setzen
+V1.3 09.11.2016 Auslagern der HM_Gui
+V1.3 09.11.2016 TouchTest integriert / Diverses

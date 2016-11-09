@@ -88,7 +88,7 @@ int main()
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeE3dc, resetCounter, OUT);
         jump ++;
       }
-      else if(DiffTimeHM > WDdiff && jump == 0 && Homematic_GUI == 1){
+      else if(DiffTimeHM > WDdiff && jump == 0 && WDuseHM_Gui == 1){
         counterRebootHM ++;
         if (counterRebootHM == rebootCounter){
           snprintf (OUT, (size_t)100, "HM_GUI-reboot");
@@ -110,6 +110,7 @@ int main()
         system("/home/pi/E3dcGui/screenSave &");
         snprintf (OUT, (size_t)100, "HM_GUI-pkill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
+        jump ++;
       }
       else if(DiffTimeGUI > WDdiff && jump == 0 && (GUI == 1 || Homematic_GUI == 1)){
         counterRebootGUI ++;

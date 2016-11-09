@@ -9,11 +9,12 @@ gcc -g -o stop  stop.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include "parameter.h"
+#include "parameterHM.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
 #include "funktion.h"
-#include "parameter.h"
 
 int main()
 {

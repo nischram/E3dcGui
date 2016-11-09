@@ -9,12 +9,13 @@ gcc -g -o screenSave  screenSave.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include "parameter.h"
+#include "parameterHM.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
-#include "parameter.h"
 
 int main()
 {
@@ -31,6 +32,8 @@ int main()
 
 	int screenChange;
 
+	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
+
 	if(E3DC_S10 ==1){
 		screenChange= ScreenAktuell;
 	}
@@ -40,6 +43,7 @@ int main()
 	int screenShutdown = ShutdownRun;
 
 	char MacSchrank[20];
+
 	screenOn();
 	writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
 	if(E3DC_S10 ==1){
@@ -280,6 +284,7 @@ int main()
 					else{
 						screenOn();
 						writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -297,6 +302,7 @@ int main()
 					else{
 						screenOn();
 						writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -581,6 +587,7 @@ int main()
 					else{
 						screenOn();
 						writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -598,6 +605,7 @@ int main()
 					else{
 						screenOn();
 						writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
+						writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 						buttonSaveHalb= BUTTON_ON;
 						buttonTimerSaveHalb = mymillis();
 					}

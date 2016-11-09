@@ -172,7 +172,6 @@ __Minimal- und Maximal-Werte SOC__
 Ich Speicher mir die Minimal- und Maximal-Werte des SOC (State Of Charge) auch.
 Passend dazu ist das Skript „S10-min-maxSOC.hm“ ist im Ordner „HM-Scripte“ zu finden. Das Skript „DATA-PV.hm“ gehört dazu und ersetzt hierbei das Script aus der täglichen Auslösung von PV_Max. Es trägt die Werte in eine zusätzliche Systemvariable für „Yesterday“ ein und speichert alle Werte in einer Datei. Zum Speichern der Datei wird die „CUxD“ verwendet. In dieser Anleitung gehen ich aber auf diese Funktion nicht weiter ein.
 
-
 ## Quelle
 
 #### Scripte

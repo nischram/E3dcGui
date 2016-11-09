@@ -74,8 +74,6 @@ static unsigned short def_b[] =
     { 0, 172,   0, 168,   0, 172,   0, 168,
      84, 255,  84, 255,  84, 255,  84, 255};
 
-
-
 void put_pixel_16bpp(int x, int y, int r, int g, int b)
 {
         unsigned int pix_offset;
@@ -90,8 +88,6 @@ void put_pixel_16bpp(int x, int y, int r, int g, int b)
         // write 'two bytes at once'
         *((unsigned short*)(fbp + pix_offset)) = c;
 }
-
-
 void drawSquare(int x, int y,int height, int width, int c)
 //void drawSquare(int x, int y)
 {
@@ -157,7 +153,8 @@ void createButton(int x, int y, int w, int h, char *text, int backgroundColor, i
 
 int framebufferInitialize(int *xres, int *yres)
 {
-	char *fbdevice = "/dev/fb0" ;
+	//char *fbdevice = "/dev/fb0" ;
+	char *fbdevice = framebuffer_File ;
 
 	fb = open(fbdevice, O_RDWR);
 	if (fb == -1) {

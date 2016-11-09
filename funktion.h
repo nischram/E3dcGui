@@ -14,6 +14,7 @@
 #include <linux/ioctl.h>
 #include <signal.h>
 #include "parameter.h"
+#include "parameterHM.h"
 
 // Zusatzfunktion für die Jalousie-Funktin "readJalou_HM"
 unsigned replace_character(char* string, char from, char to){
@@ -31,6 +32,10 @@ unsigned replace_character(char* string, char from, char to){
 }
 //Homematic Abfrage von Geräten und Variablen
 int read_HM(int id, int cutnumber, char* value){
+  if (id == 0){
+    snprintf(value, (size_t)256, "NoISE");
+    return 0;
+  }
   int cutlast;
   cutlast = 8 + cutnumber - 1;
   char batch[256];
@@ -49,6 +54,10 @@ int read_HM(int id, int cutnumber, char* value){
 }
 //Homematic Abfrage von Jalousien
 int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
+  if (id == 0){
+    snprintf(value, (size_t)256, "NoISE");
+    return 0;
+  }
   char batch[256], res_Jal[20];
   memset(&batch, 0, sizeof(batch));
   memset(&res_Jal, 0, sizeof(res_Jal));
@@ -165,8 +174,11 @@ void createWindow(int Wx, int Wy, int Ww, char room[20], char var[20]){
 	else if (strcmp ("true",var) == 0){
 		drawSquare(Wx,Wy,Ww,21,LIGHT_RED);
 	}
-	else if (strcmp ("no",var) == 0){
+  else if (strcmp ("no",var) == 0){
     drawSquare(Wx,Wy,Ww,21,WHITE);
+	}
+  else if (strcmp ("NoISE",var) == 0){
+    drawSquare(Wx,Wy,Ww,21,LIGHT_BLUE);
 	}
 	else{
 		drawSquare(Wx,Wy,Ww,21,LTGREY);
