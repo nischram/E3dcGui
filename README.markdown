@@ -182,6 +182,10 @@ Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über läng
 ```shell
 pi@raspberrypi:~ $ pkill watchdogHM
 ```
+## Aktuelle Uhrzeit aus dem Internet holen
+Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeiteit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
+Ich habe eine Lösung für diese Problem, auf dieser Seite gefunden:
+[http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen](http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen)
 
 ## RAMDisk
 
@@ -308,6 +312,7 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.5 10.11.2016 Zeit aktualisieren
 V1.4 10.11.2016 Courser blinken im Code integriert und aus Anleitung entfernt
 V1.3 09.11.2016 TouchTest integriert / Diverses
 V1.3 09.11.2016 Auslagern der HM_Gui
