@@ -35,15 +35,9 @@ int main()
 	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
 	system("setterm -cursor off");             //Courser Abschalten
 
-	if(E3DC_S10 ==1){
-		screenChange= ScreenAktuell;
-	}
-	else{
-		screenChange= ScreenHM;
-	}
 	int screenShutdown = ShutdownRun;
 
-	char MacSchrank[20];
+	char Value[20];
 
 	screenOn();
 	writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -163,13 +157,15 @@ int main()
 		scaledX = rawX/scaleXvalue;
 		scaledY = rawY/scaleYvalue;
 
+		readData("ScreenChange", 1, Value);
+		screenChange = atoi(Value);
+
 		if(E3DC_S10 ==1){
 			if((scaledX  > buttonCordsAktuell[X] && scaledX < (buttonCordsAktuell[X]+buttonCordsAktuell[W])) && (scaledY > buttonCordsAktuell[Y] && scaledY < (buttonCordsAktuell[Y]+buttonCordsAktuell[H]))){
 				if (mymillis() - buttonTimerAktuell > 500)
 				if(buttonAktuell){
 					buttonAktuell= BUTTON_OFF;
 					buttonTimerAktuell = mymillis();
-					screenChange = ScreenAktuell;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -178,7 +174,6 @@ int main()
 				else{
 					buttonAktuell= BUTTON_ON;
 					buttonTimerAktuell = mymillis();
-					screenChange = ScreenAktuell;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -190,7 +185,6 @@ int main()
 				if(buttonLangzeit){
 					buttonLangzeit= BUTTON_OFF;
 					buttonTimerLangzeit = mymillis();
-					screenChange = ScreenAktuell;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "2\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -199,7 +193,6 @@ int main()
 				else{
 					buttonLangzeit= BUTTON_ON;
 					buttonTimerLangzeit = mymillis();
-					screenChange = ScreenLangzeit;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "2\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -212,7 +205,6 @@ int main()
 			if(buttonSetup){
 				buttonSetup= BUTTON_OFF;
 				buttonTimerSetup = mymillis();
-				screenChange = ScreenAktuell;
 				writeData("/mnt/RAMDisk/ScreenChange.txt", "3\n");
 				writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 				writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -221,7 +213,6 @@ int main()
 			else{
 				buttonSetup= BUTTON_ON;
 				buttonTimerSetup = mymillis();
-				screenChange = ScreenSetup;
 				writeData("/mnt/RAMDisk/ScreenChange.txt", "3\n");
 				writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 				writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -233,7 +224,6 @@ int main()
 			if(buttonMonitor){
 				buttonMonitor= BUTTON_OFF;
 				buttonTimerMonitor = mymillis();
-				screenChange = ScreenAktuell;
 				writeData("/mnt/RAMDisk/ScreenChange.txt", "11\n");
 				writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 				writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -242,7 +232,6 @@ int main()
 			else{
 				buttonMonitor= BUTTON_ON;
 				buttonTimerMonitor = mymillis();
-				screenChange = ScreenMonitor;
 				writeData("/mnt/RAMDisk/ScreenChange.txt", "11\n");
 				writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 				writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -256,7 +245,6 @@ int main()
 				if(buttonHM){
 					buttonHM= BUTTON_OFF;
 					buttonTimerHM = mymillis();
-					screenChange = ScreenAktuell;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "12\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -265,7 +253,6 @@ int main()
 				else{
 					buttonHM= BUTTON_ON;
 					buttonTimerHM = mymillis();
-					screenChange = ScreenHM;
 					writeData("/mnt/RAMDisk/ScreenChange.txt", "12\n");
 					writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
 					writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
@@ -686,6 +673,7 @@ int main()
 					else{
 						buttonMac= BUTTON_ON;
 						buttonTimerMac = mymillis();
+						char MacSchrank[20];
 						read_HM(ISE_MacSchrankValue, 4, MacSchrank);
 						if (strcmp ("true",MacSchrank) == 0){
 							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_GREEN);
@@ -723,7 +711,7 @@ int main()
 				break; // ScreenHM
 			}
 			default:{
-				screenChange = ScreenAktuell;
+				writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
 			}
 		} // Switch screenChange
 	}  //while
