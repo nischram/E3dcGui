@@ -33,6 +33,7 @@ int main()
 	int screenChange;
 
 	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
+	system("setterm -cursor off");             //Courser Abschalten
 
 	if(E3DC_S10 ==1){
 		screenChange= ScreenAktuell;

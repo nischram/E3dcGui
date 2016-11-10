@@ -43,6 +43,7 @@ int main()
 
   pkill();
 	screenOn();
+	system("setterm -cursor on");             //Courser Einschalten
 	drawSquare(360,3,440,240,BLACK);
 	system("pkill screenSave");
 }

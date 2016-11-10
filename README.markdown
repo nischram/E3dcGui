@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.3 09.11.2016
+Stand: V1.4 10.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -234,26 +234,6 @@ pi@raspberry:~$ sudo raspi-config
 ```
 Dort unter „Boot Options“ > „B2 Console Autologin Text console, automatically logged in as 'pi' user“ auswählen.
 
-### Courser Blinken
-
-Ein blinkender Courser oder das Displayabschalten welches ein Raspberry von Haus aus aktiviert hat, kann folgendermassen deaktiviert werden.
-Mit dem Befehl:
-```
-sudo nano /etc/kbd/config
-```
-die Konfiguration öffnen und folgende Zeilen bearbeiten oder Hinzufügen:
-```
-BLANK_TIME=0
-BLANK_DPMS=off
-POWERDOWN_TIME=0
-setterm -blank 0
-```
-zum speichern „STRG“ + „O“ und zum beenden „STRG“ + „X“.
-Nun den Raspberry Pi neu starten.
-```
-sudo reboot
-```
-
 ### W-Lan einrichten
 Zuvor kannst du dein W-Lan scannen, um zu sehen ob der Pi empfang hat:
 ```
@@ -328,9 +308,10 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
-V1.0 14.08.2016 Repository neu erstellt
-V1.1 31.11.2016 Umschaltung Sommer- Winterzeit
-V1.2 07.11.2016 Courser Blinken abschalten
-V1.3 09.11.2016 Display temporär auf 16Bit setzen
-V1.3 09.11.2016 Auslagern der HM_Gui
+V1.4 10.11.2016 Courser blinken im Code integriert und aus Anleitung entfernt
 V1.3 09.11.2016 TouchTest integriert / Diverses
+V1.3 09.11.2016 Auslagern der HM_Gui
+V1.3 09.11.2016 Display temporär auf 16Bit setzen
+V1.2 07.11.2016 Courser Blinken abschalten
+V1.1 31.11.2016 Umschaltung Sommer- Winterzeit
+V1.0 14.08.2016 Repository neu erstellt
