@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.4 10.11.2016
+Stand: V1.5 10.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
