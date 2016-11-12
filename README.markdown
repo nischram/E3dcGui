@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.7 12.11.2016
+Stand: V1.8 12.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -121,7 +121,7 @@ Weitere Informationen zur Crontab entnehmen Sie bitte aus Quellen wie z. B. dies
 ### Raspberry Pi neu starten
 Damit die Applikation gestartet wird, kann nun der Raspberry neu gestartet werden mit:
 ```shell
-pi@raspberrypi ~/e3dc-rscp $  sudo reboot
+pi@raspberrypi ~/E3dcGui $  sudo reboot
 ```
 - Reboot Befehl mit Administrator-Rechten
 Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildschirmausgaben ausgeführt. Nach ca. 1 Minute werden die Werte der Systemvariablen der HomeMatic wieder aktualisiert. Oder das Display zeigt die Applikation
@@ -226,6 +226,50 @@ tmpfs 4096 0 4096 0% /mnt/RAMDisk
 Diesen Teil zum RAMDisk habe ich von hier Kopiert:
 [http://www.kriwanek.de/raspberry-pi/486-ram-disk-auf-raspberry-pi-einrichten.html](http://www.kriwanek.de/raspberry-pi/486-ram-disk-auf-raspberry-pi-einrichten.html)
 
+## eMail senden Installieren und aktivieren
+
+Damit der Wachtdog oder andere Programmteile eine eMail senden können, muss eine eMail Option installiert werden. Ich habe mich hier für "SendEmail" entschieden. Die Version 1.56 habe ich im Github integriert so muss nicht Heruntergeladen, was das intallieren wesentlich einfacher macht. Folgendes Befehle sind der Reihe nach auszuführen:
+```
+pi@raspberry:~$ cd E3dcGui
+pi@raspberrypi ~/E3dcGui $ sudo cp -a sendEmail-v1.56/sendEmail /usr/local/bin
+pi@raspberrypi ~/E3dcGui $ sudo chmod +x /usr/local/bin/sendEmail
+pi@raspberrypi ~/E3dcGui $ sudo apt-get update
+pi@raspberrypi ~/E3dcGui $ sudo apt-get install libcrypt-ssleay-perl
+pi@raspberrypi ~/E3dcGui $ sudo apt-get install libnet-ssleay-perl
+pi@raspberrypi ~/E3dcGui $ sudo apt-get install libssl-dev
+pi@raspberrypi ~/E3dcGui $ sudo apt-get install libio-socket-ssl-perl
+```
+Jetzt müssen die eMail Einstellung in den "parameter.h" definiert werden.
+```
+// sendEmail Parameter
+#define FromEmailAdress             "max.mustermann@web.de"
+#define smtpServer                  "smtp.web.de"
+#define smtpPort                    "587"
+#define smtpTLS                     "yes"
+#define smtpBenutzer                "max.mustermann@web.de"
+#define smtpPass                    "1234abc"
+```
+Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
+```
+// sendEmail Parameter
+#define FromEmailAdress             "max.mustermann@gmail.com"
+#define smtpServer                  "smtp.gmail.com"
+#define smtpPort                    "587"
+#define smtpTLS                     "yes"
+#define smtpBenutzer                "max.mustermann@gmail.com"
+#define smtpPass                    "1234abc"
+```
+Für den Watchdog ist in der "parameter.h" noch die eMail-Adresse einzustellen in der die Nachrichten gesendet werden sollen:
+```
+#define WDtoEmailAdress             "max.mustermann@web.de"
+```
+Mit den Parametern
+```
+#define WDsendEmailReboot           1
+#define WDsendEmailKill             1
+```
+kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll.
+
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay und Standgehäuse.
 Hier die Artikelnummer von Conrad: [1437995-62](https://www.conrad.de/de/raspberry-pi-3-model-b-starter-set-1-gb-noobs-inkl-betriebssystem-noobs-inkl-gehaeuse-inkl-netzteil-inkl-software-1437995.html)
@@ -312,6 +356,7 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.8 12.11.2016 eMail senden vom WD
 V1.7 12.11.2016 Stabilitätsverbesserung Touchbedienung
 V1.6 10.11.2016 Fehlerkorrektur bei der Touchbedienung
 V1.5 10.11.2016 Zeit aktualisieren

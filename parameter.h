@@ -88,6 +88,19 @@
 #define resetMin                    60
 //WD für HM-Gui (nur wenn Unixtime und Timestamp als Variablen in der Homematic angelegt sind und abgefragt werden)
 #define WDuseHM_Gui                 0
+//Email senden bei aktivität
+#define WDsendEmailReboot           1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
+#define WDsendEmailKill             1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
+#define WDtoEmailAdress             "max.mustermann@web.de"                     // Email Adresse für Watchdog aktivitäten
+
+//#######################################
+// sendEmail Parameter
+#define FromEmailAdress             "max.mustermann@web.de"                     //eMail-Adresse von der gesendet wird
+#define smtpServer                  "smtp.web.de"                               //eMail-Server zum senden
+#define smtpPort                    "587"                                       //Port für den smtpServer
+#define smtpTLS                     "yes"                                       //TSL-Verschlüsselung "yes" oder "no"
+#define smtpBenutzer                "max.mustermann@web.de"                     //Benutzername für den eMail Account
+#define smtpPass                    "1234abc"                                   //Passwort für den eMail Account
 
 //#######################################
 // Homematic Parameter

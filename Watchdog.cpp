@@ -36,6 +36,14 @@ void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, 
   }
 }
 
+int sendEmail(char EmailAdress[128], char Betreff[128], char Text[512])
+{
+  char batch[512];
+  snprintf(batch, (size_t)768, "sudo sendEmail -o tls=%s -f %s -t %s -s %s:%s -xu %s -xp %s -u \"%s\" -m \"%s\"", smtpTLS, FromEmailAdress, EmailAdress, smtpServer, smtpPort, smtpBenutzer, smtpPass, Betreff, Text);
+  printf("sendEmail To: %s\n      Betreff:%s\n      Text:%s\n",EmailAdress, Betreff, Text);
+  system(batch);
+}
+
 char Path[100], DATE[40], TIME[40], OUT[100];
 
 int main()
@@ -43,6 +51,7 @@ int main()
     int counterReboot = 0,counterRebootHM = 0,counterRebootGUI = 0,resetCounter = 0;
     int resetTime = resetMin *60 / sleepTimeWD;
     int jump = 0;
+    char EmailAdress[128], EmailBetreff[128], EmailText[512];
 
     while(1){
       sleep(sleepTimeWD);
@@ -77,9 +86,21 @@ int main()
           snprintf (Path, (size_t)100, "/mnt/RAMDisk/ScreenCounter.txt");
           snprintf (OUT, (size_t)100, "0");
           WriteData(Path, OUT);
+          if (WDsendEmailReboot == 1){
+            snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+            snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nRSCP-Time > %i Sek. ", WDdiff);
+            sendEmail(EmailAdress, EmailBetreff, EmailText);
+          }
 					sleep (5);
           system("sudo reboot");
           return(0);
+        }
+        if (WDsendEmailKill == 1){
+          snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+          snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nRSCP-Time > %i Sek. ", WDdiff);
+          sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill RscpMain");
         sleep(2);
@@ -99,9 +120,21 @@ int main()
           snprintf (Path, (size_t)100, "/mnt/RAMDisk/ScreenCounter.txt");
           snprintf (OUT, (size_t)100, "0");
           WriteData(Path, OUT);
+          if (WDsendEmailReboot == 1){
+            snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+            snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. ", WDdiff);
+            sendEmail(EmailAdress, EmailBetreff, EmailText);
+          }
 					sleep (5);
           system("sudo reboot");
           return(0);
+        }
+        if (WDsendEmailKill == 1){
+          snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+          snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. ", WDdiff);
+          sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
         system("pkill screenSave");
@@ -123,9 +156,21 @@ int main()
           snprintf (Path, (size_t)100, "/mnt/RAMDisk/ScreenCounter.txt");
           snprintf (OUT, (size_t)100, "0");
           WriteData(Path, OUT);
+          if (WDsendEmailReboot == 1){
+            snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+            snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. ", WDdiff);
+            sendEmail(EmailAdress, EmailBetreff, EmailText);
+          }
           sleep (5);
           system("sudo reboot");
           return(0);
+        }
+        if (WDsendEmailKill == 1){
+          snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+          snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. ", WDdiff);
+          sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
         system("pkill screenSave");
