@@ -118,6 +118,20 @@ int readData(char fileName[100], int fileNr, char* read){
 	}
   return fileNr;
 }
+//Datei lesen und Status von "true" auf "false" oder umgekehrt
+int ChangeState(char fileName[100])
+{
+  char read [100];
+  char filePath [100];
+  snprintf (filePath, (size_t)100, "/mnt/RAMDisk/%s.txt", fileName);
+  readData(fileName, 1, read);
+	if (strcmp ("true",read) == 0){
+		writeData(filePath, "false");
+	}
+	else {
+		writeData(filePath, "true");
+	}
+}
 
 //Lesen der RSCP Daten aus dem RAMDisk
 void readRscpGui(char* TAG_Time,char* TAG_Date,char* TAG_PVI,char* TAG_Bat,char* TAG_Home,char* TAG_Grid,char* TAG_SOC,char* TAG_BatState,char* TAG_Autarky,char* TAG_SelfCon,char* TAG_SerialNr,char* TAG_UnixTime,char* TAG_ADD,char* TAG_WbAll,char* TAG_WbSolar,char* TAG_PVIState,char* TAG_PMState)

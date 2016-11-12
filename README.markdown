@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.6 10.11.2016
+Stand: V1.7 12.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -312,6 +312,7 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.7 12.11.2016 Stabilitätsverbesserung Touchbedienung
 V1.6 10.11.2016 Fehlerkorrektur bei der Touchbedienung
 V1.5 10.11.2016 Zeit aktualisieren
 V1.4 10.11.2016 Courser blinken im Code integriert und aus Anleitung entfernt
