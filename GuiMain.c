@@ -47,23 +47,15 @@ int main(){
 	char TAG_UnixTime[20],TAG_ADD[10],TAG_WbAll[10],TAG_WbSolar[10],TAG_PVIState[10],TAG_PMState[10];
 
 	int GuiTime, change = 0, changeStop = 0;
-	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],screenState[30],TimestampHM[20];
+	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20];
 	int counter, ScreenSaverCounter;
 	int UnixTime;
 
   screenOn();
-  writeData("/mnt/RAMDisk/ScreenSaver.txt", "0");
-	if(E3DC_S10 == 1){
-		writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
-	}
-	else if(Homematic_GUI == 1){
-		writeData("/mnt/RAMDisk/ScreenChange.txt", "12\n");
-	}
-	else{
-		writeData("/mnt/RAMDisk/ScreenChange.txt", "11\n");
-	}
-	writeData("/mnt/RAMDisk/ScreenShutdown.txt", "5\n");
-  writeData("/mnt/RAMDisk/ScreenCounter.txt", "0");
+
+	int Screen[8];
+	char PathScreen [128];
+	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
 
 	if (openTouchScreen() == 1)
 		perror("error opening touch screen");
@@ -81,18 +73,16 @@ int main(){
 		GuiTime = PiTime;
 		//Daten aus RAMDisk Datei einlesen
 		readRscpGui(TAG_Time,TAG_Date,TAG_PVI,TAG_Bat,TAG_Home,TAG_Grid,TAG_SOC,TAG_BatState,TAG_Autarky,TAG_SelfCon,TAG_SerialNr,TAG_UnixTime,TAG_ADD,TAG_WbAll,TAG_WbSolar,TAG_PVIState,TAG_PMState);
-		readData("ScreenCounter", 1, Value);
-		counter = atoi(Value) -1;
-		if(counter < 0){
+
+		Screen[ScreenCounter] = BitRead(PathScreen, ScreenCounter);
+		counter = Screen[ScreenCounter] -1;
+		if(counter < 0)
 			counter = 0;
-		}
-		snprintf (OUT, (size_t)100, "%i", counter);
-		writeData("/mnt/RAMDisk/ScreenCounter.txt", OUT);
-		readData("ScreenChange", 1, Value);
-		int screenChange = atoi(Value);
-		readData("ScreenShutdown", 1, Value);
-		int screenShutdown = atoi(Value);
-		readData("ScreenState", 1, screenState);
+		BitWrite(PathScreen, ScreenCounter, counter);
+
+		Screen[ScreenChange] = BitRead(PathScreen, ScreenChange);
+		int screenChange = Screen[ScreenChange];
+
 //####################################
 		switch(screenChange){
 //####################################
@@ -120,7 +110,7 @@ int main(){
 					DrawImage("/home/pi/E3dcGui/Image/S10Image.ppm", 270, 110);
 					DrawImage("/home/pi/E3dcGui/Image/ExtImage.ppm", 40, 190);
 					DrawImage("/home/pi/E3dcGui/Image/WallboxImage.ppm", 650, 190);
-					writeData("/mnt/RAMDisk/ScreenCounter.txt", "120");
+					BitWrite(PathScreen, ScreenCounter, 60);
 				}
 				//Bildwechsel für > > >
 				if(changeStop == 0){
@@ -343,88 +333,69 @@ int main(){
 			case ScreenLangzeit:{
 				GuiTime = RscpTime;
 	 		  //Legende
-	 			int LegendeSOC, LegendeSolar, LegendeADD, LegendeHome, LegendeNetIn, LegendeNetOut, LegendeBatIn, LegendeBatOut;
-	 			readData("LegendeSOC", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
-	 				drawSquare(364,443,50,20, LTGREY);
-	 				LegendeSOC = 0;
-	 			}
-	 			else {
-	 				drawSquareRGB(364,443,50,20, 64, 134, 64);
-	 				LegendeSOC = 1;
-	 			}
-	 			put_string(366,449," SOC", WHITE);
-	 			readData("LegendeSolar", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+				int Legende [8];
+				char PathLegende [128];
+				snprintf (PathLegende, (size_t)128, "/mnt/RAMDisk/Legende.txt");
+
+				Legende[SOC] = BitRead(PathLegende, SOC);
+				if (Legende[SOC] == 0)
+					drawSquare(364,443,50,20, LTGREY);
+				else
+		 			drawSquareRGB(364,443,50,20, 64, 134, 64);
+				put_string(366,449," SOC", WHITE);
+
+				Legende[Solar] = BitRead(PathLegende, Solar);
+	 			if (Legende[Solar] == 0)
 	 				drawSquare(417,443,50,20, LTGREY);
-	 				LegendeSolar = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(417,443,50,20, 225, 122, 34);
-	 				LegendeSolar = 1;
-	 			}
 	 			put_string(419,449,"Solar", WHITE);
-	 			readData("LegendeHome", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+
+				Legende[Home] = BitRead(PathLegende, Home);
+	 			if (Legende[Home] == 0)
 	 				drawSquare(470,443,50,20, LTGREY);
-	 				LegendeHome = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(470,443,50,20, 225, 30, 30);
-	 				LegendeHome = 1;
-	 			}
-	 			put_string(471,449," Home", WHITE);
-	 			readData("LegendeNetIn", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+				put_string(471,449," Home", WHITE);
+
+				Legende[NetIn] = BitRead(PathLegende, NetIn);
+	 			if (Legende[NetIn] == 0)
 	 				drawSquare(523,443,50,20, LTGREY);
-	 				LegendeNetIn = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(523,443,50,20, 0, 172, 255);
-	 				LegendeNetIn = 1;
-	 			}
 	 			put_string(526,449,"NetIn", WHITE);
-	 			readData("LegendeNetOut", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+
+				Legende[NetOut] = BitRead(PathLegende, NetOut);
+	 			if (Legende[NetOut] == 0)
 	 				drawSquare(576,443,50,20, LTGREY);
-	 				LegendeNetOut = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(576,443,50,20, 0, 0, 172);
-	 				LegendeNetOut = 1;
-	 			}
 	 			put_string(577,449,"NetOut", WHITE);
-	 			readData("LegendeBatIn", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+
+				Legende[BatIn] = BitRead(PathLegende, BatIn);
+	 			if (Legende[BatIn] == 0)
 	 				drawSquare(629,443,50,20, LTGREY);
-	 				LegendeBatIn = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(629,443,50,20, 0, 225, 64);
-	 				LegendeBatIn = 1;
-	 			}
 	 			put_string(632,449,"BatIn", WHITE);
-	 			readData("LegendeBatOut", 1, Value);
-	 			if (strcmp ("false",Value) == 0){
+
+				Legende[BatOut] = BitRead(PathLegende, BatOut);
+	 			if (Legende[BatOut] == 0)
 	 				drawSquare(682,443,50,20, LTGREY);
-	 				LegendeBatOut = 0;
-	 			}
-	 			else {
+	 			else
 	 				drawSquareRGB(682,443,50,20, 0, 172, 0);
-	 				LegendeBatOut = 1;
-	 			}
 	 			put_string(683,449,"BatOut", WHITE);
+
 				if(Additional == 1 ){
-					readData("LegendeADD", 1, Value);
-		 			if (strcmp ("false",Value) == 0){
+					Legende[ADD] = BitRead(PathLegende, ADD);
+		 			if (Legende[ADD] == 0)
 		 				drawSquare(735,443,50,20, LTGREY);
-		 				LegendeADD = 0;
-		 			}
-		 			else {
+		 			else
 		 				drawSquareRGB(735,443,50,20, 172, 0, 172);
-		 				LegendeADD = 1;
-		 			}
 		 			put_string(737,449," ADD", WHITE);
+				}
+				else {
+					Legende[ADD] = 0;
 				}
 
 	 			if(counter == 0){
@@ -453,40 +424,40 @@ int main(){
 	 				int Minuteint = atoi(Minute);
 	 				int x24h = ((Hourint * 60) + Minuteint) * 0.534;											//Berechnung für die 0:00 Uhr Linie in den Langzeitwerten
 	 				skala();
-	 				if(LegendeSOC == 1){
+	 				if(Legende[SOC] == 1){
 	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/SOC900.txt");
 	 					drawSOC(Path, 64, 134, 64);
 	 				}
-	 				if(LegendeHome == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Home900.txt");
-	 					drawLine(Path, 225, 30, 30, PowerMax);
-	 				}
-	 				if(LegendeADD == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Add900.txt");
-	 					drawLine(Path, 225, 30, 30, PowerMax);
-	 				}
-	 				if(LegendeNetIn == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetIn900.txt");
-	 					drawLine(Path, 0, 172, 255, PowerMax);
-	 				}
-	 				if(LegendeNetOut == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetOut900.txt");
-	 					drawLine(Path, 0, 0, 172, PowerMax);
-	 				}
-	 				if(LegendeBatIn == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatIn900.txt");
-	 					drawLine(Path, 0, 225, 64, PowerMax);
-	 				}
-	 				if(LegendeBatOut == 1){
-	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatOut900.txt");
-	 					drawLine(Path, 0, 172, 0, PowerMax);
-	 				}
-	 				if(LegendeSolar == 1){
+					if(Legende[Solar] == 1){
 	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Solar900.txt");
 	 					drawLine(Path, 225, 122, 34, PowerMax);
 	 				}
+	 				if(Legende[Home] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Home900.txt");
+	 					drawLine(Path, 225, 30, 30, PowerMax);
+	 				}
+	 				if(Legende[NetIn] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetIn900.txt");
+	 					drawLine(Path, 0, 172, 255, PowerMax);
+	 				}
+	 				if(Legende[NetOut] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetOut900.txt");
+	 					drawLine(Path, 0, 0, 172, PowerMax);
+	 				}
+	 				if(Legende[BatIn] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatIn900.txt");
+	 					drawLine(Path, 0, 225, 64, PowerMax);
+	 				}
+	 				if(Legende[BatOut] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatOut900.txt");
+	 					drawLine(Path, 0, 172, 0, PowerMax);
+	 				}
+					if(Legende[ADD] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Add900.txt");
+	 					drawLine(Path, 225, 30, 30, PowerMax);
+	 				}
 	 				drawSquareRGB(783-x24h, 430-330, 1, 330, 255, 172, 64);								//Ziechnen der 0:00 Uhr Linie in den Langzeitwerten
-	 				writeData("/mnt/RAMDisk/ScreenCounter.txt", "60");
+					BitWrite(PathScreen, ScreenCounter, 60);
 				}
 				break;
 			}
@@ -534,7 +505,7 @@ int main(){
 					if(Homematic_GUI ==1){
 						DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
 					}
-					writeData("/mnt/RAMDisk/ScreenCounter.txt", "60");
+					BitWrite(PathScreen, ScreenCounter, 60);
 					// Grafik für Uptime
 					drawSquare(S2,R1-20,320,60,GREY);
 					drawCorner(S2,R1-20,320,60,WHITE);
@@ -597,7 +568,7 @@ int main(){
 			//Homematic Grafik erstellen
 			case ScreenHM:{
 				if(Homematic_GUI == 1){
-					make_HM_Gui(GuiTime,screenState,counter);    //Ausgelagert in die HMGui.h Parameter sind in der HMparameter.h zu difinieren
+					make_HM_Gui(GuiTime, counter);    //Ausgelagert in die HMGui.h Parameter sind in der HMparameter.h zu difinieren
 				}
 				break;
 			}
@@ -605,8 +576,9 @@ int main(){
 			//Setup Grafik erstellen
 			case ScreenSetup:{																												//Im ScreenSetup werden nur die Rückgaben per Datei aus dem "screenSave" Programm dargestellt
 				GuiTime = PiTime;
-				readData("ScreenShutdown", 1, Value);
-				screenShutdown = atoi(Value);
+				Screen[ScreenShutdown] = BitRead(PathScreen, ScreenShutdown);
+				int screenShutdown = Screen[ScreenShutdown];
+
 				if(counter == 0){
 					drawSquare(2,2,800,480,LTGREY);
 					drawCorner(2, 2, 800, 480, BLACK);
@@ -659,7 +631,7 @@ int main(){
 							break;
 						}
 						default:{
-							screenShutdown = ShutdownRun;
+							BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
 						}
 					}
 					char file_Path [100],file_read [100];
@@ -694,34 +666,36 @@ int main(){
 					if(Homematic_GUI ==1){
 						DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
 					}
-					writeData("/mnt/RAMDisk/ScreenCounter.txt", "120");
+					BitWrite(PathScreen, ScreenCounter, 60);
 				}
 				break;
 			}
 			default:{
-				if(E3DC_S10 ==0){
-					screenChange = ScreenHM;
-				}
-				else{
-					screenChange = ScreenAktuell;
-				}
+				if(E3DC_S10 ==1)
+					BitWrite(PathScreen, ScreenChange, ScreenAktuell);
+				else if(Homematic_GUI == 1)
+					BitWrite(PathScreen, ScreenChange, ScreenHM);
+				else
+					BitWrite(PathScreen, ScreenChange, ScreenMonitor);
 			}
-		}
+		} //switch(screenChange)
 //####################################################
 	//WatchdogHM Daten für WD schreiben
+	int Unixtime[4];
+	char PathUnixtime [128];
+	snprintf (PathUnixtime, (size_t)128, "/mnt/RAMDisk/Unixtime.txt");
+
 		if(counter == 0 && Homematic_GUI == 1){
 			char Value[20];
 			read_HM(ISE_UnixTime, 10, Value);
 			UnixTime = atoi(Value);
 			read_HM(ISE_TimestampHM, 16,TimestampHM);
-			snprintf (writeTxt, (size_t)100, "%s \n%i", TimestampHM, UnixTime);
-			writeData("/mnt/RAMDisk/UnixtimeHM.txt", writeTxt);
+			BitWrite(PathUnixtime, UnixtimeHM, UnixTime);
 		}
 	//Watchdog GuiMain
 		if(counter == 0){
 			int AktuallTime = time(NULL);
-			snprintf (writeTxt, (size_t)100, "TimestampGuiMain \n%i", AktuallTime);
-			writeData("/mnt/RAMDisk/UnixtimeGUI.txt", writeTxt);
+			BitWrite(PathUnixtime, UnixtimeGui, AktuallTime);
 		}
 	//Time
 		if(GuiTime == RscpTime && E3DC_S10 == 1){
@@ -768,21 +742,19 @@ int main(){
 			put_string(325,458, OUT, BLUE);
 		}
 	//Bildschirmschoner
-		readData("ScreenSaver", 1, Value);  //Zählerdatei für den Bildschirmschoner auslesen
-		ScreenSaverCounter = atoi(Value);
-		ScreenSaverCounter = ScreenSaverCounter +1;
+		Screen[ScreenSaver] = BitRead(PathScreen, ScreenSaver);      //Zählerdatei für den Bildschirmschoner auslesen
+		int ScreenSaverCounter = Screen[ScreenSaver] +1;
 		if(ScreenSaverCounter == ScreenSaverTime){
 			screenOff();
 			ScreenSaverCounter = 0;
-			if(E3DC_S10 ==0){
-				writeData("/mnt/RAMDisk/ScreenChange.txt", "12\n");
-			}
-			else{
-				writeData("/mnt/RAMDisk/ScreenChange.txt", "1\n");
-			}
+			if(E3DC_S10 ==1)
+				BitWrite(PathScreen, ScreenChange, ScreenAktuell);
+			else if(Homematic_GUI == 1)
+				BitWrite(PathScreen, ScreenChange, ScreenHM);
+			else
+				BitWrite(PathScreen, ScreenChange, ScreenMonitor);
 		}
-		snprintf (OUT, (size_t)100, "%i", ScreenSaverCounter);
-		writeData("/mnt/RAMDisk/ScreenSaver.txt", OUT);
+		BitWrite(PathScreen, ScreenSaver, ScreenSaverCounter);
 	//Abfrageintervall
 		sleep(1);
 	}

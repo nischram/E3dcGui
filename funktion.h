@@ -226,6 +226,113 @@ void createData(int x, int y, char *c){
   drawSquare(x-5,y+21,60,12,WHITE);
 	put_string(x+5, (y+22), c,GREY);
 }
+
+// Bit aus einer Datei lesen, ändern und schreiben
+int BitChange(char filePath[128], int Position)
+{
+  int c = 8;
+  int out [c];
+  char read[128];
+  //Lese Byte aus Datei ein
+  FILE *fpr;
+  fpr = fopen(filePath, "r");
+  if(fpr == NULL) {
+    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    snprintf (read, (size_t)128, "-");
+  }
+  else {
+    for( c = 0; c < 8; ++c )
+    {
+      fgets(read,128,fpr);
+      out[c] = atoi(read);
+    }
+    fclose(fpr);
+  }
+
+  //Ändere Bit an Position
+  if (out[Position] == 1)
+    out[Position] = 0;
+  else
+    out[Position] = 1;
+
+  //Schreibe geändertes Byte in Datei
+  FILE *fp;
+  fp = fopen(filePath, "w");
+  if(fp == NULL) {
+    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+  }
+  else {
+    for( c = 0; c < 8; ++c )
+     fprintf(fp, "%d\n", out[c]);
+    fclose(fp);
+  }
+ return 0;
+}
+
+// Bit in eine Datei schreiben
+int BitWrite(char filePath[128], int Position, int NewValue)
+{
+  int c = 8;
+  int out [c];
+  char read[128];
+  //Lese Byte aus Datei ein
+  FILE *fpr;
+  fpr = fopen(filePath, "r");
+  if(fpr == NULL) {
+    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    snprintf (read, (size_t)128, "-");
+  }
+  else {
+    for( c = 0; c < 8; ++c )
+    {
+      fgets(read,128,fpr);
+      out[c] = atoi(read);
+    }
+    fclose(fpr);
+  }
+
+  //Ändere Bit an Position
+  out[Position] = NewValue;
+
+  //Schreibe geändertes Byte in Datei
+  FILE *fp;
+  fp = fopen(filePath, "w");
+  if(fp == NULL) {
+    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+  }
+  else {
+    for( c = 0; c < 8; ++c )
+     fprintf(fp, "%d\n", out[c]);
+    fclose(fp);
+  }
+ return 0;
+}
+
+// Bit aus einer Datei lesen
+int BitRead(char filePath[128], int Position)
+{
+  int c = 8;
+  int out [c];
+  char read[128];
+  //Lese Byte aus Datei ein
+  FILE *fp;
+  fp = fopen(filePath, "r");
+  if(fp == NULL) {
+    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    snprintf (read, (size_t)128, "-");
+  }
+  else {
+    for( c = 0; c < 8; ++c )
+    {
+      fgets(read,128,fp);
+      strtok(read, "\n");
+      out[c] = atoi(read);
+    }
+    fclose(fp);
+  }
+  return out[Position];
+}
+
 // Touchfunktion
 void  INThandler(int sig)
 {
@@ -255,16 +362,16 @@ int pkill()
 //Hintergrundbeleuhtung ausschalten
 int screenOff()
 {
+  BitWrite("/mnt/RAMDisk/Screen.txt", ScreenState, ScreenOff);
 	system("sudo chmod 777 /sys/class/backlight/rpi_backlight/bl_power");
 	system("echo 1 > /sys/class/backlight/rpi_backlight/bl_power");
-  writeData("/mnt/RAMDisk/ScreenState.txt", "screenOff");
 }
 //Hintergrundbeleuhtung einschalten
 int screenOn()
 {
+  BitWrite("/mnt/RAMDisk/Screen.txt", ScreenState, ScreenOn);
 	system("sudo chmod 777 /sys/class/backlight/rpi_backlight/bl_power");
 	system("echo 0 > /sys/class/backlight/rpi_backlight/bl_power");
-  writeData("/mnt/RAMDisk/ScreenState.txt", "screenOn");
 }
 
 #endif // __FUNKTION_H_

@@ -62,6 +62,37 @@ void printsend(int id, int value){
   }
 }
 
+int WriteUnixtime(int Position, int NewTime)
+{
+  int c = 4;
+  int out [c];
+  char read[128];
+  //Lese Byte aus Datei ein
+  fstream datei("/mnt/RAMDisk/Unixtime.txt");
+  if (datei.is_open()) {
+    for( c = 0; c < 4; ++c ){
+      datei.getline(read ,128, '\n');
+      out[c] = atoi(read);
+    }
+    datei.close();
+  }
+  else cerr << "Konnte Unixtime Datei nicht oeffnen!\n";
+
+  //Ändere Bit an Position
+  out[Position] = NewTime;
+
+  //Schreibe geändertes Byte in Datei
+  ofstream fout("/mnt/RAMDisk/Unixtime.txt");
+  if (fout.is_open()) {
+    for( c = 0; c < 4; ++c )
+      fout << out[c] << endl;
+    fout.close();
+  }
+  else cerr << "Konnte Unixtime Datei nicht erstellen!\n";
+
+ return 0;
+}
+
 void printsendChar(int id, char value[32]){
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
@@ -108,12 +139,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
       else cerr << "Konnte E3dcGui.txt nicht erstellen!";
     }
     //Unixtime in RAMDisk für den Watchdog
-    ofstream fout("/mnt/RAMDisk/UnixtimeE3dc.txt");
-    if (fout.is_open()) {
-      fout << TAG_EMS_OUT_DATE << ";" << TAG_EMS_OUT_TIME << "\n" << TAG_EMS_OUT_UNIXTIME << endl;
-      fout.close();
-      }
-    else cerr << "Konnte Unixtime.txt nicht erstellen!";
+    WriteUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
     // Langzeit Daten für GUI in RAMDisk speichern (15Minuten Mittelwerte)
     Solar900 = Solar900 + TAG_EMS_OUT_POWER_PV;
     SOC900 = SOC900 + TAG_EMS_OUT_BAT_SOC;

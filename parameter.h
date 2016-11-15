@@ -58,23 +58,46 @@
 #define PowerMax                    5400                    // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
 #define skalaLine                   1000                    // Einteilung der Scala
 // !!! nicht verändern !!!
-#define ScreenAktuell               1    //!!
-#define ScreenLangzeit              2    //!!
-#define ScreenSetup                 3    //!!
-#define ScreenShutdown              4    //!!
-#define ScreenMonitor               11   //!!
-#define ScreenHM                    12   //!!
+#define ScreenChange                0    //!!
+#define ScreenCounter               1    //!!
+#define ScreenSaver                 2    //!!
+#define ScreenShutdown              3    //!!
+#define ScreenState                 4    //!!
 
-#define ShutdownRun                 5    //!!
-#define ShutdownSD                  6    //!!
-#define ShutdownSRS                 7    //!!
-#define ShutdownHRS                 8    //!!
-#define ShutdownSDN                 9    //!!
-#define ShutdownWD                  10   //!!
+#define ScreenAktuell               0    //!!
+#define ScreenLangzeit              1    //!!
+#define ScreenSetup                 2    //!!
+#define ScreenMonitor               3    //!!
+#define ScreenHM                    4    //!!
+
+#define ShutdownRun                 0    //!!
+#define ShutdownSD                  1    //!!
+#define ShutdownSRS                 2    //!!
+#define ShutdownHRS                 3    //!!
+#define ShutdownSDN                 4    //!!
+#define ShutdownWD                  5    //!!
 
 #define RscpTime                    1    //!!
 #define HomematicTime               2    //!!
 #define PiTime                      3    //!!
+
+#define SOC                         0    //!!
+#define Solar                       1    //!!
+#define Home                        2    //!!
+#define NetIn                       3    //!!
+#define NetOut                      4    //!!
+#define BatIn                       5    //!!
+#define BatOut                      6    //!!
+#define ADD                         7    //!!
+
+#define UnixtimeE3dc                0    //!!
+#define UnixtimeHM                  1    //!!
+#define UnixtimeGui                 2    //!!
+
+#define true                        1    //!!
+#define false                       0    //!!
+#define ScreenOn                    1    //!!
+#define ScreenOff                   0    //!!
 
 //#######################################
 //### Watchdog Einstellungen ###
@@ -88,9 +111,11 @@
 #define resetMin                    60
 //WD für HM-Gui (nur wenn Unixtime und Timestamp als Variablen in der Homematic angelegt sind und abgefragt werden)
 #define WDuseHM_Gui                 0
+//Kontrolldatei aktivieren damit Häufige Aktivitäten erkannt werden können
+#define WDkontrolle                 0                       //1=aktiv / 0=deaktiv
 //Email senden bei aktivität
 #define WDsendEmailReboot           1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
-#define WDsendEmailKill             1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
+#define WDsendEmailKill             0                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
 #define WDtoEmailAdress             "max.mustermann@web.de"                     // Email Adresse für Watchdog aktivitäten
 
 //#######################################

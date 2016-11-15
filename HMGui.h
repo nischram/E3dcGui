@@ -2,7 +2,7 @@
 #define __HMGUI_H_
 
 //Homematic Grafik erstellen
-make_HM_Gui(int GuiTime, char screenState[30], int counter)
+make_HM_Gui(int GuiTime, int counter)
 {
 	//Difiniton der Variablen die auf dem Display angezeigt werden sollen.
 	char VerschlussEG[20], VerschlussOG[20], VerschlussDG[20], VerschlussGa[20], VerschlussKel[20];
@@ -21,11 +21,18 @@ make_HM_Gui(int GuiTime, char screenState[30], int counter)
 	//Zähler für die Aktualisierung des Displays
 	int HMcounter = HMcounter +1;
 
+	char PathScreen [128];
+	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
+	int screenState = BitRead(PathScreen, ScreenState);
+
 	//Zeit Darstellung im Display
 	GuiTime = HomematicTime;
 
 	//Daten von der HM lesen
-	if(counter == 0 || ((strcmp ("screenOn",screenState) == 0) && HMcounter == HM_Intervall)){
+	if(counter == 0 || (screenState == ScreenOn && HMcounter == HM_Intervall)){
+		int Unixtime[4];
+		char PathUnixtime [128];
+		snprintf (PathUnixtime, (size_t)128, "/mnt/RAMDisk/Unixtime.txt");
 		//Read Daten Beginn (roter Punkt unten rechts)
 		drawSquare(760,440,20,20,LIGHT_RED);
 		drawCorner(760,440,20,20,WHITE);
@@ -33,8 +40,7 @@ make_HM_Gui(int GuiTime, char screenState[30], int counter)
 		read_HM(ISE_UnixTime, 10, Value);																		//Auslesen HM Variable für die Unixtime (muss in der HM angelegt sein und mit einem Programm permanent aktuallisiert werden)
 		int UnixTime = atoi(Value);
 		read_HM(ISE_TimestampHM, 16,TimestampHM);														//Auslesen HM Variable für die den Zeitstempel (muss in der HM angelegt sein und mit einem Programm permanent aktuallisiert werden)
-		snprintf (writeTxt, (size_t)100, "%s \n%i", TimestampHM, UnixTime);
-		writeData("/mnt/RAMDisk/UnixtimeHM.txt", writeTxt);									//Schreiben der Unixtime in Datei für den Watchdog
+		BitWrite(PathUnixtime, UnixtimeHM, UnixTime);						      			//Schreiben der Unixtime in Datei für den Watchdog
 		//Verschluss (Variablen müssen per Programm in der HM bei aktivitäten an Fenstern etc. aktualisiert werden)
 		read_HM(ISE_VerschlussDG, 4, VerschlussDG);
 		read_HM(ISE_VerschlussOG, 4, VerschlussOG);
@@ -205,7 +211,7 @@ make_HM_Gui(int GuiTime, char screenState[30], int counter)
 		put_string(S5+6, R4+4, "Aussen", WHITE);
 
 		//Aktualisierungszähler hochsetzen auf 60 Sekunden
-		writeData("/mnt/RAMDisk/ScreenCounter.txt", "60");
+		BitWrite(PathScreen, ScreenCounter, 60);
 	}
 	//Daten Grafik erstellen
 	if(readOK == 1){

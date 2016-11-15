@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.8 12.11.2016
+Stand: V1.9 15.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -266,7 +266,7 @@ Für den Watchdog ist in der "parameter.h" noch die eMail-Adresse einzustellen i
 Mit den Parametern
 ```
 #define WDsendEmailReboot           1
-#define WDsendEmailKill             1
+#define WDsendEmailKill             0
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll.
 
@@ -356,6 +356,10 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.9 15.11.2016 Systemverbesserungen:
+- weniger Dateien im RAMDisk
+- Watchdog stabilisiert
+- Kontrollmöglichkeit für den WD eingefügt
 V1.8 12.11.2016 eMail senden vom WD
 V1.7 12.11.2016 Stabilitätsverbesserung Touchbedienung
 V1.6 10.11.2016 Fehlerkorrektur bei der Touchbedienung
