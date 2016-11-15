@@ -20,7 +20,7 @@ void WDcsvKontrolle(char DATE[40],char TIME[40], int AktuallTime, int UnixTimeE3
   if (WDkontrolle == 1){
     ofstream fout("/home/pi/E3dcGui/WatchdogKontrolle.csv", ios::app);
     if (fout.is_open()) {
-      fout << DATE << " ; " << TIME << "; PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI <<  endl ;
+      fout << DATE << " ; " << TIME << "; PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI <<" >>> "<< OUT <<  endl ;
       fout.close();
     }
   }
@@ -127,7 +127,7 @@ int main()
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nRSCP-Time > %i Sek. ", WDdiff);
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nRSCP-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeE3dc);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
 					sleep (5);
@@ -137,7 +137,7 @@ int main()
         if (WDsendEmailKill == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nRSCP-Time > %i Sek. ", WDdiff);
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nRSCP-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeE3dc);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill RscpMain");
@@ -159,7 +159,7 @@ int main()
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. ", WDdiff);
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeHM);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
 					sleep (5);
@@ -169,7 +169,7 @@ int main()
         if (WDsendEmailKill == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. ", WDdiff);
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeHM);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
@@ -193,7 +193,7 @@ int main()
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. ", WDdiff);
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeGUI);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
           sleep (5);
@@ -203,7 +203,7 @@ int main()
         if (WDsendEmailKill == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. ", WDdiff);
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeGUI);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
@@ -228,6 +228,7 @@ int main()
       cout << "Watchdog: " << DATE << " ; " << TIME << "\n";
       cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
       cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " ; GUI Zähler bis Reboot: " << counterRebootGUI << " \n" ;
+      snprintf (OUT, (size_t)100, "--");
       WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
     }
 }
