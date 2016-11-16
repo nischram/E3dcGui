@@ -159,7 +159,7 @@ int main()
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeHM);
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. \nPI: %i / HM: %i", WDdiff, AktuallTime, UnixTimeHM);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
 					sleep (5);
@@ -169,7 +169,7 @@ int main()
         if (WDsendEmailKill == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeHM);
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. \nPI: %i / HM: %i", WDdiff, AktuallTime, UnixTimeHM);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
@@ -193,7 +193,7 @@ int main()
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeGUI);
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. \nPI: %i / GUI: %i", WDdiff, AktuallTime, UnixTimeGUI);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
           sleep (5);
@@ -203,7 +203,7 @@ int main()
         if (WDsendEmailKill == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
-          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeGUI);
+          snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. \nPI: %i / GUI: %i", WDdiff, AktuallTime, UnixTimeGUI);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
         system("pkill GuiMain");
