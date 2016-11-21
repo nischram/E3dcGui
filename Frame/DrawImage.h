@@ -46,10 +46,10 @@ int read_ppm(char *fpath, struct fb_image *image) {
 	if ( (fread(magic, 2, 1, fp) == 1)
 		&& (memcmp("P6", magic, 2) == 0) )
 	{
-		fprintf(stderr, "Got P6 ppm.\n");
+		//fprintf(stderr, "Got P6 ppm.\n");
 
 		if (fscanf(fp, "%d %d\n", &width, &height) == 2) {
-			fprintf(stderr, "w=%d, h=%d\n", width, height);
+			//fprintf(stderr, "w=%d, h=%d\n", width, height);
 		}
 		else {
 			fprintf(stderr, "Read size failed.\n");
@@ -58,7 +58,7 @@ int read_ppm(char *fpath, struct fb_image *image) {
 		}
 
 		if (fscanf(fp, "%d\n", &depth) == 1) {
-			fprintf(stderr, "d=%d\n", depth);
+			//fprintf(stderr, "d=%d\n", depth);
 		}
 		else
 		{
@@ -168,12 +168,15 @@ void sig_handler(int signo) {
 		//cleanup();    //doppelte Freibage des Speichers
     exit(signo);
 }
-int DrawImage(char* Path, int posx, int posy)
+int DrawImage(char* fileName, int posx, int posy)
 {
+		// fill Path with File
+		char Path[128];
+		snprintf (Path, (size_t)128, "/home/pi/E3dcGui/Image/%s.ppm", fileName);
 		// read the image file
     int ret = read_ppm(Path, &image);
     if (ret != 0) {
-        printf("Reading image failed.\n");
+        printf("Reading image failed. errno = %i\n",ret);
         return ret;
     }
 
@@ -221,6 +224,7 @@ int DrawImage(char* Path, int posx, int posy)
     else {
         // draw...
         draw(&image, posx, posy);
+				printf("Draw %s Ok\n",fileName);
     }
     cleanup();
     return 0;

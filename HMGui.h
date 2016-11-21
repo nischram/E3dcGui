@@ -114,13 +114,13 @@ make_HM_Gui(int GuiTime, int counter)
 		drawCorner(2, 2, 800, 480, BLACK);
 		drawSquare(12,12,778,458,WHITE);
 		drawCorner(12, 12, 778, 458, LTGREY);
-		DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);
+		DrawImage("EinstImage", 180, 12);
 		if(E3DC_S10 ==1){
-			DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
-			DrawImage("/home/pi/E3dcGui/Image/LangzeitImage.ppm", 360, 12);
+			DrawImage("AktuellImage", 270, 12);
+			DrawImage("LangzeitImage", 360, 12);
 		}
-		DrawImage("/home/pi/E3dcGui/Image/MonitorImage.ppm", 450, 12);
-		DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
+		DrawImage("MonitorImage", 450, 12);
+		DrawImage("HMImage", 540, 12);
 		// Grafik für Dachgeschoss
 		drawSquare(S0,R1-20,400,60,GREY);
 		drawCorner(S0,R1-20,400,60,WHITE);

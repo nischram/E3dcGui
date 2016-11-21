@@ -94,22 +94,22 @@ int main(){
 					drawCorner(2, 2, 800, 480, BLACK);																		//drawCorner ist eine eigene Funktion in Frame/DrawCorner.c zum erstellen von abgerundetetn Ecken
 	        drawSquare(12,12,778,458,WHITE);
 					drawCorner(12, 12, 778, 458, LTGREY);
-	        DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);					//DrawImage ist eine Funktion um ein Bild auf dem Display zu Zeichnen
+					DrawImage("EinstImage", 180, 12);					//DrawImage ist eine Funktion um ein Bild auf dem Display zu Zeichnen
 					if(E3DC_S10 ==1){
-						DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
-						DrawImage("/home/pi/E3dcGui/Image/LangzeitImage.ppm", 360, 12);
+						DrawImage("AktuellImage", 270, 12);
+						DrawImage("LangzeitImage", 360, 12);
 					}
-					DrawImage("/home/pi/E3dcGui/Image/MonitorImage.ppm", 450, 12);
+					DrawImage("MonitorImage", 450, 12);
 					if(Homematic_GUI ==1){
-						DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
+						DrawImage("HMImage", 540, 12);
 					}
-					DrawImage("/home/pi/E3dcGui/Image/PviImage.ppm", 40, 50);
-					DrawImage("/home/pi/E3dcGui/Image/NetImage.ppm", 640, 50);
-					DrawImage("/home/pi/E3dcGui/Image/BatImage.ppm", 50, 310);
-					DrawImage("/home/pi/E3dcGui/Image/HomeImage.ppm", 640, 310);
-					DrawImage("/home/pi/E3dcGui/Image/S10Image.ppm", 270, 110);
-					DrawImage("/home/pi/E3dcGui/Image/ExtImage.ppm", 40, 190);
-					DrawImage("/home/pi/E3dcGui/Image/WallboxImage.ppm", 650, 190);
+					DrawImage("PviImage", 40, 50);
+					DrawImage("NetImage", 640, 50);
+					DrawImage("BatImage", 50, 310);
+					DrawImage("HomeImage", 640, 310);
+					DrawImage("S10Image", 270, 110);
+					DrawImage("ExtImage", 40, 190);
+					DrawImage("WallboxImage", 650, 190);
 					BitWrite(PathScreen, ScreenCounter, 60);
 				}
 				//Bildwechsel für > > >
@@ -403,14 +403,14 @@ int main(){
 	 				drawCorner(2, 2, 800, 480, BLACK);
 	 				drawSquare(12,12,778,458,WHITE);
 	 				drawCorner(12, 12, 778, 458, LTGREY);
-	 				DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);
+	 				DrawImage("EinstImage", 180, 12);
 	 				if(E3DC_S10 ==1){
-	 					DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
-	 					DrawImage("/home/pi/E3dcGui/Image/LangzeitImage.ppm", 360, 12);
+						DrawImage("AktuellImage", 270, 12);
+	 					DrawImage("LangzeitImage", 360, 12);
 	 				}
-	 				DrawImage("/home/pi/E3dcGui/Image/MonitorImage.ppm", 450, 12);
+	 				DrawImage("MonitorImage", 450, 12);
 	 				if(Homematic_GUI ==1){
-	 					DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
+	 					DrawImage("HMImage", 540, 12);
 	 				}
 	 				time_t timeStamp;
 	 				struct tm *now;
@@ -496,14 +496,14 @@ int main(){
 					drawCorner(2, 2, 800, 480, BLACK);
 					drawSquare(12,12,778,458,WHITE);
 					drawCorner(12, 12, 778, 458, LTGREY);
-					DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);
+					DrawImage("EinstImage", 180, 12);
 					if(E3DC_S10 ==1){
-						DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
-						DrawImage("/home/pi/E3dcGui/Image/LangzeitImage.ppm", 360, 12);
+						DrawImage("AktuellImage", 270, 12);
+						DrawImage("LangzeitImage", 360, 12);
 					}
-					DrawImage("/home/pi/E3dcGui/Image/MonitorImage.ppm", 450, 12);
+					DrawImage("MonitorImage", 450, 12);
 					if(Homematic_GUI ==1){
-						DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
+						DrawImage("HMImage", 540, 12);
 					}
 					BitWrite(PathScreen, ScreenCounter, 60);
 					// Grafik für Uptime
@@ -657,14 +657,14 @@ int main(){
 						drawCorner(450,200,180,30, WHITE);
 						put_string(470,208, "Sommerzeit", WHITE);
 					}
-					DrawImage("/home/pi/E3dcGui/Image/EinstImage.ppm", 180, 12);
+					DrawImage("EinstImage", 180, 12);
 					if(E3DC_S10 ==1){
-						DrawImage("/home/pi/E3dcGui/Image/AktuellImage.ppm", 270, 12);
-						DrawImage("/home/pi/E3dcGui/Image/LangzeitImage.ppm", 360, 12);
+						DrawImage("AktuellImage", 270, 12);
+						DrawImage("LangzeitImage", 360, 12);
 					}
-					DrawImage("/home/pi/E3dcGui/Image/MonitorImage.ppm", 450, 12);
+					DrawImage("MonitorImage", 450, 12);
 					if(Homematic_GUI ==1){
-						DrawImage("/home/pi/E3dcGui/Image/HMImage.ppm", 540, 12);
+						DrawImage("HMImage", 540, 12);
 					}
 					BitWrite(PathScreen, ScreenCounter, 60);
 				}
