@@ -16,13 +16,14 @@ gcc -g -o image  image.c
 
 // 'global' variables to store screen info
 int fbfd = 0;
-long int page_size = 0;
-int cur_page = 0;
-struct fb_var_screeninfo orig_vinfo;
-struct fb_var_screeninfo vinfo;
-struct fb_fix_screeninfo finfo;
-int kbfd = 0;
-struct fb_image image;
+char *fbpI = 0;
+//long int page_size = 0;   //Funktion scheint ungenutzt
+//int cur_page = 0;         //var ist unbenutzt
+//struct fb_var_screeninfo orig_var;   //in der framebuffer.c deklariert
+//struct fb_var_screeninfo vinfo;      //in der framebuffer.c deklariert
+//struct fb_fix_screeninfo fix;        //in der framebuffer.c deklariert
+//int kbfd = 0;            //Funktion habe ich deaktiviert
+static struct fb_image image;
 
 int read_ppm(char *fpath, struct fb_image *image) {
 
@@ -140,19 +141,19 @@ void draw(struct fb_image *image, int posx, int posy) {
             unsigned short c = *(unsigned short *)(image->data + img_pix_offset);
             // plot pixel to screen
             unsigned int fb_pix_offset = (xdraw + posx) * 2 + (ydraw + posy) * finfo.line_length;
-            *((unsigned short*)(fbp + fb_pix_offset)) = c;
+            *((unsigned short*)(fbpI + fb_pix_offset)) = c;
         }
     }
 }
 
 void cleanup() {
     // reset cursor
-    if (kbfd >= 0) {
+    /*if (kbfd >= 0) {
         ioctl(kbfd, KDSETMODE, KD_TEXT);
         close(kbfd);
-    }
+    }*/
     // unmap fb file from memory
-    munmap(fbp, finfo.smem_len);
+    munmap(fbpI, finfo.smem_len);
     // reset the display mode
     if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &orig_vinfo)) {
         printf("Error re-setting variable information.\n");
@@ -164,7 +165,7 @@ void cleanup() {
 }
 
 void sig_handler(int signo) {
-    cleanup();
+		//cleanup();    //doppelte Freibage des Speichers
     exit(signo);
 }
 int DrawImage(char* Path, int posx, int posy)
@@ -201,26 +202,26 @@ int DrawImage(char* Path, int posx, int posy)
     page_size = finfo.line_length * vinfo.yres;
 
     // hide cursor
-    kbfd = open("/dev/tty", O_WRONLY);
+    /*kbfd = open("/dev/tty", O_WRONLY);
     if (kbfd >= 0) {
         ioctl(kbfd, KDSETMODE, KD_GRAPHICS);
-    }
+    }*/
 
     // map fb to user mem
-    fbp = (char*)mmap(0,
+    fbpI = (char*)mmap(0,
               finfo.smem_len,
               PROT_READ | PROT_WRITE,
               MAP_SHARED,
               fbfd,
               0);
 
-    if ((int)fbp == -1) {
+    if ((int)fbpI == -1) {
         printf("Failed to mmap.\n");
     }
     else {
         // draw...
         draw(&image, posx, posy);
     }
-    //cleanup();
+    cleanup();
     return 0;
 }

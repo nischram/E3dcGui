@@ -332,6 +332,21 @@ int BitRead(char filePath[128], int Position)
   }
   return out[Position];
 }
+// Debug Funktion zum Ausführen, im Code  -- DEBUG("Text"); --  einbauen. (-- nicht übernehmen!)
+//Der Text wird in Datei DEBUG.txt gespeichert.
+//Das letzte eingefügten von  -- DEBUG("Text\n"); --  muss ein " \n " enthalten sein.
+int DEBUG(char write[128]){
+	FILE *fp;
+	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
+	if(fp == NULL) {
+		printf("Datei konnte NICHT geoeffnet werden.\n");
+	}
+	else {
+		fprintf(fp, "%s", write);
+		fclose(fp);
+	}
+	return 0;
+}
 
 // Touchfunktion
 void  INThandler(int sig)

@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.10 15.11.2016
+Stand: V1.11 21.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -356,19 +356,25 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
-V1.10 15.11.2016 Watchdog Ausgaben verbessert
+V1.11 21.11.2016 Issue #1  
+- allocierter Speicher wurde nicht freigegeben `cleanup();` mit `free` war deaktiviert  
+- Anpassung doppelte inizialisierter Globalvariablen in framebuffer.c und DrawImage.h   
+- Debug Möglichkeit in funktion.h integriert
+
+V1.10 15.11.2016 Watchdog Ausgaben verbessert   
 V1.9 15.11.2016 Systemverbesserungen:
 - weniger Dateien im RAMDisk
 - Watchdog stabilisiert
 - Kontrollmöglichkeit für den WD eingefügt
+
 V1.8 12.11.2016 eMail senden vom WD
-V1.7 12.11.2016 Stabilitätsverbesserung Touchbedienung
-V1.6 10.11.2016 Fehlerkorrektur bei der Touchbedienung
-V1.5 10.11.2016 Zeit aktualisieren
-V1.4 10.11.2016 Courser blinken im Code integriert und aus Anleitung entfernt
-V1.3 09.11.2016 TouchTest integriert / Diverses
-V1.3 09.11.2016 Auslagern der HM_Gui
-V1.3 09.11.2016 Display temporär auf 16Bit setzen
-V1.2 07.11.2016 Courser Blinken abschalten
-V1.1 31.11.2016 Umschaltung Sommer- Winterzeit
-V1.0 14.08.2016 Repository neu erstellt
+V1.7 12.11.2016 Stabilitätsverbesserung Touchbedienung  
+V1.6 10.11.2016 Fehlerkorrektur bei der Touchbedienung  
+V1.5 10.11.2016 Zeit aktualisieren  
+V1.4 10.11.2016 Courser blinken im Code integriert und aus Anleitung entfernt  
+V1.3 09.11.2016 TouchTest integriert / Diverses  
+V1.3 09.11.2016 Auslagern der HM_Gui  
+V1.3 09.11.2016 Display temporär auf 16Bit setzen  
+V1.2 07.11.2016 Courser Blinken abschalten  
+V1.1 31.11.2016 Umschaltung Sommer- Winterzeit  
+V1.0 14.08.2016 Repository neu erstellt  
