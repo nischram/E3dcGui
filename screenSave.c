@@ -41,30 +41,26 @@ int main()
 
 	screenOn();
 
-	int Screen[8];
-	char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
+	int Screen[ScreenMAX];
 
 	if(E3DC_S10 ==1)
-		BitWrite(PathScreen, ScreenChange, ScreenAktuell);
+		writeScreen(ScreenChange, ScreenAktuell);
 	else if(Homematic_GUI == 1)
-		BitWrite(PathScreen, ScreenChange, ScreenHM);
+		writeScreen(ScreenChange, ScreenHM);
 	else
-		BitWrite(PathScreen, ScreenChange, ScreenMonitor);
-	BitWrite(PathScreen, ScreenCounter, 0);
-	BitWrite(PathScreen, ScreenSaver, false);
-	BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+		writeScreen(ScreenChange, ScreenMonitor);
+	writeScreen(ScreenCounter, 0);
+	writeScreen(ScreenSaver, false);
+	writeScreen(ScreenShutdown, ShutdownRun);
 
-  char PathLegende [128];
-  snprintf (PathLegende, (size_t)128, "/mnt/RAMDisk/Legende.txt");
-  BitWrite(PathLegende, SOC, true);
-  BitWrite(PathLegende, Solar, true);
-  BitWrite(PathLegende, Home, true);
-  BitWrite(PathLegende, NetIn, true);
-  BitWrite(PathLegende, NetOut, true);
-  BitWrite(PathLegende, BatIn, false);
-  BitWrite(PathLegende, BatOut, false);
-	BitWrite(PathLegende, ADD, false);
+  writeLegende(SOC, true);
+  writeLegende(Solar, true);
+  writeLegende(Home, true);
+  writeLegende(NetIn, true);
+  writeLegende(NetOut, true);
+  writeLegende(BatIn, false);
+  writeLegende(BatOut, false);
+	writeLegende(ADD, false);
 
 	if (openTouchScreen() == 1)
 		perror("error opening touch screen");
@@ -146,47 +142,47 @@ int main()
 		scaledX = rawX/scaleXvalue;
 		scaledY = rawY/scaleYvalue;
 
-		Screen[ScreenChange] = BitRead(PathScreen, ScreenChange);
+		Screen[ScreenChange] = readScreen(ScreenChange);
 		screenChange = Screen[ScreenChange];
-		Screen[ScreenShutdown] = BitRead(PathScreen, ScreenShutdown);
+		Screen[ScreenShutdown] = readScreen(ScreenShutdown);
 		screenShutdown = Screen[ScreenShutdown];
 
 		if(E3DC_S10 ==1){
 			if((scaledX  > buttonCordsAktuell[X] && scaledX < (buttonCordsAktuell[X]+buttonCordsAktuell[W])) && (scaledY > buttonCordsAktuell[Y] && scaledY < (buttonCordsAktuell[Y]+buttonCordsAktuell[H]))){
 				if (mymillis() - buttonTimerAktuell > 500){
 					buttonTimerAktuell = mymillis();
-					BitWrite(PathScreen, ScreenChange, ScreenAktuell);
-					BitWrite(PathScreen, ScreenCounter, 0);
-					BitWrite(PathScreen, ScreenSaver, false);
-					BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+					writeScreen(ScreenChange, ScreenAktuell);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
 				}
 			}
 			if((scaledX  > buttonCordsLangzeit[X] && scaledX < (buttonCordsLangzeit[X]+buttonCordsLangzeit[W])) && (scaledY > buttonCordsLangzeit[Y] && scaledY < (buttonCordsLangzeit[Y]+buttonCordsLangzeit[H]))){
 				if (mymillis() - buttonTimerLangzeit > 500){
 					buttonTimerLangzeit = mymillis();
-					BitWrite(PathScreen, ScreenChange, ScreenLangzeit);
-					BitWrite(PathScreen, ScreenCounter, 0);
-					BitWrite(PathScreen, ScreenSaver, false);
-					BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+					writeScreen(ScreenChange, ScreenLangzeit);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
 				}
 			}
 		}
 		if((scaledX  > buttonCordsSetup[X] && scaledX < (buttonCordsSetup[X]+buttonCordsSetup[W])) && (scaledY > buttonCordsSetup[Y] && scaledY < (buttonCordsSetup[Y]+buttonCordsSetup[H]))){
 			if (mymillis() - buttonTimerSetup > 500){
 				buttonTimerSetup = mymillis();
-				BitWrite(PathScreen, ScreenChange, ScreenSetup);
-				BitWrite(PathScreen, ScreenCounter, 0);
-				BitWrite(PathScreen, ScreenSaver, false);
-				BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+				writeScreen(ScreenChange, ScreenSetup);
+				writeScreen(ScreenCounter, 0);
+				writeScreen(ScreenSaver, false);
+				writeScreen(ScreenShutdown, ShutdownRun);
 			}
 		}
 		if((scaledX  > buttonCordsMonitor[X] && scaledX < (buttonCordsMonitor[X]+buttonCordsMonitor[W])) && (scaledY > buttonCordsMonitor[Y] && scaledY < (buttonCordsMonitor[Y]+buttonCordsMonitor[H]))){
 			if (mymillis() - buttonTimerMonitor > 500){
 				buttonTimerMonitor = mymillis();
-				BitWrite(PathScreen, ScreenChange, ScreenMonitor);
-				BitWrite(PathScreen, ScreenCounter, 0);
-				BitWrite(PathScreen, ScreenSaver, false);
-				BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+				writeScreen(ScreenChange, ScreenMonitor);
+				writeScreen(ScreenCounter, 0);
+				writeScreen(ScreenSaver, false);
+				writeScreen(ScreenShutdown, ShutdownRun);
 			}
 		}
 
@@ -194,10 +190,10 @@ int main()
 			if((scaledX  > buttonCordsHM[X] && scaledX < (buttonCordsHM[X]+buttonCordsHM[W])) && (scaledY > buttonCordsHM[Y] && scaledY < (buttonCordsHM[Y]+buttonCordsHM[H]))){
 				if (mymillis() - buttonTimerHM > 500){
 					buttonTimerHM = mymillis();
-					BitWrite(PathScreen, ScreenChange, ScreenHM);
-					BitWrite(PathScreen, ScreenCounter, 0);
-					BitWrite(PathScreen, ScreenSaver, false);
-					BitWrite(PathScreen, ScreenShutdown, ShutdownRun);
+					writeScreen(ScreenChange, ScreenHM);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
 				}
 			}
 		}
@@ -212,8 +208,8 @@ int main()
 					}
 					else{
 						screenOn();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -230,8 +226,8 @@ int main()
 					}
 					else{
 						screenOn();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -239,66 +235,66 @@ int main()
 				if((scaledX  > buttonCordsLeSOC[X] && scaledX < (buttonCordsLeSOC[X]+buttonCordsLeSOC[W])) && (scaledY > buttonCordsLeSOC[Y] && scaledY < (buttonCordsLeSOC[Y]+buttonCordsLeSOC[H]))){
 					if (mymillis() - buttonTimerLeSOC > 300){
 						buttonTimerLeSOC = mymillis();
-						BitChange(PathLegende, SOC);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(SOC);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeSolar[X] && scaledX < (buttonCordsLeSolar[X]+buttonCordsLeSolar[W])) && (scaledY > buttonCordsLeSolar[Y] && scaledY < (buttonCordsLeSolar[Y]+buttonCordsLeSolar[H]))){
 					if (mymillis() - buttonTimerLeSolar > 300){
 						buttonTimerLeSolar = mymillis();
-						BitChange(PathLegende, Solar);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(Solar);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeHome[X] && scaledX < (buttonCordsLeHome[X]+buttonCordsLeHome[W])) && (scaledY > buttonCordsLeHome[Y] && scaledY < (buttonCordsLeHome[Y]+buttonCordsLeHome[H]))){
 					if (mymillis() - buttonTimerLeHome > 300){
 						buttonTimerLeHome = mymillis();
-						BitChange(PathLegende, Home);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(Home);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeNetIn[X] && scaledX < (buttonCordsLeNetIn[X]+buttonCordsLeNetIn[W])) && (scaledY > buttonCordsLeNetIn[Y] && scaledY < (buttonCordsLeNetIn[Y]+buttonCordsLeNetIn[H]))){
 					if (mymillis() - buttonTimerLeNetIn > 300){
 						buttonTimerLeNetIn = mymillis();
-						BitChange(PathLegende, NetIn);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(NetIn);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeNetOut[X] && scaledX < (buttonCordsLeNetOut[X]+buttonCordsLeNetOut[W])) && (scaledY > buttonCordsLeNetOut[Y] && scaledY < (buttonCordsLeNetOut[Y]+buttonCordsLeNetOut[H]))){
 					if (mymillis() - buttonTimerLeNetOut > 300){
 						buttonTimerLeNetOut = mymillis();
-						BitChange(PathLegende, NetOut);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(NetOut);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeBatIn[X] && scaledX < (buttonCordsLeBatIn[X]+buttonCordsLeBatIn[W])) && (scaledY > buttonCordsLeBatIn[Y] && scaledY < (buttonCordsLeBatIn[Y]+buttonCordsLeBatIn[H]))){
 					if (mymillis() - buttonTimerLeBatIn > 300){
 						buttonTimerLeBatIn = mymillis();
-						BitChange(PathLegende, BatIn);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(BatIn);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if((scaledX  > buttonCordsLeBatOut[X] && scaledX < (buttonCordsLeBatOut[X]+buttonCordsLeBatOut[W])) && (scaledY > buttonCordsLeBatOut[Y] && scaledY < (buttonCordsLeBatOut[Y]+buttonCordsLeBatOut[H]))){
 					if (mymillis() - buttonTimerLeBatOut > 300){
 						buttonTimerLeBatOut = mymillis();
-						BitChange(PathLegende, BatOut);
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						changeLegende(BatOut);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 					}
 				}
 				if(Additional == 1){
 					if((scaledX  > buttonCordsLeADD[X] && scaledX < (buttonCordsLeADD[X]+buttonCordsLeADD[W])) && (scaledY > buttonCordsLeADD[Y] && scaledY < (buttonCordsLeADD[Y]+buttonCordsLeADD[H]))){
 						if (mymillis() - buttonTimerLeADD > 300){
 							buttonTimerLeADD = mymillis();
-							BitChange(PathLegende, ADD);
-							BitWrite(PathScreen, ScreenCounter, 0);
-							BitWrite(PathScreen, ScreenSaver, false);
+							changeLegende(ADD);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
 						}
 					}
 				}
@@ -309,9 +305,9 @@ int main()
 					if((scaledX  > buttonCordsSD[X] && scaledX < (buttonCordsSD[X]+buttonCordsSD[W])) && (scaledY > buttonCordsSD[Y] && scaledY < (buttonCordsSD[Y]+buttonCordsSD[H]))){
 						if (mymillis() - buttonTimerSD > 600){
 							buttonTimerSD = mymillis();
-							BitWrite(PathScreen, ScreenCounter, 0);
-							BitWrite(PathScreen, ScreenSaver, false);
-							BitWrite(PathScreen, ScreenShutdown, ShutdownSD);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+							writeScreen(ScreenShutdown, ShutdownSD);
 						}
 					}
 				} // if ScreenShutdownRun
@@ -344,9 +340,9 @@ int main()
 							drawCorner(450,200,180,30, WHITE);
 							put_string(470,208, "Winterzeit", GREEN);
 						}
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
-						BitWrite(PathScreen, ScreenShutdown, ShutdownSRS);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownSRS);
 						sleep (2);
 						pkill();
 						system("/home/pi/E3dcGui/start &");
@@ -358,9 +354,9 @@ int main()
 				if((scaledX  > buttonCordsSRS[X] && scaledX < (buttonCordsSRS[X]+buttonCordsSRS[W])) && (scaledY > buttonCordsSRS[Y] && scaledY < (buttonCordsSRS[Y]+buttonCordsSRS[H]))){
 					if (mymillis() - buttonTimerSRS > 3000){
 						buttonTimerSRS = mymillis();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
-						BitWrite(PathScreen, ScreenShutdown, ShutdownSRS);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownSRS);
 						sleep (2);
 						pkill();
 						system("/home/pi/E3dcGui/start &");
@@ -372,9 +368,9 @@ int main()
 				if((scaledX  > buttonCordsHRS[X] && scaledX < (buttonCordsHRS[X]+buttonCordsHRS[W])) && (scaledY > buttonCordsHRS[Y] && scaledY < (buttonCordsHRS[Y]+buttonCordsHRS[H]))){
 					if (mymillis() - buttonTimerHRS > 3000){
 						buttonTimerHRS = mymillis();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
-						BitWrite(PathScreen, ScreenShutdown, ShutdownHRS);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownHRS);
 						sleep (2);
 						pkill();
 						drawSquare(2,2,800,480,BLACK);
@@ -387,9 +383,9 @@ int main()
 					if((scaledX  > buttonCordsSDN[X] && scaledX < (buttonCordsSDN[X]+buttonCordsSDN[W])) && (scaledY > buttonCordsSDN[Y] && scaledY < (buttonCordsSDN[Y]+buttonCordsSDN[H]))){
 						if (mymillis() - buttonTimerSDN > 3000){
 							buttonTimerSDN = mymillis();
-							BitWrite(PathScreen, ScreenCounter, 0);
-							BitWrite(PathScreen, ScreenSaver, false);
-							BitWrite(PathScreen, ScreenShutdown, ShutdownSDN);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+							writeScreen(ScreenShutdown, ShutdownSDN);
 							pkill();
 							sleep (2);
 							drawSquare(2,2,800,480,BLACK);
@@ -411,8 +407,8 @@ int main()
 					}
 					else{
 						screenOn();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
 					}
@@ -429,8 +425,8 @@ int main()
 					}
 					else{
 						screenOn();
-						BitWrite(PathScreen, ScreenCounter, 0);
-						BitWrite(PathScreen, ScreenSaver, false);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
 						buttonSaveHalb= BUTTON_ON;
 						buttonTimerSaveHalb = mymillis();
 					}
@@ -440,7 +436,7 @@ int main()
 						buttonTimerHMrefresh = mymillis();
 						drawSquare(760,440,20,20,LIGHT_GREEN);
 						drawCorner(760,440,20,20,WHITE);
-						BitWrite(PathScreen, ScreenCounter, 0);
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				if((scaledX  > buttonCordsParty[X] && scaledX < (buttonCordsParty[X]+buttonCordsParty[W])) && (scaledY > buttonCordsParty[Y] && scaledY < (buttonCordsParty[Y]+buttonCordsParty[H]))){
@@ -449,15 +445,15 @@ int main()
 						buttonParty= BUTTON_OFF;
 						buttonTimerParty = mymillis();
 						drawSquare(S7-3,R2,Fw+6,21+3,LTGREY);
-						printsend(ISE_OGParty, "false");
-						BitWrite(PathScreen, ScreenCounter, 0);
+						printsendHM(ISE_OGParty, "false");
+						writeScreen(ScreenCounter, 0);
 					}
 					else{
 						buttonParty= BUTTON_ON;
 						buttonTimerParty = mymillis();
 						drawSquare(S7-3,R2,Fw+6,21+3,LIGHT_GREEN);
-						printsend(ISE_OGParty, "true");
-						BitWrite(PathScreen, ScreenCounter, 0);
+						printsendHM(ISE_OGParty, "true");
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				if((scaledX  > buttonCordsKueche[X] && scaledX < (buttonCordsKueche[X]+buttonCordsKueche[W])) && (scaledY > buttonCordsKueche[Y] && scaledY < (buttonCordsKueche[Y]+buttonCordsKueche[H]))){
@@ -471,8 +467,8 @@ int main()
 						buttonKueche= BUTTON_ON;
 						buttonTimerKueche = mymillis();
 						drawSquare(S6-3,R2,Fw+6,21+3,LIGHT_GREEN);
-						printsend(ISE_Send_OGKSpul, "true");
-						BitWrite(PathScreen, ScreenCounter, 0);
+						printsendHM(ISE_Send_OGKSpul, "true");
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				if((scaledX  > buttonCordsBrunnen[X] && scaledX < (buttonCordsBrunnen[X]+buttonCordsBrunnen[W])) && (scaledY > buttonCordsBrunnen[Y] && scaledY < (buttonCordsBrunnen[Y]+buttonCordsBrunnen[H]))){
@@ -481,15 +477,15 @@ int main()
 						buttonBrunnen= BUTTON_OFF;
 						buttonTimerBrunnen = mymillis();
 						drawSquare(S8-3,R4,Fw+6,21+3,LTGREY);
-						printsend(ISE_Brunnen, "false");
-						BitWrite(PathScreen, ScreenCounter, 0);
+						printsendHM(ISE_Brunnen, "false");
+						writeScreen(ScreenCounter, 0);
 					}
 					else{
 						buttonBrunnen= BUTTON_ON;
 						buttonTimerBrunnen = mymillis();
 						drawSquare(S8-3,R4,Fw+6,21+3,LIGHT_BLUE);
-						printsend(ISE_Brunnen, "true");
-						BitWrite(PathScreen, ScreenCounter, 0);
+						printsendHM(ISE_Brunnen, "true");
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				if((scaledX  > buttonCordsMac[X] && scaledX < (buttonCordsMac[X]+buttonCordsMac[W])) && (scaledY > buttonCordsMac[Y] && scaledY < (buttonCordsMac[Y]+buttonCordsMac[H]))){
@@ -499,13 +495,13 @@ int main()
 						read_HM(ISE_MacSchrankValue, 4, MacSchrank);
 						if (strcmp ("true",MacSchrank) == 0){
 							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_GREEN);
-							printsend(ISE_MacSchrank, "false");
+							printsendHM(ISE_MacSchrank, "false");
 						}
 						else if (strcmp ("fals",MacSchrank) == 0){
 							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_RED);
-							printsend(ISE_MacSchrank, "true");
+							printsendHM(ISE_MacSchrank, "true");
 						}
-						BitWrite(PathScreen, ScreenCounter, 0);
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				if((scaledX  > buttonCordsJOGWST[X] && scaledX < (buttonCordsJOGWST[X]+buttonCordsJOGWST[W])) && (scaledY > buttonCordsJOGWST[Y] && scaledY < (buttonCordsJOGWST[Y]+buttonCordsJOGWST[H]))){
@@ -515,19 +511,19 @@ int main()
 						readJalou_HM(ISE_OGWJalSt, OGWJalSt);																//Jalousie Wert aus der Homematic Abfrage
 						if (strcmp ("100",OGWJalSt) == 0){
 							drawSquare(S5-3,R2,Fw+6,21+3,GREEN);
-							printsend(ISE_OGWJalSt, "0.50");
+							printsendHM(ISE_OGWJalSt, "0.50");
 						}
 						else {
 							drawSquare(S5-3,R2,Fw+6,21+3,GREY);
-							printsend(ISE_OGWJalSt, "1.00");
+							printsendHM(ISE_OGWJalSt, "1.00");
 						}
-						BitWrite(PathScreen, ScreenCounter, 0);
+						writeScreen(ScreenCounter, 0);
 					}
 				}
 				break; // ScreenHM
 			}
 			default:{
-				BitWrite(PathScreen, ScreenChange, ScreenAktuell);
+				writeScreen(ScreenChange, ScreenAktuell);
 			}
 		} // Switch screenChange
 	}  //while

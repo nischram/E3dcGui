@@ -45,11 +45,19 @@
 #define TAG_EMS_ISE_SERIAL_NUMBER   38881
 #define TAG_EMS_ISE_AUTARKY         38882
 #define TAG_EMS_ISE_SELFCON         38883
-// Allgemeines für die RSCP-Applikation
-// !!!!! nicht verändern !!!!!
-#define AES_KEY_SIZE                32    //!!
-#define AES_BLOCK_SIZE              32    //!!
-#define SERVER_PORT                 5033  //!!
+
+//#######################################
+// Homematic Parameter
+#define Homematic_GUI               1         //Wichtig!    //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
+/*
+Wenn das Display für HM Daten genutzt wird
+aber die ISE_ID noch nicht angepasst sind,
+wird es zu langen wartezeiten beim lesen der
+Daten (read_HM) kommen. Damit diese Wartezeiten
+unterbunden werden, alle ISE_ID au "0" setzen!
+Es kann aber zu darstellungsfehler kommen.
+*/
+// !!! Wichtig >>> Weitere Parameter zur Homematic bitte in der "parameterHM.h" definieren
 
 //#######################################
 //### GuiMain Parameter ###
@@ -57,47 +65,6 @@
 //Einstellungen Langzeitanzeige (15 Minuten Mittelwerte in duchrlaufender 24 Stundenanzeige)
 #define PowerMax                    5400                    // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
 #define skalaLine                   1000                    // Einteilung der Scala
-// !!! nicht verändern !!!
-#define ScreenChange                0    //!!
-#define ScreenCounter               1    //!!
-#define ScreenSaver                 2    //!!
-#define ScreenShutdown              3    //!!
-#define ScreenState                 4    //!!
-
-#define ScreenAktuell               0    //!!
-#define ScreenLangzeit              1    //!!
-#define ScreenSetup                 2    //!!
-#define ScreenMonitor               3    //!!
-#define ScreenHM                    4    //!!
-
-#define ShutdownRun                 0    //!!
-#define ShutdownSD                  1    //!!
-#define ShutdownSRS                 2    //!!
-#define ShutdownHRS                 3    //!!
-#define ShutdownSDN                 4    //!!
-#define ShutdownWD                  5    //!!
-
-#define RscpTime                    1    //!!
-#define HomematicTime               2    //!!
-#define PiTime                      3    //!!
-
-#define SOC                         0    //!!
-#define Solar                       1    //!!
-#define Home                        2    //!!
-#define NetIn                       3    //!!
-#define NetOut                      4    //!!
-#define BatIn                       5    //!!
-#define BatOut                      6    //!!
-#define ADD                         7    //!!
-
-#define UnixtimeE3dc                0    //!!
-#define UnixtimeHM                  1    //!!
-#define UnixtimeGui                 2    //!!
-
-#define true                        1    //!!
-#define false                       0    //!!
-#define ScreenOn                    1    //!!
-#define ScreenOff                   0    //!!
 
 //#######################################
 //### Watchdog Einstellungen ###
@@ -127,22 +94,92 @@
 #define smtpBenutzer                "max.mustermann@web.de"                     //Benutzername für den eMail Account
 #define smtpPass                    "1234abc"                                   //Passwort für den eMail Account
 
-//#######################################
-// Homematic Parameter
-#define Homematic_GUI               1         //Wichtig!    //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
-/*
-Wenn das Display für HM Daten genutzt wird
-aber die ISE_ID noch nicht angepasst sind,
-wird es zu langen wartezeiten beim lesen der
-Daten (read_HM) kommen. Damit diese Wartezeiten
-unterbunden werden, alle ISE_ID au "0" setzen!
-Es kann aber zu darstellungsfehler kommen.
-*/
-// Weitere Parameter zur Homematic bitte in der "parameterHM.h" definieren
+
+//##############################################################################
+//########### Ab hier die Parameter nicht verändern! ###########################
+//##############################################################################
 
 //#######################################
+// Systemintern GuiMain
+#define ScreenChange                0    //!!
+#define ScreenCounter               1    //!!
+#define ScreenSaver                 2    //!!
+#define ScreenShutdown              3    //!!
+#define ScreenState                 4    //!!
+#define ScreenMAX                   6    //!!
+
+#define ScreenAktuell               0    //!!
+#define ScreenLangzeit              1    //!!
+#define ScreenSetup                 2    //!!
+#define ScreenMonitor               3    //!!
+#define ScreenHM                    4    //!!
+
+#define ShutdownRun                 0    //!!
+#define ShutdownSD                  1    //!!
+#define ShutdownSRS                 2    //!!
+#define ShutdownHRS                 3    //!!
+#define ShutdownSDN                 4    //!!
+#define ShutdownWD                  5    //!!
+
+#define RscpTime                    1    //!!
+#define HomematicTime               2    //!!
+#define PiTime                      3    //!!
+
+#define SOC                         0    //!!
+#define Solar                       1    //!!
+#define Home                        2    //!!
+#define NetIn                       3    //!!
+#define NetOut                      4    //!!
+#define BatIn                       5    //!!
+#define BatOut                      6    //!!
+#define ADD                         7    //!!
+#define LegendeMAX                  8    //!!
+
+#define UnixtimeE3dc                0    //!!
+#define UnixtimeHM                  1    //!!
+#define UnixtimeGui                 2    //!!
+#define UnixtimeMAX                 4    //!!
+
+#define true                        1    //!!
+#define false                       0    //!!
+#define ScreenOn                    1    //!!
+#define ScreenOff                   0    //!!
+
+// Allgemeines für die RSCP-Applikation
+#define AES_KEY_SIZE                32    //!!
+#define AES_BLOCK_SIZE              32    //!!
+#define SERVER_PORT                 5033  //!!
+
+//Beschreibung für ReadRscp
+#define PosPVI                      0    //!!
+#define PosBat                      1    //!!
+#define PosHome                     2    //!!
+#define PosGrid                     3    //!!
+#define PosSOC                      4    //!!
+#define PosBatState                 5    //!!
+#define PosAutarky                  6    //!!
+#define PosSelfCon                  7    //!!
+#define PosADD                      8    //!!
+#define PosWbAll                    9    //!!
+#define PosWbSolar                  10   //!!
+#define PosPVIState                 11   //!!
+#define PosPMState                  12   //!!
+#define PosTimeZone                 12   //!!
+#define PosMAX                      13   //!!
+
+#define PosPVI900                   0    //!!
+#define PosSOC900                   1    //!!
+#define PosHome900                  2    //!!
+#define PosNetIn900                 3    //!!
+#define PosNetOut900                4    //!!
+#define PosBatIn900                 5    //!!
+#define PosBatOut900                6    //!!
+#define PosAdd900                   7    //!!
+#define PosWBAll900                 8    //!!
+#define PosWBSolar900               9    //!!
+#define PosMAX900                   10   //!!
+
 // Touch Parameter
-// !!! nicht verändern !!!
 #define BUTTON_ON                   1   //!!
 #define BUTTON_OFF                  0   //!!
 

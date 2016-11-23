@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.12 21.11.2016
+Stand: V1.13 23.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -66,9 +66,9 @@ Da ich in der Datei eigentlich alles Beschrieben habe, gehe ich jetzt nur auf da
 Dies sind die Einstellungen:
 ```shell
 6    #define GUI                         1
-10   #define E3DC_S10                    1
-19   #define Homematic_E3DC              1
-108  #define Homematic_GUI               0
+12   #define E3DC_S10                    1
+21   #define Homematic_E3DC              1
+51   #define Homematic_GUI               0
 ```
 Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen willst oder nicht und ob die eine HomeMatic anbinden willst oder nicht. Wenn du eine Funktion nutzen willst trag bitte eine „1“ ein sonst eine „0“.
 
@@ -242,12 +242,12 @@ pi@raspberrypi ~/E3dcGui $ sudo apt-get install libio-socket-ssl-perl
 Jetzt müssen die eMail Einstellung in den "parameter.h" definiert werden.
 ```
 // sendEmail Parameter
-#define FromEmailAdress             "max.mustermann@web.de"
-#define smtpServer                  "smtp.web.de"
-#define smtpPort                    "587"
-#define smtpTLS                     "yes"
-#define smtpBenutzer                "max.mustermann@web.de"
-#define smtpPass                    "1234abc"
+90   #define FromEmailAdress             "max.mustermann@web.de"
+91   #define smtpServer                  "smtp.web.de"
+92   #define smtpPort                    "587"
+93   #define smtpTLS                     "yes"
+94   #define smtpBenutzer                "max.mustermann@web.de"
+95   #define smtpPass                    "1234abc"
 ```
 Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
@@ -261,12 +261,12 @@ Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
 Für den Watchdog ist in der "parameter.h" noch die eMail-Adresse einzustellen in der die Nachrichten gesendet werden sollen:
 ```
-#define WDtoEmailAdress             "max.mustermann@web.de"
+86   #define WDtoEmailAdress             "max.mustermann@web.de"
 ```
 Mit den Parametern
 ```
-#define WDsendEmailReboot           1
-#define WDsendEmailKill             0
+84   #define WDsendEmailReboot           1
+85   #define WDsendEmailKill             0
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll.
 
@@ -356,6 +356,15 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.13 23.11.2016 Systemverbesserungen  
+- Globalvariablen in der RscpMain.cpp verringert
+- GuiMain.c für Änderungen der RscpMain.cpp angepasst
+- zu viele Darstellungen verringert um Speicherfehler zu vermeiden
+- Fehler bei der Übergabe aus HmGui.h der GuiTime
+- parameter.h übersichtlicher gemacht   
+- write, read und change Funktionen verbessert
+- Fehler bei HMGui = 0 im watchdog.cpp behoben
+- RSCP Abfragen verringern wenn Bildschirmschoner aktiv    
 V1.12 21.11.2016 Systemverbesserungen  
 - DrawImage.h Bildschirmausgaben auf das nötige reduziert   
 V1.11 21.11.2016 Issue #1  

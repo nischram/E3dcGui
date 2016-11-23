@@ -5,13 +5,13 @@ gcc -g -o start  start.c
 
 int main()
 {
-  sleep(4);
+  sleep(2);
   if(GUI == 1){
     if(E3DC_S10 ==1){
       system("/home/pi/E3dcGui/RscpMain &");
     }
     system("/home/pi/E3dcGui/screenSave &");
-    sleep (2);
+    sleep (4);
     system("/home/pi/E3dcGui/GuiMain &");
     system("/home/pi/E3dcGui/watchdog &");
   }

@@ -87,7 +87,6 @@ int WriteScreen(int Position, int NewValue)
  return 1;
 }
 
-char Path[100], DATE[40], TIME[40], OUT[100];
 
 int main()
 {
@@ -96,6 +95,7 @@ int main()
     int jump = 0;
     char EmailAdress[128], EmailBetreff[128], EmailText[512];
     int Unixtime[4];
+    char DATE[40], TIME[40], OUT[100];
 
     while(1){
       sleep(sleepTimeWD);
@@ -148,7 +148,7 @@ int main()
         WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
         jump ++;
       }
-      else if(DiffTimeHM > WDdiff && jump == 0 && WDuseHM_Gui == 1){
+      else if(DiffTimeHM > WDdiff && jump == 0 && Homematic_GUI == 1 && WDuseHM_Gui == 1){
         counterRebootHM ++;
         if (counterRebootHM == rebootCounter){
           snprintf (OUT, (size_t)100, "HM_GUI-reboot");
@@ -228,7 +228,7 @@ int main()
       cout << "Watchdog: " << DATE << " ; " << TIME << "\n";
       cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
       cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " ; GUI Zähler bis Reboot: " << counterRebootGUI << " \n" ;
-      snprintf (OUT, (size_t)100, "--");
-      WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
+      if (WDkontrolle == 1)
+        WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
     }
 }

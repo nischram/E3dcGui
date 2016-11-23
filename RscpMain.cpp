@@ -16,94 +16,19 @@
 #include <ctime>
 #include "parameter.h"
 
-
-
 static int iSocket = -1;
 static int iAuthenticated = 0;
 static AES aesEncrypter;
 static AES aesDecrypter;
 static uint8_t ucEncryptionIV[AES_BLOCK_SIZE];
 static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
+static int32_t TAG_EMS_OUT_UNIXTIME = 0;
+static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
+static int CounterHM = 0;
+static int Counter900 = 0;
+
 
 using namespace std;
-
-int32_t TAG_EMS_OUT_UNIXTIME = 0;
-char TAG_EMS_OUT_DATE [41];
-char TAG_EMS_OUT_TIME [41];
-string serialNr;
-char TAG_EMS_OUT_SERIAL_NUMBER [17];
-int32_t TAG_EMS_OUT_POWER_PV = 0;
-int32_t TAG_EMS_OUT_POWER_BAT = 0;
-int32_t TAG_EMS_OUT_POWER_HOME = 0;
-int32_t TAG_EMS_OUT_POWER_GRID = 0;
-int TAG_EMS_OUT_BAT_SOC = 0;
-int TAG_EMS_OUT_BAT_STATE = 0;
-int TAG_EMS_OUT_AUTARKY = 0;
-int TAG_EMS_OUT_SELF_CONSUMPTION = 0;
-int32_t TAG_EMS_OUT_POWER_ADD = 0;
-int32_t TAG_EMS_OUT_POWER_WB_ALL = 0;
-int32_t TAG_EMS_OUT_POWER_WB_SOLAR = 0;
-int32_t TAG_EMS_OUT_PVI_STATE = 0;
-int32_t TAG_EMS_OUT_PM_STATE = 0;
-char Path[100];
-int CounterHM, Solar900, SOC900, Home900, NetIn900, NetOut900, BatIn900, BatOut900, WBAll900, WBSolar900, Add900;
-int Counter900 = 0;
-int time_zone = 7200;
-
-void printsend(int id, int value){
-  if(Homematic_E3DC == 1){
-    if(CounterHM == HM_Intervall){
-      char batch[128];
-      memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%i\" > /dev/null 2>&1",HM_IP , id, value);
-      printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
-      system(batch);
-    }
-  }
-}
-
-int WriteUnixtime(int Position, int NewTime)
-{
-  int c = 4;
-  int out [c];
-  char read[128];
-  //Lese Byte aus Datei ein
-  fstream datei("/mnt/RAMDisk/Unixtime.txt");
-  if (datei.is_open()) {
-    for( c = 0; c < 4; ++c ){
-      datei.getline(read ,128, '\n');
-      out[c] = atoi(read);
-    }
-    datei.close();
-  }
-  else cerr << "Konnte Unixtime Datei nicht oeffnen!\n";
-
-  //Ändere Bit an Position
-  out[Position] = NewTime;
-
-  //Schreibe geändertes Byte in Datei
-  ofstream fout("/mnt/RAMDisk/Unixtime.txt");
-  if (fout.is_open()) {
-    for( c = 0; c < 4; ++c )
-      fout << out[c] << endl;
-    fout.close();
-  }
-  else cerr << "Konnte Unixtime Datei nicht erstellen!\n";
-
- return 0;
-}
-
-void printsendChar(int id, char value[32]){
-  if(Homematic_E3DC == 1){
-    if(CounterHM == HM_Intervall){
-      char batch[128];
-      memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
-      printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
-      system(batch);
-    }
-  }
-}
 
 int createRequestExample(SRscpFrameBuffer * frameBuffer) {
     RscpProtocol protocol;
@@ -129,93 +54,11 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
     }
     else
     {
-      // Aktuelle Daten für GUI in RAMDisk speichern
-      if (TAG_EMS_OUT_POWER_HOME > 0) {
-      ofstream fout("/mnt/RAMDisk/E3dcGui.txt");
-      if (fout.is_open()) {
-        fout << TAG_EMS_OUT_DATE << "\n" << TAG_EMS_OUT_TIME << "\n" << TAG_EMS_OUT_POWER_PV << "\n" << TAG_EMS_OUT_POWER_BAT << "\n" << TAG_EMS_OUT_POWER_HOME << "\n" << TAG_EMS_OUT_POWER_GRID << "\n" << TAG_EMS_OUT_BAT_SOC << "\n" << TAG_EMS_OUT_BAT_STATE << "\n" << TAG_EMS_OUT_AUTARKY << "\n" << TAG_EMS_OUT_SELF_CONSUMPTION << "\n" << TAG_EMS_OUT_SERIAL_NUMBER << "\n" << TAG_EMS_OUT_UNIXTIME << "\n" << TAG_EMS_OUT_POWER_ADD << "\n" << TAG_EMS_OUT_POWER_WB_ALL << "\n" << TAG_EMS_OUT_POWER_WB_SOLAR << "\n" << TAG_EMS_OUT_PVI_STATE << "\n" << TAG_EMS_OUT_PM_STATE << endl;
-        fout.close();
-        }
-      else cerr << "Konnte E3dcGui.txt nicht erstellen!";
-    }
-    //Unixtime in RAMDisk für den Watchdog
-    WriteUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
-    // Langzeit Daten für GUI in RAMDisk speichern (15Minuten Mittelwerte)
-    Solar900 = Solar900 + TAG_EMS_OUT_POWER_PV;
-    SOC900 = SOC900 + TAG_EMS_OUT_BAT_SOC;
-    Home900 = Home900 + TAG_EMS_OUT_POWER_HOME;
-    if (TAG_EMS_OUT_POWER_GRID < 0){
-      NetIn900 = NetIn900 + (TAG_EMS_OUT_POWER_GRID* -1);
-      NetOut900 = NetOut900 + 0.1;
-    }
-    else {
-      NetOut900 = NetOut900 + TAG_EMS_OUT_POWER_GRID;
-      NetIn900 = NetIn900 + 0.1;
-    }
-    if (TAG_EMS_OUT_POWER_BAT < 0){
-      BatOut900 = BatOut900 + (TAG_EMS_OUT_POWER_BAT* -1);
-      BatIn900 = BatIn900 + 0.1;
-    }
-    else {
-      BatIn900 = BatIn900 + TAG_EMS_OUT_POWER_BAT;
-      BatOut900 = BatOut900 + 0.1;
-    }
-    Add900 = Add900 + TAG_EMS_OUT_POWER_ADD;
-    WBAll900 = WBAll900 + TAG_EMS_OUT_POWER_WB_ALL;
-    WBAll900 = WBAll900 + TAG_EMS_OUT_POWER_WB_SOLAR;
-    if(Counter900 == 900){
-      Solar900 = Solar900 / 900 ;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Solar900.txt");
-      ReadWriteData(Path, Solar900);
-      SOC900 = SOC900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/SOC900.txt");
-      ReadWriteData(Path, SOC900);
-      Home900 = Home900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Home900.txt");
-      ReadWriteData(Path, Home900);
-      NetIn900 = NetIn900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetIn900.txt");
-      ReadWriteData(Path, NetIn900);
-      NetOut900 = NetOut900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/NetOut900.txt");
-      ReadWriteData(Path, NetOut900);
-      BatIn900 = BatIn900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatIn900.txt");
-      ReadWriteData(Path, BatIn900);
-      BatOut900 = BatOut900 / 900;
-      snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/BatOut900.txt");
-      ReadWriteData(Path, BatOut900);
-      Add900 = Add900 / 900;
-      if(Additional == 1){
-        snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Add900.txt");
-        ReadWriteData(Path, Add900);
+      writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
+      if(Counter900 == 900){
+        Counter900 = 0;
       }
-      WBAll900 = WBAll900 / 900;
-      WBSolar900 = WBSolar900 / 900;
-      if(Wallbox == 1){
-        snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/WBAll900.txt");
-        ReadWriteData(Path, WBAll900);
-        snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/WBSolar900.txt");
-        ReadWriteData(Path, WBSolar900);
-      }
-      Solar900 = 1;
-      SOC900 = 1;
-      Home900 = 1;
-      NetIn900 = 1;
-      NetOut900 = 1;
-      BatIn900 = 1;
-      BatOut900 = 1;
-      Add900 = 1;
-      WBAll900 = 1;
-      WBSolar900 = 1;
-      Counter900 = 0;
-    }
-    Counter900 = Counter900 +1;
-
-    CounterHM ++;
-    if (CounterHM == HM_Intervall + 1){
-      CounterHM = 2;
-    }
+      Counter900 ++;
 
         printf("\n____________________\nRequest cyclic data\n");
         // request data information
@@ -243,13 +86,17 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
 
         protocol.appendValue(&rootValue, TAG_EMS_REQ_AUTARKY);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_SELF_CONSUMPTION);
-        if (Additional == 1){
+        if (Additional == 1)
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_ADD);
-        }
-
+        else
+          writeRscp(PosADD,0);
         if (Wallbox == 1){
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_ALL);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_SOLAR);
+        }
+        else {
+          writeRscp(PosWbAll,0);
+          writeRscp(PosWbSolar,0);
         }
 
         // request PVI information
@@ -303,109 +150,153 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         printf("RSCP authentitication level %i\n", ucAccessLevel);
         break;
     }
-    case TAG_INFO_SERIAL_NUMBER: {    // response for TAG_INFO_REQ_SERIAL_NUMBER
+      case TAG_INFO_SERIAL_NUMBER: {    // response for TAG_INFO_REQ_SERIAL_NUMBER
         string serialNr = protocol->getValueAsString(response);
         cout << "Serial-Number is " << serialNr << "\n";
         strcpy(TAG_EMS_OUT_SERIAL_NUMBER, serialNr.c_str());
-        if(Seriennummer == 1){
-          printsendChar(TAG_EMS_ISE_SERIAL_NUMBER, TAG_EMS_OUT_SERIAL_NUMBER);
-        }
+        printsendCharHM(CounterHM, TAG_EMS_ISE_SERIAL_NUMBER, TAG_EMS_OUT_SERIAL_NUMBER);
         break;
       }
       case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
           TAG_EMS_OUT_UNIXTIME = protocol->getValueAsInt32(response);
+          int timeZone = readRscp(PosTimeZone);
+          TAG_EMS_OUT_UNIXTIME = TAG_EMS_OUT_UNIXTIME - timeZone;
           time_t timestamp;
           tm *sys;
-          TAG_EMS_OUT_UNIXTIME = TAG_EMS_OUT_UNIXTIME - time_zone;
           timestamp = TAG_EMS_OUT_UNIXTIME;
           sys = localtime(&timestamp);
           strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
           strftime (TAG_EMS_OUT_TIME,40,"%H:%M:%S",sys);
+          writeUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
           cout << "System Time is " << TAG_EMS_OUT_DATE << "_" << TAG_EMS_OUT_TIME << "\n";
           cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
-          printsend(TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
+          printsendHM(CounterHM, TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
           break;
       }
-    case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
-        TAG_EMS_OUT_POWER_PV = protocol->getValueAsInt32(response);
+      case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
+        int32_t TAG_EMS_OUT_POWER_PV = protocol->getValueAsInt32(response);
         cout << "PV Power is " << TAG_EMS_OUT_POWER_PV <<" W\n";
-        printsend(TAG_EMS_ISE_POWER_PV, TAG_EMS_OUT_POWER_PV);
+        writeRscp(PosPVI,TAG_EMS_OUT_POWER_PV);
+        char file[20];
+        snprintf (file, (size_t)20, "PVI900");
+        write900(PosPVI900, file, TAG_EMS_OUT_POWER_PV, Counter900);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_PV, TAG_EMS_OUT_POWER_PV);
         break;
-    }
-    case TAG_EMS_POWER_BAT: {    // response for TAG_EMS_REQ_POWER_BAT
-        TAG_EMS_OUT_POWER_BAT = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_BAT: {    // response for TAG_EMS_REQ_POWER_BAT
+        int32_t TAG_EMS_OUT_POWER_BAT = protocol->getValueAsInt32(response);
         cout << "Battery Power is " << TAG_EMS_OUT_POWER_BAT << " W\n";
-        printsend(TAG_EMS_ISE_POWER_BAT, TAG_EMS_OUT_POWER_BAT);
+        writeRscp(PosBat,TAG_EMS_OUT_POWER_BAT);
+        char fileIN[20], fileOUT[20];
+        snprintf (fileIN, (size_t)20, "BatIn900");
+        snprintf (fileOUT, (size_t)20, "BatOut900");
+        if (TAG_EMS_OUT_POWER_BAT < 0){
+          write900(PosBatOut900, fileOUT, (TAG_EMS_OUT_POWER_BAT* -1), Counter900);
+          write900(PosBatIn900, fileIN, 0 , Counter900);
+        }
+        else {
+          write900(PosBatIn900, fileIN, TAG_EMS_OUT_POWER_BAT , Counter900);
+          write900(PosBatOut900, fileOUT, 0, Counter900);
+        }
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_BAT, TAG_EMS_OUT_POWER_BAT);
         break;
-    }
-    case TAG_EMS_POWER_HOME: {    // response for TAG_EMS_REQ_POWER_HOME
-        TAG_EMS_OUT_POWER_HOME = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_HOME: {    // response for TAG_EMS_REQ_POWER_HOME
+        int32_t TAG_EMS_OUT_POWER_HOME = protocol->getValueAsInt32(response);
         cout << "House Power is " << TAG_EMS_OUT_POWER_HOME << " W\n";
-        printsend(TAG_EMS_ISE_POWER_HOME, TAG_EMS_OUT_POWER_HOME);
+        writeRscp(PosHome,TAG_EMS_OUT_POWER_HOME);
+        char file[20];
+        snprintf (file, (size_t)20, "Home900");
+        write900(PosHome900, file, TAG_EMS_OUT_POWER_HOME, Counter900);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_HOME, TAG_EMS_OUT_POWER_HOME);
         break;
-    }
-    case TAG_EMS_POWER_GRID: {    // response for TAG_EMS_REQ_POWER_GRID
-        TAG_EMS_OUT_POWER_GRID = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_GRID: {    // response for TAG_EMS_REQ_POWER_GRID
+        int32_t TAG_EMS_OUT_POWER_GRID = protocol->getValueAsInt32(response);
         cout << "Grid Power is " << TAG_EMS_OUT_POWER_GRID << " W\n";
-        printsend(TAG_EMS_ISE_POWER_GRID, TAG_EMS_OUT_POWER_GRID);
+        writeRscp(PosGrid,TAG_EMS_OUT_POWER_GRID);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_GRID, TAG_EMS_OUT_POWER_GRID);
+        char fileIN[20], fileOUT[20];
+        snprintf (fileIN, (size_t)20, "NetIn900");
+        snprintf (fileOUT, (size_t)20, "NetOut900");
         if(TAG_EMS_OUT_POWER_GRID >= 0) {
             int TAG_EMS_OUT_POWER_NET_IN = 0;
             int TAG_EMS_OUT_POWER_NET_OUT = TAG_EMS_OUT_POWER_GRID;
-            printsend(TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
-            printsend(TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
+            write900(PosNetIn900, fileIN, TAG_EMS_OUT_POWER_NET_IN, Counter900);
+            write900(PosNetOut900, fileOUT, TAG_EMS_OUT_POWER_NET_OUT, Counter900);
+            printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
+            printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
         }
         else {
           int neg_GRID = (TAG_EMS_OUT_POWER_GRID * -1);
           int TAG_EMS_OUT_POWER_NET_IN = neg_GRID;
           int TAG_EMS_OUT_POWER_NET_OUT = 0;
-          printsend(TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
-          printsend(TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
+          write900(PosNetIn900, fileIN, TAG_EMS_OUT_POWER_NET_IN, Counter900);
+          write900(PosNetOut900, fileOUT, TAG_EMS_OUT_POWER_NET_OUT, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
         }
         break;
-    }
-    case TAG_EMS_BAT_SOC: {     // response for TAG_EMS_REQ_BAT_SOC
+      }
+      case TAG_EMS_BAT_SOC: {     // response for TAG_EMS_REQ_BAT_SOC
         float fSOC = protocol->getValueAsUChar8(response);
-        TAG_EMS_OUT_BAT_SOC = fSOC;
-        printsend(TAG_BAT_ISE_SOC, TAG_EMS_OUT_BAT_SOC);
-        cout << "Battery SOC is " << TAG_EMS_OUT_BAT_SOC << " %\n";
+        int TAG_EMS_OUT_SOC = fSOC;
+        cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
+        writeRscp(PosSOC,TAG_EMS_OUT_SOC);
+        char file[20];
+        snprintf (file, (size_t)20, "SOC900");
+        write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
+        printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
         break;
-    }
-    case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
-        TAG_EMS_OUT_POWER_ADD = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
+        int32_t TAG_EMS_OUT_POWER_ADD = protocol->getValueAsInt32(response);
         cout << "Additional Power is " << TAG_EMS_OUT_POWER_ADD << " W\n";
-        printsend(TAG_EMS_ISE_POWER_ADD, TAG_EMS_OUT_POWER_ADD);
+        writeRscp(PosADD,TAG_EMS_OUT_POWER_ADD);
+        char file[20];
+        snprintf (file, (size_t)20, "Add900");
+        write900(PosAdd900, file, TAG_EMS_OUT_POWER_ADD, Counter900);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_ADD, TAG_EMS_OUT_POWER_ADD);
         break;
-    }
-    case TAG_EMS_POWER_WB_ALL: {    // response for TAG_EMS_REQ_POWER_WB_ALL
-        TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_WB_ALL: {    // response for TAG_EMS_REQ_POWER_WB_ALL
+        int32_t TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
         cout << "Wallbox Power All is " << TAG_EMS_OUT_POWER_WB_ALL << " W\n";
-        printsend(TAG_EMS_ISE_POWER_WB_ALL, TAG_EMS_OUT_POWER_WB_ALL);
+        writeRscp(PosWbAll,TAG_EMS_OUT_POWER_WB_ALL);
+        char file[20];
+        snprintf (file, (size_t)20, "WBAll900");
+        write900(PosWBAll900, file, TAG_EMS_OUT_POWER_WB_ALL, Counter900);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_ALL, TAG_EMS_OUT_POWER_WB_ALL);
         break;
-    }
-    case TAG_EMS_POWER_WB_SOLAR: {    // response for TAG_EMS_REQ_POWER_WB_SOLAR
-        TAG_EMS_OUT_POWER_WB_SOLAR = protocol->getValueAsInt32(response);
+      }
+      case TAG_EMS_POWER_WB_SOLAR: {    // response for TAG_EMS_REQ_POWER_WB_SOLAR
+        int32_t TAG_EMS_OUT_POWER_WB_SOLAR = protocol->getValueAsInt32(response);
         cout << "Wallbox Power Solar is " << TAG_EMS_OUT_POWER_WB_SOLAR << " W\n";
-        printsend(TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
+        writeRscp(PosWbSolar,TAG_EMS_OUT_POWER_WB_SOLAR);
+        char file[20];
+        snprintf (file, (size_t)20, "WBSolar900");
+        write900(PosWBSolar900, file, TAG_EMS_OUT_POWER_WB_SOLAR, Counter900);
+        printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
         break;
-    }
-    case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
-        float autarky = protocol->getValueAsFloat32(response);
-        TAG_EMS_OUT_AUTARKY = autarky;
+      }
+      case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
+        float TAG_EMS_OUT_AUTARKY = protocol->getValueAsFloat32(response);
         cout << "Autarky is " << setprecision(3) << TAG_EMS_OUT_AUTARKY << " %\n";
+        writeRscp(PosAutarky,TAG_EMS_OUT_AUTARKY);
         if (Autarky == 1){
-          printsend(TAG_EMS_ISE_AUTARKY, TAG_EMS_OUT_AUTARKY);
+          printsendHM(CounterHM, TAG_EMS_ISE_AUTARKY, TAG_EMS_OUT_AUTARKY);
         }
         break;
-    }
-    case TAG_EMS_SELF_CONSUMPTION: {    // response for TAG_EMS_REQ_SELF_CONSUMPTION
-        float selfCon = protocol->getValueAsFloat32(response);
-        TAG_EMS_OUT_SELF_CONSUMPTION = selfCon;
+      }
+      case TAG_EMS_SELF_CONSUMPTION: {    // response for TAG_EMS_REQ_SELF_CONSUMPTION
+        float TAG_EMS_OUT_SELF_CONSUMPTION = protocol->getValueAsFloat32(response);
         cout << "Self Consumption is " << setprecision(3) << TAG_EMS_OUT_SELF_CONSUMPTION << " %\n";
+        writeRscp(PosSelfCon,TAG_EMS_OUT_SELF_CONSUMPTION);
         if (Eigenstrom == 1){
-          printsend(TAG_EMS_ISE_SELFCON, TAG_EMS_OUT_SELF_CONSUMPTION);
+          printsendHM(CounterHM, TAG_EMS_ISE_SELFCON, TAG_EMS_OUT_SELF_CONSUMPTION);
         }
         break;
-    }
+      }
     case TAG_BAT_DATA: {        // resposne for TAG_BAT_REQ_DATA
         uint8_t ucBatteryIndex = 0;
         std::vector<SRscpValue> batteryData = protocol->getValueAsContainer(response);
@@ -424,14 +315,18 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
             }
             case TAG_BAT_RSOC: {              // response for TAG_BAT_REQ_RSOC
                 float fSOC = protocol->getValueAsFloat32(&batteryData[i]);
-                TAG_EMS_OUT_BAT_SOC = fSOC;
-                cout << "Battery SOC is " << TAG_EMS_OUT_BAT_SOC << " %\n";
-                //printsend(TAG_BAT_ISE_SOC, TAG_EMS_OUT_BAT_SOC);
+                int TAG_EMS_OUT_SOC = fSOC;
+                writeRscp(PosSOC,TAG_EMS_OUT_SOC);
+                cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
+                char file[20];
+                snprintf (file, (size_t)20, "SOC900");
+                write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
+                printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
                 break;
             }
             case TAG_BAT_DEVICE_STATE: {    // response for TAG_BAT_REQ_DEVICE_STATE
-                bool bState = protocol->getValueAsBool(&batteryData[i]);
-                TAG_EMS_OUT_BAT_STATE = bState;
+                bool TAG_EMS_OUT_BAT_STATE = protocol->getValueAsBool(&batteryData[i]);
+                writeRscp(PosBatState,TAG_EMS_OUT_BAT_STATE);
                 cout << "Battery State = " << TAG_EMS_OUT_BAT_STATE << " \n";
                 break;
             }
@@ -462,9 +357,9 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 break;
             }
             case TAG_PVI_ON_GRID: {              // response for TAG_PVI_REQ_ON_GRID
-                bool bState = protocol->getValueAsBool(&PVIData[i]);
-                TAG_EMS_OUT_PVI_STATE = bState;
+                bool TAG_EMS_OUT_PVI_STATE = protocol->getValueAsBool(&PVIData[i]);
                 cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
+                writeRscp(PosPVIState,TAG_EMS_OUT_PVI_STATE);
                 break;
             }
             // ...
@@ -494,9 +389,9 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 break;
             }
             case TAG_PM_DEVICE_STATE: {              // response for TAG_PM_REQ_DEVICE_STATE
-                bool bState = protocol->getValueAsBool(&PMData[i]);
-                TAG_EMS_OUT_PM_STATE = bState;
+                bool TAG_EMS_OUT_PM_STATE = protocol->getValueAsBool(&PMData[i]);
                 cout << "LM0 State = " << TAG_EMS_OUT_PM_STATE << " \n";
+                writeRscp(PosPMState,TAG_EMS_OUT_PM_STATE);
                 break;
             }
             // ...
@@ -702,33 +597,61 @@ static void mainLoop(void)
         protocol.destroyFrameData(&frameBuffer);
 
         // main loop sleep / cycle time before next request
-        sleep(SleepTime);
+        int screenState = readScreen(ScreenState);
+        if (CounterHM == HM_Intervall){
+          CounterHM = 0;
+        }
+        CounterHM ++;
+        if (screenState == ScreenOff) {
+          int i;
+          while (1){
+            screenState = readScreen(ScreenState);
+            if (screenState == ScreenOff && i <= HM_Intervall){
+              sleep(1);
+              i++;
+            }
+            else {
+              CounterHM = HM_Intervall;
+              i = 0;
+              break;
+            }
+          }
+        }
+        else
+          sleep(SleepTime);
     }
 }
 
 int main()
 {
-  char file_Path [100],file_read [100];
-	FILE *fp;
-	snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
-	fp = fopen(file_Path, "r");
-	if(fp == NULL) {
-		printf("Datei konnte NICHT geoeffnet werden.\n");
-		snprintf (file_read, (size_t)20, "Summertime");
-	}
-	else {
-		fgets(file_read,20,fp);
-		strtok(file_read, "\n");
-		fclose(fp);
-	}
-  if (strcmp ("Wintertime",file_read) == 0){
-    time_zone = 3600;
-  }
-  else{
-    time_zone = 7200;
-  }
-  printf("%i\n",time_zone);
-
+  //Offset für Zeitzone lesen
+  int time_zone = readTimeZone()    ;
+  //Dateien erstellen
+  makeCharRscp();
+  makeRscp(PosPVI, 0);
+  makeRscp(PosBat, 0);
+  makeRscp(PosHome, 0);
+  makeRscp(PosGrid, 0);
+  makeRscp(PosSOC, 0);
+  makeRscp(PosBatState, 1);
+  makeRscp(PosAutarky, 0);
+  makeRscp(PosSelfCon, 0);
+  makeRscp(PosADD, 0);
+  makeRscp(PosWbAll, 0);
+  makeRscp(PosWbSolar, 0);
+  makeRscp(PosPVIState, 1);
+  makeRscp(PosPMState, 1);
+  makeRscp(PosTimeZone,time_zone);
+  make900(PosPVI900, 1);
+  make900(PosBatOut900, 1);
+  make900(PosBatIn900, 1);
+  make900(PosHome900, 1);
+  make900(PosNetIn900, 1);
+  make900(PosNetOut900, 1);
+  make900(PosSOC900, 1);
+  make900(PosAdd900, 1);
+  make900(PosWBAll900, 1);
+  make900(PosWBSolar900, 1);
 
     // endless application which re-connections to server on connection lost
     while(true){

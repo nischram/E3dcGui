@@ -21,9 +21,7 @@ make_HM_Gui(int GuiTime, int counter)
 	//Zähler für die Aktualisierung des Displays
 	int HMcounter = HMcounter +1;
 
-	char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-	int screenState = BitRead(PathScreen, ScreenState);
+	int screenState = readScreen(ScreenState);
 
 	//Zeit Darstellung im Display
 	GuiTime = HomematicTime;
@@ -40,7 +38,7 @@ make_HM_Gui(int GuiTime, int counter)
 		read_HM(ISE_UnixTime, 10, Value);																		//Auslesen HM Variable für die Unixtime (muss in der HM angelegt sein und mit einem Programm permanent aktuallisiert werden)
 		int UnixTime = atoi(Value);
 		read_HM(ISE_TimestampHM, 16,TimestampHM);														//Auslesen HM Variable für die den Zeitstempel (muss in der HM angelegt sein und mit einem Programm permanent aktuallisiert werden)
-		BitWrite(PathUnixtime, UnixtimeHM, UnixTime);						      			//Schreiben der Unixtime in Datei für den Watchdog
+		writeUnixtime(UnixtimeHM, UnixTime);						      			//Schreiben der Unixtime in Datei für den Watchdog
 		//Verschluss (Variablen müssen per Programm in der HM bei aktivitäten an Fenstern etc. aktualisiert werden)
 		read_HM(ISE_VerschlussDG, 4, VerschlussDG);
 		read_HM(ISE_VerschlussOG, 4, VerschlussOG);
@@ -211,7 +209,7 @@ make_HM_Gui(int GuiTime, int counter)
 		put_string(S5+6, R4+4, "Aussen", WHITE);
 
 		//Aktualisierungszähler hochsetzen auf 60 Sekunden
-		BitWrite(PathScreen, ScreenCounter, 60);
+		writeScreen(ScreenCounter, 60);
 	}
 	//Daten Grafik erstellen
 	if(readOK == 1){
@@ -341,6 +339,6 @@ make_HM_Gui(int GuiTime, int counter)
 		}
 		HMcounter = 0;
 	}
-	return 1;
+	return GuiTime;
 }
 #endif // __HMGUI_H_
