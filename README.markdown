@@ -364,9 +364,11 @@ V1.13 23.11.2016 Systemverbesserungen
 - parameter.h übersichtlicher gemacht   
 - write, read und change Funktionen verbessert
 - Fehler bei HMGui = 0 im watchdog.cpp behoben
-- RSCP Abfragen verringern wenn Bildschirmschoner aktiv    
+- RSCP Abfragen verringern wenn Bildschirmschoner aktiv
+
 V1.12 21.11.2016 Systemverbesserungen  
-- DrawImage.h Bildschirmausgaben auf das nötige reduziert   
+- DrawImage.h Bildschirmausgaben auf das nötige reduziert
+˘
 V1.11 21.11.2016 Issue #1  
 - allocierter Speicher wurde nicht freigegeben `cleanup();` mit `free` war deaktiviert  
 - Anpassung doppelte inizialisierter Globalvariablen in framebuffer.c und DrawImage.h   
