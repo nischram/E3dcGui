@@ -356,6 +356,7 @@ Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 
+V1.15 24.11.2016 Option im Makefile geändert   
 V1.14 24.11.2016 Issue #3
 - von RalfJL aufgezeigter Fehler behoben
 

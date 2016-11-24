@@ -21,9 +21,10 @@ $(ROOT_START): clean
 $(ROOT_STOP): clean
 	$(CC) -O1 stop.c -o $@
 $(ROOT_RM): clean
-	$(CXX) -O4 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
+	$(CXX) -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
 $(ROOT_TT): clean
 	$(CC) -O1 Frame/touchtest.c  -o $@
 
 clean:
+	date
 	-rm $(ROOT_WD) $(ROOT_SS) $(ROOT_GM) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_TT) $(VECTOR)
