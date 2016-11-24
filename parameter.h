@@ -164,8 +164,9 @@ Es kann aber zu darstellungsfehler kommen.
 #define PosWbSolar                  10   //!!
 #define PosPVIState                 11   //!!
 #define PosPMState                  12   //!!
-#define PosTimeZone                 12   //!!
-#define PosMAX                      13   //!!
+#define PosPMPhases                 13   //!!
+#define PosTimeZone                 14   //!!
+#define PosMAX                      15   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!

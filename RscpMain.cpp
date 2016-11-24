@@ -114,6 +114,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         protocol.createContainerValue(&PMContainer, TAG_PM_REQ_DATA);
         protocol.appendValue(&PMContainer, TAG_PM_INDEX, (uint8_t)0);
         protocol.appendValue(&PMContainer, TAG_PM_REQ_DEVICE_STATE);
+        protocol.appendValue(&PMContainer, TAG_PM_REQ_ACTIVE_PHASES);
         // append sub-container to root container
         protocol.appendValue(&rootValue, PMContainer);
         // free memory of sub-container as it is now copied to rootValue
@@ -394,6 +395,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 writeRscp(PosPMState,TAG_EMS_OUT_PM_STATE);
                 break;
             }
+            case TAG_PM_ACTIVE_PHASES: {              // response for TAG_PM_REQ_ACTIVE_PHASES
+                int32_t TAG_PM_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&PMData[i]);
+                cout << "LM0 Aktiv Phases = " << TAG_PM_OUT_ACTIVE_PHASES << " \n";
+                writeRscp(PosPMPhases,TAG_PM_OUT_ACTIVE_PHASES);
+                break;
+            }
             // ...
             default:
                 // default behaviour
@@ -625,7 +632,7 @@ static void mainLoop(void)
 int main()
 {
   //Offset für Zeitzone lesen
-  int time_zone = readTimeZone()    ;
+  int time_zone = readTimeZone();
   //Dateien erstellen
   makeCharRscp();
   makeRscp(PosPVI, 0);

@@ -24,6 +24,7 @@ gcc -g -o GuiMain  GuiMain.c
 #include "Frame/DrawLine.c"
 #include "Frame/DrawSOC.c"
 #include "Frame/DrawImage.h"
+#include "Frame/DrawNetImage.h"
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
 #include "HMGui.h"
@@ -101,7 +102,8 @@ int main(){
 							DrawImage("HMImage", 540, 12);
 						}
 						DrawImage("PviImage", 40, 50);
-						DrawImage("NetImage", 640, 50);
+						int pmAktivPhases = readRscp(PosPMPhases);
+						DrawNetImage(pmAktivPhases);              //Einfügen der Grafik für NetImage oder NetImageOff je nach Status der Phasen am LM in der Frame/DrawNetImage.h
 						DrawImage("BatImage", 50, 310);
 						DrawImage("HomeImage", 640, 310);
 						DrawImage("S10Image", 270, 110);
