@@ -433,7 +433,7 @@ static int processReceiveBuffer(const unsigned char * ucBuffer, int iLength)
     int iProcessedBytes = iResult;
 
     // process each SRscpValue struct seperately
-    for(unsigned int i; i < frame.data.size(); i++) {
+    for(unsigned int i = 0; i < frame.data.size(); i++) {
         handleResponseValue(&protocol, &frame.data[i]);
     }
 
