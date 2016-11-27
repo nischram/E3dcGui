@@ -215,25 +215,29 @@ int writeUnixtime(int Position, int NewTime)
 }
 int write900(int Position, char *fileName, int NewValue, int Counter900)
 {
-  char Path900 [128];
-  snprintf (Path900, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
-  int read900 = readData(Path900, Position, PosMAX900);
-  NewValue = read900 + NewValue;
-  if (Counter900 == 900){
-    NewValue = NewValue / 900;
-    readWriteData(fileName, NewValue);
-    writeData(Path900, Position, 1, PosMAX900);
-  }
-  else {
-    writeData(Path900, Position, NewValue, PosMAX900);
+  if ( GUI == 1 && E3DC_S10 == 1){
+    char Path900 [128];
+    snprintf (Path900, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
+    int read900 = readData(Path900, Position, PosMAX900);
+    NewValue = read900 + NewValue;
+    if (Counter900 == 900){
+      NewValue = NewValue / 900;
+      readWriteData(fileName, NewValue);
+      writeData(Path900, Position, 1, PosMAX900);
+    }
+    else {
+      writeData(Path900, Position, NewValue, PosMAX900);
+    }
   }
   return 0;
 }
 int make900(int Position, int NewValue)
 {
-  char Path900 [128];
-  snprintf (Path900, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
-  makeData(Path900, Position, NewValue, PosMAX900);
+  if ( GUI == 1 && E3DC_S10 == 1){
+    char Path900 [128];
+    snprintf (Path900, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
+    makeData(Path900, Position, NewValue, PosMAX900);
+  }
   return 1;
 }
 int readScreen(int Position)

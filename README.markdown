@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.16 24.11.2016
+Stand: V1.17 27.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -135,8 +135,8 @@ Hier kann die Software oder der PI neu gestartet werden.
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
-Die Aktuellen Werte des S10 werden im Sekundenrhytmus aktualisiert (`SleepTime   1`).
-Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, werden auch für diese Daten ein Symbol angezeigt.
+Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
+Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
@@ -355,6 +355,10 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+
+V1.17 27.11.2016 Issue #5
+- Fehler bei den Langzeitwerten behoben
+- wenn das Display nicht genutzt wird, kann die SleepTime definiert werden sonst wir mit 1 Sekunde aktualisiert  
 
 V1.16 24.11.2016 Phasenabfrage des Leistungsmessers
 - Abfrage der Aktiven Phasen

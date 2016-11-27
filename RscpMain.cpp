@@ -54,12 +54,6 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
     }
     else
     {
-      writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
-      if(Counter900 == 900){
-        Counter900 = 0;
-      }
-      Counter900 ++;
-
         printf("\n____________________\nRequest cyclic data\n");
         // request data information
         if(TAG_EMS_OUT_UNIXTIME == 0 || (Seriennummer == 1 && CounterHM == HM_Intervall)){
@@ -603,29 +597,24 @@ static void mainLoop(void)
         // free frame buffer memory
         protocol.destroyFrameData(&frameBuffer);
 
-        // main loop sleep / cycle time before next request
-        int screenState = readScreen(ScreenState);
-        if (CounterHM == HM_Intervall){
+        if (CounterHM == HM_Intervall)
           CounterHM = 0;
-        }
         CounterHM ++;
-        if (screenState == ScreenOff) {
-          int i;
-          while (1){
-            screenState = readScreen(ScreenState);
-            if (screenState == ScreenOff && i <= HM_Intervall){
-              sleep(1);
-              i++;
-            }
-            else {
-              CounterHM = HM_Intervall;
-              i = 0;
-              break;
-            }
-          }
+
+        writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
+
+        if(Counter900 == 900){
+          Counter900 = 0;
         }
+        Counter900 ++;
+
+        // main loop sleep / cycle time before next request
+        int sleeptime = 1;
+        if ( GUI == 1 && E3DC_S10 == 1)
+          sleeptime = 1;
         else
-          sleep(SleepTime);
+          sleeptime = SleepTime;
+        sleep(sleeptime);
     }
 }
 

@@ -10,7 +10,7 @@
 //#######################################
 //### E3DC S10 Einstellungen ###
 #define E3DC_S10                    1         //Wichtig!    // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic gentzt werden dann 0
-#define SleepTime                   1                       // Abfrageintervall für die RSCP-Applikation in Sekunden, Empfehlung: 1
+#define SleepTime                   1                       // Abfrageintervall für die RSCP-Applikation in Sekunden, wenn "GUI = 1 & E3DC_S10 = 1" ist der Intervall automatisch = 1
 // S10 Einstellungen wie IP-Adresse, Benutzername, Passwort und RSCP-Schlüssel
 #define SERVER_IP                   "192.168.178.xxx"       // IP-Adresse vom S10
 #define E3DC_USER                   "Max.Mustermann"        // Benutzername vom E3DC Portal
