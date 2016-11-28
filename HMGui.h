@@ -329,7 +329,7 @@ make_HM_Gui(int GuiTime, int counter)
 			createData(S6, R1, "75 %");
 		}
 		else {
-			createWindow(S6, R1, Fw, "Gesamt", "NoISE");
+			createWindow(S6, R1, Fw, "Licht", "NoISE");
 		}
 		//Garage
 		drawSquare(S5+6,R3+20,40,12,GREY);

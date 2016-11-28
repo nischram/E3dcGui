@@ -177,6 +177,7 @@ int main()
         sleep(2);
         system("/home/pi/E3dcGui/GuiMain &");
         system("/home/pi/E3dcGui/screenSave &");
+        system("/home/pi/E3dcGui/screenSaveHM &");
         snprintf (OUT, (size_t)100, "HM_GUI-pkill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
         WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
