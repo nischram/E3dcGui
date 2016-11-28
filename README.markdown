@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.17 27.11.2016
+Stand: V1.18 28.11.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -157,7 +157,7 @@ Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp
 Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.
 Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).
-Damit du am Sorcecode eigene Änderungen vornehmen kannst aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung in eine extra Datei mit Funktion ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h` und `parameterHM.h` nicht aktualisieren.
+Damit du am Sorcecode eigene Änderungen vornehmen kannst aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` nicht aktualisieren.
 
 ### Bildschirmschoner
 Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 54 definiert: `#define ScreenSaverTime             180`
@@ -355,6 +355,12 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+
+V1.18 28.11.2016 Extrahieren der Touchfunktion für Homematic und HM-Anpassungen
+- Grafikproblem beim beenden des Bildschirmschoners behoben
+- ScreenSave.c getrennt damit ich in der screenSaveHM.c für die HM Änderungen vornehmen kann ohne anderen Usern Probleme zu machen
+- Anordnung der Darstellung der Homematic-Symbole in der screenSaveHM.c (für Nico)
+- weitern Button für Homematic-Touch zur Steuerung in der screenSaveHM.c (für Nico)
 
 V1.17 27.11.2016 Issue #5
 - Fehler bei den Langzeitwerten behoben

@@ -382,6 +382,10 @@ int screenOff()
   writeScreen(ScreenState, ScreenOff);
 	system("sudo chmod 777 /sys/class/backlight/rpi_backlight/bl_power");
 	system("echo 1 > /sys/class/backlight/rpi_backlight/bl_power");
+  drawSquare(2,2,800,480,LTGREY);
+  drawCorner(2, 2, 800, 480, BLACK);
+  drawSquare(12,12,778,458,WHITE);
+  drawCorner(12, 12, 778, 458, LTGREY);
 }
 
 //Hintergrundbeleuhtung einschalten

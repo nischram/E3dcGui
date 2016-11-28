@@ -7,7 +7,7 @@ make_HM_Gui(int GuiTime, int counter)
 	//Difiniton der Variablen die auf dem Display angezeigt werden sollen.
 	char VerschlussEG[20], VerschlussOG[20], VerschlussDG[20], VerschlussGa[20], VerschlussKel[20];
 	char DGSFli[20], DGSFre[20], DGTF[20], DGSTemp[20];
-	char OGKFli[20], OGKFre[20], OGWSt[20], OGWBt[20], OGBF[20], OGKTemp[20], OGWTemp[20], OGBTemp[20], OGKSpul[20], OGParty[20];
+	char OGKFli[20], OGKFre[20], OGWSt[20], OGWBt[20], OGBF[20], OGKTemp[20], OGWTemp[20], OGBTemp[20], OGKSpul[20], OGParty[20], OGWLicht[20];
 	char OGKJalli[20], OGKJalre[20], OGWJalSt[20], OGWJalBt[20], OGBJal[20], OGEJal[20];
 	char EGKFli[20], EGKFre[20], EGWFli[20], EGWFre[20], EGSSt[20], EGWCF[20], EGWTemp[20];
 	char Markise[20], EGKJalli[20], EGKJalre[20], EGWJal[20], EGSJal[20], EGWCJal[20];
@@ -68,6 +68,7 @@ make_HM_Gui(int GuiTime, int counter)
 		read_HM(ISE_OGKSpul, 4, OGKSpul);
 		read_HM(ISE_OGParty, 4, OGParty);
 		read_HM(ISE_MacSchrankValue, 4, MacSchrankValue);
+		read_HM(ISE_OGWLicht, 1, OGWLicht);
 		//EG
 		read_HM(ISE_EGWFli, 4, EGWFli);
 		read_HM(ISE_EGWFre, 4, EGWFre);
@@ -120,19 +121,19 @@ make_HM_Gui(int GuiTime, int counter)
 		DrawImage("MonitorImage", 450, 12);
 		DrawImage("HMImage", 540, 12);
 		// Grafik für Dachgeschoss
-		drawSquare(S0,R1-20,400,60,GREY);
-		drawCorner(S0,R1-20,400,60,WHITE);
+		drawSquare(S0,R1-20,230,60,GREY);
+		drawCorner(S0,R1-20,230,60,WHITE);
 		if (strcmp ("true",VerschlussDG) == 0){
-			drawSquare(S0+60,R1-17,337,54,LIGHT_RED);
-			drawSquare(S0+63,R1-14,331,48,WHITE);
-			drawCorner(S0+63,R1-14,331,48,LIGHT_RED);
+			drawSquare(S0+60,R1-17,167,54,LIGHT_RED);
+			drawSquare(S0+63,R1-14,161,48,WHITE);
+			drawCorner(S0+63,R1-14,161,48,LIGHT_RED);
 		}
 		else if (strcmp ("fals",VerschlussDG) == 0){
-			drawSquare(S0+60,R1-17,337,54,GREEN);
-			drawSquare(S0+63,R1-14,331,48,WHITE);
-			drawCorner(S0+63,R1-14,331,48,GREEN);
+			drawSquare(S0+60,R1-17,167,54,GREEN);
+			drawSquare(S0+63,R1-14,161,48,WHITE);
+			drawCorner(S0+63,R1-14,161,48,GREEN);
 		}
-		drawCorner(S0+60,R1-17,337,54,GREY);
+		drawCorner(S0+60,R1-17,167,54,GREY);
 		put_string(S0+6, R1+4, "DG", WHITE);
 		// Grafik für Obergeschoss
 		drawSquare(S0,R2-20,730,60,GREY);
@@ -180,12 +181,19 @@ make_HM_Gui(int GuiTime, int counter)
 		}
 		drawCorner(S0+60,R4-17,337,54,GREY);
 		put_string(S0+6, R4+4, "Keller", WHITE);
-		// Grafik für Aussen
+		// Grafik für HM
+		drawSquare(S3,R1-20,150,60,GREY);
+		drawCorner(S3,R1-20,150,60,WHITE);
+		drawSquare(S3+60,R1-17,87,54,WHITE);
+		drawCorner(S3+60,R1-17,87,54,GREY);
+		put_string(S3+6, R1+4, "HM", WHITE);
+		// Grafik für OG Wohnzimmer
 		drawSquare(S5,R1-20,320,60,GREY);
 		drawCorner(S5,R1-20,320,60,WHITE);
 		drawSquare(S5+60,R1-17,257,54,WHITE);
 		drawCorner(S5+60,R1-17,257,54,GREY);
-		put_string(S5+6, R1+4, "HM", WHITE);
+		put_string(S5+6, R1-6, "OG", WHITE);
+		put_string(S5+6, R1+10, "Wohnz.", WHITE);
 		// Grafik für Garage
 		drawSquare(S5,R3-20,320,60,GREY);
 		drawCorner(S5,R3-20,320,60,WHITE);
@@ -207,6 +215,12 @@ make_HM_Gui(int GuiTime, int counter)
 		drawSquare(S5+60,R4-17,257,54,WHITE);
 		drawCorner(S5+60,R4-17,257,54,GREY);
 		put_string(S5+6, R4+4, "Aussen", WHITE);
+		// Grafik für Diverses
+		drawSquare(S0,R5-20,730,60,GREY);
+		drawCorner(S0,R5-20,730,60,WHITE);
+		drawSquare(S0+60,R5-17,667,54,WHITE);
+		drawCorner(S0+60,R5-17,667,54,GREY);
+		put_string(S0+6, R5+4, "Div.", WHITE);
 
 		//Aktualisierungszähler hochsetzen auf 60 Sekunden
 		writeScreen(ScreenCounter, 60);
@@ -259,8 +273,8 @@ make_HM_Gui(int GuiTime, int counter)
 			snprintf (Party, (size_t)5, "fals");
 		}
 		createWindow(S7, R2, Fw, "OG-Party", Party);
-		createWindow(S8, R2, Fw, "OG-Mac", MacSchrankValue);
-		createWindow(S5, R2, Fw, "Jal.50%", "");
+		createWindow(S8, R1, Fw, "OG-Mac", MacSchrankValue);
+		createWindow(S7, R1, Fw, "Jal.50%", "");
 		//EG
 		createWindow(S1, R3, Fhw, "Wohnz.", EGWFli);
 		createWindow((S1+Fhw), R3, Fhw, "", EGWFre);
@@ -296,6 +310,27 @@ make_HM_Gui(int GuiTime, int counter)
 			snprintf (Sumpf, (size_t)5, "fals");
 		}
 		createWindow(S3, R4, Fw, " Sumpf", Sumpf);
+		//OG Wohnzimmer Licht
+		createWindow(S6, R1, Fw, "Licht", "no");
+		if (strcmp ("0",OGWLicht) == 0){
+			drawSquare(S6, R1, Fw, 21, LTGREY);
+			createData(S6, R1, " 0 %");
+		}
+		else if (strcmp ("1",OGWLicht) == 0){
+			drawSquare(S6, R1, Fw, 21, YELLOW);
+			createData(S6, R1, "20 %");
+		}
+		else if (strcmp ("2",OGWLicht) == 0){
+			drawSquare(S6, R1, Fw, 21, LIGHT_GREEN);
+			createData(S6, R1, "40 %");
+		}
+		else if (strcmp ("3",OGWLicht) == 0){
+			drawSquare(S6, R1, Fw, 21, LIGHT_RED);
+			createData(S6, R1, "75 %");
+		}
+		else {
+			createWindow(S6, R1, Fw, "Gesamt", "NoISE");
+		}
 		//Garage
 		drawSquare(S5+6,R3+20,40,12,GREY);
 		put_string(S5+6, (R3+20), GarageTemp,WHITE);
@@ -322,20 +357,20 @@ make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S8, R4, Fw, 21, LTGREY);
 		}
 		//Homematic
-		createWindow(S6, R1, Fw, "HM-CPU", "no");
-		createData(S6, R1-15, HMCPU);
-		createData(S6-5, R1, HMupTage);
+		createWindow(S4, R1, Fw, "HM-CPU", "no");
+		createData(S4, R1-15, HMCPU);
+		createData(S4-15, R1, HMupTage);
 		//HM_Sonderdarstellung
 		if(counter == 0 && HM_Sonderdarstellung == 1){
 			read_HM(ISE_Sonnenaufgang, 5, Sonnenaufgang);
 			read_HM(ISE_Sonnenuntergang, 5, Sonnenuntergang);
 			read_HM(ISE_Vollmond, 10, Vollmond);
-			snprintf (OUT, (size_t)100, "Sonnenaufgang:        %s", Sonnenaufgang);
-			put_string(40, 408, OUT, GREY);
-			snprintf (OUT, (size_t)100, "Sonnenuntergang:      %s", Sonnenuntergang);
-			put_string(40, 420, OUT, GREY);
-			snprintf (OUT, (size_t)100, "Vollmond:        %s", Vollmond);
-			put_string(40, 432, OUT, GREY);
+			snprintf (OUT, (size_t)100, "Sonnenaufgang:       %s", Sonnenaufgang);
+			put_string(S1, R5-12, OUT, GREY);
+			snprintf (OUT, (size_t)100, "Sonnenuntergang:     %s", Sonnenuntergang);
+			put_string(S1, R5+4, OUT, GREY);
+			snprintf (OUT, (size_t)100, "Vollmond:       %s", Vollmond);
+			put_string(S1, R5+20, OUT, GREY);
 		}
 		HMcounter = 0;
 	}

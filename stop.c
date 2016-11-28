@@ -14,6 +14,7 @@ gcc -g -o stop  stop.c
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
+#include "Frame/DrawCorner.c"
 #include "funktion.h"
 
 int main()

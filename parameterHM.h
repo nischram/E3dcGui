@@ -83,6 +83,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define ISE_Garagentor              0
 #define ISE_Garagentuerh            0
 #define ISE_Garagentuerv            0
+#define ISE_OGWLicht                0
 //Ende ISE_ID's
 
 //Homematic Position der Spalten für die HM-Elemente auf dem Display
@@ -96,10 +97,11 @@ Es kann aber zu darstellungsfehler kommen.
 #define  S7                         610
 #define  S8                         690
 //Homematic Position der Reihen für die HM-Elemente auf dem Display
-#define  R1                         120
-#define  R2                         200
-#define  R3                         280
-#define  R4                         360
+#define  R1                         110
+#define  R2                         180
+#define  R3                         250
+#define  R4                         320
+#define  R5                         390
 //Homematic Fensterbreite /halbe Breite
 #define  Fw                         50
 #define  Fhw                        25

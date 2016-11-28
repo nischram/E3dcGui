@@ -90,8 +90,6 @@ int main()
 	int buttonTimerMonitor = mymillis();
 	int buttonCordsHM[4] = {540,10,80,90};
 	int buttonTimerHM = mymillis();
-	int buttonCordsHMrefresh[4] = {760,440,20,20};
-	int buttonTimerHMrefresh = mymillis();
 
 	int buttonCordsSD[4] = {120,200,180,30};
 	int buttonTimerSD = mymillis();
@@ -120,22 +118,6 @@ int main()
 	int buttonTimerLeBatOut = mymillis();
 	int buttonCordsLeADD[4] = {735,438,50,30};
 	int buttonTimerLeADD = mymillis();
-
-	int buttonCordsParty[4] = {S7-3,R2,Fw+6,21+3};
-	int	buttonParty= BUTTON_OFF;
-	int buttonTimerParty = mymillis();
-	int buttonCordsKueche[4] = {(S6-3),(R2),(Fw+6),(21+3)};
-	int	buttonKueche= BUTTON_OFF;
-	int buttonTimerKueche = mymillis();
-	int buttonCordsBrunnen[4] = {(S8-3),(R4),(Fw+6),(21+3)};
-	int	buttonBrunnen= BUTTON_OFF;
-	int buttonTimerBrunnen = mymillis();
-	int buttonCordsMac[4] = {(S8-3),(R2),(Fw+6),(21+3)};
-	int	buttonMac= BUTTON_OFF;
-	int buttonTimerMac = mymillis();
-	int buttonCordsJOGWST[4] = {(S5-3),(R2),(Fw+6),(21+3)};
-	int	buttonJOGWST= BUTTON_OFF;
-	int buttonTimerJOGWST = mymillis();
 
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
@@ -416,110 +398,7 @@ int main()
 				break; // ScreenMonitor
 			}
 			case ScreenHM:{
-				if((scaledX  > buttonCordsSaveHalb[X] && scaledX < (buttonCordsSaveHalb[X]+buttonCordsSaveHalb[W])) && (scaledY > buttonCordsSaveHalb[Y] && scaledY < (buttonCordsSaveHalb[Y]+buttonCordsSaveHalb[H]))){
-					if (mymillis() - buttonTimerSaveHalb > 500)
-					if(buttonSaveHalb){
-						screenOff();
-						buttonSaveHalb= BUTTON_OFF;
-						buttonTimerSaveHalb = mymillis();
-					}
-					else{
-						screenOn();
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						buttonSaveHalb= BUTTON_ON;
-						buttonTimerSaveHalb = mymillis();
-					}
-				}
-				if((scaledX  > buttonCordsHMrefresh[X] && scaledX < (buttonCordsHMrefresh[X]+buttonCordsHMrefresh[W])) && (scaledY > buttonCordsHMrefresh[Y] && scaledY < (buttonCordsHMrefresh[Y]+buttonCordsHMrefresh[H]))){
-					if (mymillis() - buttonTimerHMrefresh > 500){
-						buttonTimerHMrefresh = mymillis();
-						drawSquare(760,440,20,20,LIGHT_GREEN);
-						drawCorner(760,440,20,20,WHITE);
-						writeScreen(ScreenCounter, 0);
-					}
-				}
-				if((scaledX  > buttonCordsParty[X] && scaledX < (buttonCordsParty[X]+buttonCordsParty[W])) && (scaledY > buttonCordsParty[Y] && scaledY < (buttonCordsParty[Y]+buttonCordsParty[H]))){
-					if (mymillis() - buttonTimerParty > 500)
-					if(buttonParty){
-						buttonParty= BUTTON_OFF;
-						buttonTimerParty = mymillis();
-						drawSquare(S7-3,R2,Fw+6,21+3,LTGREY);
-						printsendHM(ISE_OGParty, "false");
-						writeScreen(ScreenCounter, 0);
-					}
-					else{
-						buttonParty= BUTTON_ON;
-						buttonTimerParty = mymillis();
-						drawSquare(S7-3,R2,Fw+6,21+3,LIGHT_GREEN);
-						printsendHM(ISE_OGParty, "true");
-						writeScreen(ScreenCounter, 0);
-					}
-				}
-				if((scaledX  > buttonCordsKueche[X] && scaledX < (buttonCordsKueche[X]+buttonCordsKueche[W])) && (scaledY > buttonCordsKueche[Y] && scaledY < (buttonCordsKueche[Y]+buttonCordsKueche[H]))){
-					if (mymillis() - buttonTimerKueche > 500)
-					if(buttonKueche){
-						buttonKueche= BUTTON_OFF;
-						buttonTimerKueche = mymillis();
-						drawSquare(S6-3,R2,Fw+6,21+3,LTGREY);
-					}
-					else{
-						buttonKueche= BUTTON_ON;
-						buttonTimerKueche = mymillis();
-						drawSquare(S6-3,R2,Fw+6,21+3,LIGHT_GREEN);
-						printsendHM(ISE_Send_OGKSpul, "true");
-						writeScreen(ScreenCounter, 0);
-					}
-				}
-				if((scaledX  > buttonCordsBrunnen[X] && scaledX < (buttonCordsBrunnen[X]+buttonCordsBrunnen[W])) && (scaledY > buttonCordsBrunnen[Y] && scaledY < (buttonCordsBrunnen[Y]+buttonCordsBrunnen[H]))){
-					if (mymillis() - buttonTimerBrunnen > 500)
-					if(buttonBrunnen){
-						buttonBrunnen= BUTTON_OFF;
-						buttonTimerBrunnen = mymillis();
-						drawSquare(S8-3,R4,Fw+6,21+3,LTGREY);
-						printsendHM(ISE_Brunnen, "false");
-						writeScreen(ScreenCounter, 0);
-					}
-					else{
-						buttonBrunnen= BUTTON_ON;
-						buttonTimerBrunnen = mymillis();
-						drawSquare(S8-3,R4,Fw+6,21+3,LIGHT_BLUE);
-						printsendHM(ISE_Brunnen, "true");
-						writeScreen(ScreenCounter, 0);
-					}
-				}
-				if((scaledX  > buttonCordsMac[X] && scaledX < (buttonCordsMac[X]+buttonCordsMac[W])) && (scaledY > buttonCordsMac[Y] && scaledY < (buttonCordsMac[Y]+buttonCordsMac[H]))){
-					if (mymillis() - buttonTimerMac > 500){
-						buttonTimerMac = mymillis();
-						char MacSchrank[20];
-						read_HM(ISE_MacSchrankValue, 4, MacSchrank);
-						if (strcmp ("true",MacSchrank) == 0){
-							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_GREEN);
-							printsendHM(ISE_MacSchrank, "false");
-						}
-						else if (strcmp ("fals",MacSchrank) == 0){
-							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_RED);
-							printsendHM(ISE_MacSchrank, "true");
-						}
-						writeScreen(ScreenCounter, 0);
-					}
-				}
-				if((scaledX  > buttonCordsJOGWST[X] && scaledX < (buttonCordsJOGWST[X]+buttonCordsJOGWST[W])) && (scaledY > buttonCordsJOGWST[Y] && scaledY < (buttonCordsJOGWST[Y]+buttonCordsJOGWST[H]))){
-					if (mymillis() - buttonTimerJOGWST > 500){
-						buttonTimerJOGWST = mymillis();
-						char OGWJalSt[20];
-						readJalou_HM(ISE_OGWJalSt, OGWJalSt);																//Jalousie Wert aus der Homematic Abfrage
-						if (strcmp ("100",OGWJalSt) == 0){
-							drawSquare(S5-3,R2,Fw+6,21+3,GREEN);
-							printsendHM(ISE_OGWJalSt, "0.50");
-						}
-						else {
-							drawSquare(S5-3,R2,Fw+6,21+3,GREY);
-							printsendHM(ISE_OGWJalSt, "1.00");
-						}
-						writeScreen(ScreenCounter, 0);
-					}
-				}
+				// Alle Touchfuktionen für den Homematic-Scree werden in der Datei screenSaveHM.c weiter verarbeitet
 				break; // ScreenHM
 			}
 			default:{
