@@ -173,7 +173,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         cout << "PV Power is " << TAG_EMS_OUT_POWER_PV <<" W\n";
         writeRscp(PosPVI,TAG_EMS_OUT_POWER_PV);
         char file[20];
-        snprintf (file, (size_t)20, "PVI900");
+        snprintf (file, (size_t)20, "Solar900");
         write900(PosPVI900, file, TAG_EMS_OUT_POWER_PV, Counter900);
         printsendHM(CounterHM, TAG_EMS_ISE_POWER_PV, TAG_EMS_OUT_POWER_PV);
         break;
