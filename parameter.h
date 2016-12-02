@@ -45,6 +45,12 @@
 #define TAG_EMS_ISE_SERIAL_NUMBER   38881
 #define TAG_EMS_ISE_AUTARKY         38882
 #define TAG_EMS_ISE_SELFCON         38883
+//Wieviele Tracker am Wechselrichter sind belegt, 1 oder 2
+#define PVI_TRACKER                 2
+//Weclche Werte sollen vom Tracker/ von den Trackern abgefragt werden
+#define TRACKER_POWER               1
+#define TRACKER_VOLTAGE             1
+#define TRACKER_CURRENT             1
 
 //#######################################
 // Homematic Parameter
@@ -163,10 +169,16 @@ Es kann aber zu darstellungsfehler kommen.
 #define PosWbAll                    9    //!!
 #define PosWbSolar                  10   //!!
 #define PosPVIState                 11   //!!
-#define PosPMState                  12   //!!
-#define PosPMPhases                 13   //!!
-#define PosTimeZone                 14   //!!
-#define PosMAX                      15   //!!
+#define PosPVIDCP1                  12   //!!
+#define PosPVIDCP2                  13   //!!
+#define PosPVIDCU1                  14   //!!
+#define PosPVIDCU2                  15   //!!
+#define PosPVIDCI1                  16   //!!
+#define PosPVIDCI2                  17   //!!
+#define PosPMState                  18   //!!
+#define PosPMPhases                 19   //!!
+#define PosTimeZone                 20   //!!
+#define PosMAX                      21   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!

@@ -98,6 +98,21 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         protocol.createContainerValue(&PVIContainer, TAG_PVI_REQ_DATA);
         protocol.appendValue(&PVIContainer, TAG_PVI_INDEX, (uint8_t)0);
         protocol.appendValue(&PVIContainer, TAG_PVI_REQ_ON_GRID);
+        if (TRACKER_POWER == 1){
+          if (PVI_TRACKER == 2)
+            protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_POWER, (uint8_t)1);
+          protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_POWER, (uint8_t)0);
+        }
+        if (TRACKER_VOLTAGE == 1){
+          if (PVI_TRACKER == 2)
+            protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_VOLTAGE, (uint8_t)1);
+          protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_VOLTAGE, (uint8_t)0);
+        }
+        if (TRACKER_CURRENT == 1){
+          if (PVI_TRACKER == 2)
+            protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_CURRENT, (uint8_t)1);
+          protocol.appendValue(&PVIContainer, TAG_PVI_REQ_DC_CURRENT, (uint8_t)0);
+        }
         // append sub-container to root container
         protocol.appendValue(&rootValue, PVIContainer);
         // free memory of sub-container as it is now copied to rootValue
@@ -355,6 +370,75 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 bool TAG_EMS_OUT_PVI_STATE = protocol->getValueAsBool(&PVIData[i]);
                 cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
                 writeRscp(PosPVIState,TAG_EMS_OUT_PVI_STATE);
+                break;
+            }
+            case TAG_PVI_DC_POWER: {
+                int index = -1;
+                float TAG_OUT_PVI_DC_POWER = 0;
+                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                for(size_t n = 0; n < container.size(); n++) {
+                    if((container[n].tag == TAG_PVI_INDEX) ) {
+                        index = protocol->getValueAsUInt16(&container[n]);
+                    }
+                    else if((container[n].tag == TAG_PVI_VALUE)) {
+                            TAG_OUT_PVI_DC_POWER = protocol->getValueAsFloat32(&container[n]);
+                            if (index == 0){
+                              cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                              writeRscp(PosPVIDCP1,TAG_OUT_PVI_DC_POWER);
+                            }
+                            else if (index == 1){
+                              cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                              writeRscp(PosPVIDCP2,TAG_OUT_PVI_DC_POWER);
+                            }
+                    }
+                }
+                protocol->destroyValueData(container);
+                break;
+            }
+            case TAG_PVI_DC_VOLTAGE: {
+                int index = -1;
+                float TAG_OUT_PVI_DC_VOLTAGE = 0;
+                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                for(size_t n = 0; n < container.size(); n++) {
+                    if((container[n].tag == TAG_PVI_INDEX) ) {
+                        index = protocol->getValueAsUInt16(&container[n]);
+                    }
+                    else if((container[n].tag == TAG_PVI_VALUE)) {
+                            TAG_OUT_PVI_DC_VOLTAGE = protocol->getValueAsFloat32(&container[n]);
+                            if (index == 0){
+                              cout << "PVI DC-Voltage 1 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                              writeRscp(PosPVIDCU1,TAG_OUT_PVI_DC_VOLTAGE);
+                            }
+                            if (index == 1){
+                              cout << "PVI DC-Voltage 2 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                              writeRscp(PosPVIDCU2,TAG_OUT_PVI_DC_VOLTAGE);
+                            }
+                    }
+                }
+                protocol->destroyValueData(container);
+                break;
+            }
+            case TAG_PVI_DC_CURRENT: {
+                int index = -1;
+                float TAG_OUT_PVI_DC_CURRENT = 0;
+                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                for(size_t n = 0; n < container.size(); n++) {
+                    if((container[n].tag == TAG_PVI_INDEX) ) {
+                        index = protocol->getValueAsUInt16(&container[n]);
+                    }
+                    else if((container[n].tag == TAG_PVI_VALUE)) {
+                            TAG_OUT_PVI_DC_CURRENT = protocol->getValueAsFloat32(&container[n]);
+                            if (index == 0){
+                              cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                              writeRscp(PosPVIDCI1,TAG_OUT_PVI_DC_CURRENT);
+                            }
+                            if (index == 1){
+                              cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                              writeRscp(PosPVIDCI2,TAG_OUT_PVI_DC_CURRENT);
+                            }
+                    }
+                }
+                protocol->destroyValueData(container);
                 break;
             }
             // ...
