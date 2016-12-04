@@ -671,13 +671,22 @@ int main(){
 					FILE *ipFile;
 					snprintf(batch, (size_t)256, "ifconfig | grep \" inet Adresse\" | cut -d: -f2 | cut -d\" \" -f1");
 					ipFile = popen (batch, "r");
-					fgets(OUT,100,ipFile);
-					sscanf(OUT, "%s\n", PiIP1);
-					fgets(OUT,100,ipFile);
-					sscanf(OUT, "%s\n", PiIP2);
-					fgets(OUT,100,ipFile);
-					sscanf(OUT, "%s\n", PiIP3);
+					fscanf(ipFile,"%s\n",PiIP1);
+					fscanf(ipFile,"%s\n",PiIP2);
+					fscanf(ipFile,"%s\n",PiIP3);
 					pclose (ipFile);
+					snprintf (OUT, (size_t)4, "%s", PiIP2);
+					int compare = atoi(OUT);
+					if (compare > 0)
+						printf("");
+					else
+						snprintf (PiIP2, (size_t)20, "%s", PiIP1);
+					snprintf (OUT, (size_t)4, "%s", PiIP3);
+					compare = atoi(OUT);
+					if (compare > 0)
+						printf("");
+					else
+						snprintf (PiIP3, (size_t)20, "%s", PiIP2);
 					//Grafiken für Pi nformationen erstellen
 					// Grafik für Uptime
 					drawSquare(S4,R2-20,320,60,GREY);
@@ -741,10 +750,11 @@ int main(){
 						createData(S6, R4, PiCPU);
 					}
 					// IP
-					createData(S6-40, R5-32, PiIP1);
-					createData(S6-40, R5-16, PiIP2);
+					createData(S6-30, R5-32, PiIP1);
+					if (strcmp (PiIP1,PiIP2) != 0)
+						createData(S6-30, R5-16, PiIP2);
 					if (strcmp (PiIP2,PiIP3) != 0)
-						createData(S6-40, R5, PiIP3);
+						createData(S6-30, R5, PiIP3);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;
