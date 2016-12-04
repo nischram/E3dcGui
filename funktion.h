@@ -313,7 +313,7 @@ int readRscp(int RscpPosition)
   return ret;
 }
 //Lesen der RSCP Daten aus dem RAMDisk
-void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
+void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr, char *PVI_Current_1, char *PVI_Current_2)
 {
   FILE *fp;
   fp = fopen("/mnt/RAMDisk/E3dcGuiChar.txt", "r");
@@ -327,6 +327,10 @@ void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
     strtok(TAG_Time, "\n");
     fgets(TAG_SerialNr,20,fp);
     strtok(TAG_SerialNr, "\n");
+    fgets(PVI_Current_1,20,fp);
+    strtok(PVI_Current_1, "\n");
+    fgets(PVI_Current_2,20,fp);
+    strtok(PVI_Current_2, "\n");
     fclose(fp);
   }
 }

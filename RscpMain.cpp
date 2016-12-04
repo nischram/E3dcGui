@@ -23,7 +23,7 @@ static AES aesDecrypter;
 static uint8_t ucEncryptionIV[AES_BLOCK_SIZE];
 static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
 static int32_t TAG_EMS_OUT_UNIXTIME = 0;
-static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
+static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_SERIAL_NUMBER [17], TAG_OUT_PVI_DC_CURRENT_1 [10], TAG_OUT_PVI_DC_CURRENT_2 [10];
 static int CounterHM = 0;
 static int Counter900 = 0;
 
@@ -430,11 +430,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                             TAG_OUT_PVI_DC_CURRENT = protocol->getValueAsFloat32(&container[n]);
                             if (index == 0){
                               cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
-                              writeRscp(PosPVIDCI1,TAG_OUT_PVI_DC_CURRENT);
+                              snprintf (TAG_OUT_PVI_DC_CURRENT_1, (size_t)20, "%2.2f", TAG_OUT_PVI_DC_CURRENT);
                             }
                             if (index == 1){
                               cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
-                              writeRscp(PosPVIDCI2,TAG_OUT_PVI_DC_CURRENT);
+                              snprintf (TAG_OUT_PVI_DC_CURRENT_2, (size_t)20, "%2.2f", TAG_OUT_PVI_DC_CURRENT);
                             }
                     }
                 }
@@ -685,7 +685,7 @@ static void mainLoop(void)
           CounterHM = 0;
         CounterHM ++;
 
-        writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
+        writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER, TAG_OUT_PVI_DC_CURRENT_1, TAG_OUT_PVI_DC_CURRENT_2);
 
         if(Counter900 == 900){
           Counter900 = 0;

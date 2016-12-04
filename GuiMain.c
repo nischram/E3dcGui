@@ -46,6 +46,7 @@ int main(){
 	int GuiTime, change = 0, changeStop = 0;
 	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
+	char PVI_Current_1[10], PVI_Current_2[10];           //PVI Current wird als char gespeichert und gelesen damit die Nachkommastellen angezeigt werden können
 	int counter, ScreenSaverCounter, read;
 	int UnixTime;
 
@@ -66,7 +67,7 @@ int main(){
 	printf ("Y Scale Factor = %f\n", scaleYvalue);
 //####################################
 	while(1){
-		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
+		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber, PVI_Current_1, PVI_Current_2);
 		GuiTime = PiTime;
 
 		Screen[ScreenCounter] = readScreen(ScreenCounter);
@@ -96,8 +97,8 @@ int main(){
 						if(E3DC_S10 ==1){
 							DrawImage("AktuellImage", 270, 12);
 							DrawImage("LangzeitImage", 360, 12);
+							DrawImage("MonitorImage", 450, 12);
 						}
-						DrawImage("MonitorImage", 450, 12);
 						if(Homematic_GUI ==1){
 							DrawImage("HMImage", 540, 12);
 						}
@@ -404,8 +405,8 @@ int main(){
 	 				if(E3DC_S10 ==1){
 	 					DrawImage("AktuellImage", 270, 12);
 	 					DrawImage("LangzeitImage", 360, 12);
+						DrawImage("MonitorImage", 450, 12);
 	 				}
-	 				DrawImage("MonitorImage", 450, 12);
 	 				if(Homematic_GUI ==1){
 	 					DrawImage("HMImage", 540, 12);
 	 				}
@@ -461,103 +462,78 @@ int main(){
 //####################################################
 			//Monitor Grafik erstellen
 			case ScreenMonitor:{
-				GuiTime = PiTime;
-				char PiTemp[20], PiUptime[20], PiCPU[20];
-				//Pi Temp
-				FILE *temperatureFile;
-				double T;
-				temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
-				fscanf (temperatureFile, "%lf", &T);
-				T /= 1000;
-				snprintf (PiTemp, (size_t)20, "%3.1f 'C", T);
-				fclose (temperatureFile);
-				//Pi Uptime
-				struct sysinfo info;
-				sysinfo(&info);
-				snprintf (Value, (size_t)20, "%ld\n", info.uptime);
-				double PiUptimeint = atoi(Value);
-				PiUptimeint = (double)PiUptimeint /60;
-				snprintf (PiUptime, (size_t)20, "%8.1f Minuten", PiUptimeint);
-				//CPU
-				FILE *cpuFile;
-				snprintf(batch, (size_t)256, "vmstat| head -3l | tail -1l  | cut -b 73-75");
-				cpuFile = popen (batch, "r");
-				fgets(OUT,sizeof(OUT),cpuFile);
-				int PiCPUint = atoi(OUT);
-				PiCPUint = 100 - PiCPUint;
-				snprintf (PiCPU, (size_t)20, "%i %%", PiCPUint);
-				pclose (cpuFile);
-
-				if(counter == 0){
-					drawSquare(2,2,800,480,LTGREY);
-					drawCorner(2, 2, 800, 480, BLACK);
-					drawSquare(12,12,778,458,WHITE);
-					drawCorner(12, 12, 778, 458, LTGREY);
-					DrawImage("EinstImage", 180, 12);
-					if(E3DC_S10 ==1){
-						DrawImage("AktuellImage", 270, 12);
-						DrawImage("LangzeitImage", 360, 12);
-					}
-					DrawImage("MonitorImage", 450, 12);
-					if(Homematic_GUI ==1){
-						DrawImage("HMImage", 540, 12);
-					}
+				GuiTime = RscpTime;
+				int screenState = readScreen(ScreenState);
+				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
-					// Grafik für Uptime
-					drawSquare(S2,R1-20,320,60,GREY);
-					drawCorner(S2,R1-20,320,60,WHITE);
-					drawSquare(S2+60,R1-17,257,54,WHITE);
-					drawCorner(S2+60,R1-17,257,54,GREY);
-					put_string(S2+6, R1+4, "Uptime", WHITE);
-					// Grafik für Temp
-					drawSquare(S2,R2-20,320,60,GREY);
-					drawCorner(S2,R2-20,320,60,WHITE);
-					drawSquare(S2+60,R2-17,257,54,WHITE);
-					drawCorner(S2+60,R2-17,257,54,GREY);
-					put_string(S2+6, R2+4, "Temp", WHITE);
-					// Grafik für CPU
-					drawSquare(S2,R3-20,320,60,GREY);
-					drawCorner(S2,R3-20,320,60,WHITE);
-					drawSquare(S2+60,R3-17,257,54,WHITE);
-					drawCorner(S2+60,R3-17,257,54,GREY);
-					put_string(S2+6, R3+4, "CPU", WHITE);
+					if(screenState == ScreenOn){
+						drawSquare(2,2,800,480,LTGREY);																				//drawSquare ist eine Funktion im frameBuffer.c zum erstellen eines farbigen Viereck
+						drawCorner(2, 2, 800, 480, BLACK);																		//drawCorner ist eine eigene Funktion in Frame/DrawCorner.c zum erstellen von abgerundetetn Ecken
+		        drawSquare(12,12,778,458,WHITE);
+						drawCorner(12, 12, 778, 458, LTGREY);
+		        DrawImage("EinstImage", 180, 12);					//DrawImage ist eine Funktion um ein Bild auf dem Display zu Zeichnen
+						if(E3DC_S10 ==1){
+							DrawImage("AktuellImage", 270, 12);
+							DrawImage("LangzeitImage", 360, 12);
+							DrawImage("MonitorImage", 450, 12);
+						}
+						if(Homematic_GUI ==1){
+							DrawImage("HMImage", 540, 12);
+						}
+						DrawImage("PV_Modul_aktiv", 240, 150);
+						if (PVI_TRACKER == 2)
+							DrawImage("PV_Modul_aktiv", 440, 150);
+						else
+							DrawImage("PV_Modul_deaktiv", 440, 150);
+					}
 				}
-				// Uptime
-				drawSquare(S4-30, R1+4, 140, 12, WHITE);
-				put_string(S4-30, R1+4, PiUptime, GREY);
-				// Temp
-				if (T > 20){
-					drawSquare(S4, R2, Fw, 21, LIGHT_GREEN);
-					createData(S4, R2, PiTemp);
-				}
-				else if (T > 40){
-					drawSquare(S4, R2, Fw, 21, LIGHT_RED);
-					createData(S4, R2, PiTemp);
-				}
-				else if (T > 60){
-					drawSquare(S4, R2, Fw, 21, RED);
-					createData(S4, R2, PiTemp);
-				}
-				else{
-					drawSquare(S4, R2, Fw, 21, GREEN);
-					createData(S4, R2, PiTemp);
-				}
-				// CPU
-				if (PiCPUint > 5){
-					drawSquare(S4, R3, Fw, 21, LIGHT_GREEN);
-					createData(S4, R3, PiCPU);
-				}
-				else if (PiCPUint > 10){
-					drawSquare(S4, R3, Fw, 21, LIGHT_RED);
-					createData(S4, R3, PiCPU);
-				}
-				else if (PiCPUint > 20){
-					drawSquare(S4, R3, Fw, 21, RED);
-					createData(S4, R3, PiCPU);
-				}
-				else{
-					drawSquare(S4, R3, Fw, 21, GREEN);
-					createData(S4, R3, PiCPU);
+				if(counter == 0 || screenState == ScreenOn){
+					//PVI DC Power1
+					int TAG_PVIState = readRscp(PosPVIState);
+					if(TAG_PVIState >= 1){
+						int TAG_PVIDCP1 = readRscp(PosPVIDCP1);
+						snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP1);
+						drawSquare(270, 270,80,12,WHITE);
+						put_string(270, 270, OUT, GREY);
+						int TAG_PVIDCU1 = readRscp(PosPVIDCU1);
+						snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU1);
+						drawSquare(270, 290,80,12,WHITE);
+						put_string(270, 290, OUT, GREY);
+						if(TAG_PVIDCP1 > 0){
+							double TAG_PVIDCI1 = atof(PVI_Current_1);
+							snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI1);
+							drawSquare(270, 310,80,12,WHITE);
+							put_string(270, 310, OUT, GREY);
+						}
+					}
+					else{
+						drawSquare(250, 250,80,12,WHITE);
+						put_string(250, 250, "PVI-DOWN", RED);
+					}
+					//PVI Tracker 2
+					if (PVI_TRACKER == 2){
+						//PVI DC Power2
+						if(TAG_PVIState >= 1){
+							int TAG_PVIDCP2 = readRscp(PosPVIDCP2);
+							snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP2);
+							drawSquare(470, 270,80,12,WHITE);
+							put_string(470, 270, OUT, GREY);
+							int TAG_PVIDCU2 = readRscp(PosPVIDCU2);
+							snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU2);
+							drawSquare(470, 290,80,12,WHITE);
+							put_string(470, 290, OUT, GREY);
+							if(TAG_PVIDCP2 > 0){
+								double TAG_PVIDCI2 = atof(PVI_Current_2);
+								snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI2);
+								drawSquare(470, 310,80,12,WHITE);
+								put_string(470, 310, OUT, GREY);
+							}
+						}
+						else{
+							drawSquare(450, 250,80,12,WHITE);
+							put_string(450, 250, "PVI-DOWN", RED);
+						}
+					}
 				}
 				break;
 			}
@@ -583,27 +559,27 @@ int main(){
 					drawCorner(12, 12, 778, 458, LTGREY);
 					switch(screenShutdown){
 						case ShutdownSD:{
-							drawSquare(100,200,180,30,GREY);
-							drawCorner(100,200,180,30, WHITE);
-							put_string(120,208, "3 Sekunden", LIGHT_RED);
+							drawSquare(S1,R2-20,180,30,GREY);
+							drawCorner(S1,R2-20,180,30, WHITE);
+							put_string(S1+20,R2-20+8, "3 Sekunden", LIGHT_RED);
 							break;
 						}
 						case ShutdownSRS:{
-							drawSquare(100,250,180,30,GREY);
-							drawCorner(100,250,180,30, WHITE);
-							put_string(120,258, "Software Neustart", GREEN);
+							drawSquare(S1,R3-20,180,30,GREY);
+							drawCorner(S1,R3-20,180,30, WHITE);
+							put_string(S1+20,R3-20+8, "Software Neustart", GREEN);
 							break;
 						}
 						case ShutdownHRS:{
-							drawSquare(100,300,180,30,RED);
-							drawCorner(100,300,180,30, WHITE);
-							put_string(120,308, "Hardware Neustart", WHITE);
+							drawSquare(S1,R4-20,180,30,RED);
+							drawCorner(S1,R4-20,180,30, WHITE);
+							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
 							break;
 						}
 						case ShutdownSDN:{
-							drawSquare(100,200,180,30,RED);
-							drawCorner(100,200,180,30, WHITE);
-							put_string(120,308, "SHUTDOWN", WHITE);
+							drawSquare(S1,R2-20,180,30,RED);
+							drawCorner(S1,R2-20,180,30, WHITE);
+							put_string(S1+20,R2-20+8, "SHUTDOWN", WHITE);
 							break;
 						}
 						case ShutdownWD:{
@@ -616,15 +592,15 @@ int main(){
 							break;
 						}
 						case ShutdownRun:{
-							drawSquare(100,200,180,30,GREY);
-							drawCorner(100,200,180,30, WHITE);
-							put_string(120,208, "Ausschalten", WHITE);
-							drawSquare(100,250,180,30,GREY);
-							drawCorner(100,250,180,30, WHITE);
-							put_string(120,258, "Software Neustart", WHITE);
-							drawSquare(100,300,180,30,GREY);
-							drawCorner(100,300,180,30, WHITE);
-							put_string(120,308, "Hardware Neustart", WHITE);
+							drawSquare(S1,R2-20,180,30,GREY);
+							drawCorner(S1,R2-20,180,30, WHITE);
+							put_string(S1+20,R2-20+8, "Ausschalten", WHITE);
+							drawSquare(S1,R3-20,180,30,GREY);
+							drawCorner(S1,R3-20,180,30, WHITE);
+							put_string(S1+20,R3-20+8, "Software Neustart", WHITE);
+							drawSquare(S1,R4-20,180,30,GREY);
+							drawCorner(S1,R4-20,180,30, WHITE);
+							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
 							break;
 						}
 						default:{
@@ -646,28 +622,134 @@ int main(){
 						fclose(fp);
 					}
 					if (strcmp ("Wintertime",file_read) == 0){
-						drawSquare(450,200,180,30,GREY);
-						drawCorner(450,200,180,30, WHITE);
-						put_string(470,208, "Winterzeit", WHITE);
+						drawSquare(S1,R5-20,180,30,GREY);
+						drawCorner(S1,R5-20,180,30, WHITE);
+						put_string(S1+20,R5-20+8, "Winterzeit", WHITE);
 					}
 					else{
-						drawSquare(450,200,180,30,GREY);
-						drawCorner(450,200,180,30, WHITE);
-						put_string(470,208, "Sommerzeit", WHITE);
+						drawSquare(S1,R5-20,180,30,GREY);
+						drawCorner(S1,R5-20,180,30, WHITE);
+						put_string(S1+20,R5-20+8, "Sommerzeit", WHITE);
 					}
 					DrawImage("EinstImage", 180, 12);
 					if(E3DC_S10 ==1){
 						DrawImage("AktuellImage", 270, 12);
 						DrawImage("LangzeitImage", 360, 12);
+						DrawImage("MonitorImage", 450, 12);
 					}
-					DrawImage("MonitorImage", 450, 12);
 					if(Homematic_GUI ==1){
 						DrawImage("HMImage", 540, 12);
 					}
 					writeScreen(ScreenCounter, 60);
+					//Daten für PI Informationen laden
+					char PiTemp[20], PiUptime[20], PiCPU[20], PiIP1[20], PiIP2[20], PiIP3[20];
+					//Pi Temp
+					FILE *temperatureFile;
+					double T;
+					temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
+					fscanf (temperatureFile, "%lf", &T);
+					T /= 1000;
+					snprintf (PiTemp, (size_t)20, "%3.1f 'C", T);
+					fclose (temperatureFile);
+					//Pi Uptime
+					struct sysinfo info;
+					sysinfo(&info);
+					snprintf (Value, (size_t)20, "%ld\n", info.uptime);
+					double PiUptimeint = atoi(Value);
+					PiUptimeint = (double)PiUptimeint /60;
+					snprintf (PiUptime, (size_t)20, "%8.1f Minuten", PiUptimeint);
+					//CPU
+					FILE *cpuFile;
+					snprintf(batch, (size_t)256, "vmstat| head -3l | tail -1l  | cut -b 73-75");
+					cpuFile = popen (batch, "r");
+					fgets(OUT,sizeof(OUT),cpuFile);
+					int PiCPUint = atoi(OUT);
+					PiCPUint = 100 - PiCPUint;
+					snprintf (PiCPU, (size_t)20, "%i %%", PiCPUint);
+					pclose (cpuFile);
+					//CPU
+					FILE *ipFile;
+					snprintf(batch, (size_t)256, "ifconfig | grep \" inet Adresse\" | cut -d: -f2 | cut -d\" \" -f1");
+					ipFile = popen (batch, "r");
+					fgets(OUT,100,ipFile);
+					sscanf(OUT, "%s\n", PiIP1);
+					fgets(OUT,100,ipFile);
+					sscanf(OUT, "%s\n", PiIP2);
+					fgets(OUT,100,ipFile);
+					sscanf(OUT, "%s\n", PiIP3);
+					pclose (ipFile);
+					//Grafiken für Pi nformationen erstellen
+					// Grafik für Uptime
+					drawSquare(S4,R2-20,320,60,GREY);
+					drawCorner(S4,R2-20,320,60,WHITE);
+					drawSquare(S4+60,R2-17,257,54,WHITE);
+					drawCorner(S4+60,R2-17,257,54,GREY);
+					put_string(S4+6, R2+4, "Uptime", WHITE);
+					// Grafik für Temp
+					drawSquare(S4,R3-20,320,60,GREY);
+					drawCorner(S4,R3-20,320,60,WHITE);
+					drawSquare(S4+60,R3-17,257,54,WHITE);
+					drawCorner(S4+60,R3-17,257,54,GREY);
+					put_string(S4+6, R3+4, "Temp", WHITE);
+					// Grafik für CPU
+					drawSquare(S4,R4-20,320,60,GREY);
+					drawCorner(S4,R4-20,320,60,WHITE);
+					drawSquare(S4+60,R4-17,257,54,WHITE);
+					drawCorner(S4+60,R4-17,257,54,GREY);
+					put_string(S4+6, R4+4, "CPU", WHITE);
+					// Grafik für IP
+					drawSquare(S4,R5-20,320,60,GREY);
+					drawCorner(S4,R5-20,320,60,WHITE);
+					drawSquare(S4+60,R5-17,257,54,WHITE);
+					drawCorner(S4+60,R5-17,257,54,GREY);
+					put_string(S4+6, R5+4, "IP", WHITE);
+					// Uptime
+					drawSquare(S6-30, R2+4, 140, 12, WHITE);
+					put_string(S6-30, R2+4, PiUptime, GREY);
+					// Temp
+					if (T > 20){
+						drawSquare(S6, R3, Fw, 21, LIGHT_GREEN);
+						createData(S6, R3, PiTemp);
+					}
+					else if (T > 40){
+						drawSquare(S6, R3, Fw, 21, LIGHT_RED);
+						createData(S6, R3, PiTemp);
+					}
+					else if (T > 60){
+						drawSquare(S6, R3, Fw, 21, RED);
+						createData(S6, R3, PiTemp);
+					}
+					else{
+						drawSquare(S6, R3, Fw, 21, GREEN);
+						createData(S6, R3, PiTemp);
+					}
+					// CPU
+					if (PiCPUint > 5){
+						drawSquare(S6, R4, Fw, 21, LIGHT_GREEN);
+						createData(S6, R4, PiCPU);
+					}
+					else if (PiCPUint > 10){
+						drawSquare(S6, R4, Fw, 21, LIGHT_RED);
+						createData(S6, R4, PiCPU);
+					}
+					else if (PiCPUint > 20){
+						drawSquare(S6, R4, Fw, 21, RED);
+						createData(S6, R4, PiCPU);
+					}
+					else{
+						drawSquare(S6, R4, Fw, 21, GREEN);
+						createData(S6, R4, PiCPU);
+					}
+					// IP
+					createData(S6-40, R5-32, PiIP1);
+					createData(S6-40, R5-16, PiIP2);
+					if (strcmp (PiIP2,PiIP3) != 0)
+						createData(S6-40, R5, PiIP3);
+					writeScreen(ScreenCounter, 60);
 				}
 				break;
 			}
+//####################################################
 			default:{
 				if(E3DC_S10 ==1)
 					writeScreen(ScreenChange, ScreenAktuell);

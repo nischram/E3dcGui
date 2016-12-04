@@ -173,12 +173,10 @@ Es kann aber zu darstellungsfehler kommen.
 #define PosPVIDCP2                  13   //!!
 #define PosPVIDCU1                  14   //!!
 #define PosPVIDCU2                  15   //!!
-#define PosPVIDCI1                  16   //!!
-#define PosPVIDCI2                  17   //!!
-#define PosPMState                  18   //!!
-#define PosPMPhases                 19   //!!
-#define PosTimeZone                 20   //!!
-#define PosMAX                      21   //!!
+#define PosPMState                  16   //!!
+#define PosPMPhases                 17   //!!
+#define PosTimeZone                 18   //!!
+#define PosMAX                      19   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!

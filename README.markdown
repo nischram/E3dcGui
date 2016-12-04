@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-Stand: V1.20 02.12.2016
+Stand: V1.21 04.12.2016
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -130,8 +130,9 @@ Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildsc
 Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole in der oberen Ziele abgerufen. Sollten Funktionen der Software nicht aktiviert sein, bleiben die Symbole ausgeblendet.
 
 #### 1. Setup
-<img src="https://s20.postimg.org/o8ibqnz19/Setup.jpg" alt="Setup">  
+<img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
+Auf der rechten Seite werden Informationen zum Raspberry Pi ausgegeben
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
@@ -144,8 +145,8 @@ Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespei
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 #### 4. Monitor
-<img src="https://s20.postimg.org/x7czhftb1/Monitor.jpg" alt="Monitor">  
-Hier werden Informationen zum Raspberry Pi ausgegeben.
+<img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
+Hier werden die einzelnen Tracker des Wechselrichters dargestellt.
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
@@ -355,6 +356,12 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+
+V1.21 04.12.2016 Anzeige der einzelnen Tracker des Wechselrichters
+- PI Daten aus Monitor-Seite verschoben in die Setup-Seite
+- PI Daten um die IP-Adresse erweitert
+- Azeige für die einzelnen Tracke des Wechselrichters auf der Monitor-Seite erstellt
+- Speichern der Tracker-Ströme in char damit die Nachkommastellen angezeigt werden können   
 
 V1.20 02.12.2016 Issue #6
 - Containerabfrage für WR Tracker in RscpMain.cpp eingebaut incl. definition in der parameter.h

@@ -91,15 +91,15 @@ int main()
 	int buttonCordsHM[4] = {540,10,80,90};
 	int buttonTimerHM = mymillis();
 
-	int buttonCordsSD[4] = {120,200,180,30};
+	int buttonCordsSD[4] = {S1,R2-20,180,30};
 	int buttonTimerSD = mymillis();
-	int buttonCordsSDN[4] = {120,200,180,30};
+	int buttonCordsSDN[4] = {S1,R2-20,180,30};
 	int buttonTimerSDN = mymillis();
-	int buttonCordsSRS[4] = {120,250,180,30};
+	int buttonCordsSRS[4] = {S1,R3-20,180,30};
 	int buttonTimerSRS = mymillis();
-	int buttonCordsHRS[4] = {120,300,180,30};
+	int buttonCordsHRS[4] = {S1,R4-20,180,30};
 	int buttonTimerHRS = mymillis();
-	int buttonCordstime_zone[4] = {470,200,180,30};
+	int buttonCordstime_zone[4] = {S1,R5-20,180,30};
 	int buttonTimertime_zone = mymillis();
 
 	int buttonCordsLeSOC[4] = {364,438,50,30};
