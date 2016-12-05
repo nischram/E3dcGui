@@ -139,11 +139,11 @@ int makeData(char Path[128], int Position, int NewValue, int max)
  return 0;
 }
 
-int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3, char *CHAR4, char *CHAR5)
+int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3)
 {
   ofstream fout(Path);
   if (fout.is_open()) {
-    fout << CHAR1 << "\n" << CHAR2 << "\n" << CHAR3 << "\n" << CHAR4 << "\n" << CHAR5 << endl;
+    fout << CHAR1 << "\n" << CHAR2 << "\n" << CHAR3 << endl;
     fout.close();
   }
   else cerr << "Konnte Datei nicht erstellen!\n";
@@ -184,11 +184,11 @@ int makeRscp(int Position, int NewValue)
   makeData(PathRscp, Position, NewValue, PosMAX);
   return 1;
 }
-int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER, char *TAG_OUT_PVI_DC_CURRENT_1, char *TAG_OUT_PVI_DC_CURRENT_2)
+int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER)
 {
   char PathRscp [128];
   snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiChar.txt");
-  writeCharData(PathRscp, TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER, TAG_OUT_PVI_DC_CURRENT_1, TAG_OUT_PVI_DC_CURRENT_2);
+  writeCharData(PathRscp, TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
   return 1;
 }
 int readRscp(int Position)
@@ -200,13 +200,11 @@ int readRscp(int Position)
 }
 int makeCharRscp()
 {
-  char TAG_Date [128], TAG_Time [128], serialnumber [128], PVI_Current_1[10], PVI_Current_2[10];
+  char TAG_Date [128], TAG_Time [128], serialnumber [128];
   snprintf (TAG_Date, (size_t)128, "01.01.2016");
   snprintf (TAG_Time, (size_t)128, "00:00:00");
   snprintf (serialnumber, (size_t)128, "S10-XXXXXXXXXXXX");
-  snprintf (PVI_Current_1, (size_t)128, "0.00");
-  snprintf (PVI_Current_2, (size_t)128, "0.00");
-  writeCharRscp(TAG_Date, TAG_Time, serialnumber, PVI_Current_1, PVI_Current_2);
+  writeCharRscp(TAG_Date, TAG_Time, serialnumber);
 }
 int writeUnixtime(int Position, int NewTime)
 {

@@ -46,7 +46,6 @@ int main(){
 	int GuiTime, change = 0, changeStop = 0;
 	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
-	char PVI_Current_1[10], PVI_Current_2[10];           //PVI Current wird als char gespeichert und gelesen damit die Nachkommastellen angezeigt werden können
 	int counter, ScreenSaverCounter, read;
 	int UnixTime;
 
@@ -67,7 +66,7 @@ int main(){
 	printf ("Y Scale Factor = %f\n", scaleYvalue);
 //####################################
 	while(1){
-		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber, PVI_Current_1, PVI_Current_2);
+		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
 		GuiTime = PiTime;
 
 		Screen[ScreenCounter] = readScreen(ScreenCounter);
@@ -500,8 +499,8 @@ int main(){
 						drawSquare(270, 290,80,12,WHITE);
 						put_string(270, 290, OUT, GREY);
 						if(TAG_PVIDCP1 > 0){
-							double TAG_PVIDCI1 = atof(PVI_Current_1);
-							snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI1);
+							double TAG_PVIDCI1 = readRscp(PosPVIDCI1);
+							snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI1/100);
 							drawSquare(270, 310,80,12,WHITE);
 							put_string(270, 310, OUT, GREY);
 						}
@@ -523,8 +522,8 @@ int main(){
 							drawSquare(470, 290,80,12,WHITE);
 							put_string(470, 290, OUT, GREY);
 							if(TAG_PVIDCP2 > 0){
-								double TAG_PVIDCI2 = atof(PVI_Current_2);
-								snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI2);
+								double TAG_PVIDCI2 = readRscp(PosPVIDCI2);
+								snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI2/100);
 								drawSquare(470, 310,80,12,WHITE);
 								put_string(470, 310, OUT, GREY);
 							}
