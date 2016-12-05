@@ -641,7 +641,7 @@ int main(){
 					}
 					writeScreen(ScreenCounter, 60);
 					//Daten für PI Informationen laden
-					char PiTemp[20], PiUptime[20], PiCPU[20], PiIP1[20], PiIP2[20], PiIP3[20];
+					char PiTemp[20], PiUptime[40], PiCPU[20], PiIP1[20], PiIP2[20], PiIP3[20];
 					//Pi Temp
 					FILE *temperatureFile;
 					double T;
@@ -656,7 +656,16 @@ int main(){
 					snprintf (Value, (size_t)20, "%ld\n", info.uptime);
 					double PiUptimeint = atoi(Value);
 					PiUptimeint = (double)PiUptimeint /60;
-					snprintf (PiUptime, (size_t)20, "%8.1f Minuten", PiUptimeint);
+					int PiUpHour = PiUptimeint /60;
+					int PiUpMin = PiUptimeint - (PiUpHour * 60);
+					int PiUpDay = PiUpHour / 24;
+					PiUpHour = PiUpHour - (PiUpDay *24);
+					if (PiUpDay == 0)
+						snprintf (PiUptime, (size_t)40, "       %i Std. %i Min.", PiUpHour, PiUpMin);
+					else if (PiUpDay == 1)
+						snprintf (PiUptime, (size_t)40, "%i Tag %i Std. %i Min.", PiUpDay, PiUpHour, PiUpMin);
+					else
+						snprintf (PiUptime, (size_t)40, "%i Tage %i Std. %i Min.", PiUpDay, PiUpHour, PiUpMin);
 					//CPU
 					FILE *cpuFile;
 					snprintf(batch, (size_t)256, "vmstat| head -3l | tail -1l  | cut -b 73-75");
@@ -712,48 +721,47 @@ int main(){
 					drawCorner(S4+60,R5-17,257,54,GREY);
 					put_string(S4+6, R5+4, "IP", WHITE);
 					// Uptime
-					drawSquare(S6-30, R2+4, 140, 12, WHITE);
-					put_string(S6-30, R2+4, PiUptime, GREY);
+					put_string(S6-60, R2+4, PiUptime, GREY);
 					// Temp
 					if (T > 20){
-						drawSquare(S6, R3, Fw, 21, LIGHT_GREEN);
-						createData(S6, R3, PiTemp);
+						drawSquare(S6-20, R3, Fw, 21, LIGHT_GREEN);
+						createData(S6-25, R3, PiTemp);
 					}
 					else if (T > 40){
-						drawSquare(S6, R3, Fw, 21, LIGHT_RED);
-						createData(S6, R3, PiTemp);
+						drawSquare(S6-20, R3, Fw, 21, LIGHT_RED);
+						createData(S6-25, R3, PiTemp);
 					}
 					else if (T > 60){
-						drawSquare(S6, R3, Fw, 21, RED);
-						createData(S6, R3, PiTemp);
+						drawSquare(S6-20, R3, Fw, 21, RED);
+						createData(S6-25, R3, PiTemp);
 					}
 					else{
-						drawSquare(S6, R3, Fw, 21, GREEN);
-						createData(S6, R3, PiTemp);
+						drawSquare(S6-20, R3, Fw, 21, GREEN);
+						createData(S6-25, R3, PiTemp);
 					}
 					// CPU
 					if (PiCPUint > 5){
-						drawSquare(S6, R4, Fw, 21, LIGHT_GREEN);
-						createData(S6, R4, PiCPU);
+						drawSquare(S6-20, R4, Fw, 21, LIGHT_GREEN);
+						createData(S6-10, R4, PiCPU);
 					}
 					else if (PiCPUint > 10){
-						drawSquare(S6, R4, Fw, 21, LIGHT_RED);
-						createData(S6, R4, PiCPU);
+						drawSquare(S6-20, R4, Fw, 21, LIGHT_RED);
+						createData(S6-10, R4, PiCPU);
 					}
 					else if (PiCPUint > 20){
-						drawSquare(S6, R4, Fw, 21, RED);
-						createData(S6, R4, PiCPU);
+						drawSquare(S6-20, R4, Fw, 21, RED);
+						createData(S6-10, R4, PiCPU);
 					}
 					else{
-						drawSquare(S6, R4, Fw, 21, GREEN);
-						createData(S6, R4, PiCPU);
+						drawSquare(S6-20, R4, Fw, 21, GREEN);
+						createData(S6-10, R4, PiCPU);
 					}
 					// IP
-					createData(S6-30, R5-32, PiIP1);
+					createData(S6-60, R5-32, PiIP1);
 					if (strcmp (PiIP1,PiIP2) != 0)
-						createData(S6-30, R5-16, PiIP2);
+						createData(S6-60, R5-16, PiIP2);
 					if (strcmp (PiIP2,PiIP3) != 0)
-						createData(S6-30, R5, PiIP3);
+						createData(S6-60, R5, PiIP3);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;
