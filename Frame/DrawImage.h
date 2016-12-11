@@ -140,7 +140,7 @@ void draw(struct fb_image *image, int posx, int posy) {
             unsigned int img_pix_offset = (ydraw * image->width + xdraw) * 2;
             unsigned short c = *(unsigned short *)(image->data + img_pix_offset);
             // plot pixel to screen
-            unsigned int fb_pix_offset = (xdraw + posx) * 2 + (ydraw + posy) * finfo.line_length;
+            unsigned int fb_pix_offset = (xdraw + posx) * 2 + (ydraw + posy) * fix.line_length;
             *((unsigned short*)(fbpI + fb_pix_offset)) = c;
         }
     }
@@ -153,11 +153,11 @@ void cleanup() {
         close(kbfd);
     }*/
     // unmap fb file from memory
-    munmap(fbpI, finfo.smem_len);
+    munmap(fbpI, fix.smem_len);
     // reset the display mode
-    if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &orig_vinfo)) {
+    if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &orig_var)){
         printf("Error re-setting variable information.\n");
-    }
+		}
     // close fb file
     close(fbfd);
     // free image data
@@ -165,7 +165,7 @@ void cleanup() {
 }
 
 void sig_handler(int signo) {
-		//cleanup();    //doppelte Freibage des Speichers
+    //cleanup();    //doppelte Freibage des Speichers
     exit(signo);
 }
 int DrawImage(char* fileName, int posx, int posy)
@@ -181,7 +181,7 @@ int DrawImage(char* fileName, int posx, int posy)
     }
 
     // Open the file for reading and writing
-    fbfd = open("/dev/fb0", O_RDWR);
+    fbfd = open(framebuffer_File, O_RDWR);
     if (fbfd == -1) {
       printf("Error: cannot open framebuffer device.\n");
       return(1);
@@ -191,18 +191,18 @@ int DrawImage(char* fileName, int posx, int posy)
     signal(SIGINT, sig_handler);
 
     // Get variable screen information
-    if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo)) {
+    if (ioctl(fbfd, FBIOGET_VSCREENINFO, &var)){
       printf("Error reading variable information.\n");
-    }
+		}
 
-    // Store for reset (copy vinfo to vinfo_orig)
-    memcpy(&orig_vinfo, &vinfo, sizeof(struct fb_var_screeninfo));
+    // Store for reset (copy var to var_orig)
+    memcpy(&orig_var, &var, sizeof(struct fb_var_screeninfo));
 
     // Get fixed screen information
-    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo)) {
+    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &fix)){
       printf("Error reading fixed information.\n");
-    }
-    page_size = finfo.line_length * vinfo.yres;
+		}
+    //page_size = fix.line_length * var.yres;
 
     // hide cursor
     /*kbfd = open("/dev/tty", O_WRONLY);
@@ -212,7 +212,7 @@ int DrawImage(char* fileName, int posx, int posy)
 
     // map fb to user mem
     fbpI = (char*)mmap(0,
-              finfo.smem_len,
+              fix.smem_len,
               PROT_READ | PROT_WRITE,
               MAP_SHARED,
               fbfd,

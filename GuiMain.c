@@ -779,26 +779,6 @@ int main(){
 		} //switch(screenChange)
 
 //####################################################
-		//!!!! Nico !!!!! Astro Watchdog kontrolle
-		if (AstroUse == 1){
-			int stateAstro = readScreen(ScreenAstro);
-			if (stateAstro == 1){
-				drawSquare(760,20,20,20,GREEN);
-				drawCorner(760,20,20,20,WHITE);
-			}
-			else{
-				drawSquare(760,20,20,20,LIGHT_RED);
-				drawCorner(760,20,20,20,WHITE);
-			}
-			int countAstro = countAstro + 1;
-			if (countAstro == 4){
-				writeScreen(ScreenAstro, false);
-				countAstro = 0;
-			}
-		}
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//####################################################
 	//WatchdogHM Daten für WD schreiben
 	int Unixtime[UnixtimeMAX];
 
