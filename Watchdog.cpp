@@ -7,7 +7,34 @@
 #include <ctime>
 #include "parameter.h"
 
+#define WDfail                    0
+#define WDwait                    1
+#define WDaktiv                   2
+
 using namespace std;
+
+int WriteWatchdog(int value)
+{
+  ofstream fout("/home/pi/E3dcGui/WatchdogAktiv.txt");
+  if (fout.is_open()) {
+    fout << value << endl;
+    fout.close();
+  }
+}
+int ReadWatchdog()
+{
+  int value = 0;
+  char read[128];
+  fstream datei("/home/pi/E3dcGui/WatchdogAktiv.txt");
+  if (datei.is_open()) {
+    datei.getline(read ,128, '\n');
+    value = atoi(read);
+    datei.close();
+    return value;
+  }
+  else cerr << "Konnte Datei nicht erstellen!\n";
+  return 0;
+}
 
 void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, int resetCounter, char OUT[100]){
   ofstream fout("/home/pi/E3dcGui/Watchdog.csv", ios::app);
@@ -97,6 +124,14 @@ int main()
     int Unixtime[4];
     char DATE[40], TIME[40], OUT[100];
 
+    int readWD = ReadWatchdog();
+    if (readWD == WDfail){
+      WriteWatchdog(WDwait);
+    }
+    else if (readWD == WDaktiv){
+      sleep (3600);
+      WriteWatchdog(WDwait);
+    }
     while(1){
       sleep(sleepTimeWD);
       int AktuallTime = time(NULL);
@@ -130,6 +165,7 @@ int main()
             snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nRSCP-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeE3dc);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
+          WriteWatchdog(WDaktiv);
 					sleep (5);
           system("sudo reboot");
           return(0);
@@ -162,6 +198,7 @@ int main()
             snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nHM-Time > %i Sek. \nPI: %i / HM: %i", WDdiff, AktuallTime, UnixTimeHM);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
+          WriteWatchdog(WDaktiv);
 					sleep (5);
           system("sudo reboot");
           return(0);
@@ -197,6 +234,7 @@ int main()
             snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nGUI-Time > %i Sek. \nPI: %i / GUI: %i", WDdiff, AktuallTime, UnixTimeGUI);
             sendEmail(EmailAdress, EmailBetreff, EmailText);
           }
+          WriteWatchdog(WDaktiv);
           sleep (5);
           system("sudo reboot");
           return(0);
