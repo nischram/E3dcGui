@@ -260,7 +260,8 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         break;
       }
       case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
-        int32_t TAG_EMS_OUT_POWER_ADD = protocol->getValueAsInt32(response);
+        int32_t ADD_REAL = protocol->getValueAsInt32(response);
+        int32_t TAG_EMS_OUT_POWER_ADD = ADD_REAL * -1;
         cout << "Additional Power is " << TAG_EMS_OUT_POWER_ADD << " W\n";
         writeRscp(PosADD,TAG_EMS_OUT_POWER_ADD);
         char file[20];

@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.27 13.02.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.28 01.05.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -323,6 +323,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.28 01.05.2017 Issue #10
+- ADD Power wurde Negativ angezeigt, Invertierung eingebaut
+
 V1.27 13.02.2017 Issue #9
 - Wegen häufigen Reebot eine Wartezeit von 3600 Sekunden eingebaut
 
