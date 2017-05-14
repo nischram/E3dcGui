@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.28 01.05.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.29) 14.05.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -269,6 +269,8 @@ Mit den Parametern
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll. Beide Parameter auf "0", dann wird keine eMail gesendet und die Software muss __nicht__ installiert werden.
 
+__Wichtig:__ Bitte zur Fehlerbehebung [Issue#11](https://github.com/nischram/E3dcGui/issues/11) beachten!
+
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay, Standgehäuse und Netzteil.  
 Hier die Artikelnummer von Conrad: [1437995-62](https://www.conrad.de/de/raspberry-pi-3-model-b-starter-set-1-gb-noobs-inkl-betriebssystem-noobs-inkl-gehaeuse-inkl-netzteil-inkl-software-1437995.html)   
@@ -323,6 +325,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.29 01.05.2017 Issue #11
+- Fehlermeldung bei sendEmail 
+
 V1.28 01.05.2017 Issue #10
 - ADD Power wurde Negativ angezeigt, Invertierung eingebaut
 
