@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.29) 14.05.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.30 14.05.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -325,44 +325,16 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
-V1.29 01.05.2017 Issue #11
-- Fehlermeldung bei sendEmail 
+V1.30 14.05.2017 Tippfehler README
+- Changelog archiviert
+
+V1.29 14.05.2017 Issue #11
+- Fehlermeldung bei sendEmail
 
 V1.28 01.05.2017 Issue #10
 - ADD Power wurde Negativ angezeigt, Invertierung eingebaut
 
 V1.27 13.02.2017 Issue #9
 - Wegen häufigen Reebot eine Wartezeit von 3600 Sekunden eingebaut
-
-V1.26 11.12.2016 Fehlerkorrektur
-- Grafiken für die einzelnen Tracker fehlen
-
-V1.25 11.12.2016 Fehlerkorrektur für PN aus Homematicforum
-- GuiMain.c und den Teil gekürzt der nur für meine zusätzliche Anwendung ist
-- DrawImage.h hatte ich bei einen der letzten Aktualisierungen vergessen   
-
-V1.24 05.12.2016 Verbesseung der Darstellung
-- Verbesseung der Darstellung der Uptime vom Pi
-
-V1.23 05.12.2016 Stromanzeige der einzelnen Tracker überarbeitet
-- Speicherung zurückgeändert von char nach int
-- int *100 um die Kommastellen nicht zu verlieren   
-
-V1.22 04.12.2016 Readme überarbeitet
-- Fehlerkorrektur
-- Links eingefügt
-- Loxone Readme ausgelagert
-
-V1.21 04.12.2016 Anzeige der einzelnen Tracker des Wechselrichters
-- PI Daten aus Monitor-Seite verschoben in die Setup-Seite
-- PI Daten um die IP-Adresse erweitert
-- Azeige für die einzelnen Tracke des Wechselrichters auf der Monitor-Seite erstellt
-- Speichern der Tracker-Ströme in char damit die Nachkommastellen angezeigt werden können   
-
-V1.20 02.12.2016 Issue #6
-- Containerabfrage für WR Tracker in RscpMain.cpp eingebaut incl. definition in der parameter.h
-
-V1.19 01.12.2016 Issue #7
-- Fehler im upload zu "V1.13 Systemverbesserungen" falscher Dateinamen für Solar900
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

@@ -1,6 +1,33 @@
 # Changelog Archiv
 
-Stand V1.22 04.12.2016
+Stand V1.30 14.05.2017
+
+V1.30 14.05.2017 Tippfehler README
+- Changelog archiviert
+
+V1.29 14.05.2017 Issue #11
+- Fehlermeldung bei sendEmail
+
+V1.28 01.05.2017 Issue #10
+- ADD Power wurde Negativ angezeigt, Invertierung eingebaut
+
+V1.27 13.02.2017 Issue #9
+- Wegen häufigen Reebot eine Wartezeit von 3600 Sekunden eingebaut
+
+V1.26 11.12.2016 Fehlerkorrektur
+- Grafiken für die einzelnen Tracker fehlen
+
+V1.25 11.12.2016 Fehlerkorrektur für PN aus Homematicforum
+- GuiMain.c und den Teil gekürzt der nur für meine zusätzliche Anwendung ist
+- DrawImage.h hatte ich bei einen der letzten Aktualisierungen vergessen   
+
+V1.24 05.12.2016 Verbesseung der Darstellung
+- Verbesseung der Darstellung der Uptime vom Pi
+
+V1.23 05.12.2016 Stromanzeige der einzelnen Tracker überarbeitet
+- Speicherung zurückgeändert von char nach int
+- int *100 um die Kommastellen nicht zu verlieren   
+
 V1.22 04.12.2016 Readme überarbeitet
 - Fehlerkorrektur
 - Loxone Readme ausgelagert
