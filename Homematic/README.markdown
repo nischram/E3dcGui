@@ -5,7 +5,7 @@
 Anleitung zur Anbindung deines S10 Hauskraftwerk von E3DC an deine HomeMatic Hausautomation von eQ-3.
 
 ### Softwareversion
-Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch mit 2.17.15 getestet) installiert.
+Meine HomeMatic hat die Firmware 2.27.8 installiert.
 
 ### Schnittstelle
 Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet (Zusatz-Software)
@@ -18,9 +18,96 @@ Wenn du in den Einstellungen die Nutzung der HomeMatic aktiviert hast, muss die 
 In der WebUI der HomeMatic Zentrale müssen diverse Systemvariablen eingerichtet werden.
 Benötigt werden folgende Systemvariablen:
 
-<img src="http://s20.postimg.org/6enhgxc9p/TAB_001.jpg" alt="TAB_001">
-
-<img src="http://s20.postimg.org/jcd18h9ul/HM_IMG_001.png" alt="HM_IMG_001">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Bezeichnung</th>
+      <th>Variablentyp</th>
+      <th>Maximalwert</th>
+      <th>Einheit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S10_EMS_POWER_PV</td>
+      <td>S10_PV-Produktion</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_BAT</td>
+      <td>S10_Batterieleistung</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_HOME</td>
+      <td>S10_Hausverbrauch</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_GRID</td>
+      <td>S10_Netzleistung</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_NET_IN</td>
+      <td>S10_Einspeisung</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_NET_OUT</td>
+      <td>S10_Bezug</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_ADD</td>
+      <td>S10_ext.Quelle (falls vorhanden)</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>S10_EMS_POWER_WB_ALL</td>
+      <td>Wallbox (falls vorhanden)</td>
+      <td>Zahl</td>
+      <td>65000</td>
+      <td>W</td>
+    </tr>
+    <tr>
+    <td>S10_BAT_SOC</td>
+    <td>S10_Batterie SOC</td>
+    <td>Zahl</td>
+    <td>65000</td>
+    <td>%</td>
+    </tr>
+    <tr>
+    <td>S10_RSCP_Time</td>
+    <td>Zeitstempel (UnixTime)</td>
+    <td>Zahl</td>
+    <td>2147483647</td>
+    <td> </td>
+    </tr>
+    <tr>
+    <td>S10_Zeitstempel</td>
+    <td>S10_Zeitstempel (UnixTime)</td>
+    <td>Zeichenkette</td>
+    <td> </td>
+    <td> </td>
+    </tr>
+  </tbody>
+</table>
 
 Weil die HomeMatic in den Programmen keine negativen Werte auswerten kann, werden die Variablen „NET_IN“ und „NET_OUT“ benötigt. Weiter ist es zum Beispiel bei einem Anzeige-Display sinnvoller, mit einem einzelnen Parameter zu arbeiten. Hierfür wird die Variable „GRID“ benötigt.
 Die Variable für die externe Quelle „ADD“ wird natürlich nur benötigt wenn ein Leistungsmesser für die externe Quelle eingesetzt ist.
@@ -72,11 +159,6 @@ Hier ein Bild vom Display mit der Anzeige der S10-Werte. Die Werte werden je nac
 
 Durch einen kurzen Tastendruck an der Unterkante des Displays löst man das Programm aus, und die Werte des S10 werden angezeigt.
 
-Fehleranfälligkeit in diesem Programm:
-Derzeit besteht ein bei der HomeMatic-Software ein Problem mit der maximalen Anzahl von Variablen in Scripten. Hier im Forum diskutiert:
-[http://homematic-forum.de/forum/viewtopic.php?f=26&t=27907&start=100](http://homematic-forum.de/forum/viewtopic.php?f=26&t=27907&start=100)
-In dem oben verwendetem Scrip ist diese Variable z. B. „S10EPP“. Aus eigener Erfahrung kann es bei der HomeMatic zu Problemen führen, wenn in diversen Scripten die maximale Anzahl von ca. 200 Variablen überschritten wird. In dem angegebenen Forum werden Lösungsansätze besprochen. In eigenen Scripten werden seit Bekanntwerden dieses Problem nur noch allgemeine Variablen verwendet (siehe „Display-S10-ohneVariable.hm“).
-
 ### Spülmaschinen per Aktor steuern
 Im Folgenden wird beschrieben, wie man per Aktor eine Spülmaschine leistungsabhängig einschaltet.
 
@@ -124,17 +206,17 @@ Im Beriech „Einstellungen“ > „Benutzerverwaltung“ > „Bearbeiten“ kan
 
 __Zeitstempel umrechnen__
 
-Ein Programm, um den Zeitstempel „S10_RSCP_Time“ von UnixTime auf Uhrzeit und Datum für eine neue Systemvariable umzurechnen, sieht wie folgt aus:
+Hier ein Programm, um den Zeitstempel „S10_RSCP_Time“ von UnixTime auf Uhrzeit und Datum  für "S10_Zeitstempel" umzurechnen, sieht wie folgt aus:
 
 <img src="http://s20.postimg.org/l8viogffh/HM_IMG_008.png" alt="HM_IMG_008">
 
 Der Inhalt des Scripts sieht wie folgendermaßen aus:
 ```shell
-var v105 = dom.GetObject("S10_Zeitstempel");
-time v106 = dom.GetObject("S10_RSCP_Time").ToTime();
-string v107 = v106.ToTime();
-string v108 = v107.Format("%d.%m.%Y %H:%M:%S");
-v105.State(v108);
+var S10Time = dom.GetObject("S10_Zeitstempel");
+time S10Unix = dom.GetObject("S10_RSCP_Time").ToTime();
+string V001 = S10Unix.ToTime();
+string V002 = V001.Format("%d.%m.%Y %H:%M:%S");
+S10Time.State(V002);
 ```
 
 __Tagesmaximalwert der PV-Leistung als Variable anlegen__
@@ -147,24 +229,24 @@ Folgendes Programm ist nötig:
 Das Script sieht so aus:
 ```shell
 var source = dom.GetObject("$src$");
-var v101 = dom.GetObject("S10_PV-MAX");
+var S10PVMAX = dom.GetObject("S10_PV-MAX");
 if (source)
 {
-if (source.Value() > v101.Variable())
+if (source.Value() > S10PVMAX.Variable())
 {
-v101.Variable(source.Value());
+S10PVMAX.Variable(source.Value());
 }
 }
 else
 {
-var v102 = dom.GetObject("S10_EMS_POWER_PV");
-v101.Variable(v102.Value());
+var S10PowerPV = dom.GetObject("S10_EMS_POWER_PV");
+S10PVMAX.Variable(S10PowerPV.Value());
 }
 ```
 Damit der Wert „S10-PV-MAX“ täglich auf „0“ gesetzt wird, kommt ein weiteres Programm zum Einsatz. Dieses wird täglich ausgelöst, z. B. um 0:00 Uhr. Im Script muss folgendes stehen:
 ```shell
-var v001= dom.GetObject("S10_PV-MAX");
-v001.Variable("0");
+var S10PVMAX= dom.GetObject("S10_PV-MAX");
+S10PVMAX.Variable("0");
 ```
 
 __Minimal- und Maximal-Werte SOC__
