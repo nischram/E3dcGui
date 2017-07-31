@@ -131,21 +131,25 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
 Auf der rechten Seite werden Informationen zum Raspberry Pi ausgegeben
+
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
+
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
+
 #### 4. Monitor
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden die einzelnen Tracker des Wechselrichters dargestellt.
+
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
