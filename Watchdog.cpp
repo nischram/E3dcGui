@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <fstream>
 #include <ctime>
+#include <string.h>
 #include "parameter.h"
 
 #define WDfail                    0
@@ -43,11 +44,11 @@ void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, 
     fout.close();
   }
 }
-void WDcsvKontrolle(char DATE[40],char TIME[40], int AktuallTime, int UnixTimeE3dc, int UnixTimeHM, int UnixTimeGUI, char OUT[100]){
+void WDcsvKontrolle(char DATE[40],char TIME[40], char pingOUT[40], int AktuallTime, int UnixTimeE3dc, int UnixTimeHM, int UnixTimeGUI, char OUT[100]){
   if (WDkontrolle == 1){
     ofstream fout("/home/pi/E3dcGui/WatchdogKontrolle.csv", ios::app);
     if (fout.is_open()) {
-      fout << DATE << " ; " << TIME << "; PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI <<" >>> "<< OUT <<  endl ;
+      fout << DATE << " ; " << TIME << " ; Ping " << pingOUT << " ; PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI <<" >>> "<< OUT <<  endl ;
       fout.close();
     }
   }
@@ -114,6 +115,23 @@ int WriteScreen(int Position, int NewValue)
  return 1;
 }
 
+int ping (char* respons)
+{
+  char batch[256], OUT[100];
+  FILE *pingOUT;
+  snprintf(batch, (size_t)256, "sudo ping -c 1 %s | head -2l | tail -1l | cut -d: -f2 | cut -d\" \" -f4  | cut -b 6-10", RouterIP);
+  pingOUT = popen (batch, "r");
+  fgets(OUT,sizeof(OUT),pingOUT);
+  double pingTime = atof(OUT);
+  pclose (pingOUT);
+  cout << pingTime << "\n";
+  if (pingTime == 0 || pingTime > 500)
+    snprintf(respons, (size_t)128, "NOK");
+  else
+    snprintf(respons, (size_t)128, "OK");
+  return 0;
+}
+
 
 int main()
 {
@@ -122,7 +140,7 @@ int main()
     int jump = 0;
     char EmailAdress[128], EmailBetreff[128], EmailText[512];
     int Unixtime[4];
-    char DATE[40], TIME[40], OUT[100];
+    char DATE[40], TIME[40], OUT[100], batch[256], pingOUT[128];
 
     int readWD = ReadWatchdog();
     if (readWD == WDfail){
@@ -142,6 +160,8 @@ int main()
       strftime (DATE,40,"%d.%m.%Y",sys);
       strftime (TIME,40,"%H:%M:%S",sys);
 
+      ping (pingOUT);
+
       int UnixTimeE3dc = ReadUnixtime(UnixtimeE3dc);
       int DiffTimeE3dc = AktuallTime - UnixTimeE3dc;
 
@@ -151,12 +171,44 @@ int main()
       int UnixTimeGUI = ReadUnixtime(UnixtimeGui);
       int DiffTimeGUI = AktuallTime - UnixTimeGUI;
 
-      if(DiffTimeE3dc > WDdiff && E3DC_S10 == 1){
+      if ((strcmp ("NOK",pingOUT) == 0) && (PingWD == 1 || resetWLAN == 1)){
+        counterReboot ++;
+        if (counterReboot == rebootCounter && PingWD == 1){
+          snprintf (OUT, (size_t)100, "PING-reboot");
+          WriteDataWDcsv(DATE, TIME, AktuallTime, AktuallTime, resetCounter, OUT);
+          WriteScreen(ScreenShutdown, ShutdownWD);
+          WriteScreen(ScreenCounter, 0);
+          if (WDsendEmailReboot == 1){
+            snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+            snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+            snprintf (EmailText, (size_t)512, "Watchdog >>> Reboot\nPing Test > 500ms \nPI: %i", AktuallTime);
+            sendEmail(EmailAdress, EmailBetreff, EmailText);
+          }
+          WriteWatchdog(WDaktiv);
+          sleep (5);
+          system("sudo reboot");
+          return(0);
+        }
+        if (WDsendEmailKill == 1){
+          snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+          snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
+          snprintf (EmailText, (size_t)512, "Watchdog >>> WLAN-reset\nPing Test > 500ms \nPI: %i", AktuallTime);
+          sendEmail(EmailAdress, EmailBetreff, EmailText);
+        }
+        if (resetWLAN == 1){
+          system("sudo ifconfig wlan0 down");
+          sleep(1);
+          system("sudo ifconfig wlan0 up");
+          snprintf (OUT, (size_t)100, "WLAN-reset");
+          WriteDataWDcsv(DATE, TIME, AktuallTime, AktuallTime, resetCounter, OUT);
+        }
+        jump ++;
+      }
+      else if(DiffTimeE3dc > WDdiff && E3DC_S10 == 1 && jump == 0){
         counterReboot ++;
         if (counterReboot == rebootCounter){
           snprintf (OUT, (size_t)100, "RSCP-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeE3dc, resetCounter, OUT);
-          WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
           WriteScreen(ScreenShutdown, ShutdownWD);
           WriteScreen(ScreenCounter, 0);
           if (WDsendEmailReboot == 1){
@@ -181,7 +233,6 @@ int main()
         system("/home/pi/E3dcGui/RscpMain &");
         snprintf (OUT, (size_t)100, "RSCP-pkill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeE3dc, resetCounter, OUT);
-        WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
         jump ++;
       }
       else if(DiffTimeHM > WDdiff && jump == 0 && Homematic_GUI == 1 && WDuseHM_Gui == 1){
@@ -189,7 +240,6 @@ int main()
         if (counterRebootHM == rebootCounter){
           snprintf (OUT, (size_t)100, "HM_GUI-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
-          WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
           WriteScreen(ScreenShutdown, ShutdownWD);
           WriteScreen(ScreenCounter, 0);
           if (WDsendEmailReboot == 1){
@@ -211,21 +261,20 @@ int main()
         }
         system("pkill GuiMain");
         system("pkill screenSave");
+        system("pkill screenSaveHM");
         sleep(2);
         system("/home/pi/E3dcGui/GuiMain &");
         system("/home/pi/E3dcGui/screenSave &");
         system("/home/pi/E3dcGui/screenSaveHM &");
         snprintf (OUT, (size_t)100, "HM_GUI-pkill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
-        WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
         jump ++;
       }
       else if(DiffTimeGUI > WDdiff && jump == 0 && (GUI == 1 || Homematic_GUI == 1)){
         counterRebootGUI ++;
         if (counterRebootGUI == rebootCounter){
-          snprintf (OUT, (size_t)100, "HM_GUI-reboot");
+          snprintf (OUT, (size_t)100, "GuiMain-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeGUI, resetCounter, OUT);
-          WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
           WriteScreen(ScreenShutdown, ShutdownWD);
           WriteScreen(ScreenCounter, 0);
           if (WDsendEmailReboot == 1){
@@ -247,15 +296,17 @@ int main()
         }
         system("pkill GuiMain");
         system("pkill screenSave");
+        system("pkill screenSaveHM");
         sleep(2);
         system("/home/pi/E3dcGui/GuiMain &");
         system("/home/pi/E3dcGui/screenSave &");
+        system("/home/pi/E3dcGui/screenSaveHM &");
         snprintf (OUT, (size_t)100, "GuiMain-pkill");
-        WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
-        WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
+        WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeGUI, resetCounter, OUT);
       }
       else {
         resetCounter ++;
+        snprintf (OUT, (size_t)100, "---");
         if(resetCounter == resetTime){
           counterReboot = 0;
           counterRebootHM = 0;
@@ -268,6 +319,6 @@ int main()
       cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
       cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " ; GUI Zähler bis Reboot: " << counterRebootGUI << " \n" ;
       if (WDkontrolle == 1)
-        WDcsvKontrolle( DATE, TIME ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
+        WDcsvKontrolle( DATE, TIME ,pingOUT ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
     }
 }

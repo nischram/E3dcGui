@@ -94,7 +94,7 @@ void writeData(char filePath[100], char write[100]){
 	FILE *fp;
 	fp = fopen(filePath, "w");
 	if(fp == NULL) {
-		printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+		printf("%s konnte NICHT geoeffnet werden. (writeData)\n", filePath);
 	}
 	else {
 		fprintf(fp, "%s", write);
@@ -159,7 +159,7 @@ int BitChange(char filePath[128], int Position, int max)
   FILE *fpr;
   fpr = fopen(filePath, "r");
   if(fpr == NULL) {
-    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    printf("%s konnte NICHT geoeffnet werden. (BitChange read)\n", filePath);
     snprintf (read, (size_t)128, "-");
   }
   else {
@@ -181,7 +181,7 @@ int BitChange(char filePath[128], int Position, int max)
   FILE *fp;
   fp = fopen(filePath, "w");
   if(fp == NULL) {
-    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    printf("%s konnte NICHT geoeffnet werden. (BitChange write)\n", filePath);
   }
   else {
     for( c = 0; c < max; ++c )
@@ -201,7 +201,7 @@ int BitWrite(char filePath[128], int Position, int NewValue, int max)
   FILE *fpr;
   fpr = fopen(filePath, "r");
   if(fpr == NULL) {
-    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    printf("%s konnte NICHT geoeffnet werden. (BitWrite)\n", filePath);
     snprintf (read, (size_t)128, "-");
   }
   else {
@@ -220,7 +220,7 @@ int BitWrite(char filePath[128], int Position, int NewValue, int max)
   FILE *fp;
   fp = fopen(filePath, "w");
   if(fp == NULL) {
-    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    printf("%s konnte NICHT geoeffnet werden. (BitWrite)\n", filePath);
   }
   else {
     for( c = 0; c < max; ++c )
@@ -240,7 +240,7 @@ int BitRead(char filePath[128], int Position, int max)
   FILE *fp;
   fp = fopen(filePath, "r");
   if(fp == NULL) {
-    printf("%s konnte NICHT geoeffnet werden.\n", filePath);
+    printf("%s konnte NICHT geoeffnet werden. (BitRead)\n", filePath);
     snprintf (read, (size_t)128, "-");
   }
   else {
@@ -330,6 +330,44 @@ void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
     fclose(fp);
   }
 }
+// History in Datei schreiben
+int writeHistory(int Position, int NewValue, int writedata, int max)
+{
+	if (writedata == today || writedata == yesterday){
+		char filePath[128];
+		if (writedata == today){
+			snprintf (filePath, (size_t)128, "%s", today_path);
+		}
+		else if (writedata == yesterday){
+			snprintf (filePath, (size_t)128, "%s", yesterday_path);
+		}
+    BitWrite(filePath, Position, NewValue, max);
+    return 1;
+  }
+}
+//HistoryValues aus Datei lesen.
+int readHistory(int HistoryPosition, int writedata)
+{
+  char PathHistory [128];
+  if (writedata == yesterday){
+    snprintf (PathHistory, (size_t)128, "%s", yesterday_path);  // /mnt/RAMDisk/yesterday.txt
+  }
+  else {
+    snprintf (PathHistory, (size_t)128, "%s", today_path); //  RAMDisk/today.txt
+  }
+  int ret = BitRead(PathHistory, HistoryPosition, dataMax);
+  return ret;
+}
+int makeHistory()
+{
+  int data;
+  int writedata;
+  for( writedata = 1; writedata < 3; ++writedata ){
+    for( data = 0; data < 7; ++data )
+      writeHistory(data, 0, writedata, 7);
+  }
+  return 1;
+}
 
 // Debug Funktion zum Ausführen, im Code  -- DEBUG("Text"); --  einbauen. (-- nicht übernehmen!)
 //Der Text wird in Datei DEBUG.txt gespeichert.
@@ -394,6 +432,107 @@ int screenOn()
   writeScreen(ScreenState, ScreenOn);
 	system("sudo chmod 777 /sys/class/backlight/rpi_backlight/bl_power");
 	system("echo 0 > /sys/class/backlight/rpi_backlight/bl_power");
+}
+
+//Einstellung Zeitzone lesen
+int readTimeZone (char* file_read)
+{
+  char file_Path [100];
+  FILE *fp;
+  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
+  fp = fopen(file_Path, "r");
+  if(fp == NULL) {
+    printf("Datei konnte NICHT geoeffnet werden.\n");
+    snprintf (file_read, (size_t)20, "Summertime");
+    fclose(fp);
+    return 0;
+  }
+  else {
+    fgets(file_read,20,fp);
+    strtok(file_read, "\n");
+    fclose(fp);
+  }
+  return 1;
+}
+
+//Pi Temperatur
+int piTemp (char* PiTemp)
+{
+  FILE *temperatureFile;
+  double T;
+  temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
+  fscanf (temperatureFile, "%lf", &T);
+  fclose (temperatureFile);
+  T /= 1000;
+  snprintf (PiTemp, (size_t)20, "%3.1f 'C", T);
+  return T;
+}
+
+//Pi Uptime
+int piUptime (char* PiUptime)
+{
+  char Value[128];
+  struct sysinfo info;
+  sysinfo(&info);
+  snprintf (Value, (size_t)20, "%ld\n", info.uptime);
+  double PiUptimeint = atoi(Value);
+  PiUptimeint = (double)PiUptimeint /60;
+  int PiUpHour = PiUptimeint /60;
+  int PiUpMin = PiUptimeint - (PiUpHour * 60);
+  int PiUpDay = PiUpHour / 24;
+  PiUpHour = PiUpHour - (PiUpDay *24);
+  if (PiUpDay == 0)
+    snprintf (PiUptime, (size_t)40, "       %i Std. %i Min.", PiUpHour, PiUpMin);
+  else if (PiUpDay == 1)
+    snprintf (PiUptime, (size_t)40, "%i Tag %i Std. %i Min.", PiUpDay, PiUpHour, PiUpMin);
+  else
+    snprintf (PiUptime, (size_t)40, "%i Tage %i Std. %i Min.", PiUpDay, PiUpHour, PiUpMin);
+    return 1;
+}
+
+// Pi CPU
+int piCPU (char* PiCPU)
+{
+  char OUT[128], batch[256];
+  FILE *cpuFile;
+  snprintf(batch, (size_t)256, "vmstat| head -3l | tail -1l  | cut -b 73-75");
+  cpuFile = popen (batch, "r");
+  fgets(OUT,sizeof(OUT),cpuFile);
+  pclose (cpuFile);
+  int PiCPUint = atoi(OUT);
+  PiCPUint = 100 - PiCPUint;
+  snprintf (PiCPU, (size_t)20, "%i %%", PiCPUint);
+  return PiCPUint;
+}
+
+//IP
+int piIP (char* PiIP1, char* PiIP2, char* PiIP3)
+{
+  char OUT[128], batch[256];
+  FILE *ipFile;
+  snprintf(batch, (size_t)256, "ifconfig | grep \" inet addr\" | cut -d: -f2 | cut -d\" \" -f1"); //ifconfig | grep " inet addr" | cut -d: -f2 | cut -d" " -f1
+  ipFile = popen (batch, "r");
+  fgets(PiIP1,(size_t)20,ipFile);
+  fgets(PiIP2,(size_t)20,ipFile);
+  fgets(PiIP3,(size_t)20,ipFile);
+  pclose (ipFile);
+  strtok(PiIP1, "\n");
+  strtok(PiIP2, "\n");
+  strtok(PiIP3, "\n");
+  printf("\n### IP ###\n%s\n%s\n%s\n##########\n",PiIP1,PiIP2,PiIP3);
+  snprintf (OUT, (size_t)4, "%s", PiIP2);
+  int compare = atoi(OUT);
+  if (compare > 0)
+    printf("");
+  else
+    snprintf (PiIP2, (size_t)16, "%s", PiIP1);
+  snprintf (OUT, (size_t)4, "%s", PiIP3);
+  compare = atoi(OUT);
+  if (compare > 0)
+    printf("");
+  else
+    snprintf (PiIP3, (size_t)16, "%s", PiIP2);
+    return 1;
 }
 
 #endif // __FUNKTION_H_

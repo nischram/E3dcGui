@@ -87,6 +87,7 @@ void put_pixel_16bpp(int x, int y, int r, int g, int b)
 
         // write 'two bytes at once'
         *((unsigned short*)(fbp + pix_offset)) = c;
+				return;
 }
 void drawSquare(int x, int y,int height, int width, int c)
 //void drawSquare(int x, int y)
@@ -98,6 +99,7 @@ void drawSquare(int x, int y,int height, int width, int c)
 	for ( h = 0; h< height;h++)
 		for ( w = 0; w< width;w++)
 			put_pixel_16bpp( h+(x-2), w+(y-2) , def_r[c],def_g[c],def_b[c]);
+			return;
 }
 
 void drawSquareRGB(int x, int y,int height, int width, int ro, int gr, int bl)
@@ -107,6 +109,7 @@ void drawSquareRGB(int x, int y,int height, int width, int ro, int gr, int bl)
 	for ( h = 0; h< height;h++)
 		for ( w = 0; w< width;w++)
 			put_pixel_16bpp( h+(x-2), w+(y-2) , ro, gr, bl);
+			return;
 }
 
 void put_char(int x, int y, int c, int ro, int gr, int bl)
@@ -119,13 +122,16 @@ void put_char(int x, int y, int c, int ro, int gr, int bl)
 				put_pixel_16bpp(x+j,  y+i, ro, gr, bl);
 			}
 		}
+		return;
 }
 
 void put_string(int x, int y, char *s, int c)
 {
 	int i;
-	for (i = 0; *s; i++, x += font_vga_8x8.width, s++)
-	put_char (x, y, *s, def_r[c],def_g[c],def_b[c]);
+	for (i = 0; *s; i++, x += font_vga_8x8.width, s++){
+		put_char (x, y, *s, def_r[c],def_g[c],def_b[c]);
+	}
+	return;
 }
 
 void put_stringRGB(int x, int y, char *s, int ro, int gr, int bl)
@@ -133,6 +139,19 @@ void put_stringRGB(int x, int y, char *s, int ro, int gr, int bl)
 	int i;
 	for (i = 0; *s; i++, x += font_vga_8x8.width, s++)
 	put_char (x, y, *s, ro, gr, bl);
+	return;
+}
+void drawOutput (int x, int y, int height, int width, char *s, int c)
+{
+	drawSquare(x, y,height,width,WHITE);
+	put_string(x, y, s, c);
+	return;
+}
+void drawOutputRGB (int x, int y, int height, int width, char *s, int ro, int gr, int bl)
+{
+	drawSquare(x, y,height,width,WHITE);
+	put_stringRGB(x, y, s, ro, gr, bl);
+	return;
 }
 
 void createButton(int x, int y, int w, int h, char *text, int backgroundColor, int foregroundColor)
@@ -149,6 +168,7 @@ void createButton(int x, int y, int w, int h, char *text, int backgroundColor, i
 	drawSquare(x-2,y-2,w+4,h+4,backgroundColor);
 	drawSquare(x,y,w,h,foregroundColor);
 	put_string(x+((w-(length*8))/2), y+((h-8)/2),text,WHITE);
+	return;
 }
 
 int framebufferInitialize(int *xres, int *yres)
@@ -220,5 +240,5 @@ void closeFramebuffer()
 		printf("Error re-setting variable information.\n");
 	}
 	close(fb);
-
+	return;
 }

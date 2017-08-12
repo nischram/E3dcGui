@@ -9,6 +9,7 @@ gcc -g -o screenSave  screenSave.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <sys/sysinfo.h>
 #include "parameter.h"
 #include "parameterHM.h"
 #include "Frame/touch.h"
@@ -33,7 +34,7 @@ int main()
 	int screenChange;
 
 	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
-	system("setterm -cursor off");             //Courser Abschalten
+	system("setterm -cursor off > /dev/tty1");             //Courser Abschalten
 
 	int screenShutdown = ShutdownRun;
 
@@ -52,6 +53,8 @@ int main()
 	writeScreen(ScreenCounter, 0);
 	writeScreen(ScreenSaver, false);
 	writeScreen(ScreenShutdown, ShutdownRun);
+	writeScreen(ScreenHistory, historyOff);
+	makeHistory();
 
   writeLegende(SOC, true);
   writeLegende(Solar, true);
@@ -90,6 +93,8 @@ int main()
 	int buttonTimerMonitor = mymillis();
 	int buttonCordsHM[4] = {540,10,80,90};
 	int buttonTimerHM = mymillis();
+	int buttonCordsHistory[4] = {360,410,80,25};
+	int buttonTimerHistory = mymillis();
 
 	int buttonCordsSD[4] = {S1,R2-20,180,30};
 	int buttonTimerSD = mymillis();
@@ -148,20 +153,20 @@ int main()
 					writeScreen(ScreenShutdown, ShutdownRun);
 				}
 			}
+			if((scaledX  > buttonCordsMonitor[X] && scaledX < (buttonCordsMonitor[X]+buttonCordsMonitor[W])) && (scaledY > buttonCordsMonitor[Y] && scaledY < (buttonCordsMonitor[Y]+buttonCordsMonitor[H]))){
+				if (mymillis() - buttonTimerMonitor > 500){
+					buttonTimerMonitor = mymillis();
+					writeScreen(ScreenChange, ScreenMonitor);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
+				}
+			}
 		}
 		if((scaledX  > buttonCordsSetup[X] && scaledX < (buttonCordsSetup[X]+buttonCordsSetup[W])) && (scaledY > buttonCordsSetup[Y] && scaledY < (buttonCordsSetup[Y]+buttonCordsSetup[H]))){
 			if (mymillis() - buttonTimerSetup > 500){
 				buttonTimerSetup = mymillis();
 				writeScreen(ScreenChange, ScreenSetup);
-				writeScreen(ScreenCounter, 0);
-				writeScreen(ScreenSaver, false);
-				writeScreen(ScreenShutdown, ShutdownRun);
-			}
-		}
-		if((scaledX  > buttonCordsMonitor[X] && scaledX < (buttonCordsMonitor[X]+buttonCordsMonitor[W])) && (scaledY > buttonCordsMonitor[Y] && scaledY < (buttonCordsMonitor[Y]+buttonCordsMonitor[H]))){
-			if (mymillis() - buttonTimerMonitor > 500){
-				buttonTimerMonitor = mymillis();
-				writeScreen(ScreenChange, ScreenMonitor);
 				writeScreen(ScreenCounter, 0);
 				writeScreen(ScreenSaver, false);
 				writeScreen(ScreenShutdown, ShutdownRun);
@@ -194,6 +199,24 @@ int main()
 						writeScreen(ScreenSaver, false);
 						buttonSave= BUTTON_ON;
 						buttonTimerSave = mymillis();
+					}
+				}
+				if((scaledX  > buttonCordsHistory[X] && scaledX < (buttonCordsHistory[X]+buttonCordsHistory[W])) && (scaledY > buttonCordsHistory[Y] && scaledY < (buttonCordsHistory[Y]+buttonCordsHistory[H]))){
+					if (mymillis() - buttonTimerHistory > 500){
+						buttonTimerHistory = mymillis();
+						Screen[ScreenHistory] = readScreen(ScreenHistory);
+						if (Screen[ScreenHistory] == today){
+							writeScreen(ScreenHistory, yesterday);
+						}
+						else if (Screen[ScreenHistory] == yesterday){
+							writeScreen(ScreenHistory, historyOff);
+						}
+						else if (Screen[ScreenHistory] == historyOff){
+							writeScreen(ScreenHistory, today);
+						}
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
 					}
 				}
 				break; // ScreenAktuell
@@ -296,31 +319,20 @@ int main()
 				if((scaledX  > buttonCordstime_zone[X] && scaledX < (buttonCordstime_zone[X]+buttonCordstime_zone[W])) && (scaledY > buttonCordstime_zone[Y] && scaledY < (buttonCordstime_zone[Y]+buttonCordstime_zone[H]))){
 					if (mymillis() - buttonTimertime_zone > 600){
 						buttonTimertime_zone = mymillis();
-						char file_Path [100],file_read [100];
-						FILE *fp;
-						snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
-						fp = fopen(file_Path, "r");
-						if(fp == NULL) {
-							printf("Datei konnte NICHT geoeffnet werden.\n");
-							snprintf (file_read, (size_t)20, "Summertime");
-						}
-						else {
-							fgets(file_read,20,fp);
-							strtok(file_read, "\n");
-							fclose(fp);
-						}
-						if (strcmp ("Wintertime",file_read) == 0){
+						char OUT [100];
+						readTimeZone(OUT);
+						if (strcmp ("Wintertime",OUT) == 0){
 							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Summertime");
-							drawSquare(450,200,180,30,GREY);
-							drawCorner(450,200,180,30, WHITE);
-							put_string(470,208, "Sommerzeit", GREEN);
+							drawSquare(S1,R5-20,180,30,GREY);
+							drawCorner(S1,R5-20,180,30, WHITE);
+							put_string(S1+20,R5-20+8, "Sommerzeit", GREEN);
 
 						}
 						else{
 							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Wintertime");
-							drawSquare(450,200,180,30,GREY);
-							drawCorner(450,200,180,30, WHITE);
-							put_string(470,208, "Winterzeit", GREEN);
+							drawSquare(S1,R5-20,180,30,GREY);
+							drawCorner(S1,R5-20,180,30, WHITE);
+							put_string(S1+20,R5-20+8, "Winterzeit", GREEN);
 						}
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenSaver, false);

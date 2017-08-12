@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 // todo - make faster 128 blocksize version with 128 blocksize hardcoded as necessary
 
@@ -57,29 +58,29 @@ unsigned char inv_byte_sub[256];
 
 // this table needs Nb*(Nr+1)/Nk entries - up to 8*(15)/4 = 60
 // todo - remove table, note cycles every 17(?) elements
-unsigned long Rcon[60];
+uint32_t Rcon[60];
 
 // long tables for encryption stuff
-unsigned long T0[256];
-unsigned long T1[256];
-unsigned long T2[256];
-unsigned long T3[256];
+uint32_t T0[256];
+uint32_t T1[256];
+uint32_t T2[256];
+uint32_t T3[256];
 
 // long tables for decryption stuff
-unsigned long I0[256];
-unsigned long I1[256];
-unsigned long I2[256];
-unsigned long I3[256];
+uint32_t I0[256];
+uint32_t I1[256];
+uint32_t I2[256];
+uint32_t I3[256];
 
 // huge tables - todo - ifdef out
-unsigned long T4[256];
-unsigned long T5[256];
-unsigned long T6[256];
-unsigned long T7[256];
-unsigned long I4[256];
-unsigned long I5[256];
-unsigned long I6[256];
-unsigned long I7[256];
+uint32_t T4[256];
+uint32_t T5[256];
+uint32_t T6[256];
+uint32_t T7[256];
+uint32_t I4[256];
+uint32_t I5[256];
+uint32_t I6[256];
+uint32_t I7[256];
 
 // have the tables been initialized?
 bool tablesInitialized = false;
@@ -134,7 +135,7 @@ inline unsigned char GF2_8_mult(unsigned char a, unsigned char b)
 
 bool CheckLargeTables(bool create)
 	{
-	unsigned int i;
+	uint32_t i;
 	unsigned char a1,a2,a3,b1,b2,b3,b4,b5;
 	for (i = 0; i < 256; i++)
 		{
@@ -212,7 +213,8 @@ bool CheckLargeTables(bool create)
 // some functions to create/verify table integrity
 bool CheckInverses(bool create)
 	{
-	unsigned int a,b; // need int here to prevent wraps in loop
+	uint32_t a, b;
+	//unsigned int a,b; // need int here to prevent wraps in loop
 	if (create == true)
 		gf2_8_inv[0] = 0;
 	else if (gf2_8_inv[0] != 0)
@@ -242,8 +244,8 @@ bool CheckByteSub(bool create)
 	{
 	if (CheckInverses(create) == false)
 		return false; // we cannot do this without inverses
-
-	unsigned int x,y; // need ints here to prevent wrap in loop
+	uint32_t x, y;
+	//unsigned int x,y; // need ints here to prevent wrap in loop
 	for (x = 0; x <= 255; x++)
 		{
 		y = gf2_8_inv[x]; // inverse to start with
@@ -266,8 +268,8 @@ bool CheckInvByteSub(bool create)
 		return false; // we cannot do this without inverses
 	if (CheckByteSub(create) == false)
 		return false; // we cannot do this without byte_sub
-
-	unsigned int x,y; // need ints here to prevent wrap in loop
+	uint32_t x, y;
+	//unsigned int x,y; // need ints here to prevent wrap in loop
 	for (x = 0; x <= 255; x++)
 		{
 		// we brute force it...
@@ -459,8 +461,9 @@ bool CheckRcon(bool create)
 
 unsigned long SubByte(unsigned long data)
 	{ // does the SBox on this 4 byte data
-	unsigned result = 0;
-	result = byte_sub[data>>24];
+	uint32_t result = 0;
+	//unsigned result = 0;
+	result = byte_sub[(data>>24)&255];
 	result <<= 8;
 	result |= byte_sub[(data>>16)&255];
 	result <<= 8;
@@ -493,7 +496,7 @@ bool CreateAESTables(bool create)
 void AES::KeyExpansion(const unsigned char * key)
 	{
 	int i;
-	unsigned long temp, * Wb = reinterpret_cast<unsigned long*>(W); // todo not portable - Endian problems
+	uint32_t temp, * Wb = reinterpret_cast<uint32_t*>(W); // todo not portable - Endian problems
 	if (Nk <= 6)
 		{
 		// todo - memcpy
@@ -562,12 +565,12 @@ void AES::EncryptBlock(const unsigned char * datain1, unsigned char * dataout1)
 	  // todo - clean up - lots of repeated macros
 	  // we only encrypt one block from now on
 
-	unsigned long state[8*2]; // 2 buffers
-	unsigned long * r_ptr = reinterpret_cast<unsigned long*>(W);
-	unsigned long * dest  = state;
-	unsigned long * src   = state;
-	const unsigned long * datain = reinterpret_cast<const unsigned long*>(datain1);
-	unsigned long * dataout = reinterpret_cast<unsigned long*>(dataout1);
+	uint32_t state[8*2]; // 2 buffers
+	uint32_t * r_ptr = reinterpret_cast<uint32_t*>(W);
+	uint32_t * dest  = state;
+	uint32_t * src   = state;
+	const uint32_t * datain = reinterpret_cast<const uint32_t*>(datain1);
+	uint32_t * dataout = reinterpret_cast<uint32_t*>(dataout1);
 
 	if (Nb == 4)
 		{
@@ -646,11 +649,11 @@ void AES::EncryptBlock(const unsigned char * datain1, unsigned char * dataout1)
 	} // Encrypt
 
 // call this to encrypt any size block
-void AES::Encrypt(const unsigned char * datain, unsigned char * dataout, unsigned long numBlocks, BlockMode mode)
+void AES::Encrypt(const unsigned char * datain, unsigned char * dataout, uint32_t numBlocks, BlockMode mode)
 	{
 	if (0 == numBlocks)
 		return;
-	unsigned int blocksize = Nb*4;
+	uint32_t blocksize = Nb*4;
 	switch (mode)
 		{
 		case ECB :
@@ -712,7 +715,7 @@ void AES::StartDecryption(const unsigned char * key)
 		}
 
 	// we reverse the rounds to make decryption faster
-	unsigned long * WL = reinterpret_cast<unsigned long*>(W);
+	uint32_t * WL = reinterpret_cast<uint32_t*>(W);
 	for (int pos = 0; pos < Nr/2; pos++)
 		for (int col = 0; col < Nb; col++)
 			swap(WL[col+pos*Nb],WL[col+(Nr-pos)*Nb]);
@@ -720,13 +723,13 @@ void AES::StartDecryption(const unsigned char * key)
 
 void AES::DecryptBlock(const unsigned char * datain1, unsigned char * dataout1)
 	{
-	unsigned long state[8*2]; // 2 buffers
-	unsigned long * r_ptr = reinterpret_cast<unsigned long*>(W);
-	unsigned long * dest  = state;
-	unsigned long * src   = state;
+	uint32_t state[8*2]; // 2 buffers
+	uint32_t * r_ptr = reinterpret_cast<uint32_t *>(W);
+	uint32_t * dest  = state;
+	uint32_t * src   = state;
 
-	const unsigned long * datain = reinterpret_cast<const unsigned long*>(datain1);
-	unsigned long * dataout = reinterpret_cast<unsigned long*>(dataout1);
+	const uint32_t * datain = reinterpret_cast<const uint32_t*>(datain1);
+	uint32_t * dataout = reinterpret_cast<uint32_t*>(dataout1);
 
 	if (Nb == 4)
 		{
@@ -804,11 +807,11 @@ void AES::DecryptBlock(const unsigned char * datain1, unsigned char * dataout1)
 	} // Decrypt
 
 // call this to decrypt any size block
-void AES::Decrypt(const unsigned char * datain, unsigned char * dataout, unsigned long numBlocks, BlockMode mode)
+void AES::Decrypt(const unsigned char * datain, unsigned char * dataout, uint32_t numBlocks, BlockMode mode)
 	{
 	if (0 == numBlocks)
 		return;
-	unsigned int blocksize = Nb*4;
+	uint32_t blocksize = Nb*4;
 	switch (mode)
 		{
 		case ECB :
@@ -826,7 +829,7 @@ void AES::Decrypt(const unsigned char * datain, unsigned char * dataout, unsigne
 			unsigned char buffer[2][32]; // max blocksize
 			memcpy(buffer[iBuf], datain, blocksize);
 			DecryptBlock(datain,dataout); // do first block
-			for (unsigned int pos = 0; pos < blocksize; ++pos)
+			for (uint32_t pos = 0; pos < blocksize; ++pos)
 				*dataout++ ^= iv[pos];
 			datain += blocksize;
 			numBlocks--;
@@ -835,7 +838,7 @@ void AES::Decrypt(const unsigned char * datain, unsigned char * dataout, unsigne
 				{
 				memcpy(buffer[iBuf^1], datain, blocksize);
 				DecryptBlock(datain,dataout); // do first block
-				for (unsigned int pos = 0; pos < blocksize; ++pos)
+				for (uint32_t pos = 0; pos < blocksize; ++pos)
 					*dataout++ ^= *(buffer[iBuf]+pos);
 				datain  += blocksize;
 				iBuf ^= 1;

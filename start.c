@@ -8,6 +8,7 @@ gcc -g -o start  start.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <sys/sysinfo.h>
 #include "parameter.h"
 #include "parameterHM.h"
 #include "Frame/touch.h"

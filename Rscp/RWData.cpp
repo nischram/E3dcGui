@@ -247,3 +247,19 @@ int readScreen(int Position)
   int ret = readData(PathScreen, Position, ScreenMAX);
   return ret;
 }
+// History in Datei schreiben
+int writeHistory(int Position, int NewValue, int writedata)
+{
+	if (writedata == today || writedata == yesterday){
+		char filePath[128];
+		if (writedata == today){
+			snprintf (filePath, (size_t)128, "%s", today_path);
+		}
+		else if (writedata == yesterday){
+			snprintf (filePath, (size_t)128, "%s", yesterday_path);
+		}
+    writeData(filePath, Position, NewValue, dataMax);
+    return 1;
+	}
+	else return 0;
+}

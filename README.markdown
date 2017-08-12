@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.31 31.07.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.32 11.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -19,7 +19,7 @@ Hier ein Foto mit der Software auf dem 7-Zoll Display.
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
-Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist weiteres unten ein Kapitel __[Material](https://github.com/nischram/E3dcGui#material)__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2016-04.
+Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist weiteres unten ein Kapitel __[Material](https://github.com/nischram/E3dcGui#material)__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2017-02.
 
 In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen. Da ich mich erst seit kurzen mit der Programmierung beschäftige, sind die Änderungen eventuell noch etwas unprofessionell, aber bislang erfüllen sie ihren Zweck.
 
@@ -131,21 +131,26 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
 Auf der rechten Seite werden Informationen zum Raspberry Pi ausgegeben
+
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
+Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt.
+
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
+
 #### 4. Monitor
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden die einzelnen Tracker des Wechselrichters dargestellt.
+
 #### 5. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
@@ -168,7 +173,7 @@ Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
 ## Werte in der HomeMatic nutzen
-Das Nutzen der Werte in der HomeMatic, ist wieder in der Anleitung für HomeMatic in dem Ordner Homematic zu finden.
+Das Nutzen der Werte in der HomeMatic, ist in der [Anleitung für HomeMatic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
 
 ## WatchDog
 
@@ -325,6 +330,20 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.32 11.08.2017 S10history integriert
+- S10history von [RalfJL](https://github.com/RalfJL/S10history) integriert
+- [Anleitunf für S10History](https://github.com/nischram/E3dcGui/tree/master/S10history) angepasst
+- Abfrage der HistoryValues für Tag und Vortag
+- Anzeige der HistoryValues für Tag und Vortag in den Aktuellen Werten
+- Issue #12
+- Anpassungen im RSCP für S10history
+- ASE.cpp für 64Bit vorbereitet Issue #4
+- Issue #15 WatchDog verbessert
+- IP Abfrage für das Setup Menü angepasst
+- Funktionen für Setup Menü ausgelagert !!! Achtung !!! In der screenSaveHM.c muss folgende Zeile im oberen Bereich eingefügt werden:
+`  #include <sys/sysinfo.h>  `
+- Zusammenfassen von Funktionen in der GuiMain.c
+
 V1.31 31.07.2017 Issue #14
 - Änderung an der HomeMatic README, HM Variable nicht beschrieben
 - Änderung an der HomeMatic README, Limitation 200 Variablen entfernt

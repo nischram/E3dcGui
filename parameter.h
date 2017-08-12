@@ -84,12 +84,17 @@ Es kann aber zu darstellungsfehler kommen.
 #define resetMin                    60
 //WD für HM-Gui (nur wenn Unixtime und Timestamp als Variablen in der Homematic angelegt sind und abgefragt werden)
 #define WDuseHM_Gui                 0
-//Kontrolldatei aktivieren damit Häufige Aktivitäten erkannt werden können
-#define WDkontrolle                 0                       //1=aktiv / 0=deaktiv
+//Kontrolldatei aktivieren damit häufige Aktivitäten erkannt werden können
+#define WDkontrolle                 0                       //1=aktiv / 0=deaktiv Empfehlung: 0=deaktiv
 //Email senden bei aktivität
 #define WDsendEmailReboot           1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
 #define WDsendEmailKill             0                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
 #define WDtoEmailAdress             "max.mustermann@web.de"                     // Email Adresse für Watchdog aktivitäten
+//Ping zum Router füre einen LAN/WLAN test
+#define RouterIP                    "192.168.178.1"         // IP-Adresse vom Router
+#define PingOn                      1                       // 1= Ping zu Router aktiv
+#define resetWLAN                   1                       // 1= Reset für WLAN bei Pingfehler
+#define PingWD                      1                       // 1= Reboot nach dem 3. Pingfehler
 
 //#######################################
 // sendEmail Parameter
@@ -112,6 +117,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define ScreenSaver                 2    //!!
 #define ScreenShutdown              3    //!!
 #define ScreenState                 4    //!!
+#define ScreenHistory               5    //!!
 #define ScreenMAX                   6    //!!
 
 #define ScreenAktuell               0    //!!
@@ -191,6 +197,22 @@ Es kann aber zu darstellungsfehler kommen.
 #define PosWBAll900                 8    //!!
 #define PosWBSolar900               9    //!!
 #define PosMAX900                   10   //!!
+
+// Beschreibung für S10history
+#define dataPV                      0    //!!
+#define dataHome                    1    //!!
+#define dataGridIn                  2    //!!
+#define dataGridOut                 3    //!!
+#define dataBatIn                   4    //!!
+#define dataBatOut                  5    //!!
+#define dataTime                    6    //!!
+#define dataMax                     7    //!!
+
+#define historyOff                  0    //!!
+#define today                       1    //!!
+#define yesterday                   2    //!!
+#define today_path                  "/mnt/RAMDisk/today.txt"         //!!
+#define yesterday_path              "/mnt/RAMDisk/yesterday.txt"     //!!
 
 // Touch Parameter
 #define BUTTON_ON                   1   //!!

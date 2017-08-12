@@ -39,7 +39,7 @@ int SocketConnect(const char *cpIpAddress, int iPort) {
 
     // 3 secs receive timeout setup
     struct timeval tv;
-    tv.tv_sec = 3;
+    tv.tv_sec = 10;  // normal = 3
     tv.tv_usec = 0;
     setsockopt(iSocket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *) &tv, sizeof(struct timeval));
     // send time out should never occur on normal OS configurations but just in case set the timeout to 5 seconds
