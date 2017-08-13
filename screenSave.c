@@ -78,7 +78,6 @@ int main()
 	printf ("Y Scale Factor = %f\n", scaleYvalue);
 
 	int buttonCordsSave[4] = {5,110,790,280};
-	int	buttonSave= BUTTON_OFF;
 	int buttonTimerSave = mymillis();
 	int buttonCordsSaveHalb[4] = {5,110,400,280};
 	int	buttonSaveHalb= BUTTON_OFF;
@@ -195,18 +194,17 @@ int main()
 		switch(screenChange){
 			case ScreenAktuell:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
-					if (mymillis() - buttonTimerSave > 500)
-					if(buttonSave){
-						screenOff();
-						buttonSave= BUTTON_OFF;
-						buttonTimerSave = mymillis();
-					}
-					else{
-						screenOn();
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						buttonSave= BUTTON_ON;
-						buttonTimerSave = mymillis();
+					if (mymillis() - buttonTimerSave > 500){
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
 					}
 				}
 				if((scaledX  > buttonCordsHistory[X] && scaledX < (buttonCordsHistory[X]+buttonCordsHistory[W])) && (scaledY > buttonCordsHistory[Y] && scaledY < (buttonCordsHistory[Y]+buttonCordsHistory[H]))){
@@ -231,18 +229,17 @@ int main()
 			}
 			case ScreenLangzeit:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
-					if (mymillis() - buttonTimerSave > 500)
-					if(buttonSave){
-						screenOff();
-						buttonSave= BUTTON_OFF;
-						buttonTimerSave = mymillis();
-					}
-					else{
-						screenOn();
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						buttonSave= BUTTON_ON;
-						buttonTimerSave = mymillis();
+					if (mymillis() - buttonTimerSave > 500){
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
 					}
 				}
 				if((scaledX  > buttonCordsLeSOC[X] && scaledX < (buttonCordsLeSOC[X]+buttonCordsLeSOC[W])) && (scaledY > buttonCordsLeSOC[Y] && scaledY < (buttonCordsLeSOC[Y]+buttonCordsLeSOC[H]))){
@@ -434,18 +431,17 @@ int main()
 			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
-					if (mymillis() - buttonTimerSave > 500)
-					if(buttonSave){
-						screenOff();
-						buttonSave= BUTTON_OFF;
-						buttonTimerSave = mymillis();
-					}
-					else{
-						screenOn();
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						buttonSave= BUTTON_ON;
-						buttonTimerSave = mymillis();
+					if (mymillis() - buttonTimerSave > 500){
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
 					}
 				}
 				break; // ScreenMonitor

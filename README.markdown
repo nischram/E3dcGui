@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.33 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.34 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -330,6 +330,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.34 13.08.2017 [Issue #16](https://github.com/nischram/E3dcGui/issues/16)
+- Fehlerkorektur screenSave.c
+
 V1.33 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
 - Einstellung der Display-Helligkeit
 
