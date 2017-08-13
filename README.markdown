@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.34 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.35 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -130,7 +130,8 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 #### 1. Setup
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
-Auf der rechten Seite wird die Display-Helligkeit eingestellt und es werden Informationen zum Raspberry Pi ausgegeben. Dauerhafte Einstellung nur in der parameter.h
+Auf der rechten Seite wird die Display-Helligkeit eingestellt. Die Einstellung speichert der Pi, auch nach einen Neustart obwohl die Anzeige nach dem Neustart keine aktive Helligleit anzeigt.
+Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
@@ -330,6 +331,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.35 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
+- Fehlerkorektur für Einstellung der Display-Helligkeit
+
 V1.34 13.08.2017 [Issue #16](https://github.com/nischram/E3dcGui/issues/16)
 - Fehlerkorektur screenSave.c
 

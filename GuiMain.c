@@ -50,8 +50,6 @@ int main(){
 	int UnixTime;
 
   screenOn();
-	int brightness = setBrightness(Brightness);
-	printf ("Helligkeit = %i\n", brightness);
 
 	int Screen[ScreenMAX];
 
@@ -613,11 +611,7 @@ int main(){
 					//Pi IP
 					piIP(PiIP1, PiIP2, PiIP3);
 					//Helligkeit
-					brightness = readBrightness();
-					if (brightness == 25 || brightness == 76 || brightness == 150 || brightness == 255)
-						brightness = brightness;
-					else
-						brightness = Brightness;
+					int brightness = readBrightness();
 					//Grafiken für Pi Informationen erstellen
 					// Grafik für Helligkeit
 					drawSquare(S4,R1-20,328,60,GREY);
