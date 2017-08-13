@@ -434,6 +434,29 @@ int screenOn()
 	system("echo 0 > /sys/class/backlight/rpi_backlight/bl_power");
 }
 
+//Bildschirmhelligkeit lesen
+int readBrightness()
+{
+  char PathScreen [128];
+	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
+	int ret = BitRead(PathScreen, ScreenBrightness, ScreenMAX);
+  return ret;
+}
+
+//Bildschirmhelligkeit setzen und speichern
+int setBrightness(int NewValue)
+{
+  char batch[128];
+  memset(batch, 0x00, sizeof(batch));
+  snprintf(batch, sizeof(batch), "sudo bash -c \"echo %i > /sys/class/backlight/rpi_backlight/brightness\" &", NewValue);
+  system(batch);
+  char PathScreen [128];
+	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
+  BitWrite(PathScreen, ScreenBrightness, NewValue, ScreenMAX);
+  int ret = readBrightness();
+  return ret;
+}
+
 //Einstellung Zeitzone lesen
 int readTimeZone (char* file_read)
 {

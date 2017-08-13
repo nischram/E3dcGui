@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.32 11.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.33 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -130,7 +130,7 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 #### 1. Setup
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
-Auf der rechten Seite werden Informationen zum Raspberry Pi ausgegeben
+Auf der rechten Seite wird die Display-Helligkeit eingestellt und es werden Informationen zum Raspberry Pi ausgegeben. Dauerhafte Einstellung nur in der parameter.h
 
 #### 2. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
@@ -330,34 +330,37 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.33 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
+- Einstellung der Display-Helligkeit
+
 V1.32 11.08.2017 S10history integriert
 - S10history von [RalfJL](https://github.com/RalfJL/S10history) integriert
 - [Anleitunf für S10History](https://github.com/nischram/E3dcGui/tree/master/S10history) angepasst
 - Abfrage der HistoryValues für Tag und Vortag
 - Anzeige der HistoryValues für Tag und Vortag in den Aktuellen Werten
-- Issue #12
+- [Issue #12](https://github.com/nischram/E3dcGui/issues/12)
 - Anpassungen im RSCP für S10history
-- ASE.cpp für 64Bit vorbereitet Issue #4
-- Issue #15 WatchDog verbessert
+- ASE.cpp für 64Bit vorbereitet [Issue #4](https://github.com/nischram/E3dcGui/issues/4)
+- [Issue #15](https://github.com/nischram/E3dcGui/issues/15) WatchDog verbessert
 - IP Abfrage für das Setup Menü angepasst
 - Funktionen für Setup Menü ausgelagert !!! Achtung !!! In der screenSaveHM.c muss folgende Zeile im oberen Bereich eingefügt werden:
 `  #include <sys/sysinfo.h>  `
 - Zusammenfassen von Funktionen in der GuiMain.c
 
-V1.31 31.07.2017 Issue #14
+V1.31 31.07.2017 [Issue #14](https://github.com/nischram/E3dcGui/issues/14)
 - Änderung an der HomeMatic README, HM Variable nicht beschrieben
 - Änderung an der HomeMatic README, Limitation 200 Variablen entfernt
 
 V1.30 14.05.2017 Tippfehler README
 - Changelog archiviert
 
-V1.29 14.05.2017 Issue #11
+V1.29 14.05.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
 - Fehlermeldung bei sendEmail
 
-V1.28 01.05.2017 Issue #10
+V1.28 01.05.2017 [Issue #10](https://github.com/nischram/E3dcGui/issues/10)
 - ADD Power wurde Negativ angezeigt, Invertierung eingebaut
 
-V1.27 13.02.2017 Issue #9
+V1.27 13.02.2017 [Issue #9](https://github.com/nischram/E3dcGui/issues/9)
 - Wegen häufigen Reebot eine Wartezeit von 3600 Sekunden eingebaut
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

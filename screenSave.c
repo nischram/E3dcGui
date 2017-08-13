@@ -106,6 +106,14 @@ int main()
 	int buttonTimerHRS = mymillis();
 	int buttonCordstime_zone[4] = {S1,R5-20,180,30};
 	int buttonTimertime_zone = mymillis();
+	int buttonCordsBrigh25[4] = {(S4+105),(R1),(Fw+6),(21+3)};
+	int buttonTimerBrigh25 = mymillis();
+	int buttonCordsBrigh76[4] = {(S4+160),(R1),(Fw+6),(21+3)};
+	int buttonTimerBrigh76 = mymillis();
+	int buttonCordsBrigh150[4] = {(S4+215),(R1),(Fw+6),(21+3)};
+	int buttonTimerBrigh150 = mymillis();
+	int buttonCordsBrigh255[4] = {(S4+270),(R1),(Fw+6),(21+3)};
+	int buttonTimerBrigh255 = mymillis();
 
 	int buttonCordsLeSOC[4] = {364,438,50,30};
 	int buttonTimerLeSOC = mymillis();
@@ -373,6 +381,39 @@ int main()
 						return 0;
 					}
 				}
+				//Helligkeit
+				if((scaledX  > buttonCordsBrigh25[X] && scaledX < (buttonCordsBrigh25[X]+buttonCordsBrigh25[W])) && (scaledY > buttonCordsBrigh25[Y] && scaledY < (buttonCordsBrigh25[Y]+buttonCordsBrigh25[H]))){
+					if (mymillis() - buttonTimerBrigh25 > 500){
+						buttonTimerBrigh25 = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						setBrightness(25);
+					}
+				}
+				if((scaledX  > buttonCordsBrigh76[X] && scaledX < (buttonCordsBrigh76[X]+buttonCordsBrigh76[W])) && (scaledY > buttonCordsBrigh76[Y] && scaledY < (buttonCordsBrigh76[Y]+buttonCordsBrigh76[H]))){
+					if (mymillis() - buttonTimerBrigh76 > 500){
+						buttonTimerBrigh76 = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						setBrightness(76);
+					}
+				}
+				if((scaledX  > buttonCordsBrigh150[X] && scaledX < (buttonCordsBrigh150[X]+buttonCordsBrigh150[W])) && (scaledY > buttonCordsBrigh150[Y] && scaledY < (buttonCordsBrigh150[Y]+buttonCordsBrigh150[H]))){
+					if (mymillis() - buttonTimerBrigh150 > 500){
+						buttonTimerBrigh150 = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						setBrightness(150);
+					}
+				}
+				if((scaledX  > buttonCordsBrigh255[X] && scaledX < (buttonCordsBrigh255[X]+buttonCordsBrigh255[W])) && (scaledY > buttonCordsBrigh255[Y] && scaledY < (buttonCordsBrigh255[Y]+buttonCordsBrigh255[H]))){
+					if (mymillis() - buttonTimerBrigh255 > 500){
+						buttonTimerBrigh255 = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						setBrightness(255);
+					}
+				}//Ende Helligkeit
 				if(screenShutdown == ShutdownSD){
 					if((scaledX  > buttonCordsSDN[X] && scaledX < (buttonCordsSDN[X]+buttonCordsSDN[W])) && (scaledY > buttonCordsSDN[Y] && scaledY < (buttonCordsSDN[Y]+buttonCordsSDN[H]))){
 						if (mymillis() - buttonTimerSDN > 3000){

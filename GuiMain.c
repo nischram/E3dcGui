@@ -50,6 +50,8 @@ int main(){
 	int UnixTime;
 
   screenOn();
+	int brightness = setBrightness(Brightness);
+	printf ("Helligkeit = %i\n", brightness);
 
 	int Screen[ScreenMAX];
 
@@ -524,10 +526,20 @@ int main(){
 				int screenShutdown = Screen[ScreenShutdown];
 
 				if(counter == 0){
+					writeScreen(ScreenCounter, 60);
 					drawSquare(2,2,800,480,LTGREY);
 					drawCorner(2, 2, 800, 480, BLACK);
 					drawSquare(12,12,778,458,WHITE);
 					drawCorner(12, 12, 778, 458, LTGREY);
+					DrawImage("EinstImage", 180, 12);
+					if(E3DC_S10 ==1){
+						DrawImage("AktuellImage", 270, 12);
+						DrawImage("LangzeitImage", 360, 12);
+						DrawImage("MonitorImage", 450, 12);
+					}
+					if(Homematic_GUI ==1){
+						DrawImage("HMImage", 540, 12);
+					}
 					switch(screenShutdown){
 						case ShutdownSD:{
 							drawSquare(S1,R2-20,180,30,GREY);
@@ -590,16 +602,6 @@ int main(){
 						drawCorner(S1,R5-20,180,30, WHITE);
 						put_string(S1+20,R5-20+8, "Sommerzeit", WHITE);
 					}
-					DrawImage("EinstImage", 180, 12);
-					if(E3DC_S10 ==1){
-						DrawImage("AktuellImage", 270, 12);
-						DrawImage("LangzeitImage", 360, 12);
-						DrawImage("MonitorImage", 450, 12);
-					}
-					if(Homematic_GUI ==1){
-						DrawImage("HMImage", 540, 12);
-					}
-					writeScreen(ScreenCounter, 60);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIP1[16], PiIP2[16], PiIP3[16];
 					//Pi Temp
@@ -610,33 +612,62 @@ int main(){
 					int PiCPUint = piCPU(PiCPU);
 					//Pi IP
 					piIP(PiIP1, PiIP2, PiIP3);
+					//Helligkeit
+					brightness = readBrightness();
+					if (brightness == 25 || brightness == 76 || brightness == 150 || brightness == 255)
+						brightness = brightness;
+					else
+						brightness = Brightness;
 					//Grafiken für Pi Informationen erstellen
+					// Grafik für Helligkeit
+					drawSquare(S4,R1-20,328,60,GREY);
+					drawCorner(S4,R1-20,328,60,WHITE);
+					drawSquare(S4+100,R1-17,225,54,WHITE);
+					drawCorner(S4+100,R1-17,225,54,GREY);
+					put_string(S4+6, R1+4, "Helligkeit", WHITE);
 					// Grafik für Uptime
-					drawSquare(S4,R2-20,320,60,GREY);
-					drawCorner(S4,R2-20,320,60,WHITE);
-					drawSquare(S4+60,R2-17,257,54,WHITE);
-					drawCorner(S4+60,R2-17,257,54,GREY);
+					drawSquare(S4,R2-20,328,60,GREY);
+					drawCorner(S4,R2-20,328,60,WHITE);
+					drawSquare(S4+100,R2-17,225,54,WHITE);
+					drawCorner(S4+100,R2-17,225,54,GREY);
 					put_string(S4+6, R2+4, "Uptime", WHITE);
 					// Grafik für Temp
-					drawSquare(S4,R3-20,320,60,GREY);
-					drawCorner(S4,R3-20,320,60,WHITE);
-					drawSquare(S4+60,R3-17,257,54,WHITE);
-					drawCorner(S4+60,R3-17,257,54,GREY);
+					drawSquare(S4,R3-20,328,60,GREY);
+					drawCorner(S4,R3-20,328,60,WHITE);
+					drawSquare(S4+100,R3-17,225,54,WHITE);
+					drawCorner(S4+100,R3-17,225,54,GREY);
 					put_string(S4+6, R3+4, "Temp", WHITE);
 					// Grafik für CPU
-					drawSquare(S4,R4-20,320,60,GREY);
-					drawCorner(S4,R4-20,320,60,WHITE);
-					drawSquare(S4+60,R4-17,257,54,WHITE);
-					drawCorner(S4+60,R4-17,257,54,GREY);
+					drawSquare(S4,R4-20,328,60,GREY);
+					drawCorner(S4,R4-20,328,60,WHITE);
+					drawSquare(S4+100,R4-17,225,54,WHITE);
+					drawCorner(S4+100,R4-17,225,54,GREY);
 					put_string(S4+6, R4+4, "CPU", WHITE);
 					// Grafik für IP
-					drawSquare(S4,R5-20,320,60,GREY);
-					drawCorner(S4,R5-20,320,60,WHITE);
-					drawSquare(S4+60,R5-17,257,54,WHITE);
-					drawCorner(S4+60,R5-17,257,54,GREY);
+					drawSquare(S4,R5-20,328,60,GREY);
+					drawCorner(S4,R5-20,328,60,WHITE);
+					drawSquare(S4+100,R5-17,225,54,WHITE);
+					drawCorner(S4+100,R5-17,225,54,GREY);
 					put_string(S4+6, R5+4, "IP", WHITE);
+					// Helligkeit
+					drawSquare(S4+105, R1, Fw, 21, LTGREY);
+					createData(S4+110, R1, "10%");
+					drawSquare(S4+160, R1, Fw, 21, LTGREY);
+					createData(S4+165, R1, "30%");
+					drawSquare(S4+215, R1, Fw, 21, LTGREY);
+					createData(S4+220, R1, "60%");
+					drawSquare(S4+270, R1, Fw, 21, LTGREY);
+					createData(S4+270, R1, "100%");
+					if (brightness == 25)
+					drawSquare(S4+105, R1, Fw, 21, GREEN);
+					if (brightness == 76)
+					drawSquare(S4+160, R1, Fw, 21, GREEN);
+					if (brightness == 150)
+					drawSquare(S4+215, R1, Fw, 21, GREEN);
+					if (brightness == 255)
+					drawSquare(S4+270, R1, Fw, 21, GREEN);
 					// Uptime
-					put_string(S6-60, R2+4, PiUptime, GREY);
+					put_string(S6-50, R2+4, PiUptime, GREY);
 					// Temp
 					if (T > 20){
 						drawSquare(S6-20, R3, Fw, 21, LIGHT_GREEN);
@@ -672,11 +703,11 @@ int main(){
 						createData(S6-10, R4, PiCPU);
 					}
 					// IP
-					createData(S6-60, R5-32, PiIP1);
+					createData(S6-50, R5-32, PiIP1);
 					if (strcmp (PiIP1,PiIP2) != 0)
-						createData(S6-60, R5-16, PiIP2);
+						createData(S6-50, R5-16, PiIP2);
 					if (strcmp (PiIP2,PiIP3) != 0)
-						createData(S6-60, R5, PiIP3);
+						createData(S6-50, R5, PiIP3);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;
