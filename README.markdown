@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.35 13.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.36 15.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -138,7 +138,7 @@ Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
-Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt.
+Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhytmus die Daten abgefragt werden sollen (historyDelay).
 
 #### 3. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
@@ -331,6 +331,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.36 15.08.2017 HistoryValues verbessert
+- Definition für "historyAktiv" und "historyDelay" eingebaut
+
 V1.35 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
 - Fehlerkorektur für Einstellung der Display-Helligkeit
 

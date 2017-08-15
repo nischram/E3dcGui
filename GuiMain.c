@@ -98,14 +98,14 @@ int main(){
 							DrawImage("AktuellImage", 270, 12);
 							DrawImage("LangzeitImage", 360, 12);
 							DrawImage("MonitorImage", 450, 12);
-							if (Screen[ScreenHistory] == today){
-								DrawImage("Yesterday", 370, 405);
+							if (historyAktiv == true){
+								if (Screen[ScreenHistory] == today)
+									DrawImage("Yesterday", 370, 405);
+								else if (Screen[ScreenHistory] == yesterday)
+									DrawImage("HistoryOff", 370, 405);
+								else
+									DrawImage("Today", 370, 405);
 							}
-							else if (Screen[ScreenHistory] == yesterday){
-								DrawImage("HistoryOff", 370, 405);
-							}
-							else
-								DrawImage("Today", 370, 405);
 						}
 						if(Homematic_GUI ==1){
 							DrawImage("HMImage", 540, 12);
@@ -285,7 +285,7 @@ int main(){
 					snprintf (OUT, (size_t)100, "Eigenstrom");
 					put_string(310,392,OUT,GREY);
 					//HistoryValues
-					if(counter == 0 && Screen[ScreenHistory] > 0){
+					if(counter == 0 && Screen[ScreenHistory] > 0 && historyAktiv == true){
 						float historyPV = readHistory(dataPV, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "%.1f kWh", historyPV/1000);
 						put_stringRGB(180, 140, OUT, 225, 122, 34);
@@ -807,13 +807,15 @@ int main(){
 		writeScreen(ScreenSaver, ScreenSaverCounter);
 
 	//HistoryValues vom S10 mit "S10history" abfragen.
-		if(HistoryCounter == 0){
-			system("/home/pi/E3dcGui/S10history/S10history -T &");// > /dev/null 2>&1");
-			HistoryCounter = 360;
+		if (historyAktiv == true){
+			if(HistoryCounter == 0){
+				system("/home/pi/E3dcGui/S10history/S10history -T &");// > /dev/null 2>&1");
+				HistoryCounter = historyDelay;
+			}
+			if(HistoryCounter == (historyDelay-15))
+				system("/home/pi/E3dcGui/S10history/S10history -Y &");//  > /dev/null 2>&1");
+			HistoryCounter --;
 		}
-		if(HistoryCounter == 345)
-			system("/home/pi/E3dcGui/S10history/S10history -Y &");//  > /dev/null 2>&1");
-		HistoryCounter --;
 	//Abfrageintervall
 		sleep(1);
 	}

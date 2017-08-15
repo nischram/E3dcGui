@@ -207,22 +207,24 @@ int main()
 						}
 					}
 				}
-				if((scaledX  > buttonCordsHistory[X] && scaledX < (buttonCordsHistory[X]+buttonCordsHistory[W])) && (scaledY > buttonCordsHistory[Y] && scaledY < (buttonCordsHistory[Y]+buttonCordsHistory[H]))){
-					if (mymillis() - buttonTimerHistory > 500){
-						buttonTimerHistory = mymillis();
-						Screen[ScreenHistory] = readScreen(ScreenHistory);
-						if (Screen[ScreenHistory] == today){
-							writeScreen(ScreenHistory, yesterday);
+				if (historyAktiv == true){
+					if((scaledX  > buttonCordsHistory[X] && scaledX < (buttonCordsHistory[X]+buttonCordsHistory[W])) && (scaledY > buttonCordsHistory[Y] && scaledY < (buttonCordsHistory[Y]+buttonCordsHistory[H]))){
+						if (mymillis() - buttonTimerHistory > 500){
+							buttonTimerHistory = mymillis();
+							Screen[ScreenHistory] = readScreen(ScreenHistory);
+							if (Screen[ScreenHistory] == today){
+								writeScreen(ScreenHistory, yesterday);
+							}
+							else if (Screen[ScreenHistory] == yesterday){
+								writeScreen(ScreenHistory, historyOff);
+							}
+							else if (Screen[ScreenHistory] == historyOff){
+								writeScreen(ScreenHistory, today);
+							}
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+							writeScreen(ScreenShutdown, ShutdownRun);
 						}
-						else if (Screen[ScreenHistory] == yesterday){
-							writeScreen(ScreenHistory, historyOff);
-						}
-						else if (Screen[ScreenHistory] == historyOff){
-							writeScreen(ScreenHistory, today);
-						}
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						writeScreen(ScreenShutdown, ShutdownRun);
 					}
 				}
 				break; // ScreenAktuell
