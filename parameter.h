@@ -52,7 +52,7 @@
 #define TRACKER_VOLTAGE             1
 #define TRACKER_CURRENT             1
 //Abfragen der History Values
-#define historyAktiv                0                       //History Values Abfragen und Anzeigen aktiv=1 deaktiv=0
+#define historyAktiv                1                       //History Values Abfragen und Anzeigen aktiv=1 deaktiv=0
 #define historyDelay                900                     //Abfrageintervall in Sekunden mindestens 60, Empfehlung 900
 
 //#######################################
