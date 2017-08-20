@@ -457,27 +457,6 @@ int setBrightness(int NewValue)
   return ret;
 }
 
-//Einstellung Zeitzone lesen
-int readTimeZone (char* file_read)
-{
-  char file_Path [100];
-  FILE *fp;
-  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
-  fp = fopen(file_Path, "r");
-  if(fp == NULL) {
-    printf("Datei konnte NICHT geoeffnet werden.\n");
-    snprintf (file_read, (size_t)20, "Summertime");
-    fclose(fp);
-    return 0;
-  }
-  else {
-    fgets(file_read,20,fp);
-    strtok(file_read, "\n");
-    fclose(fp);
-  }
-  return 1;
-}
-
 //Version lesen
 int readVersion (char* file_read)
 {

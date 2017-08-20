@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.37 20.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.38 20.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -307,11 +307,6 @@ network={
 ```
 Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board hat, bei einem älteren Pi musst du entweder per Kabel oder per W-Lan USB-Stick die Netzwerkverbindung herstellen.
 
-## Umschaltung Sommer-/ Winterzeit
-Auf der GUI im Menü Setup gibt es ein Umschaltbutton für die Umschaltung zwischen Sommerzeit und Winterzeit. Damit die Einstellung wirksam wird startet die Software nach dem betätigen des Button neu.
-
-Wenn diese Software ohne Display verwendet wird, muss die Einstellung der Sommer oder Winterzeit von Hand vorgenommen werden, dafür muss in der Datei "Timezone.txt" im Ordner "Data" entweder "Wintertime" oder "Summertime" eingetragen werden.
-
 ## RSCP to Loxone
 Es besteht eine Möglichkeit meine Software auch für Loxone statt für Homematic zu nutzen. Dies ist in einer separaten Anleitung beschrieben.
 [Loxone README.markdown](https://github.com/nischram/E3dcGui/blob/master/Loxone)
@@ -326,6 +321,10 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.38 20.08.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18)
+- Sommer/Winterzeit Einstellung ist nicht mehr nötig
+- Button für Sommer/Winterzeit entfernt
+
 V1.37 20.08.2017 [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
 - Versionsanzeige im Setupmenü eingebaut
 - Changelog archiviert

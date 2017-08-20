@@ -23,7 +23,7 @@ static AES aesDecrypter;
 static uint8_t ucEncryptionIV[AES_BLOCK_SIZE];
 static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
 static int32_t TAG_EMS_OUT_UNIXTIME = 0;
-static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
+static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_TZ [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
 static int CounterHM = 0;
 static int Counter900 = 0;
 
@@ -168,11 +168,18 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         break;
       }
       case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
-          TAG_EMS_OUT_UNIXTIME = protocol->getValueAsInt32(response);
-          int timeZone = readRscp(PosTimeZone);
-          TAG_EMS_OUT_UNIXTIME = TAG_EMS_OUT_UNIXTIME - timeZone;
+          int32_t unixTimestamp = protocol->getValueAsInt32(response);
           time_t timestamp;
           tm *sys;
+          timestamp = unixTimestamp;
+          sys = localtime(&timestamp);
+          strftime (TAG_EMS_OUT_TZ,40,"%z",sys);
+          if (strcmp ("+0200",TAG_EMS_OUT_TZ) == 0)
+            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 7200;
+          else if (strcmp ("+0100",TAG_EMS_OUT_TZ) == 0)
+            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 3600;
+          else
+            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 7200;
           timestamp = TAG_EMS_OUT_UNIXTIME;
           sys = localtime(&timestamp);
           strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
@@ -180,6 +187,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           writeUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
           cout << "System Time is " << TAG_EMS_OUT_DATE << "_" << TAG_EMS_OUT_TIME << "\n";
           cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
+          cout << "System Timezone is " << TAG_EMS_OUT_TZ << "\n";
           printsendHM(CounterHM, TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
           break;
       }

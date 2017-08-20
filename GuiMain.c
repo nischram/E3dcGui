@@ -589,17 +589,6 @@ int main(){
 							break;
 						}
 					}
-					readTimeZone(OUT);
-					if (strcmp ("Wintertime",OUT) == 0){
-						drawSquare(S1,R5-20,180,30,GREY);
-						drawCorner(S1,R5-20,180,30, WHITE);
-						put_string(S1+20,R5-20+8, "Winterzeit", WHITE);
-					}
-					else{
-						drawSquare(S1,R5-20,180,30,GREY);
-						drawCorner(S1,R5-20,180,30, WHITE);
-						put_string(S1+20,R5-20+8, "Sommerzeit", WHITE);
-					}
 					//Version anzeigen
 					readVersion(OUT);
 					put_string(20,20, OUT, GREY);

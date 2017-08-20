@@ -103,8 +103,6 @@ int main()
 	int buttonTimerSRS = mymillis();
 	int buttonCordsHRS[4] = {S1,R4-20,180,30};
 	int buttonTimerHRS = mymillis();
-	int buttonCordstime_zone[4] = {S1,R5-20,180,30};
-	int buttonTimertime_zone = mymillis();
 	int buttonCordsBrigh25[4] = {(S4+105),(R1),(Fw+6),(21+3)};
 	int buttonTimerBrigh25 = mymillis();
 	int buttonCordsBrigh76[4] = {(S4+160),(R1),(Fw+6),(21+3)};
@@ -325,35 +323,6 @@ int main()
 						}
 					}
 				} // if ScreenShutdownRun
-				if((scaledX  > buttonCordstime_zone[X] && scaledX < (buttonCordstime_zone[X]+buttonCordstime_zone[W])) && (scaledY > buttonCordstime_zone[Y] && scaledY < (buttonCordstime_zone[Y]+buttonCordstime_zone[H]))){
-					if (mymillis() - buttonTimertime_zone > 600){
-						buttonTimertime_zone = mymillis();
-						char OUT [100];
-						readTimeZone(OUT);
-						if (strcmp ("Wintertime",OUT) == 0){
-							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Summertime");
-							drawSquare(S1,R5-20,180,30,GREY);
-							drawCorner(S1,R5-20,180,30, WHITE);
-							put_string(S1+20,R5-20+8, "Sommerzeit", GREEN);
-
-						}
-						else{
-							writeData("/home/pi/E3dcGui/Data/Timezone.txt", "Wintertime");
-							drawSquare(S1,R5-20,180,30,GREY);
-							drawCorner(S1,R5-20,180,30, WHITE);
-							put_string(S1+20,R5-20+8, "Winterzeit", GREEN);
-						}
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenSaver, false);
-						writeScreen(ScreenShutdown, ShutdownSRS);
-						sleep (2);
-						pkill();
-						system("/home/pi/E3dcGui/start &");
-						drawSquare(2,2,800,480,LTGREY);
-						system("pkill screenSave");
-						return 0;
-					}
-				}
 				if((scaledX  > buttonCordsSRS[X] && scaledX < (buttonCordsSRS[X]+buttonCordsSRS[W])) && (scaledY > buttonCordsSRS[Y] && scaledY < (buttonCordsSRS[Y]+buttonCordsSRS[H]))){
 					if (mymillis() - buttonTimerSRS > 3000){
 						buttonTimerSRS = mymillis();
