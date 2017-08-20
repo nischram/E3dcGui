@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.38 20.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.39 20.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -173,6 +173,20 @@ Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:
 <img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
+___Wichtig:___ Der Raspberry Pi hat einen eignen Bildschirmschoner, dieser muss deaktiviert werden. Mit folgendem Befehl muss die Datei _rc.local_ geöffnet werden:
+```shell
+pi@raspberrypi:~ $ sudo nano /etc/rc.local
+```
+Vor dem "exit 0" musst du folgende Zeilen einfügen:
+```shell
+BLANK_TIME=0
+BLANK_DPMS=off
+POWERDOWN_TIME=0
+setterm -cursor off > /dev/tty1
+```
+Die Änderung wird mit „STRG“ + „O“ gespeichert und die Datei beendet mit „STRG“ + „X“.  
+Die zuvor eingefügte Zeile "setterm -cursor off > /dev/tty1" verhindert das Blinken des Coursers mitten im Bild.
+
 ## Werte in der HomeMatic nutzen
 Das Nutzen der Werte in der HomeMatic, ist in der [Anleitung für HomeMatic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
 
@@ -186,7 +200,7 @@ Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der 
 Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.   
 Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über längere Zeit keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Kommandozeile eingeben:
 ```shell
-pi@raspberrypi:~ $ pkill watchdogHM
+pi@raspberrypi:~ $ pkill watchdog
 ```
 ## Aktuelle Uhrzeit aus dem Internet holen
 Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeiteit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
@@ -309,7 +323,7 @@ Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board hat, bei einem älteren P
 
 ## RSCP to Loxone
 Es besteht eine Möglichkeit meine Software auch für Loxone statt für Homematic zu nutzen. Dies ist in einer separaten Anleitung beschrieben.
-[Loxone README.markdown](https://github.com/nischram/E3dcGui/blob/master/Loxone)
+[Loxone README](https://github.com/nischram/E3dcGui/blob/master/Loxone)
 
 ## Quelle
 
@@ -321,9 +335,14 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.39 20.08.2017 Anleitung überarbeitet
+- Abschalten vom PI Bilschirmschoner und Couser in der README aufgenommen
+- Tippfehler in der README
+- Anpassung für den Pfad zu /dev/fb
+
 V1.38 20.08.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18)
-- Sommer/Winterzeit Einstellung ist nicht mehr nötig
-- Button für Sommer/Winterzeit entfernt
+- Sommer/Winterzeit Einstellungen ist nicht mehr nötig
+- Button für Sommer/Winterzeit entfert
 
 V1.37 20.08.2017 [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
 - Versionsanzeige im Setupmenü eingebaut

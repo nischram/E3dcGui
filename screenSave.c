@@ -33,8 +33,10 @@ int main()
 
 	int screenChange;
 
-	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
-	system("setterm -cursor off > /dev/tty1");             //Courser Abschalten
+	//Umschalten auf 16Bit Display
+	char OUT[128];
+	snprintf (OUT, (size_t)128, "fbset -fb %s -depth 16", framebuffer_File);
+	system(OUT);
 
 	int screenShutdown = ShutdownRun;
 
