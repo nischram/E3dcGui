@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.36 15.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.37 20.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -66,7 +66,7 @@ Die wichtigsten Einstellungen sind:
 6    #define GUI                         1
 12   #define E3DC_S10                    1
 21   #define Homematic_E3DC              1
-51   #define Homematic_GUI               0
+60   #define Homematic_GUI               0
 ```
 Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen willst oder nicht und ob die eine HomeMatic anbinden willst oder nicht. Wenn du eine Funktion nutzen willst trag bitte eine „1“ ein sonst eine „0“.
 
@@ -166,8 +166,8 @@ Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#de
 Damit du am Sorcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
 ### Bildschirmschoner
-Damit des Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 70 definiert: `#define ScreenSaverTime             180`   
-Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display (zum Teil wegen der Empfindlichkeit auch zwei Tipp's), dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:   
+Damit das Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 73 definiert: `#define ScreenSaverTime             180`   
+Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display, dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:   
 <img src="https://s20.postimg.org/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
 Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
 <img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
@@ -247,12 +247,12 @@ pi@raspberrypi ~/E3dcGui $ sudo apt-get install libio-socket-ssl-perl
 Jetzt müssen die eMail Einstellung in den "parameter.h" definiert werden.
 ```
 // sendEmail Parameter
-96   #define FromEmailAdress             "max.mustermann@web.de"
-97   #define smtpServer                  "smtp.web.de"
-98   #define smtpPort                    "587"
-99   #define smtpTLS                     "yes"
-100   #define smtpBenutzer                "max.mustermann@web.de"
-101   #define smtpPass                    "1234abc"
+104  #define FromEmailAdress             "max.mustermann@web.de"
+105  #define smtpServer                  "smtp.web.de"
+106  #define smtpPort                    "587"
+107  #define smtpTLS                     "yes"
+108   #define smtpBenutzer                "max.mustermann@web.de"
+109   #define smtpPass                    "1234abc"
 ```
 Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
@@ -266,12 +266,12 @@ Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
 Für den Watchdog ist in der "parameter.h" noch die eMail-Adresse einzustellen in der die Nachrichten gesendet werden sollen:
 ```
-92   #define WDtoEmailAdress             "max.mustermann@web.de"
+95  #define WDtoEmailAdress             "max.mustermann@web.de"
 ```
 Mit den Parametern
 ```
-90   #define WDsendEmailReboot           1
-91   #define WDsendEmailKill             0
+93   #define WDsendEmailReboot           1
+94   #define WDsendEmailKill             0
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll. Beide Parameter auf "0", dann wird keine eMail gesendet und die Software muss __nicht__ installiert werden.
 
@@ -316,11 +316,6 @@ Wenn diese Software ohne Display verwendet wird, muss die Einstellung der Sommer
 Es besteht eine Möglichkeit meine Software auch für Loxone statt für Homematic zu nutzen. Dies ist in einer separaten Anleitung beschrieben.
 [Loxone README.markdown](https://github.com/nischram/E3dcGui/blob/master/Loxone)
 
-## ToDo
-01 weiteres in der Aneitung zum Aufbau
-02 Dokumentation im Sourcecode
-03 Loxone Unterstützung aufnehmen
-
 ## Quelle
 
 #### RSCP
@@ -331,46 +326,8 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
-V1.36 15.08.2017 HistoryValues verbessert
-- Definition für "historyAktiv" und "historyDelay" eingebaut
-
-V1.35 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
-- Fehlerkorektur für Einstellung der Display-Helligkeit
-
-V1.34 13.08.2017 [Issue #16](https://github.com/nischram/E3dcGui/issues/16)
-- Fehlerkorektur screenSave.c
-
-V1.33 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
-- Einstellung der Display-Helligkeit
-
-V1.32 11.08.2017 S10history integriert
-- S10history von [RalfJL](https://github.com/RalfJL/S10history) integriert
-- [Anleitunf für S10History](https://github.com/nischram/E3dcGui/tree/master/S10history) angepasst
-- Abfrage der HistoryValues für Tag und Vortag
-- Anzeige der HistoryValues für Tag und Vortag in den Aktuellen Werten
-- [Issue #12](https://github.com/nischram/E3dcGui/issues/12)
-- Anpassungen im RSCP für S10history
-- ASE.cpp für 64Bit vorbereitet [Issue #4](https://github.com/nischram/E3dcGui/issues/4)
-- [Issue #15](https://github.com/nischram/E3dcGui/issues/15) WatchDog verbessert
-- IP Abfrage für das Setup Menü angepasst
-- Funktionen für Setup Menü ausgelagert !!! Achtung !!! In der screenSaveHM.c muss folgende Zeile im oberen Bereich eingefügt werden:
-`  #include <sys/sysinfo.h>  `
-- Zusammenfassen von Funktionen in der GuiMain.c
-
-V1.31 31.07.2017 [Issue #14](https://github.com/nischram/E3dcGui/issues/14)
-- Änderung an der HomeMatic README, HM Variable nicht beschrieben
-- Änderung an der HomeMatic README, Limitation 200 Variablen entfernt
-
-V1.30 14.05.2017 Tippfehler README
+V1.37 20.08.2017 [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
+- Versionsanzeige im Setupmenü eingebaut
 - Changelog archiviert
-
-V1.29 14.05.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
-- Fehlermeldung bei sendEmail
-
-V1.28 01.05.2017 [Issue #10](https://github.com/nischram/E3dcGui/issues/10)
-- ADD Power wurde Negativ angezeigt, Invertierung eingebaut
-
-V1.27 13.02.2017 [Issue #9](https://github.com/nischram/E3dcGui/issues/9)
-- Wegen häufigen Reebot eine Wartezeit von 3600 Sekunden eingebaut
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

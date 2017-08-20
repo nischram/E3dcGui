@@ -1,6 +1,41 @@
 # Changelog Archiv
 
-Stand V1.30 14.05.2017
+Stand V1.37 20.08.2017
+
+V1.37 20.08.2017 Diverse Verbesserungen und Fehlerbehebung
+- [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
+- Versionsanzeige im Setupmenü eingebaut
+- Changelog archiviert
+
+V1.36 15.08.2017 HistoryValues verbessert
+- Definition für "historyAktiv" und "historyDelay" eingebaut
+
+V1.35 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
+- Fehlerkorektur für Einstellung der Display-Helligkeit
+
+V1.34 13.08.2017 [Issue #16](https://github.com/nischram/E3dcGui/issues/16)
+- Fehlerkorektur screenSave.c
+
+V1.33 13.08.2017 [Issue #13](https://github.com/nischram/E3dcGui/issues/13)
+- Einstellung der Display-Helligkeit
+
+V1.32 11.08.2017 S10history integriert
+- S10history von [RalfJL](https://github.com/RalfJL/S10history) integriert
+- [Anleitunf für S10History](https://github.com/nischram/E3dcGui/tree/master/S10history) angepasst
+- Abfrage der HistoryValues für Tag und Vortag
+- Anzeige der HistoryValues für Tag und Vortag in den Aktuellen Werten
+- [Issue #12](https://github.com/nischram/E3dcGui/issues/12)
+- Anpassungen im RSCP für S10history
+- ASE.cpp für 64Bit vorbereitet [Issue #4](https://github.com/nischram/E3dcGui/issues/4)
+- [Issue #15](https://github.com/nischram/E3dcGui/issues/15) WatchDog verbessert
+- IP Abfrage für das Setup Menü angepasst
+- Funktionen für Setup Menü ausgelagert !!! Achtung !!! In der screenSaveHM.c muss folgende Zeile im oberen Bereich eingefügt werden:
+`  #include <sys/sysinfo.h>  `
+- Zusammenfassen von Funktionen in der GuiMain.c
+
+V1.31 31.07.2017 [Issue #14](https://github.com/nischram/E3dcGui/issues/14)
+- Änderung an der HomeMatic README, HM Variable nicht beschrieben
+- Änderung an der HomeMatic README, Limitation 200 Variablen entfernt
 
 V1.30 14.05.2017 Tippfehler README
 - Changelog archiviert

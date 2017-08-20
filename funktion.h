@@ -478,6 +478,27 @@ int readTimeZone (char* file_read)
   return 1;
 }
 
+//Version lesen
+int readVersion (char* file_read)
+{
+  char file_Path [100];
+  FILE *fp;
+  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Version.txt");
+  fp = fopen(file_Path, "r");
+  if(fp == NULL) {
+    printf("Datei konnte NICHT geoeffnet werden.\n");
+    snprintf (file_read, (size_t)20, "V0.00");
+    fclose(fp);
+    return 0;
+  }
+  else {
+    fgets(file_read,20,fp);
+    strtok(file_read, "\n");
+    fclose(fp);
+  }
+  return 1;
+}
+
 //Pi Temperatur
 int piTemp (char* PiTemp)
 {

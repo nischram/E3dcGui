@@ -195,6 +195,7 @@ int main()
 			case ScreenAktuell:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
 					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
 						int state = readScreen(ScreenState);
 						if(state == ScreenOff){
 							screenOn();
@@ -232,6 +233,7 @@ int main()
 			case ScreenLangzeit:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
 					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
 						int state = readScreen(ScreenState);
 						if(state == ScreenOff){
 							screenOn();
@@ -434,6 +436,7 @@ int main()
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
 					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
 						int state = readScreen(ScreenState);
 						if(state == ScreenOff){
 							screenOn();

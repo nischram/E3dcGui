@@ -600,6 +600,9 @@ int main(){
 						drawCorner(S1,R5-20,180,30, WHITE);
 						put_string(S1+20,R5-20+8, "Sommerzeit", WHITE);
 					}
+					//Version anzeigen
+					readVersion(OUT);
+					put_string(20,20, OUT, GREY);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIP1[16], PiIP2[16], PiIP3[16];
 					//Pi Temp
