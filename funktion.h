@@ -403,7 +403,7 @@ int mymillis()
 //Made By Nischram
 int madeBy(char *OUT){
   snprintf (OUT, (size_t)100, "Made by Nischram  https://github.com/nischram/E3dcGui.git");
-  return;
+  return 1;
 }
 
 //Killen der Applikationen

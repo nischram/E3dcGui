@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.40 26.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.41 26.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -335,6 +335,9 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.41 26.08.2017 "warning" wegen neuen Compiler behoben
+- Neu Compiler meldet einige "warning"
+
 V1.40 26.08.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
 - Anpassung für sendEmail vorgenommen Zeile 1906
 
@@ -345,7 +348,7 @@ V1.39 20.08.2017 Anleitung überarbeitet
 
 V1.38 20.08.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18)
 - Sommer/Winterzeit Einstellungen ist nicht mehr nötig
-- Button für Sommer/Winterzeit entfert
+- Button für Sommer/Winterzeit entfernt
 
 V1.37 20.08.2017 [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
 - Versionsanzeige im Setupmenü eingebaut

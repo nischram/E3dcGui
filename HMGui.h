@@ -2,7 +2,7 @@
 #define __HMGUI_H_
 
 //Homematic Grafik erstellen
-make_HM_Gui(int GuiTime, int counter)
+int make_HM_Gui(int GuiTime, int counter)
 {
 	//Difiniton der Variablen die auf dem Display angezeigt werden sollen.
 	char VerschlussEG[20], VerschlussOG[20], VerschlussDG[20], VerschlussGa[20], VerschlussKel[20];

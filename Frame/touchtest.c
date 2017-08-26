@@ -9,6 +9,7 @@ gcc -g -o touchtest  touchtest.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "../parameter.h"
 #include "touch.h"
 #include "touch.c"

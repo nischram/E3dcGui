@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
+#include <unistd.h>
 #include "font_8x8.c"
 
 
