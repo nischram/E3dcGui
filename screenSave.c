@@ -332,10 +332,10 @@ int main()
 						writeScreen(ScreenSaver, false);
 						writeScreen(ScreenShutdown, ShutdownSRS);
 						sleep (2);
-						pkill();
+						killall();
 						system("/home/pi/E3dcGui/start &");
 						drawSquare(2,2,800,480,LTGREY);
-						system("pkill screenSave");
+						system("killall -9 screenSave screenSaveHM");
 						return 0;
 					}
 				}
@@ -346,10 +346,10 @@ int main()
 						writeScreen(ScreenSaver, false);
 						writeScreen(ScreenShutdown, ShutdownHRS);
 						sleep (2);
-						pkill();
+						killall();
 						drawSquare(2,2,800,480,BLACK);
 						system("sudo reboot");
-						system("pkill screenSave");
+						system("killall -9 screenSave screenSaveHM");
 						return 0;
 					}
 				}
@@ -393,11 +393,11 @@ int main()
 							writeScreen(ScreenCounter, 0);
 							writeScreen(ScreenSaver, false);
 							writeScreen(ScreenShutdown, ShutdownSDN);
-							pkill();
+							killall();
 							sleep (2);
 							drawSquare(2,2,800,480,BLACK);
 							system("sudo shutdown -h now");
-							system("pkill screenSave");
+							system("killall -9 screenSave screenSaveHM");
 							return 0;
 						}
 					}

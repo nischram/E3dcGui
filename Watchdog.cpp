@@ -228,10 +228,10 @@ int main()
           snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nRSCP-Time > %i Sek. \nPI: %i / RSCP: %i", WDdiff, AktuallTime, UnixTimeE3dc);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
-        system("pkill RscpMain");
+        system("killall -9 RscpMain");
         sleep(2);
         system("/home/pi/E3dcGui/RscpMain &");
-        snprintf (OUT, (size_t)100, "RSCP-pkill");
+        snprintf (OUT, (size_t)100, "RSCP-kill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeE3dc, resetCounter, OUT);
         jump ++;
       }
@@ -259,14 +259,12 @@ int main()
           snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nHM-Time > %i Sek. \nPI: %i / HM: %i", WDdiff, AktuallTime, UnixTimeHM);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
-        system("pkill GuiMain");
-        system("pkill screenSave");
-        system("pkill screenSaveHM");
+        system("killall -9 GuiMain screenSave screenSaveHM");
         sleep(2);
         system("/home/pi/E3dcGui/GuiMain &");
         system("/home/pi/E3dcGui/screenSave &");
         system("/home/pi/E3dcGui/screenSaveHM &");
-        snprintf (OUT, (size_t)100, "HM_GUI-pkill");
+        snprintf (OUT, (size_t)100, "HM_GUI-kill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
         jump ++;
       }
@@ -294,14 +292,12 @@ int main()
           snprintf (EmailText, (size_t)512, "Watchdog >>> Kill\nGUI-Time > %i Sek. \nPI: %i / GUI: %i", WDdiff, AktuallTime, UnixTimeGUI);
           sendEmail(EmailAdress, EmailBetreff, EmailText);
         }
-        system("pkill GuiMain");
-        system("pkill screenSave");
-        system("pkill screenSaveHM");
+        system("killall -9 GuiMain screenSave screenSaveHM");
         sleep(2);
         system("/home/pi/E3dcGui/GuiMain &");
         system("/home/pi/E3dcGui/screenSave &");
         system("/home/pi/E3dcGui/screenSaveHM &");
-        snprintf (OUT, (size_t)100, "GuiMain-pkill");
+        snprintf (OUT, (size_t)100, "GuiMain-kill");
         WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeGUI, resetCounter, OUT);
       }
       else {

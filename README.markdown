@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.41 26.08.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.42 27.08.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -33,7 +33,8 @@ Am S10 muss im „Hauptmenü“ unter „Einstellungen“ > "Personalisieren" ei
 Im selben Menü „Einstellungen“ > "Netzwerk" ist die IP-Adresse des S10 zu finden.
 
 ## Raspberry Pi   
-Ich erkläre die Erstinstallation eines Raspberry Pi hier nicht, dies Informationen werden im Internet beschrieben.   
+Die Erstinstallation eines Raspberry Pi erkläre ich hier nicht im Detail, nur mit einer Schritt für Schritt Zusammenfassung von diversen Links.    
+[Schritt für Schritt](https://github.com/nischram/E3dcGui/blob/master/STEPBYSTEP.markdown)   
 Diese Anleitung setzt einen lokalen Zugriff oder SSH-Zugriff auf den Raspberry voraus.
 
 ### Netzwerk   
@@ -75,6 +76,9 @@ Die Änderungen in der „parameter.h“ speicherst du mit „STRG“ und „O�
 
 ### Applikation Kompilieren   
 Das „Makefile“ ist komplett vorbereitet du brauchst nur noch „make“ in der Kommandozeile eingeben, dann läuft das Kompilieren von alleine durch.
+```shell
+pi@raspberrypi ~/E3dcGui $  make
+```
 
 ### Wichtig   
 Damit die SD-Karte des Raspberry Pi nicht übermäßig beansprucht wird, nutzt ich ein RAMDisk im Arbeitsspeicher. Die Einrichtung ist unten im Kapitel __[RAMDisk](https://github.com/nischram/E3dcGui#ramdisk)__ beschrieben.
@@ -103,7 +107,7 @@ Damit das Programm nun dauerhaft genutzt werden können, muss die Applikation au
 
 Die Crontab ruft man auf mit:
 ```shell
-pi@raspberrypi ~/e3dc-rscp $  crontab -e
+pi@raspberrypi ~/E3dcGui $  crontab -e
 ```
 - Crontab für die Bearbeitung öffnen
 
@@ -173,19 +177,18 @@ Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:
 <img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
-___Wichtig:___ Der Raspberry Pi hat einen eignen Bildschirmschoner, dieser muss deaktiviert werden. Mit folgendem Befehl muss die Datei _rc.local_ geöffnet werden:
+#### Wichtig Pi Bildschirmschoner deaktivieren
+Der Raspberry Pi hat einen eignen Bildschirmschoner, dieser muss deaktiviert werden. Mit folgendem Befehl muss die Datei _rc.local_ geöffnet werden:
 ```shell
 pi@raspberrypi:~ $ sudo nano /etc/rc.local
 ```
 Vor dem "exit 0" musst du folgende Zeilen einfügen:
 ```shell
-BLANK_TIME=0
-BLANK_DPMS=off
-POWERDOWN_TIME=0
-setterm -cursor off > /dev/tty1
+# turn off console blanking and cursor blinking
+TERM=linux setterm -blank 0 -powerdown 0 -cursor off > /dev/tty1
 ```
 Die Änderung wird mit „STRG“ + „O“ gespeichert und die Datei beendet mit „STRG“ + „X“.  
-Die zuvor eingefügte Zeile "setterm -cursor off > /dev/tty1" verhindert das Blinken des Coursers mitten im Bild.
+Der Teil "-cursor off" verhindert das Blinken des Coursers mitten im Bild.
 
 ## Werte in der HomeMatic nutzen
 Das Nutzen der Werte in der HomeMatic, ist in der [Anleitung für HomeMatic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
@@ -200,7 +203,7 @@ Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der 
 Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.   
 Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über längere Zeit keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Kommandozeile eingeben:
 ```shell
-pi@raspberrypi:~ $ pkill watchdog
+pi@raspberrypi:~ $ killall watchdog
 ```
 ## Aktuelle Uhrzeit aus dem Internet holen
 Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeiteit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
@@ -289,7 +292,7 @@ Mit den Parametern
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll. Beide Parameter auf "0", dann wird keine eMail gesendet und die Software muss __nicht__ installiert werden.
 
-__Wichtig:__ Bitte zur Fehlerbehebung [Issue#11](https://github.com/nischram/E3dcGui/issues/11) beachten!
+__Wichtig:__ Bitte bei neueren Respberry Versionen zur Fehlerbehebung [Issue#11](https://github.com/nischram/E3dcGui/issues/11) beachten!
 
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay, Standgehäuse und Netzteil.  
@@ -301,7 +304,7 @@ Es muss die Desktopanwendung „startx“ deaktiviert werden, dies kannst du im 
 ```
 pi@raspberry:~$ sudo raspi-config
 ```
-Dort unter „Boot Options“ > „B2 Console Autologin Text console, automatically logged in as 'pi' user“ auswählen.
+Dort unter „Boot Options“ > "B1 Desktop / CLI" > „B2 Console Autologin Text console, automatically logged in as 'pi' user“ auswählen.
 
 ### W-Lan einrichten
 Zuvor kannst du dein W-Lan scannen, um zu sehen ob der Pi empfang hat:
@@ -335,6 +338,12 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.42 27.08.2017 Diverses
+- Anleitung überarbeitet um den Pi Bildschirmschoner zu deaktivieren
+- Diverse korrekturen in der README
+- "pkill" in "killall" geändert
+- Schritt für Schritt Anleitung erstellt
+
 V1.41 26.08.2017 "warning" wegen neuen Compiler behoben
 - Neu Compiler meldet einige "warning"
 
@@ -342,7 +351,7 @@ V1.40 26.08.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
 - Anpassung für sendEmail vorgenommen Zeile 1906
 
 V1.39 20.08.2017 Anleitung überarbeitet
-- Abschalten vom PI Bilschirmschoner und Couser in der README aufgenommen
+- Abschalten vom PI Bildschirmschoner und Cousor in der README aufgenommen
 - Tippfehler in der README
 - Anpassung für den Pfad zu /dev/fb
 

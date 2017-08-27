@@ -407,11 +407,9 @@ int madeBy(char *OUT){
 }
 
 //Killen der Applikationen
-int pkill()
+int killall()
 {
-	system("pkill GuiMain");
-	system("pkill RscpMain");
-	system("pkill watchdog");
+	system("killall -9 GuiMain RscpMain watchdog");
 }
 
 //Hintergrundbeleuhtung ausschalten

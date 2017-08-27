@@ -43,9 +43,8 @@ int main()
 	scaleYvalue = ((float)screenYmax-screenYmin) / yres;
 	printf ("Y Scale Factor = %f\n", scaleYvalue);
 
-  pkill();
+  killall();
 	screenOn();
-	system("setterm -cursor on");             //Courser Einschalten
 	drawSquare(360,3,440,240,BLACK);
-	system("pkill screenSave");
+	system("killall -9 screenSave screenSaveHM");
 }
