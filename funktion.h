@@ -34,7 +34,7 @@ unsigned replace_character(char* string, char from, char to){
 int read_HM(int id, int cutnumber, char* value){
   if (id == 0){
     snprintf(value, (size_t)256, "NoISE");
-    return 0;
+    return -1;
   }
   int cutlast;
   cutlast = 8 + cutnumber - 1;
@@ -46,11 +46,11 @@ int read_HM(int id, int cutnumber, char* value){
   if( out != NULL ){
     fscanf(out, "%s", value);
     pclose(out);
-    return 0;
+    return 1;
   }
   pclose(out);
   snprintf(value, (size_t)256, "no");
-  return 1;
+  return 0;
 }
 //Homematic Abfrage von Jalousien
 int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
@@ -534,7 +534,7 @@ int piIP (char* PiIP1, char* PiIP2, char* PiIP3)
 {
   char OUT[128], batch[256];
   FILE *ipFile;
-  snprintf(batch, (size_t)256, "ifconfig | grep \" inet addr\" | cut -d: -f2 | cut -d\" \" -f1"); //ifconfig | grep " inet addr" | cut -d: -f2 | cut -d" " -f1
+  snprintf(batch, (size_t)256, "hostname --all-ip-addresses");
   ipFile = popen (batch, "r");
   fgets(PiIP1,(size_t)20,ipFile);
   fgets(PiIP2,(size_t)20,ipFile);
