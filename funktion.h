@@ -458,21 +458,24 @@ int setBrightness(int NewValue)
 //Version lesen
 int readVersion (char* file_read)
 {
-  char file_Path [100];
+  char file_Path [100], file_read[100], read[100], version[100], datum[100], off[100];
   FILE *fp;
-  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Version.txt");
+  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/README.markdown");
   fp = fopen(file_Path, "r");
   if(fp == NULL) {
     printf("Datei konnte NICHT geoeffnet werden.\n");
-    snprintf (file_read, (size_t)20, "V0.00");
+    snprintf (version_read, (size_t)20, "V0.00");
     fclose(fp);
     return 0;
   }
   else {
-    fgets(file_read,20,fp);
-    strtok(file_read, "\n");
+    fgets(off,100,fp);
+    fgets(read,100,fp);
+    sscanf(read, "[Stand: %s %s", version, datum);
+    strtok(datum, "]");
     fclose(fp);
   }
+  snprintf (version_read, (size_t)20, "%s %s", version, datum);
   return 1;
 }
 
