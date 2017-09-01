@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 #
 # get the sum of all days of one year from S10 solar power station
 # you can redirect that output to a file and use S10toMysql.pl to
@@ -6,6 +6,7 @@
 #
 # Copyright Ralf Lehmann
 # 02.2017 - initial version
+# 09.2017 - Issue #20 (Nischram)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,12 +29,12 @@ usage()
 {
 >&2 cat << EOT
 usage $0 year
-year > 2013
+year > 2011
 EOT
 exit 1
 }
 
-if [ $# -ne 1 ] || [  "$1" -le "2013" ]; then
+if [ $# -ne 1 ] || [  "$1" -le "2011" ]; then
 	errecho "ERROR: Invalid year as argument"
 	usage
 fi
@@ -62,5 +63,5 @@ while [ $i -le 366 ]; do
 			exit 1
 		fi
 	done
-	let i=$i+1;
+	let i=$i+1
 done

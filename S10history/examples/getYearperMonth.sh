@@ -1,12 +1,12 @@
-#!/bin/sh
+#! /bin/bash
 #
 # get the sum of all months of one year from S10 solar power station
 # you can redirect that output to a file and use S10toMysql.pl to
 # read all those values to a mysql database
 #
-# Ralf Lehmann
+# Copyright Ralf Lehmann
 # 02.2017 - initial version
-#
+# 09.2017 - Issue #20 (Nischram)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 PROG=../S10history
 
 alias errecho='>&2 echo'
@@ -30,12 +29,12 @@ usage()
 {
 >&2 cat << EOT
 usage $0 year
-year > 2013
+year > 2011
 EOT
 exit 1
 }
 
-if [ $# -ne 1 ] || [  "$1" -le "2013" ]; then
+if [ $# -ne 1 ] || [  "$1" -le "2011" ]; then
 	errecho "ERROR: Invalid year as argument"
 	usage
 fi
@@ -63,5 +62,6 @@ while [ $i -le 12 ]; do
 			errecho "ERROR: too many retries; giving up"
 			exit 1
 		fi
-	let i=$i+1;
+	done
+	let i=$i+1
 done
