@@ -109,17 +109,7 @@ int make_HM_Gui(int GuiTime, int counter)
 	}
 	//Hintergrund-Grafik für HM erstellen
 	if(counter == 0){
-		drawSquare(2,2,800,480,LTGREY);
-		drawCorner(2, 2, 800, 480, BLACK);
-		drawSquare(12,12,778,458,WHITE);
-		drawCorner(12, 12, 778, 458, LTGREY);
-		DrawImage("EinstImage", 180, 12);
-		if(E3DC_S10 ==1){
-			DrawImage("AktuellImage", 270, 12);
-			DrawImage("LangzeitImage", 360, 12);
-		}
-		DrawImage("MonitorImage", 450, 12);
-		DrawImage("HMImage", 540, 12);
+		drawMainScreen();                         // Hintergrundbild mit Bildern für den oberen Auswahlbereich erzeugen
 		// Grafik für Dachgeschoss
 		drawSquare(S0,R1-20,230,60,GREY);
 		drawCorner(S0,R1-20,230,60,WHITE);
@@ -133,6 +123,8 @@ int make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S0+63,R1-14,161,48,WHITE);
 			drawCorner(S0+63,R1-14,161,48,GREEN);
 		}
+		else
+			drawSquare(S0+60,R1-17,167,54,WHITE);
 		drawCorner(S0+60,R1-17,167,54,GREY);
 		put_string(S0+6, R1+4, "DG", WHITE);
 		// Grafik für Obergeschoss
@@ -148,6 +140,8 @@ int make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S0+63,R2-14,661,48,WHITE);
 			drawCorner(S0+63,R2-14,661,48,GREEN);
 		}
+		else
+			drawSquare(S0+60,R2-17,667,54,WHITE);
 		drawCorner(S0+60,R2-17,667,54,GREY);
 		put_string(S0+6, R2+4, "OG", WHITE);
 		// Grafik für Erdgeschoss
@@ -163,6 +157,8 @@ int make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S0+63,R3-14,331,48,WHITE);
 			drawCorner(S0+63,R3-14,331,48,GREEN);
 		}
+		else
+			drawSquare(S0+60,R3-17,337,54,WHITE);
 		drawCorner(S0+60,R3-17,337,54,GREY);
 		put_string(S0+6, R3+4, "EG", WHITE);
 		// Grafik für Keller
@@ -179,6 +175,8 @@ int make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S0+63,R4-14,331,48,WHITE);
 			drawCorner(S0+63,R4-14,331,48,GREEN);
 		}
+		else
+			drawSquare(S0+60,R4-17,337,54,WHITE);
 		drawCorner(S0+60,R4-17,337,54,GREY);
 		put_string(S0+6, R4+4, "Keller", WHITE);
 		// Grafik für HM
@@ -207,6 +205,8 @@ int make_HM_Gui(int GuiTime, int counter)
 			drawSquare(S5+63,R3-14,251,48,WHITE);
 			drawCorner(S5+63,R3-14,251,48,GREEN);
 		}
+		else
+			drawSquare(S5+60,R3-17,257,54,WHITE);
 		drawCorner(S5+60,R3-17,257,54,GREY);
 		put_string(S5+6, R3+4, "Garage", WHITE);
 		// Grafik für Aussen
