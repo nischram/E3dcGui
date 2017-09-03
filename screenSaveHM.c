@@ -107,6 +107,10 @@ int main()
 				//siehe screnSave.c
 				break; // ScreenSetup
 			}
+			case ScreenWetter:{
+				//siehe screnSave.c
+				break; // ScreenWetter
+			}
 			case ScreenMonitor:{
 				//siehe screnSave.c
 				break; // ScreenMonitor
@@ -165,20 +169,12 @@ int main()
 					}
 				}
 				if((scaledX  > buttonCordsBrunnen[X] && scaledX < (buttonCordsBrunnen[X]+buttonCordsBrunnen[W])) && (scaledY > buttonCordsBrunnen[Y] && scaledY < (buttonCordsBrunnen[Y]+buttonCordsBrunnen[H]))){
-					if (mymillis() - buttonTimerBrunnen > 500)
-					if(buttonBrunnen){
-						buttonBrunnen= BUTTON_OFF;
+					if (mymillis() - buttonTimerBrunnen > 500){
 						buttonTimerBrunnen = mymillis();
-						drawSquare(S8-3,R4,Fw+6,21+3,LTGREY);
-						printsendHM(ISE_Brunnen, "false");
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenChange, ScreenHM);
-					}
-					else{
-						buttonBrunnen= BUTTON_ON;
-						buttonTimerBrunnen = mymillis();
-						drawSquare(S8-3,R4,Fw+6,21+3,LIGHT_BLUE);
-						printsendHM(ISE_Brunnen, "true");
+						char Brunnen[20];
+						read_HM(ISE_Brunnen, 4, Brunnen);
+						if (strcmp ("true",Brunnen) == 0){
+							drawSquare(S8-3,R4,Fw+6,21+3,LTGREY);
 							printsendHM(ISE_Brunnen, "false");
 						}
 						else if (strcmp ("fals",Brunnen) == 0){
