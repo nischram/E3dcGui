@@ -23,7 +23,10 @@
 #
 PROG=../S10history
 
-alias errecho='>&2 echo'
+#alias errecho='>&2 echo'
+errecho(){
+        >&2 echo $*
+}
 
 usage()
 {
