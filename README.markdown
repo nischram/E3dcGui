@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.46 01.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.47 03.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -8,14 +8,15 @@ Als Schnittstelle zwischen S10 und HomeMatic dient ein Raspberry Pi. Die Applika
 __Daten per RSCP vom E3DC-S10 Speicher abfragen__   
 __Daten vom E3DC zur HomeMatic Hausautomation senden__   
 __Daten vom S10 auf dem Display darstellen__   
-__Daten von der HomeMatic auf dem Display darstellen__
+__Daten von der HomeMatic auf dem Display darstellen__   
+__Wetterinformationen von "Yahoo Weather"__
 
 Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.   
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
 <img src="https://s20.postimg.org/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
-Hier ein Foto mit der Software auf dem 7-Zoll Display.
+Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohen Wettersymbol)
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
@@ -135,28 +136,37 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.
 Auf der rechten Seite wird die Display-Helligkeit eingestellt. Die Einstellung speichert der Pi, auch nach einen Neustart obwohl die Anzeige nach dem Neustart keine aktive Helligleit anzeigt.
-Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
+Unterhalb werden Informationen zum Raspberry Pi ausgegeben.˘
 
-#### 2. Aktuelle Werte des S10
+#### 2. Wetteranzeige
+<img src="https://s20.postimg.org/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
+Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
+[http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
+In der "parameter.h" muss die Standort-ID eingertagen werden, diese erhält man auf der Yahoo Seite ein dem die Location gesucht wird und man und in der Adresszeile aus dem Link die letzten Zahlen kopiert.   
+`113 #define weatherID                   638242`   
+Beispeil zur Adresszeile: "https://www.yahoo.com/news/weather/germany/berlin/berlin-638242"   
+Die Wetteranzeigen könnte auch ohne S10 oder HomeMatic genutzt werden.
+
+#### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
 Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhytmus die Daten abgefragt werden sollen (historyDelay).
 
-#### 3. Langzeit Werte des S10
+#### 4. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 
-#### 4. Monitor
+#### 5. Monitor
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden die einzelnen Tracker des Wechselrichters dargestellt.
 
-#### 5. HomeMatic
+#### 6. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
 Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.   
@@ -338,6 +348,10 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.47 03.09.2017 WetterGui eingebaut
+- Wetteranzeige erstellt
+- Aufbau Hintergrundbild in funktion.h ausgelagert
+
 V1.46 01.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
 - Änderungen laut Issue #20
 

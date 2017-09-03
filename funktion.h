@@ -148,7 +148,24 @@ void createData(int x, int y, char *c){
   drawSquare(x-5,y+21,60,12,WHITE);
 	put_string(x+5, (y+22), c,GREY);
 }
-
+// Hintergrundbild mit Bildern erzeugen
+int drawMainScreen()
+{
+  drawSquare(2,2,800,480,LTGREY);
+  drawCorner(2, 2, 800, 480, BLACK);
+  drawSquare(12,12,778,458,WHITE);
+  drawCorner(12, 12, 778, 458, LTGREY);
+  DrawImage("EinstImage", Picture1, PictureLine1);
+  DrawImage("WetterImage", Picture2, PictureLine1);
+  if(E3DC_S10 ==1){
+    DrawImage("AktuellImage", Picture3, PictureLine1);
+    DrawImage("LangzeitImage", Picture4, PictureLine1);
+    DrawImage("MonitorImage", Picture5, PictureLine1);
+  }
+  if(Homematic_GUI ==1){
+    DrawImage("HMImage", Picture6, PictureLine1);
+  }
+}
 // Bit aus einer Datei lesen, ändern und schreiben
 int BitChange(char filePath[128], int Position, int max)
 {
@@ -456,7 +473,7 @@ int setBrightness(int NewValue)
 }
 
 //Version lesen
-int readVersion (char* file_read)
+int readVersion (char* version_read)
 {
   char file_Path [100], file_read[100], read[100], version[100], datum[100], off[100];
   FILE *fp;

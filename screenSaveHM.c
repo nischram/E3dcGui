@@ -1,5 +1,5 @@
 /*
-gcc -g -o screenSave  screenSave.c
+gcc -g -o screenSaveHM  screenSaveHM.c
 */
 
 #include <linux/input.h>
@@ -16,6 +16,7 @@ gcc -g -o screenSave  screenSave.c
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
 #include "Frame/DrawCorner.c"
+#include "Frame/DrawImage.h"
 #include "funktion.h"
 
 int main()
@@ -178,6 +179,12 @@ int main()
 						buttonTimerBrunnen = mymillis();
 						drawSquare(S8-3,R4,Fw+6,21+3,LIGHT_BLUE);
 						printsendHM(ISE_Brunnen, "true");
+							printsendHM(ISE_Brunnen, "false");
+						}
+						else if (strcmp ("fals",Brunnen) == 0){
+							drawSquare(S8-3,R4,Fw+6,21+3,LIGHT_BLUE);
+							printsendHM(ISE_Brunnen, "true");
+						}
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenChange, ScreenHM);
 					}
@@ -231,6 +238,7 @@ int main()
 						}
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenChange, ScreenHM);
+						sleep(2);
 					}
 				}
 				break; // ScreenHM

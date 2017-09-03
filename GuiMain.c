@@ -28,6 +28,7 @@ gcc -g -o GuiMain  GuiMain.c
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
 #include "HMGui.h"
+#include "WetterGui.h"
 
 
 //####################################
@@ -44,7 +45,7 @@ int main(){
 	int rawX, rawY, rawPressure, scaledX, scaledY;
 
 	int GuiTime, change = 0, changeStop = 0;
-	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40];
+	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
 	int counter, ScreenSaverCounter, HistoryCounter = 15;
 	int UnixTime;
@@ -89,27 +90,7 @@ int main(){
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
-						drawSquare(2,2,800,480,LTGREY);																				//drawSquare ist eine Funktion im frameBuffer.c zum erstellen eines farbigen Viereck
-						drawCorner(2, 2, 800, 480, BLACK);																		//drawCorner ist eine eigene Funktion in Frame/DrawCorner.c zum erstellen von abgerundetetn Ecken
-		        drawSquare(12,12,778,458,WHITE);
-						drawCorner(12, 12, 778, 458, LTGREY);
-		        DrawImage("EinstImage", 180, 12);					//DrawImage ist eine Funktion um ein Bild auf dem Display zu Zeichnen
-						if(E3DC_S10 ==1){
-							DrawImage("AktuellImage", 270, 12);
-							DrawImage("LangzeitImage", 360, 12);
-							DrawImage("MonitorImage", 450, 12);
-							if (historyAktiv == true){
-								if (Screen[ScreenHistory] == today)
-									DrawImage("Yesterday", 370, 405);
-								else if (Screen[ScreenHistory] == yesterday)
-									DrawImage("HistoryOff", 370, 405);
-								else
-									DrawImage("Today", 370, 405);
-							}
-						}
-						if(Homematic_GUI ==1){
-							DrawImage("HMImage", 540, 12);
-						}
+						drawMainScreen();                         // Hintergrundbild mit Bildern für den oberen Auswahlbereich erzeugen
 						DrawImage("PviImage", 40, 50);
 						int pmAktivPhases = readRscp(PosPMPhases);
 						DrawNetImage(pmAktivPhases);              //Einfügen der Grafik für NetImage oder NetImageOff je nach Status der Phasen am LM in der Frame/DrawNetImage.h
@@ -118,6 +99,14 @@ int main(){
 						DrawImage("S10Image", 270, 110);
 						DrawImage("ExtImage", 40, 190);
 						DrawImage("WallboxImage", 650, 190);
+						if (E3DC_S10 ==1 && historyAktiv == true){
+							if (Screen[ScreenHistory] == today)
+								DrawImage("Yesterday", 370, 405);
+							else if (Screen[ScreenHistory] == yesterday)
+								DrawImage("HistoryOff", 370, 405);
+							else
+								DrawImage("Today", 370, 405);
+						}
 					}
 				}
 				if(screenState == ScreenOn){
@@ -377,19 +366,7 @@ int main(){
 				}
 
 	 			if(counter == 0){
-	 				drawSquare(2,2,800,480,LTGREY);
-	 				drawCorner(2, 2, 800, 480, BLACK);
-	 				drawSquare(12,12,778,458,WHITE);
-	 				drawCorner(12, 12, 778, 458, LTGREY);
-	 				DrawImage("EinstImage", 180, 12);
-	 				if(E3DC_S10 ==1){
-	 					DrawImage("AktuellImage", 270, 12);
-	 					DrawImage("LangzeitImage", 360, 12);
-						DrawImage("MonitorImage", 450, 12);
-	 				}
-	 				if(Homematic_GUI ==1){
-	 					DrawImage("HMImage", 540, 12);
-	 				}
+					drawMainScreen();
 	 				time_t timeStamp;
 	 				struct tm *now;
 	 				time( &timeStamp );
@@ -447,19 +424,7 @@ int main(){
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
-						drawSquare(2,2,800,480,LTGREY);																				//drawSquare ist eine Funktion im frameBuffer.c zum erstellen eines farbigen Viereck
-						drawCorner(2, 2, 800, 480, BLACK);																		//drawCorner ist eine eigene Funktion in Frame/DrawCorner.c zum erstellen von abgerundetetn Ecken
-		        drawSquare(12,12,778,458,WHITE);
-						drawCorner(12, 12, 778, 458, LTGREY);
-		        DrawImage("EinstImage", 180, 12);					//DrawImage ist eine Funktion um ein Bild auf dem Display zu Zeichnen
-						if(E3DC_S10 ==1){
-							DrawImage("AktuellImage", 270, 12);
-							DrawImage("LangzeitImage", 360, 12);
-							DrawImage("MonitorImage", 450, 12);
-						}
-						if(Homematic_GUI ==1){
-							DrawImage("HMImage", 540, 12);
-						}
+						drawMainScreen();
 						DrawImage("PV_Modul_aktiv", 240, 150);
 						if (PVI_TRACKER == 2)
 							DrawImage("PV_Modul_aktiv", 440, 150);
@@ -518,26 +483,14 @@ int main(){
 			}
 //####################################################
 			//Setup Grafik erstellen
-			case ScreenSetup:{																												//Im ScreenSetup werden nur die Rückgaben per Datei aus dem "screenSave" Programm dargestellt
+			case ScreenSetup:{
 				GuiTime = PiTime;
 				Screen[ScreenShutdown] = readScreen(ScreenShutdown);
 				int screenShutdown = Screen[ScreenShutdown];
 
 				if(counter == 0){
 					writeScreen(ScreenCounter, 60);
-					drawSquare(2,2,800,480,LTGREY);
-					drawCorner(2, 2, 800, 480, BLACK);
-					drawSquare(12,12,778,458,WHITE);
-					drawCorner(12, 12, 778, 458, LTGREY);
-					DrawImage("EinstImage", 180, 12);
-					if(E3DC_S10 ==1){
-						DrawImage("AktuellImage", 270, 12);
-						DrawImage("LangzeitImage", 360, 12);
-						DrawImage("MonitorImage", 450, 12);
-					}
-					if(Homematic_GUI ==1){
-						DrawImage("HMImage", 540, 12);
-					}
+					drawMainScreen();
 					switch(screenShutdown){
 						case ShutdownSD:{
 							drawSquare(S1,R2-20,180,30,GREY);
@@ -699,6 +652,12 @@ int main(){
 				break;
 			}
 //####################################################
+			//Wetter Grafik erstellen
+			case ScreenWetter:{
+				GuiTime = makeWetterGui(GuiTime, counter, weatherTime);    //Ausgelagert in die Datei WetterGui.h
+				break;
+			}
+//####################################################
 			default:{
 				if(E3DC_S10 ==1)
 					writeScreen(ScreenChange, ScreenAktuell);
@@ -758,7 +717,7 @@ int main(){
 				put_string(330, 435, OUT, GREY);
 			}
 		}
-		else if(GuiTime == HomematicTime && Homematic_GUI == 1){
+		else if(GuiTime == HomematicTime && Homematic_GUI == 1 && screenState == ScreenOn){
 			put_string(20, 458, "Letzter Zeitstempel der Homematic: ", GREY);
 			//Time
 			int AktuallTime = time(NULL);
@@ -769,6 +728,17 @@ int main(){
 			else{
 				drawOutput(300,458,170,12, TimestampHM, GREEN);
 			}
+		}
+		else if(GuiTime == WeatherTime && screenState == ScreenOn){
+			put_string(WetterS1, 458, "Aktuelle Zeit: ", GREY);
+			time_t timeStamp;
+			struct tm *now;
+			time( &timeStamp );
+			now = localtime( &timeStamp );
+			strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
+			drawOutput(170,458,170,12, OUT, GREEN);
+			put_string(400, 458, "Yahoo Datensatz: ", GREY);
+			drawOutput(550,458,170,12, weatherTime, GREEN);
 		}
 		else if(screenState == ScreenOn){
 			put_string(20, 458, "Aktuelle Zeit: ", GREY);
@@ -794,7 +764,7 @@ int main(){
 			else if(Homematic_GUI == 1)
 				writeScreen(ScreenChange, ScreenHM);
 			else
-				writeScreen(ScreenChange, ScreenMonitor);
+				writeScreen(ScreenChange, ScreenWetter);
 		}
 		writeScreen(ScreenSaver, ScreenSaverCounter);
 

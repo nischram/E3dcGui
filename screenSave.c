@@ -16,6 +16,7 @@ gcc -g -o screenSave  screenSave.c
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
 #include "Frame/DrawCorner.c"
+#include "Frame/DrawImage.h"
 #include "funktion.h"
 
 int main()
@@ -51,7 +52,7 @@ int main()
 	else if(Homematic_GUI == 1)
 		writeScreen(ScreenChange, ScreenHM);
 	else
-		writeScreen(ScreenChange, ScreenMonitor);
+		writeScreen(ScreenChange, ScreenWetter);
 	writeScreen(ScreenCounter, 0);
 	writeScreen(ScreenSaver, false);
 	writeScreen(ScreenShutdown, ShutdownRun);
@@ -84,15 +85,17 @@ int main()
 	int buttonCordsSaveHalb[4] = {5,110,400,280};
 	int	buttonSaveHalb= BUTTON_OFF;
 	int buttonTimerSaveHalb = mymillis();
-	int buttonCordsAktuell[4] = {270,10,80,90};
+	int buttonCordsAktuell[4] = {Picture3,PictureLine1,PictureW,PictureH};
 	int buttonTimerAktuell = mymillis();
-	int buttonCordsLangzeit[4] = {360,10,80,90};
+	int buttonCordsLangzeit[4] = {Picture4,PictureLine1,PictureW,PictureH};
 	int buttonTimerLangzeit = mymillis();
-	int buttonCordsSetup[4] = {180,10,80,90};
+	int buttonCordsSetup[4] = {Picture1,PictureLine1,PictureW,PictureH};
 	int buttonTimerSetup = mymillis();
-	int buttonCordsMonitor[4] = {450,10,80,90};
+	int buttonCordsMonitor[4] = {Picture5,PictureLine1,PictureW,PictureH};
 	int buttonTimerMonitor = mymillis();
-	int buttonCordsHM[4] = {540,10,80,90};
+	int buttonCordsWetter[4] = {Picture2,PictureLine1,PictureW,PictureH};
+	int buttonTimerWetter = mymillis();
+	int buttonCordsHM[4] = {Picture6,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
@@ -179,7 +182,15 @@ int main()
 				writeScreen(ScreenShutdown, ShutdownRun);
 			}
 		}
-
+		if((scaledX  > buttonCordsWetter[X] && scaledX < (buttonCordsWetter[X]+buttonCordsWetter[W])) && (scaledY > buttonCordsWetter[Y] && scaledY < (buttonCordsWetter[Y]+buttonCordsWetter[H]))){
+			if (mymillis() - buttonTimerWetter > 500){
+				buttonTimerWetter = mymillis();
+				writeScreen(ScreenChange, ScreenWetter);
+				writeScreen(ScreenCounter, 0);
+				writeScreen(ScreenSaver, false);
+				writeScreen(ScreenShutdown, ShutdownRun);
+			}
+		}
 		if(Homematic_GUI == 1){
 			if((scaledX  > buttonCordsHM[X] && scaledX < (buttonCordsHM[X]+buttonCordsHM[W])) && (scaledY > buttonCordsHM[Y] && scaledY < (buttonCordsHM[Y]+buttonCordsHM[H]))){
 				if (mymillis() - buttonTimerHM > 500){
@@ -403,6 +414,24 @@ int main()
 					}
 				} // if screenShutdownSD
 				break; // ScreenSetup
+			}
+			case ScreenWetter:{
+				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
+					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
+					}
+				}
+				break; // ScreenWetter
 			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
