@@ -53,7 +53,7 @@ if ! $PROG -y $1; then
 	exit 1
 fi
 
-i=1;
+i=1
 while [ $i -le 366 ]; do
 	#echo "$i";
 	j=4;
