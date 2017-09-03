@@ -213,7 +213,7 @@ Hier ein Programm, um den Zeitstempel „S10_RSCP_Time“ von UnixTime auf Uhrze
 Der Inhalt des Scripts sieht wie folgendermaßen aus:
 ```shell
 var S10Time = dom.GetObject("S10_Zeitstempel");
-time S10Unix = dom.GetObject("S10_RSCP_Time").Value();
+time S10Unix = dom.GetObject("S10_RSCP_Time").ToTime();
 string V001 = S10Unix.ToTime();
 string V002 = V001.Format("%d.%m.%Y %H:%M:%S");
 S10Time.State(V002);
@@ -261,7 +261,5 @@ Passend dazu ist das Skript „S10-min-maxSOC.hm“ ist im Ordner „HM-Scripte�
 Die Scripte für die HM habe ich mir zu Teil aus Informationen des Homematic-Forum zusammengebaut.
 
 ## Changelog
-
-31.08.2017 Fehler im Script "S10_Zeitstempel" behoben
 
 14.08.2016 Repository neu erstellt
