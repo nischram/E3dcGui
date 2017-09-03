@@ -57,7 +57,7 @@
 
 //#######################################
 // Homematic Parameter
-#define Homematic_GUI               1         //Wichtig!    //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
+#define Homematic_GUI               0         //Wichtig!    //Wenn das Display für Homematic genutzt werden soll 1 sonst 0
 /*
 Wenn das Display für HM Daten genutzt wird
 aber die ISE_ID noch nicht angepasst sind,
@@ -90,7 +90,7 @@ Es kann aber zu darstellungsfehler kommen.
 //Kontrolldatei aktivieren damit häufige Aktivitäten erkannt werden können
 #define WDkontrolle                 0                       //1=aktiv / 0=deaktiv Empfehlung: 0=deaktiv
 //Email senden bei aktivität
-#define WDsendEmailReboot           1                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
+#define WDsendEmailReboot           0                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
 #define WDsendEmailKill             0                       // 1= senden erlaubt (sendEmail installiert) 0=deaktiv
 #define WDtoEmailAdress             "max.mustermann@web.de"                     // Email Adresse für Watchdog aktivitäten
 //Ping zum Router füre einen LAN/WLAN test
@@ -107,6 +107,10 @@ Es kann aber zu darstellungsfehler kommen.
 #define smtpTLS                     "yes"                                       //TSL-Verschlüsselung "yes" oder "no"
 #define smtpBenutzer                "max.mustermann@web.de"                     //Benutzername für den eMail Account
 #define smtpPass                    "1234abc"                                   //Passwort für den eMail Account
+
+//#######################################
+// Yahoo Wetter
+#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
 
 
 //##############################################################################
@@ -129,6 +133,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define ScreenSetup                 2    //!!
 #define ScreenMonitor               3    //!!
 #define ScreenHM                    4    //!!
+#define ScreenWetter                5    //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!
@@ -140,6 +145,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define RscpTime                    1    //!!
 #define HomematicTime               2    //!!
 #define PiTime                      3    //!!
+#define WeatherTime                 4    //!!
 
 #define SOC                         0    //!!
 #define Solar                       1    //!!
@@ -160,6 +166,16 @@ Es kann aber zu darstellungsfehler kommen.
 #define false                       0    //!!
 #define ScreenOn                    1    //!!
 #define ScreenOff                   0    //!!
+
+#define Picture1                    170  //!!
+#define Picture2                    245  //!!
+#define Picture3                    320  //!!
+#define Picture4                    395  //!!
+#define Picture5                    470  //!!
+#define Picture6                    545  //!!
+#define PictureLine1                12   //!!
+#define PictureW                    75   //!!
+#define PictureH                    75   //!!
 
 // Allgemeines für die RSCP-Applikation
 #define AES_KEY_SIZE                32    //!!
@@ -226,6 +242,24 @@ Es kann aber zu darstellungsfehler kommen.
 #define Y                           1   //!!
 #define W                           2   //!!
 #define H                           3   //!!
+
+//Wetter
+#define WetterS1                    55  //!!
+#define WetterS2                    295 //!!
+#define WetterS3                    540 //!!
+#define WetterZ1                    100 //!!
+#define WetterZ2                    125 //!!
+#define WetterZ3                    150 //!!
+#define WetterZ4                    175 //!!
+#define WetterZ5                    200 //!!
+#define WetterZ6                    225 //!!
+#define WetterZ7                    250 //!!
+#define WetterUZ1                   300 //!!
+#define WetterUZ2                   325 //!!
+#define WetterUZ3                   350 //!!
+#define WetterUZ4                   375 //!!
+#define WetterUZ5                   400 //!!
+#define WetterUZ6                   425 //!!
 
 //#######################################
 
