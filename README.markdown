@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.48 03.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.49 05.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -179,6 +179,12 @@ Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic u
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).   
 Damit du am Sorcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
+#### 7. Abfuhrkalender
+`  #define Abfuhrkalender               1`   
+<img src="https://s20.postimg.org/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
+Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
+Für das nächste Jahr musst du eine neue Datei mit der Jahreszahl anlegen, dann wird diese zum Jahreswechsel automatisch verwendet.
+
 ### Bildschirmschoner
 Damit das Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 73 definiert: `#define ScreenSaverTime             180`   
 Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display, dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:   
@@ -348,6 +354,11 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.49 05.09.2017 Abfuhrkalender eingebaut
+- 2 Kalenderwochen vom Abfuhrkalender als Grafiv erstellt
+- Diverse Anpassungen für die Anzeige vom Abfuhrkalender
+- Zeitanzeige in funktion.h ausgelagert
+
 V1.48 03.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
 - Anpassung durch Tipp von RalfJL
 

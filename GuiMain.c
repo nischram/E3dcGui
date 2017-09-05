@@ -29,6 +29,7 @@ gcc -g -o GuiMain  GuiMain.c
 #include "funktion.h"
 #include "HMGui.h"
 #include "WetterGui.h"
+#include "MuellGui.h"
 
 
 //####################################
@@ -91,14 +92,16 @@ int main(){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
 						drawMainScreen();                         // Hintergrundbild mit Bildern für den oberen Auswahlbereich erzeugen
-						DrawImage("PviImage", 40, 50);
+						DrawImage("PviImage", 40, 90);
 						int pmAktivPhases = readRscp(PosPMPhases);
-						DrawNetImage(pmAktivPhases);              //Einfügen der Grafik für NetImage oder NetImageOff je nach Status der Phasen am LM in der Frame/DrawNetImage.h
-						DrawImage("BatImage", 50, 310);
-						DrawImage("HomeImage", 640, 310);
+						DrawNetImage(640, 90, pmAktivPhases);              //Einfügen der Grafik für NetImage oder NetImageOff je nach Status der Phasen am LM in der Frame/DrawNetImage.h
+						DrawImage("BatImage", 50, 318);
+						DrawImage("HomeImage", 640, 340);
 						DrawImage("S10Image", 270, 110);
-						DrawImage("ExtImage", 40, 190);
-						DrawImage("WallboxImage", 650, 190);
+						if(Additional == 1)
+							DrawImage("ExtImage", 40, 220);
+						if(Wallbox == 1)
+							DrawImage("WallboxImage", 650, 220);
 						if (E3DC_S10 ==1 && historyAktiv == true){
 							if (Screen[ScreenHistory] == today)
 								DrawImage("Yesterday", 370, 405);
@@ -127,18 +130,18 @@ int main(){
 					snprintf (OUT, (size_t)100, "%i W", TAG_PVI);
 					if(TAG_PVIState >= 1){
 						if(TAG_PVI > 50)
-							drawOutputRGB(190,120,80,12, OUT, 225,122,34);
+							drawOutputRGB(190,135,80,12, OUT, 225,122,34);
 						else
-							drawOutput(190,120,80,12, OUT, GREY);
+							drawOutput(190,135,80,12, OUT, GREY);
 						if(TAG_PVI > 0){
 							if(change == 1)
-								drawOutput(190,100,80,12, "> > >",GREY);
+								drawOutput(190,115,80,12, "> > >",GREY);
 							else
-								drawOutput(190,100,80,12, " > > ",GREY);
+								drawOutput(190,115,80,12, " > > ",GREY);
 						}
 					}
 					else
-						drawOutput(190,120,80,12, "PVI-DOWN", RED);
+						drawOutput(190,135,80,12, "PVI-DOWN", RED);
 					//Grid
 					int TAG_Grid = readRscp(PosGrid);
 					int TAG_PMState = readRscp(PosPMState);
@@ -146,31 +149,31 @@ int main(){
 						if(TAG_Grid < 0){
 							TAG_Grid = TAG_Grid * -1;
 							snprintf (OUT, (size_t)100, "%i W", TAG_Grid);
-							drawOutput(570,120,80,12, OUT, CYAN);
+							drawOutput(570,135,80,12, OUT, CYAN);
 							if (TAG_Grid > 15){
 								if(change == 1)
-									drawOutput(570,100,80,12, "> > >",GREY);
+									drawOutput(570,115,80,12, "> > >",GREY);
 								else
-									drawOutput(570,100,80,12, " > > ",GREY);
+									drawOutput(570,115,80,12, " > > ",GREY);
 							}
 							else
-								drawOutput(570,120,80,12, OUT, LIGHT_BLUE);
+								drawOutput(570,135,80,12, OUT, LIGHT_BLUE);
 						}
 						else{
 							snprintf (OUT, (size_t)100, "%i W", TAG_Grid);
-							drawOutput(570,120,80,12, OUT, BLUE);
+							drawOutput(570,135,80,12, OUT, BLUE);
 							if (TAG_Grid > 5){
 								if(change == 1)
-									drawOutput(570,100,80,12, "< < <",GREY);
+									drawOutput(570,115,80,12, "< < <",GREY);
 								else
-									drawOutput(570,100,80,12, " < < ",GREY);
+									drawOutput(570,115,80,12, " < < ",GREY);
 							}
 							else
-								drawOutput(570,120,80,12, OUT, GREEN);
+								drawOutput(570,135,80,12, OUT, GREEN);
 						}
 					}
 					else
-						drawOutput(570,120,80,12, "LM-DOWN", RED);
+						drawOutput(570,135,80,12, "LM-DOWN", RED);
 					//Home
 					int TAG_Home = readRscp(PosHome);
 					snprintf (OUT, (size_t)100, "%i W", TAG_Home);
@@ -212,9 +215,6 @@ int main(){
 								drawOutput(190,236,60,12," > > ",GREY);
 						}
 					}
-					else{
-						drawSquare(40,190,200,120,WHITE);
-					}
 					//Wallbox
 					if(Wallbox == 1){
 						int TAG_WbAll = readRscp(PosWbAll);
@@ -239,18 +239,15 @@ int main(){
 							put_string(570,258,"All",GREY);
 						}
 					}
-					else{
-						drawSquare(570,190,200,120,WHITE);
-					}
 					//SOC
 					int TAG_SOC = readRscp(PosSOC);
 					snprintf (OUT, (size_t)100, "%i %%", TAG_SOC);
 					int TAG_BatState = readRscp(PosBatState);
 					if(TAG_BatState >= 1){
 						int SOCx = TAG_SOC * 0.82;
-						drawSquare(74,340,48,82,WHITE);
-						drawSquare(74,340+82-SOCx,48,SOCx,BLUE);
-						drawOutput(80,432,50,12, OUT, GREY);
+						drawSquare(74,348,48,82,WHITE);
+						drawSquare(74,348+82-SOCx,48,SOCx,BLUE);
+						drawOutput(80,440,50,12, OUT, GREY);
 					}
 					else{
 						drawOutput(80,432,50,12,"OFF",RED);
@@ -277,16 +274,16 @@ int main(){
 					if(counter == 0 && Screen[ScreenHistory] > 0 && historyAktiv == true){
 						float historyPV = readHistory(dataPV, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "%.1f kWh", historyPV/1000);
-						put_stringRGB(180, 140, OUT, 225, 122, 34);
+						put_stringRGB(180, 155, OUT, 225, 122, 34);
 						float historyGridIn = readHistory(dataGridIn, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "IN  %.1f kWh", historyGridIn/1000);
-						put_stringRGB(560, 140, OUT, 0, 172, 255);
+						put_stringRGB(550, 155, OUT, 0, 172, 255);
 						float historyGridOut = readHistory(dataGridOut, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "OUT %.1f kWh", historyGridOut/1000);
-						put_stringRGB(560, 160, OUT, 0, 0, 172);
+						put_stringRGB(550, 175, OUT, 0, 0, 172);
 						float historyHome = readHistory(dataHome, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "%.1f kWh", historyHome/1000);
-						put_stringRGB(560, 400, OUT, 225, 30, 30);
+						put_stringRGB(550, 400, OUT, 225, 30, 30);
 						float historyBatIn = readHistory(dataBatIn, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "IN  %.1f kWh", historyBatIn/1000);
 						put_stringRGB(180, 400, OUT, 0, 225, 64);
@@ -484,7 +481,7 @@ int main(){
 //####################################################
 			//Setup Grafik erstellen
 			case ScreenSetup:{
-				GuiTime = PiTime;
+				GuiTime = SetupTime;
 				Screen[ScreenShutdown] = readScreen(ScreenShutdown);
 				int screenShutdown = Screen[ScreenShutdown];
 
@@ -543,18 +540,19 @@ int main(){
 						}
 					}
 					//Version anzeigen
-					readVersion(OUT);
+					readVersion(OUT, Value);
 					put_string(20,20, OUT, GREY);
+					put_string(20,32, Value, GREY);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIP1[16], PiIP2[16], PiIP3[16];
 					//Pi Temp
 					double T = piTemp(PiTemp);
 					//Pi Uptime
 					piUptime(PiUptime);
-					//Pi CPU
-					int PiCPUint = piCPU(PiCPU);
 					//Pi IP
 					piIP(PiIP1, PiIP2, PiIP3);
+					//Pi CPU
+					int PiCPUint = piCPU(PiCPU);
 					//Helligkeit
 					int brightness = readBrightness();
 					//Grafiken für Pi Informationen erstellen
@@ -658,13 +656,20 @@ int main(){
 				break;
 			}
 //####################################################
+			//Müllkalender Grafik erstellen
+			case ScreenMuell:{
+				if (Abfuhrkalender == 1)
+					GuiTime = makeMuellGui(GuiTime, counter);
+				break;
+			}
+//####################################################
 			default:{
 				if(E3DC_S10 ==1)
 					writeScreen(ScreenChange, ScreenAktuell);
 				else if(Homematic_GUI == 1)
 					writeScreen(ScreenChange, ScreenHM);
 				else
-					writeScreen(ScreenChange, ScreenMonitor);
+					writeScreen(ScreenChange, ScreenWetter);
 					break;
 			}
 		} //switch(screenChange)
@@ -700,7 +705,7 @@ int main(){
 				drawOutput(190,458,170,12, OUT, GREEN);
 				changeStop = 0;
 			}
-			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0){
+			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn){
 				float HistoryUnix = readHistory(dataTime, Screen[ScreenHistory]);
 				time_t timeStamp;
 				timeStamp = (time_t)HistoryUnix;
@@ -719,7 +724,6 @@ int main(){
 		}
 		else if(GuiTime == HomematicTime && Homematic_GUI == 1 && screenState == ScreenOn){
 			put_string(20, 458, "Letzter Zeitstempel der Homematic: ", GREY);
-			//Time
 			int AktuallTime = time(NULL);
 			int DiffTime = AktuallTime - UnixTime;
 			if(DiffTime > 180){
@@ -730,24 +734,15 @@ int main(){
 			}
 		}
 		else if(GuiTime == WeatherTime && screenState == ScreenOn){
-			put_string(WetterS1, 458, "Aktuelle Zeit: ", GREY);
-			time_t timeStamp;
-			struct tm *now;
-			time( &timeStamp );
-			now = localtime( &timeStamp );
-			strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
-			drawOutput(170,458,170,12, OUT, GREEN);
+			putAktuell(WetterS1, 458);
 			put_string(400, 458, "Yahoo Datensatz: ", GREY);
 			drawOutput(550,458,170,12, weatherTime, GREEN);
 		}
-		else if(screenState == ScreenOn){
-			put_string(20, 458, "Aktuelle Zeit: ", GREY);
-			time_t timeStamp;
-			struct tm *now;
-			time( &timeStamp );
-			now = localtime( &timeStamp );
-			strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
-			drawOutput(150,458,170,12, OUT, GREEN);
+		else if(GuiTime == PiTime && screenState == ScreenOn){
+			putAktuell(WetterS1, 458);
+		}
+		else if(GuiTime == SetupTime && screenState == ScreenOn){
+			putAktuell(20, 458);
 			madeBy(OUT);
 			put_string(325,458, OUT, BLUE);
 		}

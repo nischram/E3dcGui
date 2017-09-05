@@ -239,6 +239,10 @@ int main()
 				}
 				break; // ScreenHM
 			}
+			case ScreenMuell:{
+				//siehe screnSave.c
+				break; // ScreenMuell
+			}
 			default:{
 				//siehe screnSave.c
 			}

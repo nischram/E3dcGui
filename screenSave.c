@@ -97,6 +97,8 @@ int main()
 	int buttonTimerWetter = mymillis();
 	int buttonCordsHM[4] = {Picture6,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
+	int buttonCordsMuell[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonTimerMuell = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
 
@@ -196,6 +198,17 @@ int main()
 				if (mymillis() - buttonTimerHM > 500){
 					buttonTimerHM = mymillis();
 					writeScreen(ScreenChange, ScreenHM);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
+				}
+			}
+		}
+		if(Abfuhrkalender == 1){
+			if((scaledX  > buttonCordsMuell[X] && scaledX < (buttonCordsMuell[X]+buttonCordsMuell[W])) && (scaledY > buttonCordsMuell[Y] && scaledY < (buttonCordsMuell[Y]+buttonCordsMuell[H]))){
+				if (mymillis() - buttonTimerMuell > 500){
+					buttonTimerMuell = mymillis();
+					writeScreen(ScreenChange, ScreenMuell);
 					writeScreen(ScreenCounter, 0);
 					writeScreen(ScreenSaver, false);
 					writeScreen(ScreenShutdown, ShutdownRun);
@@ -454,6 +467,24 @@ int main()
 			case ScreenHM:{
 				// Alle Touchfuktionen für den Homematic-Scree werden in der Datei screenSaveHM.c weiter verarbeitet
 				break; // ScreenHM
+			}
+			case ScreenMuell:{
+				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
+					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
+					}
+				}
+				break; // ScreenMuell
 			}
 			default:{
 				writeScreen(ScreenChange, ScreenAktuell);

@@ -157,6 +157,8 @@ int drawMainScreen()
   drawCorner(12, 12, 778, 458, LTGREY);
   DrawImage("EinstImage", Picture1, PictureLine1);
   DrawImage("WetterImage", Picture2, PictureLine1);
+  if(Abfuhrkalender ==1)
+    DrawImage("MuellImage", Picture7, PictureLine1);
   if(E3DC_S10 ==1){
     DrawImage("AktuellImage", Picture3, PictureLine1);
     DrawImage("LangzeitImage", Picture4, PictureLine1);
@@ -473,15 +475,16 @@ int setBrightness(int NewValue)
 }
 
 //Version lesen
-int readVersion (char* version_read)
+int readVersion (char* version, char* datum)
 {
-  char file_Path [100], file_read[100], read[100], version[100], datum[100], off[100];
+  char file_Path [100], read[100], off[100];
   FILE *fp;
   snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/README.markdown");
   fp = fopen(file_Path, "r");
   if(fp == NULL) {
     printf("Datei konnte NICHT geoeffnet werden.\n");
-    snprintf (version_read, (size_t)20, "V0.00");
+    snprintf (version, (size_t)20, "V0.00");
+    snprintf (datum, (size_t)20, "01.01.1970");
     fclose(fp);
     return 0;
   }
@@ -492,7 +495,6 @@ int readVersion (char* version_read)
     strtok(datum, "]");
     fclose(fp);
   }
-  snprintf (version_read, (size_t)20, "%s %s", version, datum);
   return 1;
 }
 
@@ -574,6 +576,19 @@ int piIP (char* PiIP1, char* PiIP2, char* PiIP3)
   else
     snprintf (PiIP3, (size_t)16, "%s", PiIP2);
     return 1;
+}
+//Autuelle Zeit
+int putAktuell(int x, int y)
+{
+  char OUT[128];
+  put_string(x, y, "Aktuelle Zeit: ", GREY);
+  time_t timeStamp;
+  struct tm *now;
+  time( &timeStamp );
+  now = localtime( &timeStamp );
+  strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
+  drawOutput(x+120,y,170,12, OUT, GREEN);
+  return 1;
 }
 
 #endif // __FUNKTION_H_

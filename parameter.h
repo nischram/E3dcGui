@@ -112,6 +112,11 @@ Es kann aber zu darstellungsfehler kommen.
 // Yahoo Wetter
 #define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
 
+//#######################################
+// Abfuhrkalender
+#define Abfuhrkalender              1                       // 1= Abfuhrkalender aktiv, bearbeiten von Data/Entsorgung_JAHR.txt nötig 0=deaktiv
+#define MuellLegende                1                       // 1= Legende einblenden 0=ausblenden
+
 
 //##############################################################################
 //########### Ab hier die Parameter nicht verändern! ###########################
@@ -260,6 +265,20 @@ Es kann aber zu darstellungsfehler kommen.
 #define WetterUZ4                   375 //!!
 #define WetterUZ5                   400 //!!
 #define WetterUZ6                   425 //!!
+
+//Müll
+#define MuellS0                     65 //!!
+#define MuellS1                     150 //!!
+#define MuellS2                     240 //!!
+#define MuellS3                     330 //!!
+#define MuellS4                     420 //!!
+#define MuellS5                     510 //!!
+#define MuellS6                     600 //!!
+#define MuellS7                     690 //!!
+#define MuellZ0                     100 //!!
+#define MuellZ1                     130 //!!
+#define MuellZ2                     230 //!!
+#define MuellZ3                     340 //!!
 
 //#######################################
 
