@@ -11,7 +11,7 @@ int readMuellKW(int kw, char* jahr, char* kwLine, char* kwLine2)
   now = localtime( &timeStamp );
   strftime (jahr,20,"%Y",now);
 	snprintf(Path, (size_t)256, "/home/pi/E3dcGui/Data/Entsorgung_%s.txt", jahr);
-  int line = kw + 13;
+  int line = kw + 12;
   FILE *fp;
   fp = fopen(Path, "r");
   if(fp == NULL) {
