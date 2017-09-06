@@ -40,6 +40,7 @@ static AES aesEncrypter;
 static AES aesDecrypter;
 static uint8_t ucEncryptionIV[AES_BLOCK_SIZE];
 static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
+static int32_t unixTimestamp;
 
 bool brief = false;	// brief report; sum only
 int writedata = 0;
@@ -169,8 +170,6 @@ int db_value_container(RscpProtocol *protocol, std::vector<SRscpValue> *dbVal) {
 	}
 	printf("[%d]-%s-CSV: %d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f\n", graph_index, value_prefix, (int) d, val.bat_in, val.bat_out, val.bat_charge_level, val.production, val.grid_in,
 			val.grid_out, val.consumption);
-	int time_zone = readTimeZone();
-	writeHistory(dataTime, d - time_zone, writedata);
 	return 0;
 }
 
@@ -193,6 +192,7 @@ int db_sum_container(RscpProtocol *protocol, std::vector<SRscpValue> *dbSum) {
 	const char * sum_prefix = db_sum_prefix();
 	printf("%s start: %d - %s", sum_prefix, (int) d, ctime(&d));
 	d = start.seconds + span.seconds;
+	writeHistoryTime(dataTime, unixTimestamp, d, writedata);
 	printf("%s end: %d - %s", sum_prefix, (int) d, ctime(&d));
 	struct sum_t {
 		float bat_in, bat_out;
@@ -344,6 +344,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
 		}
 		printf("RSCP authentitication level %i\n", ucAccessLevel);
 		break;
+	}
+	case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
+			unixTimestamp = protocol->getValueAsInt32(response);
+			printf("%i\n", unixTimestamp);
+			break;
 	}
 	case TAG_DB_HISTORY_DATA_DAY:
 	case TAG_DB_HISTORY_DATA_MONTH:
@@ -523,6 +528,7 @@ int createRequest(SRscpFrameBuffer * frameBuffer) {
 		// free memory of sub-container as it is now copied to rootValue
 		protocol.destroyValueData(authenContainer);
 	} else {
+		protocol.appendValue(&rootValue, TAG_INFO_REQ_TIME);
 		printf("Generating request for historical data\n");
 		// request db information
 		SRscpValue dbContainer;

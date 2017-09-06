@@ -263,3 +263,12 @@ int writeHistory(int Position, int NewValue, int writedata)
 	}
 	else return 0;
 }
+int writeHistoryTime(int Position,int AktuellTime, int NewValue, int writedata)
+{
+  int ret;
+  if(writedata == today)
+    ret = writeHistory(Position, AktuellTime, writedata);
+  else if(writedata == today)
+    ret = writeHistory(Position, NewValue, writedata);
+  return ret;
+}

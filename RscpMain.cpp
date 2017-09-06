@@ -26,6 +26,7 @@ static int32_t TAG_EMS_OUT_UNIXTIME = 0;
 static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_TZ [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
 static int CounterHM = 0;
 static int Counter900 = 0;
+static int time_zone = 7200;
 
 
 using namespace std;
@@ -175,11 +176,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           sys = localtime(&timestamp);
           strftime (TAG_EMS_OUT_TZ,40,"%z",sys);
           if (strcmp ("+0200",TAG_EMS_OUT_TZ) == 0)
-            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 7200;
+            time_zone = 7200;
           else if (strcmp ("+0100",TAG_EMS_OUT_TZ) == 0)
-            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 3600;
+            time_zone = 3600;
           else
-            TAG_EMS_OUT_UNIXTIME = unixTimestamp - 7200;
+            time_zone = 7200;
+          TAG_EMS_OUT_UNIXTIME = unixTimestamp - time_zone;
           timestamp = TAG_EMS_OUT_UNIXTIME;
           sys = localtime(&timestamp);
           strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
@@ -713,8 +715,6 @@ static void mainLoop(void)
 
 int main()
 {
-  //Offset für Zeitzone lesen
-  int time_zone = readTimeZone();
   //Dateien erstellen
   makeCharRscp();
   makeRscp(PosPVI, 0);

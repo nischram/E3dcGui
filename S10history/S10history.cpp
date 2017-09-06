@@ -151,6 +151,7 @@ int main(int argc, char *argv[]) {
 			rawtime = mktime(l);
 			report_type |= REPORT_DAY;
 			writedata = today;
+			brief = true;
 			break;
 
 		case 'Y':
@@ -158,6 +159,7 @@ int main(int argc, char *argv[]) {
 			rawtime = mktime(l);
 			report_type |= REPORT_DAY;
 			writedata = yesterday;
+			brief = true;
 			break;
 		}
 	}

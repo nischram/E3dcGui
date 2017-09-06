@@ -18,5 +18,6 @@ int write900(int Position, char fileName[40], int NewValue, int Counter900);
 int make900(int Position, int NewValue);
 int readScreen(int Position);
 int writeHistory(int Position, int NewValue, int writedata);
+int writeHistoryTime(int Position,int AktuellTime, int NewValue, int writedata);
 
 #endif // __RWData_H_

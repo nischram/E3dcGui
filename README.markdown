@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.49 05.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.50 06.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -354,6 +354,10 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
+V1.50 06.09.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18) & [Issue #21](https://github.com/nischram/E3dcGui/issues/21)
+- Fehlerkorrektur Issue #18
+- Fehlerkorrektur Issue #21
+
 V1.49 05.09.2017 Abfuhrkalender eingebaut
 - 2 Kalenderwochen vom Abfuhrkalender als Grafiv erstellt
 - Diverse Anpassungen für die Anzeige vom Abfuhrkalender
