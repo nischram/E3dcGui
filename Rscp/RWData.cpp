@@ -38,32 +38,6 @@ void printsendCharHM(int CounterHM, int id, char value[32]){
   }
 }
 
-int readTimeZone()
-{
-  int time_zone;
-  char file_Path [100],file_read [100];
-  FILE *fp;
-  snprintf (file_Path, (size_t)100, "/home/pi/E3dcGui/Data/Timezone.txt");
-  fp = fopen(file_Path, "r");
-  if(fp == NULL) {
-    printf("Datei konnte NICHT geoeffnet werden.\n");
-    snprintf (file_read, (size_t)20, "Summertime");
-  }
-  else {
-    fgets(file_read,20,fp);
-    strtok(file_read, "\n");
-    fclose(fp);
-  }
-  if (strcmp ("Wintertime",file_read) == 0){
-    time_zone = 3600;
-  }
-  else{
-    time_zone = 7200;
-  }
-  printf("Time offset is %i second\n",time_zone);
-  return time_zone;
-}
-
 void readWriteData(char *fileName, int NewValue){
   int c;
   int line[100];
@@ -91,7 +65,7 @@ void readWriteData(char *fileName, int NewValue){
 
 int writeData(char Path[128], int Position, int NewValue, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -122,7 +96,7 @@ int writeData(char Path[128], int Position, int NewValue, int max)
 
 int makeData(char Path[128], int Position, int NewValue, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   //Ändere Bit an Position
   out[Position] = NewValue;
@@ -153,7 +127,7 @@ int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3)
 
 int readData(char Path[128], int Position, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein

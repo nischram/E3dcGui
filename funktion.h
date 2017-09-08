@@ -171,7 +171,7 @@ int drawMainScreen()
 // Bit aus einer Datei lesen, ändern und schreiben
 int BitChange(char filePath[128], int Position, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -213,7 +213,7 @@ int BitChange(char filePath[128], int Position, int max)
 // Bit in eine Datei schreiben
 int BitWrite(char filePath[128], int Position, int NewValue, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -252,7 +252,7 @@ int BitWrite(char filePath[128], int Position, int NewValue, int max)
 // Bit aus einer Datei lesen
 int BitRead(char filePath[128], int Position, int max)
 {
-  int c = max;
+  int c = max+1;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -454,9 +454,15 @@ int screenOn()
 //Bildschirmhelligkeit lesen
 int readBrightness()
 {
-  char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-	int ret = BitRead(PathScreen, ScreenBrightness, ScreenMAX);
+  char batch[128], read[128];
+  memset(batch, 0x00, sizeof(batch));
+  FILE *ipFile;
+  snprintf(batch, sizeof(batch), "cat /sys/class/backlight/rpi_backlight/brightness");
+  ipFile = popen(batch, "r");
+  fgets(read, (size_t)24, ipFile);
+  strtok(read, "\n");
+  pclose(ipFile);
+  int ret = atoi(read);
   return ret;
 }
 
@@ -467,11 +473,7 @@ int setBrightness(int NewValue)
   memset(batch, 0x00, sizeof(batch));
   snprintf(batch, sizeof(batch), "sudo bash -c \"echo %i > /sys/class/backlight/rpi_backlight/brightness\" &", NewValue);
   system(batch);
-  char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-  BitWrite(PathScreen, ScreenBrightness, NewValue, ScreenMAX);
-  int ret = readBrightness();
-  return ret;
+  return 1;
 }
 
 //Version lesen
@@ -549,34 +551,30 @@ int piCPU (char* PiCPU)
 }
 
 //IP
-int piIP (char* PiIP1, char* PiIP2, char* PiIP3)
+int piIP (char host[24], char* PiIPhost)
 {
-  char OUT[128], batch[256];
+  char batch[256], Pihost[128];
   FILE *ipFile;
-  snprintf(batch, (size_t)256, "hostname --all-ip-addresses");
-  ipFile = popen (batch, "r");
-  fgets(PiIP1,(size_t)20,ipFile);
-  fgets(PiIP2,(size_t)20,ipFile);
-  fgets(PiIP3,(size_t)20,ipFile);
-  pclose (ipFile);
-  strtok(PiIP1, "\n");
-  strtok(PiIP2, "\n");
-  strtok(PiIP3, "\n");
-  printf("\n### IP ###\n%s\n%s\n%s\n##########\n",PiIP1,PiIP2,PiIP3);
-  snprintf (OUT, (size_t)4, "%s", PiIP2);
-  int compare = atoi(OUT);
-  if (compare > 0)
-    printf("");
-  else
-    snprintf (PiIP2, (size_t)16, "%s", PiIP1);
-  snprintf (OUT, (size_t)4, "%s", PiIP3);
-  compare = atoi(OUT);
-  if (compare > 0)
-    printf("");
-  else
-    snprintf (PiIP3, (size_t)16, "%s", PiIP2);
-    return 1;
+  snprintf(batch, (size_t)256, "/sbin/ifconfig | grep \"%s\" | cut -d \":\" -f 1", host);
+  ipFile = popen(batch, "r");
+  fgets(Pihost, (size_t)24, ipFile);
+  strtok(Pihost, "\n");
+  pclose(ipFile);
+  if (strcmp (host,Pihost) == 0){
+    snprintf(batch, (size_t)256, "/sbin/ifconfig %s | grep \"inet \" | cut -d \"t\" -f 2| cut -d \" \" -f 2| cut -d \" \" -f 1", host);
+    ipFile = popen(batch, "r");
+    fgets(PiIPhost, (size_t)24, ipFile);
+    strtok(PiIPhost, "\n");
+    pclose(ipFile);
+  }
+  else{
+    snprintf(PiIPhost, (size_t)24, "---");
+  }
+  //snprintf(PiIPhost, (size_t)24, "%s: %s", host, OUT);
+  printf("### IP %s ###\n%s\n################\n", host, PiIPhost);
+  return 1;
 }
+
 //Autuelle Zeit
 int putAktuell(int x, int y)
 {

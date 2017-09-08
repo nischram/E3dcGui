@@ -1,6 +1,60 @@
 # Changelog Archiv
 
-Stand V1.37 20.08.2017
+V1.51 08.09.2017 Anpassung Setup Menü
+- Rücklesen der Displayhelligkeit
+- Erneuter Umbau der Anzeige für die IP-Adresse
+- Fehler bei der Benutzung von int Arrays behoben
+- Changelog archiviert
+
+V1.50 06.09.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18) & [Issue #21](https://github.com/nischram/E3dcGui/issues/21)
+- Fehlerkorrektur Issue #18
+- Fehlerkorrektur Issue #21
+
+V1.49 05.09.2017 Abfuhrkalender eingebaut
+- 2 Kalenderwochen vom Abfuhrkalender als Grafiv erstellt
+- Diverse Anpassungen für die Anzeige vom Abfuhrkalender
+- Zeitanzeige in funktion.h ausgelagert
+
+V1.48 03.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
+- Anpassung durch Tipp von RalfJL
+
+V1.47 03.09.2017 WetterGui eingebaut
+- Wetteranzeige erstellt
+- Aufbau Hintergrundbild in funktion.h ausgelagert
+
+V1.46 01.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
+- Änderungen laut Issue #20
+
+V1.45 31.08.2017 IP-Adresse
+- Abfrage IP-Adresse erneut überarbeitet
+- korrektur Ausgabe "readHM"
+
+V1.44 31.08.2017 Versionsanzeige
+- Versionsanzeige überarbeitet
+
+V1.43 31.08.2017 [Issue #19](https://github.com/nischram/E3dcGui/issues/19)
+- Fehler im Script "S10_Zeitstempel" behoben
+
+V1.42 27.08.2017 Diverses
+- Anleitung überarbeitet um den Pi Bildschirmschoner zu deaktivieren
+- Diverse korrekturen in der README
+- "pkill" in "killall" geändert
+- Schritt für Schritt Anleitung erstellt
+
+V1.41 26.08.2017 "warning" wegen neuen Compiler behoben
+- Neu Compiler meldet einige "warning"
+
+V1.40 26.08.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
+- Anpassung für sendEmail vorgenommen Zeile 1906
+
+V1.39 20.08.2017 Anleitung überarbeitet
+- Abschalten vom PI Bildschirmschoner und Cousor in der README aufgenommen
+- Tippfehler in der README
+- Anpassung für den Pfad zu /dev/fb
+
+V1.38 20.08.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18)
+- Sommer/Winterzeit Einstellungen ist nicht mehr nötig
+- Button für Sommer/Winterzeit entfernt
 
 V1.37 20.08.2017 Diverse Verbesserungen und Fehlerbehebung
 - [Issue #17](https://github.com/nischram/E3dcGui/issues/17)

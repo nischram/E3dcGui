@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.50 06.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.51 08.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -134,9 +134,9 @@ Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole
 
 #### 1. Setup
 <img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
-Hier kann die Software oder der PI neu gestartet werden.
-Auf der rechten Seite wird die Display-Helligkeit eingestellt. Die Einstellung speichert der Pi, auch nach einen Neustart obwohl die Anzeige nach dem Neustart keine aktive Helligleit anzeigt.
-Unterhalb werden Informationen zum Raspberry Pi ausgegeben.˘
+Hier kann die Software oder der PI neu gestartet werden.  
+Auf der rechten Seite wird die Display-Helligkeit eingestellt. (Bild noch ohne Helligkeitseinstellung)   
+Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
 
 #### 2. Wetteranzeige
 <img src="https://s20.postimg.org/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
@@ -354,58 +354,15 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
-V1.50 06.09.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18) & [Issue #21](https://github.com/nischram/E3dcGui/issues/21)
-- Fehlerkorrektur Issue #18
-- Fehlerkorrektur Issue #21
+#### Wichtige Ergänzungen
+V1.49 05.09.2017 Abfuhrkalender eingebaut  
+V1.47 03.09.2017 WetterGui eingebaut  
 
-V1.49 05.09.2017 Abfuhrkalender eingebaut
-- 2 Kalenderwochen vom Abfuhrkalender als Grafiv erstellt
-- Diverse Anpassungen für die Anzeige vom Abfuhrkalender
-- Zeitanzeige in funktion.h ausgelagert
-
-V1.48 03.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
-- Anpassung durch Tipp von RalfJL
-
-V1.47 03.09.2017 WetterGui eingebaut
-- Wetteranzeige erstellt
-- Aufbau Hintergrundbild in funktion.h ausgelagert
-
-V1.46 01.09.2017 [Issue #20](https://github.com/nischram/E3dcGui/issues/20)
-- Änderungen laut Issue #20
-
-V1.45 31.08.2017 IP-Adresse
-- Abfrage IP-Adresse erneut überarbeitet
-- korrektur Ausgabe "readHM"
-
-V1.44 31.08.2017 Versionsanzeige
-- Versionsanzeige überarbeitet
-
-V1.43 31.08.2017 [Issue #19](https://github.com/nischram/E3dcGui/issues/19)
-- Fehler im Script "S10_Zeitstempel" behoben
-
-V1.42 27.08.2017 Diverses
-- Anleitung überarbeitet um den Pi Bildschirmschoner zu deaktivieren
-- Diverse korrekturen in der README
-- "pkill" in "killall" geändert
-- Schritt für Schritt Anleitung erstellt
-
-V1.41 26.08.2017 "warning" wegen neuen Compiler behoben
-- Neu Compiler meldet einige "warning"
-
-V1.40 26.08.2017 [Issue #11](https://github.com/nischram/E3dcGui/issues/11)
-- Anpassung für sendEmail vorgenommen Zeile 1906
-
-V1.39 20.08.2017 Anleitung überarbeitet
-- Abschalten vom PI Bildschirmschoner und Cousor in der README aufgenommen
-- Tippfehler in der README
-- Anpassung für den Pfad zu /dev/fb
-
-V1.38 20.08.2017 [Issue #18](https://github.com/nischram/E3dcGui/issues/18)
-- Sommer/Winterzeit Einstellungen ist nicht mehr nötig
-- Button für Sommer/Winterzeit entfernt
-
-V1.37 20.08.2017 [Issue #17](https://github.com/nischram/E3dcGui/issues/17)
-- Versionsanzeige im Setupmenü eingebaut
+#### Versionen
+V1.51 08.09.2017 Anpassung Setup Menü
+- Rücklesen der Displayhelligkeit
+- Erneuter Umbau der Anzeige für die IP-Adresse
+- Fehler bei der Benutzung von int Arrays behoben
 - Changelog archiviert
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

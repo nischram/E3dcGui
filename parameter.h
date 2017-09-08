@@ -130,8 +130,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define ScreenShutdown              3    //!!
 #define ScreenState                 4    //!!
 #define ScreenHistory               5    //!!
-#define ScreenBrightness            6    //!!
-#define ScreenMAX                   7    //!!
+#define ScreenMAX                   6    //!!
 
 #define ScreenAktuell               0    //!!
 #define ScreenLangzeit              1    //!!

@@ -544,13 +544,18 @@ int main(){
 					put_string(20,20, OUT, GREY);
 					put_string(20,32, Value, GREY);
 					//Daten für PI Informationen laden
-					char PiTemp[20], PiUptime[40], PiCPU[20], PiIP1[16], PiIP2[16], PiIP3[16];
+					char PiTemp[20], PiUptime[40], PiCPU[20], PiIPeth0[24], PiIPwlan0[24], Pieth0[24], Piwlan0[24], Pihost[24];
 					//Pi Temp
 					double T = piTemp(PiTemp);
 					//Pi Uptime
 					piUptime(PiUptime);
 					//Pi IP
-					piIP(PiIP1, PiIP2, PiIP3);
+					snprintf(Pihost, (size_t)24, "eth0");
+					piIP(Pihost, Pieth0);
+					snprintf(PiIPeth0, (size_t)24, "ETH  : %s", Pieth0);
+					snprintf(Pihost, (size_t)24, "wlan0");
+					piIP(Pihost, Piwlan0);
+					snprintf(PiIPwlan0, (size_t)24, "WLAN : %s", Piwlan0);
 					//Pi CPU
 					int PiCPUint = piCPU(PiCPU);
 					//Helligkeit
@@ -640,11 +645,8 @@ int main(){
 						createData(S6-10, R4, PiCPU);
 					}
 					// IP
-					createData(S6-50, R5-32, PiIP1);
-					if (strcmp (PiIP1,PiIP2) != 0)
-						createData(S6-50, R5-16, PiIP2);
-					if (strcmp (PiIP2,PiIP3) != 0)
-						createData(S6-50, R5, PiIP3);
+					createData(S6-50, R5-24, PiIPeth0);
+					createData(S6-50, R5-12, PiIPwlan0);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;
@@ -708,9 +710,9 @@ int main(){
 			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn){
 				float HistoryUnix = readHistory(dataTime, Screen[ScreenHistory]);
 				time_t timeStamp;
-				timeStamp = (time_t)HistoryUnix;
+				timeStamp = (time_t)HistoryUnix -60;
 				struct tm *now;
-				now = localtime( &timeStamp );
+				now = gmtime( &timeStamp );
 				if (Screen[ScreenHistory] == today)
 					strftime (OUT,100,"Today %d.%m. %H:%M",now);
 				else if (Screen[ScreenHistory] == yesterday)
