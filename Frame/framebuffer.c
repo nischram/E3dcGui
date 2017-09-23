@@ -154,6 +154,12 @@ void drawOutputRGB (int x, int y, int height, int width, char *s, int ro, int gr
 	put_stringRGB(x, y, s, ro, gr, bl);
 	return;
 }
+void drawColorOutput (int x, int y, int height, int width, char *s, int c, int bgc)
+{
+	drawSquare(x, y,height,width,bgc);
+	put_string(x, y, s, c);
+	return;
+}
 
 void createButton(int x, int y, int w, int h, char *text, int backgroundColor, int foregroundColor)
 {

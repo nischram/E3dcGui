@@ -1,5 +1,5 @@
 /*
-gcc -g -o GuiMain  GuiMain.c
+gcc -g -o GuiMain  GuiMain.c -lwiringPi
 */
 #include <linux/input.h>
 #include <string.h>
@@ -9,12 +9,14 @@ gcc -g -o GuiMain  GuiMain.c
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <errno.h>
 #include <sys/mman.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
 #include <linux/ioctl.h>
 #include <sys/sysinfo.h>
+#include <wiringPi.h>
 #include "parameter.h"
 #include "parameterHM.h"
 #include "Frame/touch.h"
@@ -30,10 +32,13 @@ gcc -g -o GuiMain  GuiMain.c
 #include "HMGui.h"
 #include "WetterGui.h"
 #include "MuellGui.h"
-
+#include "External/dht11.h"
+#include "External/Aktor.h"
 
 //####################################
 int main(){
+	picturePosition();
+
 	signal(SIGINT, INThandler);
 
 	int  xres,yres;
@@ -48,7 +53,7 @@ int main(){
 	int GuiTime, change = 0, changeStop = 0;
 	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
-	int counter, ScreenSaverCounter, HistoryCounter = 15;
+	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
 
   screenOn();
@@ -66,10 +71,38 @@ int main(){
 	printf ("X Scale Factor = %f\n", scaleXvalue);
 	scaleYvalue = ((float)screenYmax-screenYmin) / yres;
 	printf ("Y Scale Factor = %f\n", scaleYvalue);
+
+	int wiringPi = OK;
+	if ( wiringPiSetup() == -1 ){
+		wiringPi = ERROR;
+		printf("wiringPi error\n");
+	}
+	if (wiringPi == OK){
+		pinMode( PirPin, INPUT );
+		pullUpDnControl ( PirPin, PUD_DOWN);
+		pinMode(Aktor1Pin, OUTPUT);
+		pinMode(Aktor2Pin, OUTPUT);
+		pinMode(Aktor3Pin, OUTPUT);
+		pinMode(Aktor4Pin, OUTPUT);
+		pinMode(Aktor5Pin, OUTPUT);
+	}
+
 //####################################
 	while(1){
 		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
 		GuiTime = PiTime;
+
+		int pirUse = readPirUse();
+		if (pirUse == true){
+			if (wiringPi == OK){
+				int screenState = readScreen(ScreenState);
+				if ( digitalRead( PirPin ) == true && screenState == ScreenOff){
+					screenOn();
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+				}
+			}
+		}
 
 		Screen[ScreenCounter] = readScreen(ScreenCounter);
 		counter = Screen[ScreenCounter] -1;
@@ -240,7 +273,7 @@ int main(){
 						}
 					}
 					//SOC
-					int TAG_SOC = readRscp(PosSOC);
+					int TAG_SOC = read100Rscp(PosSOC);
 					snprintf (OUT, (size_t)100, "%i %%", TAG_SOC);
 					int TAG_BatState = readRscp(PosBatState);
 					if(TAG_BatState >= 1){
@@ -250,10 +283,10 @@ int main(){
 						drawOutput(80,440,50,12, OUT, GREY);
 					}
 					else{
-						drawOutput(80,432,50,12,"OFF",RED);
+						drawOutput(80,440,50,12,"OFF",RED);
 					}
 					//Autarky
-					int TAG_Autarky = readRscp(PosAutarky);
+					int TAG_Autarky = read100Rscp(PosAutarky);
 					int Autarkyx = 2 * TAG_Autarky;
 					drawSquare(405,366-200,60,200-Autarkyx,WHITE);
 					drawSquare(405,366-Autarkyx,60,Autarkyx,GREEN);
@@ -262,7 +295,7 @@ int main(){
 					snprintf (OUT, (size_t)100, "Autarkie");
 					put_string(420,392,OUT,GREY);
 					//SelfConsumption
-					int TAG_SelfCon = readRscp(PosSelfCon);
+					int TAG_SelfCon = read100Rscp(PosSelfCon);
 					int SelfConx = 2 * TAG_SelfCon;
 					drawSquare(340,366-200,60,200-SelfConx,WHITE);
 					drawSquare(340,366-SelfConx,60,SelfConx,LTGREY);
@@ -422,11 +455,23 @@ int main(){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
 						drawMainScreen();
-						DrawImage("PV_Modul_aktiv", 240, 150);
+						// Grafik für Tracker1
+						drawSquare(T1,R1-20,160,340,GREY);
+						drawCorner(T1,R1-20,160,340,WHITE);
+						drawSquare(T1+3,R1+40,154,277,WHITE);
+						drawCorner(T1+3,R1+40,154,277,GREY);
+						put_string(T1+40, R1+4, "Tracker 1", WHITE);
+						DrawImage("PV_Modul_aktiv", T1+20, 200);
+						// Grafik für Tracker2
+						drawSquare(T2,R1-20,160,340,GREY);
+						drawCorner(T2,R1-20,160,340,WHITE);
+						drawSquare(T2+3,R1+40,154,277,WHITE);
+						drawCorner(T2+3,R1+40,154,277,GREY);
+						put_string(T2+40, R1+4, "Tracker 2", WHITE);
 						if (PVI_TRACKER == 2)
-							DrawImage("PV_Modul_aktiv", 440, 150);
+							DrawImage("PV_Modul_aktiv", T2+20, 200);
 						else
-							DrawImage("PV_Modul_deaktiv", 440, 150);
+							DrawImage("PV_Modul_deaktiv", T2+20, 200);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -435,18 +480,18 @@ int main(){
 					if(TAG_PVIState >= 1){
 						int TAG_PVIDCP1 = readRscp(PosPVIDCP1);
 						snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP1);
-						drawOutput(270,270,80,12, OUT, GREY);
+						drawOutput(T1+50,320,80,12, OUT, GREY);
 						int TAG_PVIDCU1 = readRscp(PosPVIDCU1);
 						snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU1);
-						drawOutput(270,290,80,12,OUT, GREY);
+						drawOutput(T1+50,340,80,12,OUT, GREY);
 						if(TAG_PVIDCP1 > 0){
 							double TAG_PVIDCI1 = readRscp(PosPVIDCI1);
 							snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI1/100);
-							drawOutput(270,310,80,12, OUT, GREY);
+							drawOutput(T1+50,360,80,12, OUT, GREY);
 						}
 					}
 					else{
-						drawOutput(250, 250,80,12,"PVI-DOWN", RED);
+						drawOutput(T1+30, 320,80,12,"PVI-DOWN", RED);
 					}
 					//PVI Tracker 2
 					if (PVI_TRACKER == 2){
@@ -454,18 +499,18 @@ int main(){
 						if(TAG_PVIState >= 1){
 							int TAG_PVIDCP2 = readRscp(PosPVIDCP2);
 							snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP2);
-							drawOutput(470, 270,80,12, OUT, GREY);
+							drawOutput(T2+50, 320,80,12, OUT, GREY);
 							int TAG_PVIDCU2 = readRscp(PosPVIDCU2);
 							snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU2);
-							drawOutput(470, 290,80,12, OUT, GREY);
+							drawOutput(T2+50, 340,80,12, OUT, GREY);
 							if(TAG_PVIDCP2 > 0){
 								double TAG_PVIDCI2 = readRscp(PosPVIDCI2);
 								snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI2/100);
-								drawOutput(470, 310,80,12, OUT, GREY);
+								drawOutput(T2+50, 360,80,12, OUT, GREY);
 							}
 						}
 						else
-							drawOutput(450, 250,80,12, "PVI-DOWN", RED);
+							drawOutput(T2+30, 320,80,12, "PVI-DOWN", RED);
 					}
 				}
 				break;
@@ -541,8 +586,10 @@ int main(){
 					}
 					//Version anzeigen
 					readVersion(OUT, Value);
-					put_string(20,20, OUT, GREY);
-					put_string(20,32, Value, GREY);
+					drawSquare(S1,R1-20,180,30,GREY);
+					drawCorner(S1,R1-20,180,30, WHITE);
+					put_string(S1+20,R1-18, OUT, WHITE);
+					put_string(S1+20,R1-6, Value, WHITE);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIPeth0[24], PiIPwlan0[24], Pieth0[24], Piwlan0[24], Pihost[24];
 					//Pi Temp
@@ -560,6 +607,8 @@ int main(){
 					int PiCPUint = piCPU(PiCPU);
 					//Helligkeit
 					int brightness = readBrightness();
+					//PIR
+					pirUse = readPIR();
 					//Grafiken für Pi Informationen erstellen
 					// Grafik für Helligkeit
 					drawSquare(S4,R1-20,328,60,GREY);
@@ -572,19 +621,19 @@ int main(){
 					drawCorner(S4,R2-20,328,60,WHITE);
 					drawSquare(S4+100,R2-17,225,54,WHITE);
 					drawCorner(S4+100,R2-17,225,54,GREY);
-					put_string(S4+6, R2+4, "Uptime", WHITE);
+					put_string(S4+6, R2+4, "PIR", WHITE);
 					// Grafik für Temp
 					drawSquare(S4,R3-20,328,60,GREY);
 					drawCorner(S4,R3-20,328,60,WHITE);
 					drawSquare(S4+100,R3-17,225,54,WHITE);
 					drawCorner(S4+100,R3-17,225,54,GREY);
-					put_string(S4+6, R3+4, "Temp", WHITE);
+					put_string(S4+6, R3+4, "Uptime", WHITE);
 					// Grafik für CPU
 					drawSquare(S4,R4-20,328,60,GREY);
 					drawCorner(S4,R4-20,328,60,WHITE);
 					drawSquare(S4+100,R4-17,225,54,WHITE);
 					drawCorner(S4+100,R4-17,225,54,GREY);
-					put_string(S4+6, R4+4, "CPU", WHITE);
+					put_string(S4+6, R4+4, "CPU / Temp", WHITE);
 					// Grafik für IP
 					drawSquare(S4,R5-20,328,60,GREY);
 					drawCorner(S4,R5-20,328,60,WHITE);
@@ -608,24 +657,33 @@ int main(){
 					drawSquare(S4+215, R1, Fw, 21, GREEN);
 					if (brightness == 255)
 					drawSquare(S4+270, R1, Fw, 21, GREEN);
-					// Uptime
-					put_string(S6-50, R2+4, PiUptime, GREY);
-					// Temp
-					if (T > 20){
-						drawSquare(S6-20, R3, Fw, 21, LIGHT_GREEN);
-						createData(S6-25, R3, PiTemp);
-					}
-					else if (T > 40){
-						drawSquare(S6-20, R3, Fw, 21, LIGHT_RED);
-						createData(S6-25, R3, PiTemp);
-					}
-					else if (T > 60){
-						drawSquare(S6-20, R3, Fw, 21, RED);
-						createData(S6-25, R3, PiTemp);
+					// PIR
+					if (pirUse == true){
+						drawSquare(S6-20, R2, Fw, 21, LIGHT_GREEN);
+						createData(S6-25, R2, "PIR On");
 					}
 					else{
-						drawSquare(S6-20, R3, Fw, 21, GREEN);
-						createData(S6-25, R3, PiTemp);
+						drawSquare(S6-20, R2, Fw, 21, LIGHT_RED);
+						createData(S6-25, R2, "PIR Off");
+					}
+					// Uptime
+					put_string(S6-50, R3+4, PiUptime, GREY);
+					// Temp
+					if (T > 20){
+						drawSquare(S7-20, R4, Fw, 21, LIGHT_GREEN);
+						createData(S7-25, R4, PiTemp);
+					}
+					else if (T > 40){
+						drawSquare(S7-20, R4, Fw, 21, LIGHT_RED);
+						createData(S7-25, R4, PiTemp);
+					}
+					else if (T > 60){
+						drawSquare(S7-20, R4, Fw, 21, RED);
+						createData(S7-25, R4, PiTemp);
+					}
+					else{
+						drawSquare(S7-20, R4, Fw, 21, GREEN);
+						createData(S7-25, R4, PiTemp);
 					}
 					// CPU
 					if (PiCPUint > 5){
@@ -649,6 +707,30 @@ int main(){
 					createData(S6-50, R5-12, PiIPwlan0);
 					writeScreen(ScreenCounter, 60);
 				}
+				break;
+			}
+//####################################################
+			//SmartHome Grafik erstellen
+			case ScreenSmart:{
+				GuiTime = PiTime;
+				int screenState = readScreen(ScreenState);
+				if(counter == 0 ){
+					writeScreen(ScreenCounter, 60);
+					SmartCounter = 0;
+					if(screenState == ScreenOn){
+						drawMainScreen();
+						if(E3DC_S10 ==1)
+							makeAktorFrame();                      // External/Aktor.h
+						makeDHTFrame();                         // External/dht11.h
+					}
+				}
+				if(E3DC_S10 ==1)
+					makeAktorState();                        // External/Aktor.h
+				if (SmartCounter == 0){
+					makeDHTState();                          // External/dht11.h
+					SmartCounter = 10;
+				}
+				SmartCounter--;
 				break;
 			}
 //####################################################
@@ -676,6 +758,9 @@ int main(){
 			}
 		} //switch(screenChange)
 
+//####################################################
+	//Schaltaktoren
+		checkAktor();
 //####################################################
 	//WatchdogHM Daten für WD schreiben
 		int Unixtime[UnixtimeMAX];
@@ -771,8 +856,9 @@ int main(){
 				system("/home/pi/E3dcGui/S10history/S10history -T &");// > /dev/null 2>&1");
 				HistoryCounter = historyDelay;
 			}
-			if(HistoryCounter == (historyDelay-15))
+			if(HistoryCounter == (historyDelay-15)){
 				system("/home/pi/E3dcGui/S10history/S10history -Y &");//  > /dev/null 2>&1");
+			}
 			HistoryCounter --;
 		}
 	//Abfrageintervall

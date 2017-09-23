@@ -16,6 +16,15 @@
 #include "parameter.h"
 #include "parameterHM.h"
 
+int Picture1;
+int Picture2;
+int Picture3;
+int Picture4;
+int Picture5;
+int Picture6;
+int Picture7;
+int Picture8;
+
 // Zusatzfunktion für die Jalousie-Funktin "readJalou_HM"
 unsigned replace_character(char* string, char from, char to){
    unsigned result = 0;
@@ -86,7 +95,7 @@ void printsendHM(int id, char value[20]){
     char batch[128];
     memset(batch, 0x00, sizeof(batch));
     snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" &",HM_IP , id, value);
-    printf("send :[%s]\n",batch);
+    //printf("send :[%s]\n",batch);
     system(batch);
 }
 //Dateien schreiben mit übergebenem Pfad (z.B. Sommer/Winterzeit)
@@ -115,6 +124,12 @@ void createWindow(int Wx, int Wy, int Ww, char room[20], char var[20]){
 	}
   else if (strcmp ("NoISE",var) == 0){
     drawSquare(Wx,Wy,Ww,21,LIGHT_BLUE);
+	}
+  else if (strcmp ("RED",var) == 0){
+    drawSquare(Wx,Wy,Ww,21,RED);
+	}
+  else if (strcmp ("GREY",var) == 0){
+    drawSquare(Wx,Wy,Ww,21,GREY);
 	}
 	else{
 		drawSquare(Wx,Wy,Ww,21,LTGREY);
@@ -148,6 +163,44 @@ void createData(int x, int y, char *c){
   drawSquare(x-5,y+21,60,12,WHITE);
 	put_string(x+5, (y+22), c,GREY);
 }
+// PicturPosition
+int picturePosition()
+{
+  int numberPicture = 2;   // 2=Standard-Button
+  if(E3DC_S10 ==1)
+    numberPicture = numberPicture +3;
+  if(useAktor == 1 && useDHT11 == 1)
+    numberPicture = numberPicture +1;
+  if(Homematic_GUI ==1)
+    numberPicture = numberPicture +1;
+  if(Abfuhrkalender ==1)
+    numberPicture = numberPicture +1;
+  int piece = (800 - (numberPicture * 80)) / 2;
+  Picture1 = piece;
+  piece = piece + 80;
+  Picture2 = piece;
+  if(E3DC_S10 ==1){
+    piece = piece + 80;
+    Picture3 = piece;
+    piece = piece + 80;
+    Picture4 = piece;
+    piece = piece + 80;
+    Picture5 = piece;
+  }
+  if(useAktor == 1 && useDHT11 == 1){
+    piece = piece + 80;
+    Picture6 = piece;
+  }
+  if(Homematic_GUI ==1){
+    piece = piece + 80;
+    Picture7 = piece;
+  }
+  if(Abfuhrkalender ==1){
+    piece = piece + 80;
+    Picture8 = piece;
+  }
+  return 1;
+}
 // Hintergrundbild mit Bildern erzeugen
 int drawMainScreen()
 {
@@ -157,16 +210,18 @@ int drawMainScreen()
   drawCorner(12, 12, 778, 458, LTGREY);
   DrawImage("EinstImage", Picture1, PictureLine1);
   DrawImage("WetterImage", Picture2, PictureLine1);
-  if(Abfuhrkalender ==1)
-    DrawImage("MuellImage", Picture7, PictureLine1);
   if(E3DC_S10 ==1){
     DrawImage("AktuellImage", Picture3, PictureLine1);
     DrawImage("LangzeitImage", Picture4, PictureLine1);
     DrawImage("MonitorImage", Picture5, PictureLine1);
   }
-  if(Homematic_GUI ==1){
-    DrawImage("HMImage", Picture6, PictureLine1);
-  }
+  if(useAktor == 1 && useDHT11 == 1)
+    DrawImage("SmartImage", Picture6, PictureLine1);
+  if(Homematic_GUI ==1)
+    DrawImage("HMImage", Picture7, PictureLine1);
+  if(Abfuhrkalender ==1)
+    DrawImage("MuellImage", Picture8, PictureLine1);
+  return 1;
 }
 // Bit aus einer Datei lesen, ändern und schreiben
 int BitChange(char filePath[128], int Position, int max)
@@ -328,9 +383,20 @@ int readRscp(int RscpPosition)
 {
   char PathRscp [128];
   snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiData.txt");
-  int ret = BitRead(PathRscp, RscpPosition,24);
+  int ret = BitRead(PathRscp, RscpPosition,PosMAX);
   return ret;
 }
+int read100Rscp(int RscpPosition)
+{
+  int ret = readRscp(RscpPosition);
+  if (ret > 100)
+    return 100;
+  else if (ret < 0)
+    return 0;
+  else
+    return ret;
+}
+
 //Lesen der RSCP Daten aus dem RAMDisk
 void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
 {
@@ -487,7 +553,6 @@ int readVersion (char* version, char* datum)
     printf("Datei konnte NICHT geoeffnet werden.\n");
     snprintf (version, (size_t)20, "V0.00");
     snprintf (datum, (size_t)20, "01.01.1970");
-    fclose(fp);
     return 0;
   }
   else {
@@ -588,5 +653,19 @@ int putAktuell(int x, int y)
   drawOutput(x+120,y,170,12, OUT, GREEN);
   return 1;
 }
-
+//PIR Datei lesen schreiben
+int readPirUse()
+{
+  char PathPIR [128];
+  snprintf (PathPIR, (size_t)128, "/home/pi/E3dcGui/Data/PIR.txt");
+	int ret = BitRead(PathPIR, 1, 2);
+  return ret;
+}
+int changePirUse()
+{
+  char PathPIR [128];
+  snprintf (PathPIR, (size_t)128, "/home/pi/E3dcGui/Data/PIR.txt");
+  BitChange(PathPIR, 1, 2);
+  return 1;
+}
 #endif // __FUNKTION_H_

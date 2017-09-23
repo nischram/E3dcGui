@@ -19,7 +19,7 @@ $(ROOT_SS): clean
 $(ROOT_SSHM): clean
 	$(CC) -O1 screenSaveHM.c -o $@
 $(ROOT_GM): clean
-	$(CC) -O1 GuiMain.c -o $@
+	$(CC) -O1 GuiMain.c -o $@ -lwiringPi
 $(ROOT_START): clean
 	$(CC) -O1 start.c -o $@
 $(ROOT_STOP): clean

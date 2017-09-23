@@ -386,7 +386,7 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 	//Read Daten Beginn (roter Punkt unten rechts)
 	GuiTime = WeatherTime;
 	if (counter == 0){
-		writeScreen(ScreenCounter, 900);
+		writeScreen(ScreenCounter, 60);
 		drawMainScreen();
 		drawSquare(760,440,20,20,LIGHT_RED);
 		drawCorner(760,440,20,20,WHITE);

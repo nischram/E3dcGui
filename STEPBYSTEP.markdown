@@ -43,6 +43,12 @@ Link für Link
 #### RAMDisk einrichten
 [RAMDisk einrichten](https://github.com/nischram/E3dcGui#ramdisk)
 
+#### WiringPi installieren
+[WiringPi installieren](https://tutorials-raspberrypi.de/wiringpi-installieren-pinbelegung)
+
+#### PIR-Sensor anschließen (optional)
+[PIR-Sensor anschließen](https://tutorials-raspberrypi.de/raspberry-pi-bewegungsmelder-sensor-pir)
+
 #### Vorbereitung am S10
 [RSCP-Passwort setzen](https://github.com/nischram/E3dcGui#vorbereitung-am-s10)
 

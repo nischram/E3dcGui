@@ -21,6 +21,8 @@ gcc -g -o screenSave  screenSave.c
 
 int main()
 {
+	picturePosition();
+
 	signal(SIGINT, INThandler);
 
 	int  xres,yres;
@@ -95,9 +97,11 @@ int main()
 	int buttonTimerMonitor = mymillis();
 	int buttonCordsWetter[4] = {Picture2,PictureLine1,PictureW,PictureH};
 	int buttonTimerWetter = mymillis();
-	int buttonCordsHM[4] = {Picture6,PictureLine1,PictureW,PictureH};
+	int buttonCordsSmart[4] = {Picture6,PictureLine1,PictureW,PictureH};
+	int buttonTimerSmart = mymillis();
+	int buttonCordsHM[4] = {Picture7,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
-	int buttonCordsMuell[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonCordsMuell[4] = {Picture8,PictureLine1,PictureW,PictureH};
 	int buttonTimerMuell = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
@@ -118,6 +122,8 @@ int main()
 	int buttonTimerBrigh150 = mymillis();
 	int buttonCordsBrigh255[4] = {(S4+270),(R1),(Fw+6),(21+3)};
 	int buttonTimerBrigh255 = mymillis();
+	int buttonCordsPIR[4] = {(S6-20), R2,(Fw+6),(21+3)};
+	int buttonTimerPIR = mymillis();
 
 	int buttonCordsLeSOC[4] = {364,438,50,30};
 	int buttonTimerLeSOC = mymillis();
@@ -191,6 +197,17 @@ int main()
 				writeScreen(ScreenCounter, 0);
 				writeScreen(ScreenSaver, false);
 				writeScreen(ScreenShutdown, ShutdownRun);
+			}
+		}
+		if(useAktor == 1 && useDHT11 == 1){
+			if((scaledX  > buttonCordsSmart[X] && scaledX < (buttonCordsSmart[X]+buttonCordsSmart[W])) && (scaledY > buttonCordsSmart[Y] && scaledY < (buttonCordsSmart[Y]+buttonCordsSmart[H]))){
+				if (mymillis() - buttonTimerSmart > 500){
+					buttonTimerSmart = mymillis();
+					writeScreen(ScreenChange, ScreenSmart);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
+				}
 			}
 		}
 		if(Homematic_GUI == 1){
@@ -410,6 +427,14 @@ int main()
 						setBrightness(255);
 					}
 				}//Ende Helligkeit
+				if((scaledX  > buttonCordsPIR[X] && scaledX < (buttonCordsPIR[X]+buttonCordsPIR[W])) && (scaledY > buttonCordsPIR[Y] && scaledY < (buttonCordsPIR[Y]+buttonCordsPIR[H]))){
+					if (mymillis() - buttonTimerPIR > 500){
+						buttonTimerPIR = mymillis();
+						changePirUse();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}//Ende PIR
 				if(screenShutdown == ShutdownSD){
 					if((scaledX  > buttonCordsSDN[X] && scaledX < (buttonCordsSDN[X]+buttonCordsSDN[W])) && (scaledY > buttonCordsSDN[Y] && scaledY < (buttonCordsSDN[Y]+buttonCordsSDN[H]))){
 						if (mymillis() - buttonTimerSDN > 3000){
@@ -445,6 +470,24 @@ int main()
 					}
 				}
 				break; // ScreenWetter
+			}
+			case ScreenSmart:{
+				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
+					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
+					}
+				}
+				break; // ScreenSmart
 			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){

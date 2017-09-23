@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.51 08.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.52 23.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -9,22 +9,24 @@ __Daten per RSCP vom E3DC-S10 Speicher abfragen__
 __Daten vom E3DC zur HomeMatic Hausautomation senden__   
 __Daten vom S10 auf dem Display darstellen__   
 __Daten von der HomeMatic auf dem Display darstellen__   
+__Kleine Hausautomation mit GPIO's__
 __Wetterinformationen von "Yahoo Weather"__
+__Dein eigener Abfuhrkalender__
 
 Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.   
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
 <img src="https://s20.postimg.org/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
-Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohen Wettersymbol)
+Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohne Wettersymbol)
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
 Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist weiteres unten ein Kapitel __[Material](https://github.com/nischram/E3dcGui#material)__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2017-02.
 
-In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen. Da ich mich erst seit kurzen mit der Programmierung beschäftige, sind die Änderungen eventuell noch etwas unprofessionell, aber bislang erfüllen sie ihren Zweck.
+In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen.
 
-Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden auf wunsch per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet.
+Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden auf Wunsch per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet.
 
 Wenn ein 7" Display genutzt wird, kommen C Programme zum Einsatz, um die diversen Grafiken zu erstellen.
 
@@ -86,7 +88,7 @@ Damit die SD-Karte des Raspberry Pi nicht übermäßig beansprucht wird, nutzt i
 
 ### Vorbereitung der HomeMatic CCU /CCU2   
 Wenn du in den Einstellungen die Nutzung der HomeMatic aktiviert hast (`#define Homematic_E3DC     1`), muss die HomeMatic nun vorbereitet werden.
-Disen Teil der Anleitung habe ich separat in dem Ordner Homematic erstellt.   
+Diesen Teil der Anleitung habe ich separat in dem Ordner Homematic erstellt.   
 [HomeMatic README.markdown](https://github.com/nischram/E3dcGui/tree/master/Homematic)   
 Wenn das Display nur für das E3DC S10 genutzt wird (`#define Homematic_E3DC     0`), ist die Anleitung nicht nötig. Sollte die Nutzung aktiviert sein und die HM nicht vorbereitet dann würde die Applikation für jeden Sendebefehl mehrere Sekunden benötigen und nicht ordnungsgemäss laufen. Ausser alle ISE_ID's in der Datei "parameterHM.h" werden auf 0 gesetzt (default).
 
@@ -133,16 +135,16 @@ Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildsc
 Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole in der oberen Ziele abgerufen. Sollten Funktionen der Software nicht aktiviert sein, bleiben die Symbole ausgeblendet.
 
 #### 1. Setup
-<img src="https://s20.postimg.org/fazpxtg4d/Setup_Neu.jpg" alt="Setup">  
+<img src="https://s20.postimg.org/c6bv32kpp/Setup_V1-52.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.  
-Auf der rechten Seite wird die Display-Helligkeit eingestellt. (Bild noch ohne Helligkeitseinstellung)   
+Auf der rechten Seite wird die Display-Helligkeit eingestellt. Auch kannst du hier den PIR-Sensor aktivieren oder deaktivieren werden.  
 Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
 
 #### 2. Wetteranzeige
 <img src="https://s20.postimg.org/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
 [http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
-In der "parameter.h" muss die Standort-ID eingertagen werden, diese erhält man auf der Yahoo Seite ein dem die Location gesucht wird und man und in der Adresszeile aus dem Link die letzten Zahlen kopiert.   
+In der "parameter.h" muss die Standort-ID eingetragen werden, diese erhält man auf der Yahoo Seite ein dem die Location gesucht wird und man und in der Adresszeile aus dem Link die letzten Zahlen kopiert.   
 `113 #define weatherID                   638242`   
 Beispeil zur Adresszeile: "https://www.yahoo.com/news/weather/germany/berlin/berlin-638242"   
 Die Wetteranzeigen könnte auch ohne S10 oder HomeMatic genutzt werden.
@@ -150,23 +152,28 @@ Die Wetteranzeigen könnte auch ohne S10 oder HomeMatic genutzt werden.
 #### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
 <img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
-Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhytmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
-Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wid auch für diese Daten je ein Symbol angezeigt.
-Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhytmus die Daten abgefragt werden sollen (historyDelay).
+Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhythmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
+Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wird auch für diese Daten je ein Symbol angezeigt.
+Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhythmus die Daten abgefragt werden sollen (historyDelay).
 
 #### 4. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
-Damit die verschiedenen PV-Anlagengrößen auch dargestellt werden können, muss die Maximalleistung in der "parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
+Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können, muss die Maximalleistung in der „parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 
 #### 5. Monitor
 `  #define E3DC_S10                    1`    
 <img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
-Hier werden die einzelnen Tracker des Wechselrichters dargestellt.
+Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts ist für neue Ideen noch Platz, gerne darfst du einen Issue erstellen wenn du wünsche hast!
 
-#### 6. HomeMatic
+#### 6. SmartHome
+<img src="https://s20.postimg.org/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
+Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
+`  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung und einer für den Batterie-SOC. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen.
+
+#### 7. HomeMatic
 `  #define Homematic_GUI               1`   
 <img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
 Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.   
@@ -177,9 +184,9 @@ Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp
 Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.   
 Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.   
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).   
-Damit du am Sorcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Komentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Datein `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
+Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Kommentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Dateien `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
-#### 7. Abfuhrkalender
+#### 8. Abfuhrkalender
 `  #define Abfuhrkalender               1`   
 <img src="https://s20.postimg.org/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
@@ -193,7 +200,18 @@ Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:
 <img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
-#### Wichtig Pi Bildschirmschoner deaktivieren
+Es besteht die Möglichkeit den Bildschirmschoner mit Hilfe eines Bewegungssensors zu deaktivieren. Hierfür muss zum einen WiringPi installiert werden ([siehe unten](https://github.com/nischram/E3dcGui#wiringpi_einrichten)), der Pin des GPIO am Raspberry Pi muss ggf. angepasst werden (parameter.h "#define PirPin   4") und der Bewegungssensor (PIR) muss installiert werden.   
+Hier ein Anschlussbild als Beispiel:   
+<img src="https://s20.postimg.org/etiw6x7q5/pir-364x500.png" alt="fritzing PIRtoPI">   
+Pinbelegung:   
+VCC an Pin 2 (5V)   
+OUT an Pin 16 (GPIO 23/GPIO_GEN 4)   
+GND an Pin 6 (Ground)_  
+
+Ich habe den PIR-Sensor "HC-SR501" bei mir im gebrauch.
+
+
+#### Wichtig Pi-Bildschirmschoner deaktivieren
 Der Raspberry Pi hat einen eignen Bildschirmschoner, dieser muss deaktiviert werden. Mit folgendem Befehl muss die Datei _rc.local_ geöffnet werden:
 ```shell
 pi@raspberrypi:~ $ sudo nano /etc/rc.local
@@ -222,7 +240,7 @@ Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über läng
 pi@raspberrypi:~ $ killall watchdog
 ```
 ## Aktuelle Uhrzeit aus dem Internet holen
-Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeiteit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
+Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
 Ich habe eine Lösung für diese Problem, auf dieser Seite gefunden:
 [http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen](http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen)
 
@@ -265,8 +283,30 @@ tmpfs 4096 0 4096 0% /mnt/RAMDisk
 Diesen Teil zum RAMDisk habe ich von hier Kopiert:
 [http://www.kriwanek.de/raspberry-pi/486-ram-disk-auf-raspberry-pi-einrichten.html](http://www.kriwanek.de/raspberry-pi/486-ram-disk-auf-raspberry-pi-einrichten.html)
 
+## WiringPI einrichten
+
+Für diverse Anwendungen der GPIO des Raspberry Pi muss die Software WiringPi installiert werden.
+Es ist folgendes einzugeben.   
+Zum home Verzeichnis wechslen:  
+```
+pi@raspberrypi ~/E3dcGui $ cd
+```   
+Nun brauchen wir git:   
+```
+pi@raspberry:~$ sudo apt-get install git git-core
+```   
+Jetzt kann WiringPi heruntergeladen   
+```
+pi@raspberry:~$ git clone git://git.drogon.net/wiringPi
+pi@raspberry:~$ cd wiringPi
+```
+und installiert werden:   
+```
+pi@raspberrypi ~/wiringPi $ ./build
+```
+
 ## eMail senden Installieren und aktivieren
-Damit der Wachtdog oder andere Programmteile eine eMail senden können, muss eine eMail Option installiert werden. Ich habe mich hier für "SendEmail" entschieden. Die Version 1.56 habe ich im Github integriert, somit muss die Software nicht Heruntergeladen werden, was das installieren wesentlich einfacher macht. Folgendes Befehle sind der Reihe nach auszuführen:
+Damit der Watchdog oder andere Programmteile eine eMail senden können, muss eine eMail Option installiert werden. Ich habe mich hier für "SendEmail" entschieden. Die Version 1.56 habe ich in meinem Github integriert, somit muss die Software nicht Heruntergeladen werden, was das installieren wesentlich einfacher macht. Folgende Befehle sind der Reihe nach auszuführen:
 ```
 pi@raspberry:~$ cd E3dcGui
 pi@raspberrypi ~/E3dcGui $ sudo cp -a sendEmail-v1.56/sendEmail /usr/local/bin
@@ -308,7 +348,7 @@ Mit den Parametern
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll. Beide Parameter auf "0", dann wird keine eMail gesendet und die Software muss __nicht__ installiert werden.
 
-__Wichtig:__ Bitte bei neueren Respberry Versionen zur Fehlerbehebung [Issue#11](https://github.com/nischram/E3dcGui/issues/11) beachten!
+__Wichtig:__ Bitte bei neueren Raspberry Versionen zur Fehlerbehebung [Issue#11](https://github.com/nischram/E3dcGui/issues/11) beachten!
 
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay, Standgehäuse und Netzteil.  
@@ -351,14 +391,28 @@ Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
 "Zusätzliche Optionen" > " RSCP-Beispielapplikation_2016-04-25.pdf"
 [Link](https://s10.e3dc.com/s10/module/download/get.php?dl=3408) (Benutzerdaten erforderlich)
 #### Grafiken
-Bilschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
+Bildschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 #### Wichtige Ergänzungen
+V1.52 23.09.2017 Hausautomation integriert   
 V1.49 05.09.2017 Abfuhrkalender eingebaut  
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.52 23.09.2017 WiringPi, PIR-Sensor, DHT11, Schaltaktor, Verbesserungen
+- Button SmartHome hinzugefügt für Schaltaktoren und DHT11
+- Aufteilung Button erste Zeile überarbeitet
+- Anpassung Anleitung für WiringPi installation (Installation erforderlich!)
+- Automatisches Beenden des Bildschirmschoners mit PRI-Sensor
+- Schaltaktoren für Überschuss, Solar oder Batterie mit GPIO's
+- Anbindung des Sensors DHT11
+- Fehlende Parameter für Abfuhrkalender nachgetragen
+- Fehler WetterGui behoben, Watchdog schlägt zu, zu große Wartezeit
+- Fehler GUI behoben, negativer oder zu großer SOC/Autarkie/Eigenstrom führt zum Speicherzugriffsfehler
+- Fehler behoben wenn für die Version die README.markdown nicht geöffnet werden kann kommt Speicherzugriffsfehler
+- Rechtschreibfehler korrigiert
+
 V1.51 08.09.2017 Anpassung Setup Menü
 - Rücklesen der Displayhelligkeit
 - Erneuter Umbau der Anzeige für die IP-Adresse
