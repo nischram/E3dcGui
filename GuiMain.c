@@ -608,7 +608,7 @@ int main(){
 					//Helligkeit
 					int brightness = readBrightness();
 					//PIR
-					pirUse = readPIR();
+					pirUse = readPirUse();
 					//Grafiken für Pi Informationen erstellen
 					// Grafik für Helligkeit
 					drawSquare(S4,R1-20,328,60,GREY);
