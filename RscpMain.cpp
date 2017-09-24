@@ -1,3 +1,6 @@
+/*
+g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o RscpMain
+ */
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
@@ -702,7 +705,7 @@ static void mainLoop(void)
           Counter900 = 0;
         }
         Counter900 ++;
-
+        system ("cp /mnt/RAMDisk/E3dcRscpCache.txt /mnt/RAMDisk/E3dcGuiData.txt");
         // main loop sleep / cycle time before next request
         int sleeptime = 1;
         if ( GUI == 1 && E3DC_S10 == 1)

@@ -100,6 +100,10 @@ Es kann aber zu darstellungsfehler kommen.
 #define PingWD                      1                       // 1= Reboot nach dem 3. Pingfehler
 
 //#######################################
+//Debug Option
+#define debugUse                    0                       // Einige Debug-Zeilen sind schon eingefügt, aktiv=1 deaktiv=0
+
+//#######################################
 // sendEmail Parameter
 #define FromEmailAdress             "max.mustermann@web.de"                     //eMail-Adresse von der gesendet wird
 #define smtpServer                  "smtp.web.de"                               //eMail-Server zum senden

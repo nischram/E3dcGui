@@ -86,9 +86,19 @@ int main(){
 		pinMode(Aktor4Pin, OUTPUT);
 		pinMode(Aktor5Pin, OUTPUT);
 	}
+	DEBUG("\n### Neustart ###\n");
 
 //####################################
 	while(1){
+		time_t currentTime = time(NULL);
+		struct tm *now;
+		time( &currentTime );
+		now = localtime( &currentTime );
+		strftime (OUT,100,"%H:%M:%S ",now);
+		DEBUG(OUT);
+
+		system ("cp /mnt/RAMDisk/E3dcGuiData.txt /mnt/RAMDisk/E3dcGuiCache.txt");
+
 		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
 		GuiTime = PiTime;
 
@@ -106,6 +116,7 @@ int main(){
 
 		Screen[ScreenCounter] = readScreen(ScreenCounter);
 		counter = Screen[ScreenCounter] -1;
+		DEBUGint(Screen[ScreenCounter]);
 		if(counter < 0)
 			counter = 0;
 		writeScreen(ScreenCounter, counter);
@@ -145,6 +156,7 @@ int main(){
 						}
 					}
 				}
+				DEBUG("Main ");
 				if(screenState == ScreenOn){
 					//Bildwechsel für > > >
 					if(changeStop == 0){
@@ -160,6 +172,9 @@ int main(){
 					//PVI
 					int TAG_PVI = readRscp(PosPVI);
 					int TAG_PVIState = readRscp(PosPVIState);
+					DEBUG("PVI ");
+					DEBUGint(TAG_PVI);
+					DEBUGint(TAG_PVIState);
 					snprintf (OUT, (size_t)100, "%i W", TAG_PVI);
 					if(TAG_PVIState >= 1){
 						if(TAG_PVI > 50)
@@ -178,6 +193,9 @@ int main(){
 					//Grid
 					int TAG_Grid = readRscp(PosGrid);
 					int TAG_PMState = readRscp(PosPMState);
+					DEBUG("Grid ");
+					DEBUGint(TAG_Grid);
+					DEBUGint(TAG_PMState);
 					if(TAG_PMState >= 1){
 						if(TAG_Grid < 0){
 							TAG_Grid = TAG_Grid * -1;
@@ -209,6 +227,8 @@ int main(){
 						drawOutput(570,135,80,12, "LM-DOWN", RED);
 					//Home
 					int TAG_Home = readRscp(PosHome);
+					DEBUG("Home ");
+					DEBUGint(TAG_Home);
 					snprintf (OUT, (size_t)100, "%i W", TAG_Home);
 					drawOutput(570,360,80,12, OUT, GREY);
 					if(change == 1)
@@ -217,6 +237,8 @@ int main(){
 						drawOutput(570,380,80,12," > > ", GREY);
 					//Battery
 					int TAG_Bat = readRscp(PosBat);
+					DEBUG("Bat ");
+					DEBUGint(TAG_Bat);
 					if(TAG_Bat < 0){
 						TAG_Bat = TAG_Bat * -1;
 						snprintf (OUT, (size_t)100, "%i W", TAG_Bat);
@@ -274,6 +296,8 @@ int main(){
 					}
 					//SOC
 					int TAG_SOC = read100Rscp(PosSOC);
+					DEBUG("SOC ");
+					DEBUGint(TAG_SOC);
 					snprintf (OUT, (size_t)100, "%i %%", TAG_SOC);
 					int TAG_BatState = readRscp(PosBatState);
 					if(TAG_BatState >= 1){
@@ -287,6 +311,8 @@ int main(){
 					}
 					//Autarky
 					int TAG_Autarky = read100Rscp(PosAutarky);
+					DEBUG("Autarky ");
+					DEBUGint(TAG_Autarky);
 					int Autarkyx = 2 * TAG_Autarky;
 					drawSquare(405,366-200,60,200-Autarkyx,WHITE);
 					drawSquare(405,366-Autarkyx,60,Autarkyx,GREEN);
@@ -296,6 +322,8 @@ int main(){
 					put_string(420,392,OUT,GREY);
 					//SelfConsumption
 					int TAG_SelfCon = read100Rscp(PosSelfCon);
+					DEBUG("SelfCon ");
+					DEBUGint(TAG_SelfCon);
 					int SelfConx = 2 * TAG_SelfCon;
 					drawSquare(340,366-200,60,200-SelfConx,WHITE);
 					drawSquare(340,366-SelfConx,60,SelfConx,LTGREY);
@@ -324,6 +352,7 @@ int main(){
 						snprintf (OUT, (size_t)100, "OUT %.1f kWh", historyBatOut/1000);
 						put_stringRGB(180, 420, OUT, 0, 172, 0);
 					}
+					DEBUG("RSCP-Ende ");
 				}
 				break;
 			}
@@ -762,6 +791,10 @@ int main(){
 	//Schaltaktoren
 		checkAktor();
 //####################################################
+	//Debug.txt um 0:00Uhr speichern
+		checkDEBUG();
+		DEBUG("CK-DBG");
+//####################################################
 	//WatchdogHM Daten für WD schreiben
 		int Unixtime[UnixtimeMAX];
 		if(counter == 0 && Homematic_GUI == 1){
@@ -861,6 +894,7 @@ int main(){
 			}
 			HistoryCounter --;
 		}
+		DEBUG("ENDE\n");
 	//Abfrageintervall
 		sleep(1);
 	}

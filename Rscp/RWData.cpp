@@ -48,9 +48,24 @@ void readWriteData(char *fileName, int NewValue){
   if (datei.is_open()) {
     for( c = 0; c < 97; ++c ){
       datei.getline(read	,20, '\n');
-      line[c] = atoi(read);
+      if (read == NULL)
+        snprintf (read, (size_t)20, "0");
+      else
+        line[c] = atoi(read);
     }
     datei.close();
+  }
+  else {
+    ofstream fout(Path);
+    if (fout.is_open()) {
+      for( c = 1; c < 96; ++c ){
+        fout << "0\n";
+      }
+      fout << NewValue <<"\n";
+      fout.close();
+      return;
+      }
+    else cerr << "Konnte Datei nicht erstellen!";
   }
   ofstream fout(Path);
   if (fout.is_open()) {
@@ -61,6 +76,7 @@ void readWriteData(char *fileName, int NewValue){
     fout.close();
     }
   else cerr << "Konnte Datei nicht erstellen!";
+  return;
 }
 
 int writeData(char Path[128], int Position, int NewValue, int max)
@@ -68,18 +84,21 @@ int writeData(char Path[128], int Position, int NewValue, int max)
   int c = max+1;
   int out [c];
   char read[128];
-  //Lese Byte aus Datei ein
+  //Lese Wert aus Datei ein
   fstream datei(Path);
   if (datei.is_open()) {
     for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
-      out[c] = atoi(read);
+      if (read == NULL)
+        snprintf (read, (size_t)20, "0");
+      else
+        out[c] = atoi(read);
     }
     datei.close();
   }
   else cerr << "Konnte Datei nicht oeffnen!\n";
 
-  //Ändere Bit an Position
+  //Ändere Wert an Position
   out[Position] = NewValue;
 
   //Schreibe geändertes Byte in Datei
@@ -135,7 +154,10 @@ int readData(char Path[128], int Position, int max)
   if (datei.is_open()) {
     for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
-      out[c] = atoi(read);
+      if (read == NULL)
+        snprintf (read, (size_t)20, "0");
+      else
+        out[c] = atoi(read);
     }
     datei.close();
   }
@@ -147,7 +169,7 @@ int readData(char Path[128], int Position, int max)
 int writeRscp(int Position, int NewValue)
 {
   char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiData.txt");
+  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcRscpCache.txt");
   writeData(PathRscp, Position, NewValue, PosMAX);
   return 1;
 }
@@ -164,13 +186,6 @@ int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_
   snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiChar.txt");
   writeCharData(PathRscp, TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
   return 1;
-}
-int readRscp(int Position)
-{
-  char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiData.txt");
-  int ret = readData(PathRscp, Position, PosMAX);
-  return ret;
 }
 int makeCharRscp()
 {

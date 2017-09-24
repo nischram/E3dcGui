@@ -382,7 +382,7 @@ int readUnixtime(int UnixtimePosition)
 int readRscp(int RscpPosition)
 {
   char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiData.txt");
+  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiCache.txt");
   int ret = BitRead(PathRscp, RscpPosition,PosMAX);
   return ret;
 }
@@ -454,20 +454,54 @@ int makeHistory()
   return 1;
 }
 
-// Debug Funktion zum Ausführen, im Code  -- DEBUG("Text"); --  einbauen. (-- nicht übernehmen!)
-//Der Text wird in Datei DEBUG.txt gespeichert.
-//Das letzte eingefügten von  -- DEBUG("Text\n"); --  muss ein " \n " enthalten sein.
-int DEBUG(char write[128]){
-	FILE *fp;
-	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
-	if(fp == NULL) {
-		printf("Datei konnte NICHT geoeffnet werden.\n");
-	}
-	else {
-		fprintf(fp, "%s", write);
-		fclose(fp);
-	}
+/* Debug Funktion, für weitere Debugpositionen folgendes im Code einbauen.
+DEBUG("Text");     // für Char Variablen oder Text
+DEBUGint(20)       // für Int Variablen
+Der Text wird in Datei RAMDisk/DEBUG.txt gespeichert.
+ */
+int DEBUG(char *write,...){
+  if (debugUse == 1){
+    FILE *fp;
+  	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
+  	if(fp == NULL) {
+  		printf("Datei konnte NICHT geoeffnet werden.\n");
+  	}
+  	else {
+  		fprintf(fp, "%s", write);
+  		fclose(fp);
+  	}
+  }
 	return 0;
+}
+int DEBUGint(int write){
+  if (debugUse == 1){
+    FILE *fp;
+  	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
+  	if(fp == NULL) {
+  		printf("Datei konnte NICHT geoeffnet werden.\n");
+  	}
+  	else {
+  		fprintf(fp, "%i ", write);
+  		fclose(fp);
+  	}
+  }
+	return 0;
+}
+//Speichern der DEBUG.txt
+void checkDEBUG()
+{
+  char CLOCK[20], OUT[100], batch[128];
+  time_t currentTime = time(NULL);
+  struct tm *now;
+  time( &currentTime );
+  now = localtime( &currentTime );
+  strftime (CLOCK,20,"%H:%M",now);
+  if (strcmp ("19:50",CLOCK) == 0){
+    strftime (OUT,100,"DEBUG_%Y-%m-%d",now);
+    snprintf (batch, (size_t)128, "cp /mnt/RAMDisk/DEBUG.txt /home/pi/E3dcGui/DEBUG/%s.txt", OUT);
+    system(batch);
+    system("rm /mnt/RAMDisk/DEBUG.txt");
+  }
 }
 
 // Touchfunktion
