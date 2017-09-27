@@ -22,6 +22,9 @@ gcc -g -o screenSave  screenSave.c
 int main()
 {
 	picturePosition();
+	makeScreen();
+	makeLegende();
+	makeUnixtime();
 
 	signal(SIGINT, INThandler);
 

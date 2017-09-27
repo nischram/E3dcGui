@@ -135,6 +135,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor1PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor1PercentOn             90                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor1Typ = 3"
 #define Aktor1PercentOff            10                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor1Typ = 3"
+#define Aktor1MinOn                 2                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
+#define Aktor1MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor1Pin                   21                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor2Typ                   2                       // Aktor 2 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
@@ -143,22 +145,28 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor2PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor2PercentOn             0                       // Einschaltschwelle in % für den Batterieaktor bei "Aktor2Typ = 3"
 #define Aktor2PercentOff            0                       // Ausschaltschwelle in % für den Batterieaktor bei "Aktor2Typ = 3"
+#define Aktor2MinOn                 60                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
+#define Aktor2MinOff                360                     // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor2Pin                   22                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor3Typ                   3                       // Aktor 3 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
-#define Aktor3Name                  "Batterie-Aktor"         // Bezeichnung
+#define Aktor3Name                  "Batterie-Aktor"        // Bezeichnung
 #define Aktor3PowerOn               750                     // Überschussleistung in Watt
 #define Aktor3PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor3PercentOn             50                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
-#define Aktor3PercentOff            35                       // Ausschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
+#define Aktor3PercentOff            35                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
+#define Aktor3MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
+#define Aktor3MinOff                10                      // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor3Pin                   23                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor4Typ                   2                       // Aktor 4 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
 #define Aktor4Name                  "Gartenbew\204sserung"  // Bezeichnung
-#define Aktor4PowerOn               1250                     // Überschussleistung in Watt
-#define Aktor4PowerOff              30                     // Abschaltwert nur bei Solarproduktion in Watt
+#define Aktor4PowerOn               1250                    // Überschussleistung in Watt
+#define Aktor4PowerOff              30                      // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor4PercentOn             75                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor4Typ = 3"
 #define Aktor4PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor4Typ = 3"
+#define Aktor4MinOn                 0                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
+#define Aktor4MinOff                0                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor4Pin                   24                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor5Typ                   0                       // Aktor 5 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
@@ -167,6 +175,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor5PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor5PercentOn             75                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor5Typ = 3"
 #define Aktor5PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor5Typ = 3"
+#define Aktor5MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
+#define Aktor5MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor5Pin                   25                      // wiringPi Pin Nummer vom GPIO
 
 //Umlaute \204=ä \216=Ä \224=ö \231=Ö \201=ü \232=Ü \341=ß
@@ -365,11 +375,11 @@ Es kann aber zu darstellungsfehler kommen.
 
 //Schaltaktoren
 #define Aktor1Position              0    //!!
-#define Aktor2Position              2    //!!
-#define Aktor3Position              4    //!!
-#define Aktor4Position              6    //!!
-#define Aktor5Position              8    //!!
-#define AktorMAX                    10   //!!
+#define Aktor2Position              4    //!!
+#define Aktor3Position              8    //!!
+#define Aktor4Position              12   //!!
+#define Aktor5Position              16   //!!
+#define AktorMAX                    20   //!!
 
 //DHT11
 #define DHT1Position                0    //!!

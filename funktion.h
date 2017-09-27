@@ -224,90 +224,67 @@ int drawMainScreen()
   return 1;
 }
 // Bit aus einer Datei lesen, ändern und schreiben
-int BitChange(char filePath[128], int Position, int max)
+int BitChange(char *filePath, int Position, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
-  FILE *fpr;
-  fpr = fopen(filePath, "r");
-  if(fpr == NULL) {
+  FILE *fp;
+  fp = fopen(filePath, "r+");
+  if(fp == NULL) {
     printf("%s konnte NICHT geoeffnet werden. (BitChange read)\n", filePath);
-    snprintf (read, (size_t)128, "-");
+    for( c = 0; c < max; ++c )
+      out[c] = 0;
   }
   else {
-    for( c = 0; c < max; ++c )
-    {
-      fgets(read,128,fpr);
+    for( c = 0; c < max; ++c ){
+      fgets(read,128,fp);
       out[c] = atoi(read);
     }
-    fclose(fpr);
-  }
-
-  //Ändere Bit an Position
-  if (out[Position] == 1)
-    out[Position] = 0;
-  else
-    out[Position] = 1;
-
-  //Schreibe geändertes Byte in Datei
-  FILE *fp;
-  fp = fopen(filePath, "w");
-  if(fp == NULL) {
-    printf("%s konnte NICHT geoeffnet werden. (BitChange write)\n", filePath);
-  }
-  else {
+    if (out[Position] == 1)
+      out[Position] = 0;
+    else
+      out[Position] = 1;
+    fseek ( fp , 0 , SEEK_SET );
     for( c = 0; c < max; ++c )
-     fprintf(fp, "%d\n", out[c]);
+      fprintf(fp, "%d\n", out[c]);
     fclose(fp);
   }
- return 0;
+  return 0;
 }
-
 // Bit in eine Datei schreiben
-int BitWrite(char filePath[128], int Position, int NewValue, int max)
+int BitWrite(char *filePath, int Position, int NewValue, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
-  FILE *fpr;
-  fpr = fopen(filePath, "r");
-  if(fpr == NULL) {
-    printf("%s konnte NICHT geoeffnet werden. (BitWrite)\n", filePath);
-    snprintf (read, (size_t)128, "-");
+  FILE *fp;
+  fp = fopen(filePath, "r+");
+  if(fp == NULL) {
+    printf("%s konnte NICHT geoeffnet werden. (BitWrite read+)\n", filePath);
+    for( c = 0; c < max; ++c )
+      out[c] = 0;
   }
   else {
     for( c = 0; c < max; ++c )
     {
-      fgets(read,128,fpr);
+      fgets(read,128,fp);
       out[c] = atoi(read);
     }
-    fclose(fpr);
-  }
-
-  //Ändere Bit an Position
-  out[Position] = NewValue;
-
-  //Schreibe geändertes Byte in Datei
-  FILE *fp;
-  fp = fopen(filePath, "w");
-  if(fp == NULL) {
-    printf("%s konnte NICHT geoeffnet werden. (BitWrite)\n", filePath);
-  }
-  else {
+    out[Position] = NewValue;
+    fseek ( fp , 0 , SEEK_SET );
     for( c = 0; c < max; ++c )
      fprintf(fp, "%d\n", out[c]);
     fclose(fp);
   }
  return 0;
 }
-
 // Bit aus einer Datei lesen
-int BitRead(char filePath[128], int Position, int max)
+int BitRead(char *filePath, int Position, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -315,7 +292,8 @@ int BitRead(char filePath[128], int Position, int max)
   fp = fopen(filePath, "r");
   if(fp == NULL) {
     printf("%s konnte NICHT geoeffnet werden. (BitRead)\n", filePath);
-    snprintf (read, (size_t)128, "-");
+    for( c = 0; c < max; ++c )
+      out[c] = 0;
   }
   else {
     for( c = 0; c < max; ++c )
@@ -328,62 +306,94 @@ int BitRead(char filePath[128], int Position, int max)
   }
   return out[Position];
 }
+
+// Bit Datei erstellen
+int BitMake(char *filePath, int max)
+{
+  int c = max;
+  int out [c];
+  char read[128];
+  FILE *fp;
+  fp = fopen(filePath, "w");
+  if(fp == NULL) {
+    printf("%s konnte NICHT geoeffnet werden. (BitMake)\n", filePath);
+    for( c = 0; c < max; ++c )
+      fprintf(fp, "0\n");
+  }
+  else {
+    for( c = 0; c < max; ++c )
+      fprintf(fp, "0\n");
+    fclose(fp);
+  }
+  return 0;
+}
 int readScreen(int ScreenPosition)
 {
-  char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-	int ret = BitRead(PathScreen, ScreenPosition, ScreenMAX);
+	int ret = BitRead("/mnt/RAMDisk/Screen.txt", ScreenPosition, ScreenMAX);
   return ret;
 }
 int writeScreen(int ScreenPosition, int NewValue)
 {
-  char PathScreen [128];
-	snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-  BitWrite(PathScreen, ScreenPosition, NewValue, ScreenMAX);
+  BitWrite("/mnt/RAMDisk/Screen.txt", ScreenPosition, NewValue, ScreenMAX);
   return 1;
 }
+int makeScreen()
+{
+	BitMake("/mnt/RAMDisk/Screen.txt", ScreenMAX);
+  return 0;
+}
+
 int readLegende(int LegendePosition)
 {
-  char PathLegende [128];
-  snprintf (PathLegende, (size_t)128, "/mnt/RAMDisk/Legende.txt");
-	int ret = BitRead(PathLegende, LegendePosition, LegendeMAX);
+	int ret = BitRead("/mnt/RAMDisk/Legende.txt", LegendePosition, LegendeMAX);
   return ret;
 }
 int writeLegende(int LegendePosition, int NewValue)
 {
-  char PathLegende [128];
-  snprintf (PathLegende, (size_t)128, "/mnt/RAMDisk/Legende.txt");
-  BitWrite(PathLegende, LegendePosition, NewValue, LegendeMAX);
+  BitWrite("/mnt/RAMDisk/Legende.txt", LegendePosition, NewValue, LegendeMAX);
   return 1;
 }
 int changeLegende(int LegendePosition)
 {
-  char PathLegende [128];
-  snprintf (PathLegende, (size_t)128, "/mnt/RAMDisk/Legende.txt");
-  BitChange(PathLegende, LegendePosition, LegendeMAX);
+  BitChange("/mnt/RAMDisk/Legende.txt", LegendePosition, LegendeMAX);
   return 1;
+}
+int makeLegende()
+{
+	BitMake("/mnt/RAMDisk/Legende.txt", LegendeMAX);
+  return 0;
+}
+
+int readUnixtime(int UnixtimePosition)
+{
+	int ret = BitRead("/mnt/RAMDisk/Unixtime.txt", UnixtimePosition, UnixtimeMAX);
+  return ret;
 }
 int writeUnixtime(int UnixtimePosition, int NewValue)
 {
-  char PathUnixtime [128];
-  snprintf (PathUnixtime, (size_t)128, "/mnt/RAMDisk/Unixtime.txt");
-  BitWrite(PathUnixtime, UnixtimePosition, NewValue, UnixtimeMAX);
+  BitWrite("/mnt/RAMDisk/Unixtime.txt", UnixtimePosition, NewValue, UnixtimeMAX);
   return 1;
 }
-int readUnixtime(int UnixtimePosition)
+int makeUnixtime()
 {
-  char PathUnixtime [128];
-  snprintf (PathUnixtime, (size_t)128, "/mnt/RAMDisk/Unixtime.txt");
-	int ret = BitRead(PathUnixtime, UnixtimePosition, UnixtimeMAX);
-  return ret;
+	BitMake("/mnt/RAMDisk/Unixtime.txt", UnixtimeMAX);
+  return 0;
 }
 
-//Daten aus Datei RscpGuiX.txt auslesen.
+int readPirUse()
+{
+	int ret = BitRead("/home/pi/E3dcGui/Data/PIR.txt", 1, 2);
+  return ret;
+}
+int changePirUse()
+{
+  BitChange("/home/pi/E3dcGui/Data/PIR.txt", 1, 2);
+  return 1;
+}
+
 int readRscp(int RscpPosition)
 {
-  char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiCache.txt");
-  int ret = BitRead(PathRscp, RscpPosition,PosMAX);
+  int ret = BitRead("/mnt/RAMDisk/E3dcGuiCache.txt", RscpPosition,PosMAX);
   return ret;
 }
 int read100Rscp(int RscpPosition)
@@ -459,7 +469,7 @@ DEBUG("Text");     // für Char Variablen oder Text
 DEBUGint(20)       // für Int Variablen
 Der Text wird in Datei RAMDisk/DEBUG.txt gespeichert.
  */
-int DEBUG(char *write,...){
+void DEBUG(char *write,...){
   if (debugUse == 1){
     FILE *fp;
   	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
@@ -471,9 +481,8 @@ int DEBUG(char *write,...){
   		fclose(fp);
   	}
   }
-	return 0;
 }
-int DEBUGint(int write){
+void DEBUGint(int write){
   if (debugUse == 1){
     FILE *fp;
   	fp = fopen("/mnt/RAMDisk/DEBUG.txt", "a");
@@ -485,22 +494,23 @@ int DEBUGint(int write){
   		fclose(fp);
   	}
   }
-	return 0;
 }
 //Speichern der DEBUG.txt
 void checkDEBUG()
 {
-  char CLOCK[20], OUT[100], batch[128];
-  time_t currentTime = time(NULL);
-  struct tm *now;
-  time( &currentTime );
-  now = localtime( &currentTime );
-  strftime (CLOCK,20,"%H:%M",now);
-  if (strcmp ("19:50",CLOCK) == 0){
-    strftime (OUT,100,"DEBUG_%Y-%m-%d",now);
-    snprintf (batch, (size_t)128, "cp /mnt/RAMDisk/DEBUG.txt /home/pi/E3dcGui/DEBUG/%s.txt", OUT);
-    system(batch);
-    system("rm /mnt/RAMDisk/DEBUG.txt");
+  if (debugUse == 1){
+    char CLOCK[20], OUT[100], batch[128];
+    time_t currentTime = time(NULL);
+    struct tm *now;
+    time( &currentTime );
+    now = localtime( &currentTime );
+    strftime (CLOCK,20,"%H:%M:%S",now);
+    if (strcmp ("00:00:00",CLOCK) == 0){
+      strftime (OUT,100,"DEBUG_%Y-%m-%d",now);
+      snprintf (batch, (size_t)128, "cp /mnt/RAMDisk/DEBUG.txt /home/pi/E3dcGui/DEBUG/%s.txt", OUT);
+      system(batch);
+      system("rm /mnt/RAMDisk/DEBUG.txt");
+    }
   }
 }
 
@@ -685,21 +695,6 @@ int putAktuell(int x, int y)
   now = localtime( &timeStamp );
   strftime (OUT,100,"%d.%m.%Y %H:%M:%S",now);
   drawOutput(x+120,y,170,12, OUT, GREEN);
-  return 1;
-}
-//PIR Datei lesen schreiben
-int readPirUse()
-{
-  char PathPIR [128];
-  snprintf (PathPIR, (size_t)128, "/home/pi/E3dcGui/Data/PIR.txt");
-	int ret = BitRead(PathPIR, 1, 2);
-  return ret;
-}
-int changePirUse()
-{
-  char PathPIR [128];
-  snprintf (PathPIR, (size_t)128, "/home/pi/E3dcGui/Data/PIR.txt");
-  BitChange(PathPIR, 1, 2);
   return 1;
 }
 #endif // __FUNKTION_H_

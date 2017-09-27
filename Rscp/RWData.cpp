@@ -38,84 +38,56 @@ void printsendCharHM(int CounterHM, int id, char value[32]){
   }
 }
 
-void readWriteData(char *fileName, int NewValue){
+void readWrite900(char *fileName, int NewValue){
   int c;
   int line[100];
   char read[20];
   char Path [128];
   snprintf (Path, (size_t)128, "/home/pi/E3dcGui/Data/%s.txt", fileName);
-  fstream datei(Path);
+  fstream datei(Path, ios::in | ios::out);
   if (datei.is_open()) {
     for( c = 0; c < 97; ++c ){
       datei.getline(read	,20, '\n');
       if (read == NULL)
         snprintf (read, (size_t)20, "0");
-      else
-        line[c] = atoi(read);
+      line[c] = atoi(read);
     }
+    datei.seekg (0, ios::beg);
+    for( c = 1; c < 96; ++c ){
+      datei << line[c] <<"\n";
+    }
+    datei << NewValue <<"\n";
     datei.close();
   }
-  else {
-    ofstream fout(Path);
-    if (fout.is_open()) {
-      for( c = 1; c < 96; ++c ){
-        fout << "0\n";
-      }
-      fout << NewValue <<"\n";
-      fout.close();
-      return;
-      }
-    else cerr << "Konnte Datei nicht erstellen!";
-  }
-  ofstream fout(Path);
-  if (fout.is_open()) {
-    for( c = 1; c < 96; ++c ){
-      fout << line[c] <<"\n";
-    }
-    fout << NewValue <<"\n";
-    fout.close();
-    }
   else cerr << "Konnte Datei nicht erstellen!";
   return;
 }
-
 int writeData(char Path[128], int Position, int NewValue, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Wert aus Datei ein
-  fstream datei(Path);
+  fstream datei(Path, ios::in | ios::out);
   if (datei.is_open()) {
     for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
       if (read == NULL)
         snprintf (read, (size_t)20, "0");
-      else
-        out[c] = atoi(read);
+      out[c] = atoi(read);
     }
+    out[Position] = NewValue;
+    datei.seekg (0, ios::beg);
+    for( c = 0; c < max; ++c )
+      datei << out[c] << endl;
     datei.close();
   }
   else cerr << "Konnte Datei nicht oeffnen!\n";
-
-  //Ändere Wert an Position
-  out[Position] = NewValue;
-
-  //Schreibe geändertes Byte in Datei
-  ofstream fout(Path);
-  if (fout.is_open()) {
-    for( c = 0; c < max; ++c )
-      fout << out[c] << endl;
-    fout.close();
-  }
-  else cerr << "Konnte Datei nicht erstellen!\n";
-
- return 0;
+  return 0;
 }
-
 int makeData(char Path[128], int Position, int NewValue, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   //Ändere Bit an Position
   out[Position] = NewValue;
@@ -146,7 +118,7 @@ int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3)
 
 int readData(char Path[128], int Position, int max)
 {
-  int c = max+1;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
@@ -211,7 +183,7 @@ int write900(int Position, char *fileName, int NewValue, int Counter900)
     NewValue = read900 + NewValue;
     if (Counter900 == 900){
       NewValue = NewValue / 900;
-      readWriteData(fileName, NewValue);
+      readWrite900(fileName, NewValue);
       writeData(Path900, Position, 1, PosMAX900);
     }
     else {

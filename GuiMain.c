@@ -30,14 +30,15 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
 #include "HMGui.h"
-#include "WetterGui.h"
-#include "MuellGui.h"
+#include "External/WetterGui.h"
+#include "External/MuellGui.h"
 #include "External/dht11.h"
 #include "External/Aktor.h"
 
 //####################################
 int main(){
 	picturePosition();
+	makeAktor();
 
 	signal(SIGINT, INThandler);
 
@@ -793,11 +794,11 @@ int main(){
 //####################################################
 	//Debug.txt um 0:00Uhr speichern
 		checkDEBUG();
-		DEBUG("CK-DBG");
+		DEBUG("CK-DBG ");
 //####################################################
 	//WatchdogHM Daten für WD schreiben
 		int Unixtime[UnixtimeMAX];
-		if(counter == 0 && Homematic_GUI == 1){
+		if((counter == 0 || counter == 30) && Homematic_GUI == 1){
 			char Value[20];
 			read_HM(ISE_UnixTime, 10, Value);
 			UnixTime = atoi(Value);
@@ -805,10 +806,11 @@ int main(){
 			writeUnixtime(UnixtimeHM, UnixTime);
 		}
 	//Watchdog GuiMain
-		if(counter == 0){
+		if(counter == 0 || counter == 20 || counter == 40){
 			int AktuallTime = time(NULL);
 			writeUnixtime(UnixtimeGui, AktuallTime);
 		}
+//####################################################
 	//Time
 		int screenState = readScreen(ScreenState);
 		if(GuiTime == RscpTime && E3DC_S10 == 1 && screenState == ScreenOn){
@@ -866,6 +868,7 @@ int main(){
 			madeBy(OUT);
 			put_string(325,458, OUT, BLUE);
 		}
+//####################################################
 	//Bildschirmschoner
 		Screen[ScreenSaver] = readScreen(ScreenSaver);      //Zählerdatei für den Bildschirmschoner auslesen
 		int ScreenSaverCounter = Screen[ScreenSaver] +1;
@@ -882,7 +885,7 @@ int main(){
 				writeScreen(ScreenChange, ScreenWetter);
 		}
 		writeScreen(ScreenSaver, ScreenSaverCounter);
-
+//####################################################
 	//HistoryValues vom S10 mit "S10history" abfragen.
 		if (historyAktiv == true){
 			if(HistoryCounter == 0){
@@ -894,8 +897,9 @@ int main(){
 			}
 			HistoryCounter --;
 		}
-		DEBUG("ENDE\n");
+//####################################################
 	//Abfrageintervall
+		DEBUG("ENDE\n");
 		sleep(1);
 	}
 }

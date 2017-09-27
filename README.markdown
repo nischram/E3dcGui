@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.53 24.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.54 27.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -9,9 +9,9 @@ __Daten per RSCP vom E3DC-S10 Speicher abfragen__
 __Daten vom E3DC zur HomeMatic Hausautomation senden__   
 __Daten vom S10 auf dem Display darstellen__   
 __Daten von der HomeMatic auf dem Display darstellen__   
-__Kleine Hausautomation mit GPIO's__
-__Wetterinformationen von "Yahoo Weather"__
-__Dein eigener Abfuhrkalender__
+__Kleine Hausautomation mit GPIO's__   
+__Wetterinformationen von "Yahoo Weather"__   
+__Dein eigener Abfuhrkalender__   
 
 Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.   
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
@@ -171,7 +171,7 @@ Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts 
 #### 6. SmartHome
 <img src="https://s20.postimg.org/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
 Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
-`  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung und einer für den Batterie-SOC. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen.
+`  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung und einer für den Batterie-SOC. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig.   
 
 #### 7. HomeMatic
 `  #define Homematic_GUI               1`   
@@ -320,12 +320,12 @@ pi@raspberrypi ~/E3dcGui $ sudo apt-get install libio-socket-ssl-perl
 Jetzt müssen die eMail Einstellung in den "parameter.h" definiert werden.
 ```
 // sendEmail Parameter
-104  #define FromEmailAdress             "max.mustermann@web.de"
-105  #define smtpServer                  "smtp.web.de"
-106  #define smtpPort                    "587"
-107  #define smtpTLS                     "yes"
-108   #define smtpBenutzer                "max.mustermann@web.de"
-109   #define smtpPass                    "1234abc"
+108  #define FromEmailAdress             "max.mustermann@web.de"
+109  #define smtpServer                  "smtp.web.de"
+110  #define smtpPort                    "587"
+111  #define smtpTLS                     "yes"
+112   #define smtpBenutzer                "max.mustermann@web.de"
+113   #define smtpPass                    "1234abc"
 ```
 Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
@@ -400,6 +400,11 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.54 27.09.2017 Systemstabilität & Mindestzeiten für Schaltaktoren
+- Fehlerkorrektur zur Systemstabilität bei BitRead, BitWrite und BitChange (kein doppeltes öffnen für lesen und schreiben)
+- Für die Schaltakoren noch mindeste Einschaltzeit und Ausschaltzeit integriert
+- Für eine bessere Übersicht MuellGui.h und WetterGui.h verschoben nach External/ 
+
 V1.53 24.09.2017 [Issue #22](https://github.com/nischram/E3dcGui/issues/22) & Fehlerkorrekturen
 - Fehlerkorrektur Issue #22
 - Innerhalb der ersten 24 Std. nach Erstinstallation stürzt GuiMain bei Langzeitgrafik ab, weil 15 Minuten-Dateien fehlen wie z.B. Solar900.txt

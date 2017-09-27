@@ -1,3 +1,6 @@
+/*
+g++ -O1 Watchdog.cpp -o watchdog
+ */
 #include <unistd.h>
 #include <stdlib.h>
 #include <cstdio>
@@ -62,15 +65,15 @@ int sendEmail(char EmailAdress[128], char Betreff[128], char Text[512])
   system(batch);
 }
 
-int ReadUnixtime(int Position)
+int ReadUnixtime(int Position, int max)
 {
-  int c = 4;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
   fstream datei("/mnt/RAMDisk/Unixtime.txt");
   if (datei.is_open()) {
-    for( c = 0; c < 4; ++c ){
+    for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
       out[c] = atoi(read);
     }
@@ -79,15 +82,15 @@ int ReadUnixtime(int Position)
   }
   else cerr << "Konnte Datei nicht erstellen!\n";
 }
-int WriteScreen(int Position, int NewValue)
+int WriteScreen(int Position, int NewValue, int max)
 {
-  int c = 8;
+  int c = max;
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
   fstream datei("/mnt/RAMDisk/Screen.txt");
   if (datei.is_open()) {
-    for( c = 0; c < 8; ++c ){
+    for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
       out[c] = atoi(read);
     }
@@ -162,13 +165,13 @@ int main()
 
       ping (pingOUT);
 
-      int UnixTimeE3dc = ReadUnixtime(UnixtimeE3dc);
+      int UnixTimeE3dc = ReadUnixtime(UnixtimeE3dc, UnixtimeMAX);
       int DiffTimeE3dc = AktuallTime - UnixTimeE3dc;
 
-      int UnixTimeHM = ReadUnixtime(UnixtimeHM);
+      int UnixTimeHM = ReadUnixtime(UnixtimeHM, UnixtimeMAX);
       int DiffTimeHM = AktuallTime - UnixTimeHM;
 
-      int UnixTimeGUI = ReadUnixtime(UnixtimeGui);
+      int UnixTimeGUI = ReadUnixtime(UnixtimeGui, UnixtimeMAX);
       int DiffTimeGUI = AktuallTime - UnixTimeGUI;
 
       if ((strcmp ("NOK",pingOUT) == 0) && (PingWD == 1 || resetWLAN == 1)){
@@ -176,8 +179,8 @@ int main()
         if (counterReboot == rebootCounter && PingWD == 1){
           snprintf (OUT, (size_t)100, "PING-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, AktuallTime, resetCounter, OUT);
-          WriteScreen(ScreenShutdown, ShutdownWD);
-          WriteScreen(ScreenCounter, 0);
+          WriteScreen(ScreenShutdown, ShutdownWD, ScreenMAX);
+          WriteScreen(ScreenCounter, 0, ScreenMAX);
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
@@ -209,8 +212,8 @@ int main()
         if (counterReboot == rebootCounter){
           snprintf (OUT, (size_t)100, "RSCP-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeE3dc, resetCounter, OUT);
-          WriteScreen(ScreenShutdown, ShutdownWD);
-          WriteScreen(ScreenCounter, 0);
+          WriteScreen(ScreenShutdown, ShutdownWD, ScreenMAX);
+          WriteScreen(ScreenCounter, 0, ScreenMAX);
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
@@ -240,8 +243,8 @@ int main()
         if (counterRebootHM == rebootCounter){
           snprintf (OUT, (size_t)100, "HM_GUI-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeHM, resetCounter, OUT);
-          WriteScreen(ScreenShutdown, ShutdownWD);
-          WriteScreen(ScreenCounter, 0);
+          WriteScreen(ScreenShutdown, ShutdownWD, ScreenMAX);
+          WriteScreen(ScreenCounter, 0, ScreenMAX);
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
@@ -273,8 +276,8 @@ int main()
         if (counterRebootGUI == rebootCounter){
           snprintf (OUT, (size_t)100, "GuiMain-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, UnixTimeGUI, resetCounter, OUT);
-          WriteScreen(ScreenShutdown, ShutdownWD);
-          WriteScreen(ScreenCounter, 0);
+          WriteScreen(ScreenShutdown, ShutdownWD, ScreenMAX);
+          WriteScreen(ScreenCounter, 0, ScreenMAX);
           if (WDsendEmailReboot == 1){
             snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
             snprintf (EmailBetreff, (size_t)128, "E3dcGui Watchdog");
