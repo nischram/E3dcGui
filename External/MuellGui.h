@@ -12,6 +12,7 @@ int readMuellKW(int kw, char* jahr, char* kwLine, char* kwLine2)
   strftime (jahr,20,"%Y",now);
 	snprintf(Path, (size_t)256, "/home/pi/E3dcGui/Data/Entsorgung_%s.txt", jahr);
   int line = kw + 12;
+  int c;
   FILE *fp;
   fp = fopen(Path, "r");
   if(fp == NULL) {
@@ -19,7 +20,7 @@ int readMuellKW(int kw, char* jahr, char* kwLine, char* kwLine2)
     return -1;
   }
   else {
-    for( int c = 1; c < 56; ++c ){
+    for( c = 1; c < 56; ++c ){
       fgets(read,256,fp);
       if ( c == line){
         snprintf (kwLine, (size_t)256, "%s", read);

@@ -104,8 +104,9 @@ int saveDHT11(int DHTUse, int DHTPosition, int DHTPin)
 	char read1[56], read2[56];
 	float humf = 0, tempf = 0;
 	int ret;
+  int i;
 
-	for( int i = 0; i < 10; ++i )
+	for( i = 0; i < 10; ++i )
 	{
 		ret = read_dht11_dat( DHTPin, read1, read2);
 		float hum = atof(read1);

@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.54 27.09.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.55 27.09.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -400,10 +400,13 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.55 27.09.2017 [Issue #24](https://github.com/nischram/E3dcGui/issues/24)
+- Fehlerkorrektur, Schreibweise falsch für andere Compiler
+
 V1.54 27.09.2017 Systemstabilität & Mindestzeiten für Schaltaktoren
 - Fehlerkorrektur zur Systemstabilität bei BitRead, BitWrite und BitChange (kein doppeltes öffnen für lesen und schreiben)
 - Für die Schaltakoren noch mindeste Einschaltzeit und Ausschaltzeit integriert
-- Für eine bessere Übersicht MuellGui.h und WetterGui.h verschoben nach External/ 
+- Für eine bessere Übersicht MuellGui.h und WetterGui.h verschoben nach External/
 
 V1.53 24.09.2017 [Issue #22](https://github.com/nischram/E3dcGui/issues/22) & Fehlerkorrekturen
 - Fehlerkorrektur Issue #22
