@@ -39,6 +39,8 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 int main(){
 	picturePosition();
 	makeAktor();
+	makeDHT11();
+	writeAktor(AktorPrioPosition,1);
 
 	signal(SIGINT, INThandler);
 

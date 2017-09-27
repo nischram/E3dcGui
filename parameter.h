@@ -130,6 +130,7 @@ Es kann aber zu darstellungsfehler kommen.
 //Schaltaktoren                                                Priorität liegt auf Aktor1 > Aktor2 > Aktor3 > Aktor4 > Aktor5
 #define useAktor                    1                       // Schaltaktoren verwenden =1 / deaktiv=0
 #define Aktor1Typ                   1                       // Aktor 1 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+#define Aktor1Prio                  0                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor1Name                  "Heizstab"              // Bezeichnung
 #define Aktor1PowerOn               1500                    // Überschussleistung oder Solarproduktion in Watt
 #define Aktor1PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
@@ -140,6 +141,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor1Pin                   21                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor2Typ                   2                       // Aktor 2 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+#define Aktor2Prio                  1                       //
 #define Aktor2Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor2PowerOn               750                     // Überschussleistung in Watt
 #define Aktor2PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
@@ -150,6 +152,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor2Pin                   22                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor3Typ                   3                       // Aktor 3 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+#define Aktor3Prio                  2                       //
 #define Aktor3Name                  "Batterie-Aktor"        // Bezeichnung
 #define Aktor3PowerOn               750                     // Überschussleistung in Watt
 #define Aktor3PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
@@ -160,6 +163,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor3Pin                   23                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor4Typ                   2                       // Aktor 4 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+#define Aktor4Prio                  3                       //
 #define Aktor4Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor4PowerOn               1250                    // Überschussleistung in Watt
 #define Aktor4PowerOff              30                      // Abschaltwert nur bei Solarproduktion in Watt
@@ -170,6 +174,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor4Pin                   24                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor5Typ                   0                       // Aktor 5 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+#define Aktor5Prio                  4                       //
 #define Aktor5Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor5PowerOn               750                     // Überschussleistung in Watt
 #define Aktor5PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt

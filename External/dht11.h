@@ -12,18 +12,20 @@ int dht11_dat[5] = { 0, 0, 0, 0, 0 };
 
 int writeDHT11(int DHT11Position, int NewValue)
 {
-  char PathDHT11 [128];
-  snprintf (PathDHT11, (size_t)128, "/mnt/RAMDisk/DHT11.txt");
-  BitWrite(PathDHT11, DHT11Position, NewValue, DHT11MAX);
+  BitWrite("/mnt/RAMDisk/DHT11.txt", DHT11Position, NewValue, DHT11MAX);
   return 1;
 }
 int readDHT11(int DHT11Position)
 {
-  char PathDHT11 [128];
-  snprintf (PathDHT11, (size_t)128, "/mnt/RAMDisk/DHT11.txt");
-	int ret = BitRead(PathDHT11, DHT11Position, DHT11MAX);
+	int ret = BitRead("/mnt/RAMDisk/DHT11.txt", DHT11Position, DHT11MAX);
   return ret;
 }
+int makeDHT11()
+{
+	BitMake("/mnt/RAMDisk/DHT11.txt", DHT11MAX);
+  return 0;
+}
+
 int read_dht11_dat(int DHTPin, char* hum, char* temp)
 {
 	if ( wiringPiSetup() == -1 )
