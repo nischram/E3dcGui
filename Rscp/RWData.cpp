@@ -65,8 +65,6 @@ void readWrite900(char *fileName, int NewValue)
 }
 int writeData(char *Path, int Position, int NewValue, int max)
 {
-  printf("%s %i %i\n", Path, Position, NewValue);
-
   int c = max;
   int out [c];
   char read[128];
