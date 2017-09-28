@@ -455,6 +455,8 @@ int readHistory(int HistoryPosition, int writedata)
 }
 int makeHistory()
 {
+  BitMake(today_path, 7);
+  BitMake(yesterday_path, 7);
   int data;
   int writedata;
   for( writedata = 1; writedata < 3; ++writedata ){

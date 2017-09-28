@@ -324,7 +324,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define today                       1    //!!
 #define yesterday                   2    //!!
 #define today_path                  "/mnt/RAMDisk/today.txt"         //!!
-#define yesterday_path              "/mnt/RAMDisk/yesterday.txt"     //!!
+#define yesterday_path              "/mnt/RAMDisk/yester.txt"        //!!
 
 // Touch Parameter
 #define BUTTON_ON                   1   //!!

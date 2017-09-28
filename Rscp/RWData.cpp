@@ -14,7 +14,8 @@
 
 using namespace std;
 
-void printsendHM(int CounterHM, int id, int value){
+void printsendHM(int CounterHM, int id, int value)
+{
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
       char batch[128];
@@ -25,8 +26,8 @@ void printsendHM(int CounterHM, int id, int value){
     }
   }
 }
-
-void printsendCharHM(int CounterHM, int id, char value[32]){
+void printsendCharHM(int CounterHM, int id, char value[32])
+{
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
       char batch[128];
@@ -37,8 +38,8 @@ void printsendCharHM(int CounterHM, int id, char value[32]){
     }
   }
 }
-
-void readWrite900(char *fileName, int NewValue){
+void readWrite900(char *fileName, int NewValue)
+{
   int c;
   int line[100];
   char read[20];
@@ -62,8 +63,10 @@ void readWrite900(char *fileName, int NewValue){
   else cerr << "Konnte Datei nicht erstellen!";
   return;
 }
-int writeData(char Path[128], int Position, int NewValue, int max)
+int writeData(char *Path, int Position, int NewValue, int max)
 {
+  printf("%s %i %i\n", Path, Position, NewValue);
+
   int c = max;
   int out [c];
   char read[128];
@@ -78,33 +81,28 @@ int writeData(char Path[128], int Position, int NewValue, int max)
     }
     out[Position] = NewValue;
     datei.seekg (0, ios::beg);
-    for( c = 0; c < max; ++c )
+    for( c = 0; c < max; ++c ){
       datei << out[c] << endl;
+    }
     datei.close();
   }
   else cerr << "Konnte Datei nicht oeffnen!\n";
   return 0;
 }
-int makeData(char Path[128], int Position, int NewValue, int max)
+int makeData(char *Path, int NewValue, int max)
 {
   int c = max;
-  int out [c];
-  //Ändere Bit an Position
-  out[Position] = NewValue;
-
-  //Schreibe geändertes Byte in Datei
   ofstream fout(Path);
   if (fout.is_open()) {
     for( c = 0; c < max; ++c )
-      fout << out[c] << endl;
+      fout << NewValue << endl;
     fout.close();
   }
   else cerr << "Konnte Datei nicht erstellen!\n";
 
  return 0;
 }
-
-int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3)
+int writeCharData(char *Path, char *CHAR1, char *CHAR2, char *CHAR3)
 {
   ofstream fout(Path);
   if (fout.is_open()) {
@@ -115,8 +113,7 @@ int writeCharData(char Path[128], char *CHAR1, char *CHAR2, char *CHAR3)
 
  return 0;
 }
-
-int readData(char Path[128], int Position, int max)
+int readData(char *Path, int Position, int max)
 {
   int c = max;
   int out [c];
@@ -128,8 +125,7 @@ int readData(char Path[128], int Position, int max)
       datei.getline(read ,128, '\n');
       if (read == NULL)
         snprintf (read, (size_t)20, "0");
-      else
-        out[c] = atoi(read);
+      out[c] = atoi(read);
     }
     datei.close();
   }
@@ -137,7 +133,6 @@ int readData(char Path[128], int Position, int max)
 
  return out[Position];
 }
-
 int writeRscp(int Position, int NewValue)
 {
   char PathRscp [128];
@@ -145,11 +140,11 @@ int writeRscp(int Position, int NewValue)
   writeData(PathRscp, Position, NewValue, PosMAX);
   return 1;
 }
-int makeRscp(int Position, int NewValue)
+int makeRscp()
 {
-  char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiData.txt");
-  makeData(PathRscp, Position, NewValue, PosMAX);
+  char Path [128];
+  snprintf (Path, (size_t)128, "/mnt/RAMDisk/E3dcRscpCache.txt");
+  makeData(Path, 0, PosMAX);
   return 1;
 }
 int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER)
@@ -192,23 +187,15 @@ int write900(int Position, char *fileName, int NewValue, int Counter900)
   }
   return 0;
 }
-int make900(int Position, int NewValue)
+int make900()
 {
   if ( GUI == 1 && E3DC_S10 == 1){
-    char Path900 [128];
-    snprintf (Path900, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
-    makeData(Path900, Position, NewValue, PosMAX900);
+    char Path [128];
+    snprintf (Path, (size_t)128, "/mnt/RAMDisk/Rscp900.txt");
+    makeData(Path, 1, PosMAX900);
   }
   return 1;
 }
-int readScreen(int Position)
-{
-  char PathScreen [128];
-  snprintf (PathScreen, (size_t)128, "/mnt/RAMDisk/Screen.txt");
-  int ret = readData(PathScreen, Position, ScreenMAX);
-  return ret;
-}
-// History in Datei schreiben
 int writeHistory(int Position, int NewValue, int writedata)
 {
 	if (writedata == today || writedata == yesterday){
@@ -229,7 +216,7 @@ int writeHistoryTime(int Position,int AktuellTime, int NewValue, int writedata)
   int ret;
   if(writedata == today)
     ret = writeHistory(Position, AktuellTime, writedata);
-  else if(writedata == today)
+  else if(writedata == yesterday)
     ret = writeHistory(Position, NewValue, writedata);
   return ret;
 }

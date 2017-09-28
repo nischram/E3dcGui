@@ -720,30 +720,22 @@ int main()
 {
   //Dateien erstellen
   makeCharRscp();
-  makeRscp(PosPVI, 0);
-  makeRscp(PosBat, 0);
-  makeRscp(PosHome, 0);
-  makeRscp(PosGrid, 0);
-  makeRscp(PosSOC, 0);
-  makeRscp(PosBatState, 1);
-  makeRscp(PosAutarky, 0);
-  makeRscp(PosSelfCon, 0);
-  makeRscp(PosADD, 0);
-  makeRscp(PosWbAll, 0);
-  makeRscp(PosWbSolar, 0);
-  makeRscp(PosPVIState, 1);
-  makeRscp(PosPMState, 1);
-  makeRscp(PosTimeZone,time_zone);
-  make900(PosPVI900, 1);
-  make900(PosBatOut900, 1);
-  make900(PosBatIn900, 1);
-  make900(PosHome900, 1);
-  make900(PosNetIn900, 1);
-  make900(PosNetOut900, 1);
-  make900(PosSOC900, 1);
-  make900(PosAdd900, 1);
-  make900(PosWBAll900, 1);
-  make900(PosWBSolar900, 1);
+  makeRscp();
+  writeRscp(PosPVI, 0);
+  writeRscp(PosBat, 0);
+  writeRscp(PosHome, 0);
+  writeRscp(PosGrid, 0);
+  writeRscp(PosSOC, 0);
+  writeRscp(PosBatState, 1);
+  writeRscp(PosAutarky, 0);
+  writeRscp(PosSelfCon, 0);
+  writeRscp(PosADD, 0);
+  writeRscp(PosWbAll, 0);
+  writeRscp(PosWbSolar, 0);
+  writeRscp(PosPVIState, 1);
+  writeRscp(PosPMState, 1);
+  writeRscp(PosTimeZone,time_zone);
+  make900();
 
     // endless application which re-connections to server on connection lost
     while(true){
