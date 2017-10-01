@@ -45,14 +45,24 @@ void readWrite900(char *fileName, int NewValue)
   char read[20];
   char Path [128];
   snprintf (Path, (size_t)128, "/home/pi/E3dcGui/Data/%s.txt", fileName);
-  fstream datei(Path, ios::in | ios::out);
-  if (datei.is_open()) {
+  fstream datei;
+  datei.open(Path, ios::in | ios::out);
+  if (datei.fail()){
+    datei.clear();
+    datei.open(Path, ios::out);
+    datei.close();
+    cout << "Datei Data/" << fileName << ".txt wurde erstellt!\n";
+    datei.clear();
+    datei.open(Path, ios::in | ios::out);
+  }
+  if (datei.good()){
     for( c = 0; c < 97; ++c ){
       datei.getline(read	,20, '\n');
       if (read == NULL)
         snprintf (read, (size_t)20, "0");
       line[c] = atoi(read);
     }
+    datei.clear();
     datei.seekg (0, ios::beg);
     for( c = 1; c < 96; ++c ){
       datei << line[c] <<"\n";
@@ -60,7 +70,9 @@ void readWrite900(char *fileName, int NewValue)
     datei << NewValue <<"\n";
     datei.close();
   }
-  else cerr << "Konnte Datei nicht erstellen!";
+  else {
+    cout << "Konnte Datei Data/" << fileName << ".txt nicht erstellen!\n";
+  }
   return;
 }
 int writeData(char *Path, int Position, int NewValue, int max)
@@ -69,8 +81,17 @@ int writeData(char *Path, int Position, int NewValue, int max)
   int out [c];
   char read[128];
   //Lese Wert aus Datei ein
-  fstream datei(Path, ios::in | ios::out);
-  if (datei.is_open()) {
+  fstream datei;
+  datei.open(Path, ios::in | ios::out);
+  if (datei.fail()){
+    datei.clear();
+    datei.open(Path, ios::out);
+    datei.close();
+    cout << "Datei " << Path << " wurde erstellt!\n";
+    datei.clear();
+    datei.open(Path, ios::in | ios::out);
+  }
+  if (datei.good()){
     for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
       if (read == NULL)
@@ -78,26 +99,39 @@ int writeData(char *Path, int Position, int NewValue, int max)
       out[c] = atoi(read);
     }
     out[Position] = NewValue;
+    datei.clear();
     datei.seekg (0, ios::beg);
     for( c = 0; c < max; ++c ){
       datei << out[c] << endl;
     }
     datei.close();
   }
-  else cerr << "Konnte Datei nicht oeffnen!\n";
+  else {
+    cout << "Konnte Datei " << Path << " nicht erstellen!\n";
+  }
   return 0;
 }
 int makeData(char *Path, int NewValue, int max)
 {
   int c = max;
-  ofstream fout(Path);
-  if (fout.is_open()) {
+  ofstream fout;
+  fout.open(Path);
+  if (fout.fail()){
+    fout.clear();
+    fout.open(Path);
+    fout.close();
+    cout << "Datei " << Path << " wurde erstellt!\n";
+    fout.clear();
+    fout.open(Path);
+  }
+  if (fout.good()){
     for( c = 0; c < max; ++c )
       fout << NewValue << endl;
     fout.close();
   }
-  else cerr << "Konnte Datei nicht erstellen!\n";
-
+  else {
+    cout << "Konnte Datei " << Path << " nicht erstellen!\n";
+  }
  return 0;
 }
 int writeCharData(char *Path, char *CHAR1, char *CHAR2, char *CHAR3)
@@ -117,8 +151,17 @@ int readData(char *Path, int Position, int max)
   int out [c];
   char read[128];
   //Lese Byte aus Datei ein
-  fstream datei(Path);
-  if (datei.is_open()) {
+  fstream datei;
+  datei.open(Path, ios::in);
+  if (datei.fail()){
+    datei.clear();
+    datei.open(Path, ios::out);
+    datei.close();
+    cout << "Datei " << Path << " wurde erstellt!\n";
+    datei.clear();
+    datei.open(Path, ios::in);
+  }
+  if (datei.good()){
     for( c = 0; c < max; ++c ){
       datei.getline(read ,128, '\n');
       if (read == NULL)
@@ -127,8 +170,9 @@ int readData(char *Path, int Position, int max)
     }
     datei.close();
   }
-  else cerr << "Konnte Datei nicht oeffnen!\n";
-
+  else {
+    cout << "Konnte Datei " << Path << " nicht erstellen!\n";
+  }
  return out[Position];
 }
 int writeRscp(int Position, int NewValue)
@@ -136,13 +180,6 @@ int writeRscp(int Position, int NewValue)
   char PathRscp [128];
   snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcRscpCache.txt");
   writeData(PathRscp, Position, NewValue, PosMAX);
-  return 1;
-}
-int makeRscp()
-{
-  char Path [128];
-  snprintf (Path, (size_t)128, "/mnt/RAMDisk/E3dcRscpCache.txt");
-  makeData(Path, 0, PosMAX);
   return 1;
 }
 int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER)
@@ -164,7 +201,7 @@ int writeUnixtime(int Position, int NewTime)
 {
   char PathUnixtime [128];
   snprintf (PathUnixtime, (size_t)128, "/mnt/RAMDisk/Unixtime.txt");
-  writeData(PathUnixtime, Position, NewTime, 4);
+  writeData(PathUnixtime, Position, NewTime, UnixtimeMAX);
   return 1;
 }
 int write900(int Position, char *fileName, int NewValue, int Counter900)

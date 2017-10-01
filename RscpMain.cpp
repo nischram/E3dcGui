@@ -720,7 +720,6 @@ int main()
 {
   //Dateien erstellen
   makeCharRscp();
-  makeRscp();
   writeRscp(PosPVI, 0);
   writeRscp(PosBat, 0);
   writeRscp(PosHome, 0);

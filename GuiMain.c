@@ -829,7 +829,7 @@ int main(){
 				drawOutput(190,458,170,12, OUT, GREEN);
 				changeStop = 0;
 			}
-			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn){
+			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn && screenChange ==	ScreenAktuell){
 				float HistoryUnix = readHistory(dataTime, Screen[ScreenHistory]);
 				time_t timeStamp;
 				timeStamp = (time_t)HistoryUnix -60;

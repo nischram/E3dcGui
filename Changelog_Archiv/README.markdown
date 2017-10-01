@@ -1,5 +1,49 @@
 # Changelog Archiv
 
+V1.58 01.10.2017 [Issue #25](https://github.com/nischram/E3dcGui/issues/25) + Korrekturen
+- In Funktion "readWrite900()" fehlt ein "datei.clear()"
+- Gekürter Dateiname "yester.txt" wieder auf "yerterday.txt" geändert, der Fehler lag auch an dem fehlenden "datei.clear()"
+- Datei erstellen wenn diese nicht existiert
+- Datein für Langzeitwerte "xxx900.txt" werden jetzt erstellt wenn diese nicht existieren (gelöscht)
+- Today oder Yesterday Zeit war unter Langzeitwerte und Monitor auch zu sehen
+- Changelog archiviert
+
+V1.57 28.09.2017 Fehlerkorrektur für V1.54
+- Fehlerkorrektur für V1.54, das Ändern des doppelten öffnens führt dazu, dass die Datei nicht erstellt werden kann und nach einem Reboot ist das RAMDisk Verzeichnis erst einmal leer
+- Tippfehler bei wrietHistory
+- Dateiname yesterday.txt gekürtzt auf yester.txt
+
+V1.56 27.09.2017 [Issue #23](https://github.com/nischram/E3dcGui/issues/23)
+- Priorität für die Aktoren eingebaut
+- Fehlerkorrektur für V1.54 in der External/dht11.h
+- Fehlerkorrektur in der External/Aktor.h nach Änderung V1.54 wurde der Überschussaktor nicht mehr aktiv
+
+V1.55 27.09.2017 [Issue #24](https://github.com/nischram/E3dcGui/issues/24)
+- Fehlerkorrektur, Schreibweise falsch für andere Compiler
+
+V1.54 27.09.2017 Systemstabilität & Mindestzeiten für Schaltaktoren
+- Fehlerkorrektur zur Systemstabilität bei BitRead, BitWrite und BitChange (kein doppeltes öffnen für lesen und schreiben)
+- Für die Schaltakoren noch mindeste Einschaltzeit und Ausschaltzeit integriert
+- Für eine bessere Übersicht MuellGui.h und WetterGui.h verschoben nach External/
+
+V1.53 24.09.2017 [Issue #22](https://github.com/nischram/E3dcGui/issues/22) & Fehlerkorrekturen
+- Fehlerkorrektur Issue #22
+- Innerhalb der ersten 24 Std. nach Erstinstallation stürzt GuiMain bei Langzeitgrafik ab, weil 15 Minuten-Dateien fehlen wie z.B. Solar900.txt
+- Debug Funktion fest integriert mit Schalter in der parameter.h (#define debugUse 0)
+
+V1.52 23.09.2017 WiringPi, PIR-Sensor, DHT11, Schaltaktor, Verbesserungen
+- Button SmartHome hinzugefügt für Schaltaktoren und DHT11
+- Aufteilung Button erste Zeile überarbeitet
+- Anpassung Anleitung für WiringPi installation (Installation erforderlich!)
+- Automatisches Beenden des Bildschirmschoners mit PRI-Sensor
+- Schaltaktoren für Überschuss, Solar oder Batterie mit GPIO's
+- Anbindung des Sensors DHT11
+- Fehlende Parameter für Abfuhrkalender nachgetragen
+- Fehler WetterGui behoben, Watchdog schlägt zu, zu große Wartezeit
+- Fehler GUI behoben, negativer oder zu großer SOC/Autarkie/Eigenstrom führt zum Speicherzugriffsfehler
+- Fehler behoben wenn für die Version die README.markdown nicht geöffnet werden kann kommt Speicherzugriffsfehler
+- Rechtschreibfehler korrigiert
+
 V1.51 08.09.2017 Anpassung Setup Menü
 - Rücklesen der Displayhelligkeit
 - Erneuter Umbau der Anzeige für die IP-Adresse
