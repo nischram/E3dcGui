@@ -881,6 +881,9 @@ int main(){
 					screenOff();
 				}
 			}
+			else if (pirUse == false){
+				screenOff();
+			}
 			ScreenSaverCounter = 0;
 			if(E3DC_S10 ==1){
 				writeScreen(ScreenChange, ScreenAktuell);
