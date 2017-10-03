@@ -70,7 +70,7 @@ Es kann aber zu darstellungsfehler kommen.
 
 //#######################################
 //### GuiMain Parameter ###
-#define ScreenSaverTime             180                     // Zeit bis sich der Bilschirmschoner aktiviert (in Sekunden)
+#define ScreenSaverTime             180                     // Zeit bis sich der Bilschirmschoner aktiviert (in Sekunden), -1 deaktiviert den Bildschirmschoner
 //Einstellungen Langzeitanzeige (15 Minuten Mittelwerte in duchrlaufender 24 Stundenanzeige)
 #define PowerMax                    5400                    // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
 #define skalaLine                   1000                    // Einteilung der Scala
@@ -125,7 +125,7 @@ Es kann aber zu darstellungsfehler kommen.
 // PIR Modul für automatisches Beenden des Bildschirmschoners
 // Aktivierung über Display
 #define PirPin                      4                       // wiringPi Pin Nummer vom GPIO
-// Wenn das Display z.B. immer dann eingeschaltet sein soll wenn genügend Überschuss vorhanden ist, kannst du ohne PIR-Senor und ohne Aktor bei PIR und bei einem Schaltaktor die gleiche Pin-Nr vergeben, dann wird das Display beim erreichen der Bedingung aktiviert.
+// Wenn das Display z.B. immer dann eingeschaltet sein soll, wenn genügend Überschuss vorhanden ist, kannst du ohne PIR-Senor und ohne Aktor bei PIR und bei einem Schaltaktor die gleiche Pin-Nr vergeben, dann wird das Display beim erreichen der Bedingung aktiviert.
 
 //#######################################
 //Schaltaktoren

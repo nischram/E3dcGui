@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.59 03.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.60 03.10.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -208,8 +208,9 @@ VCC an Pin 2 (5V)
 OUT an Pin 16 (GPIO 23/GPIO_GEN 4)   
 GND an Pin 6 (Ground)_  
 
-Ich habe den PIR-Sensor "HC-SR501" bei mir im gebrauch.
+Ich habe den PIR-Sensor "HC-SR501" bei mir im gebrauch.   
 
+Eine zufällige Möglichkeit besteht darin, einen Schaltaktor zu nutzen um den Bildschirmschoner auszuschalten. Einfach bei PIR und bei einem Aktor die selbe GPIO-Nr vergeben und schon wird das Display beim erreichen der Bedingung aktiviert. Wenn die Bedingung endet schaltet das Display über die Bildschirmschonerzeit auch wieder aus.   
 
 #### Wichtig Pi-Bildschirmschoner deaktivieren
 Der Raspberry Pi hat einen eignen Bildschirmschoner, dieser muss deaktiviert werden. Mit folgendem Befehl muss die Datei _rc.local_ geöffnet werden:
@@ -400,6 +401,9 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.60 03.10.2017 Verbesserung Bildschirmschoner
+- Schaltaktor um den Bildschirmschoner abzuschalten
+
 V1.59 03.10.2017 Verbesserungen: Schaltaktoren + DHT11-Sensor
 - Zeitaktor und Zeitfenster bei den Aktoren hinzugefügt
 - DHT11: Akktualisierung der Werte nur bei erfolgreicher Abfrage des Sensors da die Abfrage häufig fehlschlägt

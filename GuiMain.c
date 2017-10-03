@@ -875,8 +875,12 @@ int main(){
 	//Bildschirmschoner
 		Screen[ScreenSaver] = readScreen(ScreenSaver);      //Zählerdatei für den Bildschirmschoner auslesen
 		int ScreenSaverCounter = Screen[ScreenSaver] +1;
-		if(ScreenSaverCounter == ScreenSaverTime){
-			screenOff();
+		if (ScreenSaverCounter == ScreenSaverTime){
+			if (pirUse == true){
+				if (digitalRead( PirPin ) == false){
+					screenOff();
+				}
+			}
 			ScreenSaverCounter = 0;
 			if(E3DC_S10 ==1){
 				writeScreen(ScreenChange, ScreenAktuell);
