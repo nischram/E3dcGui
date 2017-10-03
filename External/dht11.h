@@ -102,32 +102,33 @@ int saveDHT11(int DHTUse, int DHTPosition, int DHTPin)
 {
   if (DHTUse == false)
     return 0;
-	//printf( "Raspberry Pi wiringPi DHT11 Temperature Program\n" );
-	char read1[56], read2[56];
-	float humf = 0, tempf = 0;
-	int ret;
+  //printf( "Raspberry Pi wiringPi DHT11 Temperature Program\n" );
+  char read1[56], read2[56];
+  float humf = 0, tempf = 0;
+  int ret;
   int i;
 
-	for( i = 0; i < 10; ++i )
-	{
-		ret = read_dht11_dat( DHTPin, read1, read2);
-		float hum = atof(read1);
-		float temp = atof(read2);
-		writeDHT11(DHTPosition,temp*10);
-    writeDHT11(DHTPosition +1,hum*10);
+  for( i = 0; i < 10; ++i )
+  {
+    ret = read_dht11_dat( DHTPin, read1, read2);
+    float hum = atof(read1);
+    float temp = atof(read2);
     writeDHT11(DHTPosition +2,ret);
-		if(ret == 1){
-			printf( "Humidity = %.1f %% Temperature = %.1f *C \n", hum, temp);
-			return ret;
-		}
-		else if (ret == -2)
-			printf("wiringPi error\n");
-		else if (ret == -1)
-			printf("DHT11 error\n" );
-		delay( 100 ); /* wait 1sec to refresh */
-	}
-	return ret;
+    if(ret == 1){
+      printf( "Humidity = %.1f %% Temperature = %.1f *C \n", hum, temp);
+      writeDHT11(DHTPosition,temp*10);
+      writeDHT11(DHTPosition +1,hum*10);
+      return ret;
+    }
+    else if (ret == -2)
+      printf("wiringPi error\n");
+    else if (ret == -1)
+      printf("DHT11 error\n" );
+      delay( 100 ); /* wait 1sec to refresh */
+  }
+  return ret;
 }
+
 int drawDHTFrame(int DHTUse, char *designation, int Line)
 {
   char OUT[56];

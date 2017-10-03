@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.58 01.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.59 03.10.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -171,7 +171,7 @@ Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts 
 #### 6. SmartHome
 <img src="https://s20.postimg.org/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
 Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
-`  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung und einer für den Batterie-SOC. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben.  
+`  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung, einer für den Batterie-SOC und ein Zeitaktor. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wird wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben. Weiter ist es möglich den Aktoren ein Zeitfenster zu zuweisen. Nur in diesem Fenster schaltet der Aktor ein und zum Ende des Zeitfensters aus, ein gestarteter Aktor mit einer mindest Einschaltzeit läuft noch so lange, bis zum ablauf der Mindestzeit.
 
 #### 7. HomeMatic
 `  #define Homematic_GUI               1`   
@@ -400,6 +400,10 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.59 03.10.2017 Verbesserungen: Schaltaktoren + DHT11-Sensor
+- Zeitaktor und Zeitfenster bei den Aktoren hinzugefügt
+- DHT11: Akktualisierung der Werte nur bei erfolgreicher Abfrage des Sensors da die Abfrage häufig fehlschlägt
+
 V1.58 01.10.2017 [Issue #25](https://github.com/nischram/E3dcGui/issues/25) + Korrekturen
 - In Funktion "readWrite900()" fehlt ein "datei.clear()"
 - Gekürter Dateiname "yester.txt" wieder auf "yerterday.txt" geändert, der Fehler lag auch an dem fehlenden "datei.clear()"

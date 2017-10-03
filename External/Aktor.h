@@ -1,11 +1,6 @@
 #ifndef __AKTOR_H_
 #define __AKTOR_H_
 
-#define counterOn   0
-#define counterOff  1
-#define MinOn       2
-#define MinOff      3
-
 int readAktor(int AktorPosition)
 {
 	int ret = BitRead("/mnt/RAMDisk/Aktor.txt", AktorPosition, AktorMAX);
@@ -27,7 +22,8 @@ int netInAktor(int PowerGrid, int AktorPrio, int AktorPower, int AktorMinOn, int
   int NetInput = PowerGrid * -1;
   int AktorState = digitalRead(AktorPin);
 	int prio = readAktor(AktorPrioPosition);
-	if (prio >= AktorPrio){
+	int TimerState = readAktor(AktorPosition + stateTimer);
+	if (prio >= AktorPrio && TimerState == true){
 		if (AktorState == Deaktiv){
 	    int counterMinOff = readAktor(AktorPosition + MinOff);
 	    counterMinOff--;
@@ -60,7 +56,7 @@ int netInAktor(int PowerGrid, int AktorPrio, int AktorPower, int AktorMinOn, int
     int counterMinOn = readAktor(AktorPosition + MinOn);
     counterMinOn--;
     writeAktor(AktorPosition + MinOn, counterMinOn);
-    if (PowerGrid >=  100  && counterMinOn <= 0){
+    if ((PowerGrid >=  100 || TimerState == false)  && counterMinOn <= 0){
       int AktorCounterOff = readAktor(AktorPosition + counterOff);
       AktorCounterOff++;
       writeAktor(AktorPosition + counterOff, AktorCounterOff);
@@ -83,7 +79,8 @@ int solarAktor(int PowerPVI, int AktorPrio, int AktorPowerOn, int AktorPowerOff,
 {
 	int AktorState = digitalRead(AktorPin);
 	int prio = readAktor(AktorPrioPosition);
-	if (prio >= AktorPrio){
+	int TimerState = readAktor(AktorPosition + stateTimer);
+	if (prio >= AktorPrio && TimerState == true){
 		if (AktorState == Deaktiv){
 	    int counterMinOff = readAktor(AktorPosition + MinOff);
 	    counterMinOff--;
@@ -115,7 +112,7 @@ int solarAktor(int PowerPVI, int AktorPrio, int AktorPowerOn, int AktorPowerOff,
     int counterMinOn = readAktor(AktorPosition + MinOn);
     counterMinOn--;
     writeAktor(AktorPosition + MinOn, counterMinOn);
-    if (PowerPVI <= AktorPowerOff && counterMinOn <= 0){
+    if ((PowerPVI <= AktorPowerOff || TimerState == false) && counterMinOn <= 0){
       int AktorCounterOff = readAktor(AktorPosition + counterOff);
       AktorCounterOff++;
       writeAktor(AktorPosition + counterOff, AktorCounterOff);
@@ -138,7 +135,8 @@ int batteryAktor(int BatterySOC, int AktorPrio, int AktorPercentOn, int AktorPer
 {
 	int AktorState = digitalRead(AktorPin);
 	int prio = readAktor(AktorPrioPosition);
-	if (prio >= AktorPrio){
+	int TimerState = readAktor(AktorPosition + stateTimer);
+	if (prio >= AktorPrio && TimerState == true){
 	  if (AktorState == Deaktiv){
 	    int counterMinOff = readAktor(AktorPosition + MinOff);
 	    counterMinOff--;
@@ -168,7 +166,7 @@ int batteryAktor(int BatterySOC, int AktorPrio, int AktorPercentOn, int AktorPer
     int counterMinOn = readAktor(AktorPosition + MinOn);
     counterMinOn--;
     writeAktor(AktorPosition + MinOn, counterMinOn);
-    if (BatterySOC <= AktorPercentOff && counterMinOn <= 0){
+    if ((BatterySOC <= AktorPercentOff || TimerState == false) && counterMinOn <= 0){
       int AktorCounterOff = readAktor(AktorPosition + counterOff);
       AktorCounterOff++;
       writeAktor(AktorPosition + counterOff, AktorCounterOff);
@@ -187,56 +185,143 @@ int batteryAktor(int BatterySOC, int AktorPrio, int AktorPercentOn, int AktorPer
   return 1;
 }
 
-int Aktor(int PowerGrid, int PowerPVI, int BatterySOC, int AktorPrio,
-              int AktorPowerOn, int AktorPowerOff,
+int timerAktor(int AktorPrio, int AktorPin, int AktorPosition)
+{
+	int AktorState = digitalRead(AktorPin);
+	int prio = readAktor(AktorPrioPosition);
+	int TimerState = readAktor(AktorPosition + stateTimer);
+	if (prio >= AktorPrio && TimerState == true){
+	  if (AktorState == Deaktiv){
+			if (AktorPrio > 0){
+				prio++;
+				writeAktor(AktorPrioPosition, prio);
+			}
+			digitalWrite( AktorPin, Aktiv);
+	  }
+	}
+	if (TimerState == false){
+		if (AktorState == Aktiv){
+			if (AktorPrio > 0 && prio > AktorPrio){
+				prio = AktorPrio;
+				writeAktor(AktorPrioPosition, prio);
+			}
+			digitalWrite( AktorPin, Deaktiv);
+	  }
+	}
+  return 1;
+}
+
+int timerState(int AktorTyp, char AktorTimerOn[20], char AktorTimerOff[20], int AktorPosition)
+{
+	if (AktorTyp >= 10){
+		char CLOCK[20], OUT[20];
+		time_t currentTime = time(NULL);
+		struct tm *now;
+		time( &currentTime );
+		now = localtime( &currentTime );
+		strftime (CLOCK,20,"%H:%M",now);
+    replace_character(CLOCK, ':', '0');
+    int intCurrentTime = atoi(CLOCK);
+    snprintf(OUT, (size_t)20, "%s", AktorTimerOn);
+    replace_character(OUT, ':', '0');
+    int intTimerOn = atoi(OUT);
+    snprintf(OUT, (size_t)20, "%s", AktorTimerOff);
+    replace_character(OUT, ':', '0');
+    int intTimerOff = atoi(OUT);
+
+		int TimerState = readAktor(AktorPosition + stateTimer);
+		if (intCurrentTime >= intTimerOn && intCurrentTime < intTimerOff){
+			if (TimerState == false){
+				writeAktor(AktorPosition + stateTimer, true);
+			}
+		}
+		else {
+			writeAktor(AktorPosition + stateTimer, false);
+		}
+	}
+	else {
+		writeAktor(AktorPosition + stateTimer, true);
+	}
+  return 1;
+}
+
+int Aktor(int AktorPrio, int AktorPowerOn, int AktorPowerOff,
               int AktorPercentOn, int AktorPercentOff,
               int AktorMinOn, int AktorMinOff,
               int AktorTyp, int AktorPin, int AktorPosition)
 {
   if (AktorTyp > 0){
-    if (AktorTyp == 1)
+    if (AktorTyp == 1 || AktorTyp == 11){
+			int PowerGrid = readRscp(PosGrid);
       netInAktor(PowerGrid, AktorPrio, AktorPowerOn, AktorMinOn, AktorMinOff, AktorPin, AktorPosition);
-    else if (AktorTyp == 2)
+		}
+    else if (AktorTyp == 2 || AktorTyp == 12){
+			int PowerPVI = readRscp(PosPVI);
       solarAktor(PowerPVI, AktorPrio, AktorPowerOn, AktorPowerOff, AktorMinOn, AktorMinOff, AktorPin, AktorPosition);
-    else if (AktorTyp == 3)
+		}
+    else if (AktorTyp == 3 || AktorTyp == 13){
+			int BatterySOC = readRscp(PosSOC);
       batteryAktor(BatterySOC, AktorPrio, AktorPercentOn, AktorPercentOff, AktorMinOn, AktorMinOff, AktorPin, AktorPosition);
+		}
+		else if (AktorTyp == 10)
+	     timerAktor(AktorPrio, AktorPin, AktorPosition);
   }
   return 1;
 }
 
-int drawAktorFrame(int AktorTyp, int AktorPowerOn, int AktorPowerOff, int AktorPercentOn, int AktorPercentOff, int AktorMinOn, int AktorMinOff, char *designation, char *AktorName, int Line)
+int drawAktorFrame(int AktorTyp, int AktorPowerOn, int AktorPowerOff,
+              int AktorPercentOn, int AktorPercentOff,
+              char AktorTimerOn[20], char AktorTimerOff[20],
+							int AktorMinOn, int AktorMinOff,
+							char *designation, char *AktorName, int Line)
 {
   char OUT[56];
   drawSquare(405,Line-20,363,60,GREY);
   drawCorner(405,Line-20,363,60,WHITE);
   drawSquare(405+120,Line-17,240,54,WHITE);
   drawCorner(405+120,Line-17,240,54,GREY);
-  put_string(405+6, Line, designation, WHITE);
+  put_string(405+6, Line+4, designation, WHITE);
   if (AktorTyp > 0){
     createData(565-30, Line-36, AktorName);
-    if (AktorTyp == 1){
-      snprintf (OUT, (size_t)100, "\232berschuss On:  %i W", AktorPowerOn);
+		if (AktorTyp >= 11){
+			snprintf (OUT, (size_t)100, "On:  %s", AktorTimerOn);
+			createData(565+90, Line-22, OUT);
+			snprintf (OUT, (size_t)100, "Off: %s", AktorTimerOff);
+			createData(565+90, Line-10, OUT);
+		}
+    if (AktorTyp == 1 || AktorTyp == 11){
+			put_string(405+6, Line-14, "\232berschuss", WHITE);
+      snprintf (OUT, (size_t)100, "On:  %i W", AktorPowerOn);
       createData(565-30, Line-22, OUT);
-      snprintf (OUT, (size_t)100, "\232berschuss Off: Bezug");
+      snprintf (OUT, (size_t)100, "Off: Bezug");
       createData(565-30, Line-10, OUT);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
       createData(565-30, Line+2, OUT);
     }
-    else if (AktorTyp == 2){
-      snprintf (OUT, (size_t)100, "Solar-Power On:  %i W", AktorPowerOn);
+    else if (AktorTyp == 2 || AktorTyp == 12){
+			put_string(405+6, Line-14, "Solar", WHITE);
+      snprintf (OUT, (size_t)100, "On:  %i W", AktorPowerOn);
       createData(565-30, Line-22, OUT);
-      snprintf (OUT, (size_t)100, "Solar-Power Off: %i W", AktorPowerOff);
+      snprintf (OUT, (size_t)100, "Off: %i W", AktorPowerOff);
       createData(565-30, Line-10, OUT);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
       createData(565-30, Line+2, OUT);
     }
-    else if (AktorTyp == 3){
-      snprintf (OUT, (size_t)100, "SOC > On:  %i %%", AktorPercentOn);
+		else if (AktorTyp == 3 || AktorTyp == 13){
+			put_string(405+6, Line-14, "Battery", WHITE);
+      snprintf (OUT, (size_t)100, "On:  > %i %%", AktorPercentOn);
       createData(565-30, Line-22, OUT);
-      snprintf (OUT, (size_t)100, "SOC < Off: %i %%", AktorPercentOff);
+      snprintf (OUT, (size_t)100, "Off: < %i %%", AktorPercentOff);
       createData(565-30, Line-10, OUT);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
       createData(565-30, Line+2, OUT);
+    }
+		else if (AktorTyp == 10){
+			put_string(405+6, Line-14, "Zeit", WHITE);
+      snprintf (OUT, (size_t)100, "On:  %s", AktorTimerOn);
+      createData(565-30, Line-22, OUT);
+      snprintf (OUT, (size_t)100, "Off: %s", AktorTimerOff);
+      createData(565-30, Line-10, OUT);
     }
   }
   return 1;
@@ -261,19 +346,15 @@ int drawAktorState(int AktorTyp, int AktorPrio, int AktorPin, int Line, int Powe
     }
 		snprintf (OUT, (size_t)100, "%i", AktorPrio);
 		drawColorOutput(405+86,Line+22,20,12, OUT, WHITE, GREY);
-    if (AktorTyp == 1){
-      //int NetInput = PowerGrid * -1;
+    if (AktorTyp == 1 || AktorTyp == 11){
       snprintf (OUT, (size_t)100, "%i W", PowerGrid);
-      //if (NetInput > 20)
         drawColorOutput(405+6,Line+22,70,12, OUT, WHITE, GREY);
-      //else
-        //drawColorOutput(405+6,Line+22,70,12, "BEZUG", WHITE, GREY);
     }
-    if (AktorTyp == 2){
+    if (AktorTyp == 2 || AktorTyp == 12){
       snprintf (OUT, (size_t)100, "%i W", PowerPVI);
       drawColorOutput(405+6,Line+22,70,12, OUT, WHITE, GREY);
     }
-    if (AktorTyp == 3){
+    if (AktorTyp == 3 || AktorTyp == 13){
       snprintf (OUT, (size_t)100, "%i %%", BatterySOC);
       drawColorOutput(405+6,Line+22,70,12, OUT, WHITE, GREY);
     }
@@ -287,11 +368,16 @@ int drawAktorState(int AktorTyp, int AktorPrio, int AktorPin, int Line, int Powe
 int makeAktorFrame()
 {
   if (useAktor == 1){
-    drawAktorFrame(Aktor1Typ, Aktor1PowerOn, Aktor1PowerOff, Aktor1PercentOn, Aktor1PercentOff, Aktor1MinOn, Aktor1MinOff, "Aktor 1", Aktor1Name, R1);
-    drawAktorFrame(Aktor2Typ, Aktor2PowerOn, Aktor2PowerOff, Aktor2PercentOn, Aktor2PercentOff, Aktor2MinOn, Aktor2MinOff, "Aktor 2", Aktor2Name, R2);
-    drawAktorFrame(Aktor3Typ, Aktor3PowerOn, Aktor3PowerOff, Aktor3PercentOn, Aktor3PercentOff, Aktor3MinOn, Aktor3MinOff, "Aktor 3", Aktor3Name, R3);
-    drawAktorFrame(Aktor4Typ, Aktor4PowerOn, Aktor4PowerOff, Aktor4PercentOn, Aktor4PercentOff, Aktor4MinOn, Aktor4MinOff, "Aktor 4", Aktor4Name, R4);
-    drawAktorFrame(Aktor5Typ, Aktor5PowerOn, Aktor5PowerOff, Aktor5PercentOn, Aktor5PercentOff, Aktor5MinOn, Aktor5MinOff, "Aktor 5", Aktor5Name, R5);
+    drawAktorFrame(Aktor1Typ, Aktor1PowerOn, Aktor1PowerOff, Aktor1PercentOn, Aktor1PercentOff,
+              Aktor1TimerOn, Aktor1TimerOff, Aktor1MinOn, Aktor1MinOff, "Aktor 1", Aktor1Name, R1);
+    drawAktorFrame(Aktor2Typ, Aktor2PowerOn, Aktor2PowerOff, Aktor2PercentOn, Aktor2PercentOff,
+              Aktor2TimerOn, Aktor2TimerOff, Aktor2MinOn, Aktor2MinOff, "Aktor 2", Aktor2Name, R2);
+    drawAktorFrame(Aktor3Typ, Aktor3PowerOn, Aktor3PowerOff, Aktor3PercentOn, Aktor3PercentOff,
+              Aktor3TimerOn, Aktor3TimerOff, Aktor3MinOn, Aktor3MinOff, "Aktor 3", Aktor3Name, R3);
+    drawAktorFrame(Aktor4Typ, Aktor4PowerOn, Aktor4PowerOff, Aktor4PercentOn, Aktor4PercentOff,
+              Aktor4TimerOn, Aktor4TimerOff, Aktor4MinOn, Aktor4MinOff, "Aktor 4", Aktor4Name, R4);
+    drawAktorFrame(Aktor5Typ, Aktor5PowerOn, Aktor5PowerOff, Aktor5PercentOn, Aktor5PercentOff,
+              Aktor5TimerOn, Aktor5TimerOff, Aktor5MinOn, Aktor5MinOff, "Aktor 5", Aktor5Name, R5);
     return 1;
   }
   return 0;
@@ -314,14 +400,17 @@ int makeAktorState()
 int checkAktor()
 {
   if (useAktor == 1){
-    int PowerGrid = readRscp(PosGrid);
-    int PowerPVI = readRscp(PosPVI);
-    int BatterySOC = readRscp(PosSOC);
-    Aktor(PowerGrid, PowerPVI, BatterySOC, Aktor1Prio, Aktor1PowerOn, Aktor1PowerOff, Aktor1PercentOn, Aktor1PercentOff, Aktor1MinOn, Aktor1MinOff, Aktor1Typ, Aktor1Pin, Aktor1Position);
-    Aktor(PowerGrid, PowerPVI, BatterySOC, Aktor2Prio, Aktor2PowerOn, Aktor2PowerOff, Aktor2PercentOn, Aktor2PercentOff, Aktor2MinOn, Aktor2MinOff, Aktor2Typ, Aktor2Pin, Aktor2Position);
-    Aktor(PowerGrid, PowerPVI, BatterySOC, Aktor3Prio, Aktor3PowerOn, Aktor3PowerOff, Aktor3PercentOn, Aktor3PercentOff, Aktor3MinOn, Aktor3MinOff, Aktor3Typ, Aktor3Pin, Aktor3Position);
-    Aktor(PowerGrid, PowerPVI, BatterySOC, Aktor4Prio, Aktor4PowerOn, Aktor4PowerOff, Aktor4PercentOn, Aktor4PercentOff, Aktor4MinOn, Aktor4MinOff, Aktor4Typ, Aktor4Pin, Aktor4Position);
-    Aktor(PowerGrid, PowerPVI, BatterySOC, Aktor5Prio, Aktor5PowerOn, Aktor5PowerOff, Aktor5PercentOn, Aktor5PercentOff, Aktor5MinOn, Aktor5MinOff, Aktor5Typ, Aktor5Pin, Aktor5Position);
+		timerState(Aktor1Typ, Aktor1TimerOn, Aktor1TimerOff, Aktor1Position);
+		timerState(Aktor2Typ, Aktor2TimerOn, Aktor2TimerOff, Aktor2Position);
+		timerState(Aktor3Typ, Aktor3TimerOn, Aktor3TimerOff, Aktor3Position);
+		timerState(Aktor4Typ, Aktor4TimerOn, Aktor4TimerOff, Aktor4Position);
+		timerState(Aktor5Typ, Aktor5TimerOn, Aktor5TimerOff, Aktor5Position);
+
+    Aktor(Aktor1Prio, Aktor1PowerOn, Aktor1PowerOff, Aktor1PercentOn, Aktor1PercentOff, Aktor1MinOn, Aktor1MinOff, Aktor1Typ, Aktor1Pin, Aktor1Position);
+    Aktor(Aktor2Prio, Aktor2PowerOn, Aktor2PowerOff, Aktor2PercentOn, Aktor2PercentOff, Aktor2MinOn, Aktor2MinOff, Aktor2Typ, Aktor2Pin, Aktor2Position);
+    Aktor(Aktor3Prio, Aktor3PowerOn, Aktor3PowerOff, Aktor3PercentOn, Aktor3PercentOff, Aktor3MinOn, Aktor3MinOff, Aktor3Typ, Aktor3Pin, Aktor3Position);
+    Aktor(Aktor4Prio, Aktor4PowerOn, Aktor4PowerOff, Aktor4PercentOn, Aktor4PercentOff, Aktor4MinOn, Aktor4MinOff, Aktor4Typ, Aktor4Pin, Aktor4Position);
+    Aktor(Aktor5Prio, Aktor5PowerOn, Aktor5PowerOff, Aktor5PercentOn, Aktor5PercentOff, Aktor5MinOn, Aktor5MinOff, Aktor5Typ, Aktor5Pin, Aktor5Position);
     return 1;
   }
   return 0;

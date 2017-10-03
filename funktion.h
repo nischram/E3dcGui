@@ -25,7 +25,7 @@ int Picture6;
 int Picture7;
 int Picture8;
 
-// Zusatzfunktion für die Jalousie-Funktin "readJalou_HM"
+// Zusatzfunktion für die Jalousie-Funktin "readJalou_HM" und Aktor.h
 unsigned replace_character(char* string, char from, char to){
    unsigned result = 0;
    if (!string) return 0;

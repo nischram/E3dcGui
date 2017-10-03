@@ -9,7 +9,7 @@
 
 //#######################################
 //### E3DC S10 Einstellungen ###
-#define E3DC_S10                    1         //Wichtig!    // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic gentzt werden dann 0
+#define E3DC_S10                    1         //Wichtig!    // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic genutzt werden dann 0
 #define SleepTime                   1                       // Abfrageintervall für die RSCP-Applikation in Sekunden, wenn "GUI = 1 & E3DC_S10 = 1" ist der Intervall automatisch = 1
 // S10 Einstellungen wie IP-Adresse, Benutzername, Passwort und RSCP-Schlüssel
 #define SERVER_IP                   "192.168.178.xxx"       // IP-Adresse vom S10
@@ -125,61 +125,74 @@ Es kann aber zu darstellungsfehler kommen.
 // PIR Modul für automatisches Beenden des Bildschirmschoners
 // Aktivierung über Display
 #define PirPin                      4                       // wiringPi Pin Nummer vom GPIO
+// Wenn das Display z.B. immer dann eingeschaltet sein soll wenn genügend Überschuss vorhanden ist, kannst du ohne PIR-Senor und ohne Aktor bei PIR und bei einem Schaltaktor die gleiche Pin-Nr vergeben, dann wird das Display beim erreichen der Bedingung aktiviert.
 
 //#######################################
-//Schaltaktoren                                                Priorität liegt auf Aktor1 > Aktor2 > Aktor3 > Aktor4 > Aktor5
+//Schaltaktoren
 #define useAktor                    1                       // Schaltaktoren verwenden =1 / deaktiv=0
-#define Aktor1Typ                   1                       // Aktor 1 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
+// Information zum Typ: Aktor  deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3 /
+//   Zeitfenster aktivieren +10 / Zeitaktor=10 / Überschuss=11 / Solarproduktion=12 / Batterieaktor=13 /
+#define Aktor1Typ                   10                      // s.o.
 #define Aktor1Prio                  0                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor1Name                  "Heizstab"              // Bezeichnung
 #define Aktor1PowerOn               1500                    // Überschussleistung oder Solarproduktion in Watt
 #define Aktor1PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor1PercentOn             90                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor1Typ = 3"
 #define Aktor1PercentOff            10                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor1Typ = 3"
+#define Aktor1TimerOn               "10:15"                 // Beginn Zeitfenster für ein Einschalten
+#define Aktor1TimerOff              "12:00"                 // Ausschalten (AktorMinOn hat Vorrang)
 #define Aktor1MinOn                 2                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
 #define Aktor1MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor1Pin                   21                      // wiringPi Pin Nummer vom GPIO
 
-#define Aktor2Typ                   2                       // Aktor 2 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
-#define Aktor2Prio                  1                       //
+#define Aktor2Typ                   12                       // s.o.
+#define Aktor2Prio                  1                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor2Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor2PowerOn               750                     // Überschussleistung in Watt
 #define Aktor2PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor2PercentOn             0                       // Einschaltschwelle in % für den Batterieaktor bei "Aktor2Typ = 3"
 #define Aktor2PercentOff            0                       // Ausschaltschwelle in % für den Batterieaktor bei "Aktor2Typ = 3"
+#define Aktor2TimerOn               "08:00"                 // Beginn Zeitfenster für ein Einschalten
+#define Aktor2TimerOff              "17:30"                 // Ausschalten (AktorMinOn hat Vorrang)
 #define Aktor2MinOn                 60                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
 #define Aktor2MinOff                360                     // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor2Pin                   22                      // wiringPi Pin Nummer vom GPIO
 
-#define Aktor3Typ                   3                       // Aktor 3 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
-#define Aktor3Prio                  2                       //
+#define Aktor3Typ                   3                       // s.o.
+#define Aktor3Prio                  2                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor3Name                  "Batterie-Aktor"        // Bezeichnung
 #define Aktor3PowerOn               750                     // Überschussleistung in Watt
 #define Aktor3PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor3PercentOn             50                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
 #define Aktor3PercentOff            35                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
+#define Aktor3TimerOn               "12:00"                 // Beginn Zeitfenster für ein Einschalten
+#define Aktor3TimerOff              "20:00"                 // Ausschalten (AktorMinOn hat Vorrang)
 #define Aktor3MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
 #define Aktor3MinOff                10                      // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor3Pin                   23                      // wiringPi Pin Nummer vom GPIO
 
-#define Aktor4Typ                   2                       // Aktor 4 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
-#define Aktor4Prio                  3                       //
+#define Aktor4Typ                   2                       // s.o.
+#define Aktor4Prio                  3                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor4Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor4PowerOn               1250                    // Überschussleistung in Watt
 #define Aktor4PowerOff              30                      // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor4PercentOn             75                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor4Typ = 3"
 #define Aktor4PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor4Typ = 3"
+#define Aktor4TimerOn               "00:00"                 // Beginn Zeitfenster für ein Einschalten
+#define Aktor4TimerOff              "00:00"                 // Ausschalten (AktorMinOn hat Vorrang)
 #define Aktor4MinOn                 0                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
 #define Aktor4MinOff                0                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor4Pin                   24                      // wiringPi Pin Nummer vom GPIO
 
-#define Aktor5Typ                   0                       // Aktor 5 deaktiv=0 / Überschuss=1 / Solarproduktion=2 / Batterieaktor=3
-#define Aktor5Prio                  4                       //
+#define Aktor5Typ                   0                       // s.o.
+#define Aktor5Prio                  4                       // Priorität von 1 bis 5  ohne Priorität 0
 #define Aktor5Name                  "Gartenbew\204sserung"  // Bezeichnung
 #define Aktor5PowerOn               750                     // Überschussleistung in Watt
 #define Aktor5PowerOff              300                     // Abschaltwert nur bei Solarproduktion in Watt
 #define Aktor5PercentOn             75                      // Einschaltschwelle in % für den Batterieaktor bei "Aktor5Typ = 3"
 #define Aktor5PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor5Typ = 3"
+#define Aktor5TimerOn               "22:15"                 // Beginn Zeitfenster für ein Einschalten
+#define Aktor5TimerOff              "22:30"                 // Ausschalten (AktorMinOn hat Vorrang)
 #define Aktor5MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
 #define Aktor5MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
 #define Aktor5Pin                   25                      // wiringPi Pin Nummer vom GPIO
@@ -386,6 +399,12 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor5Position              16   //!!
 #define AktorPrioPosition           20   //!!
 #define AktorMAX                    21   //!!
+
+#define counterOn                   0    //!!
+#define counterOff                  1    //!!
+#define MinOn                       2    //!!
+#define MinOff                      3    //!!
+#define stateTimer                  4    //!!
 
 //DHT11
 #define DHT1Position                0    //!!
