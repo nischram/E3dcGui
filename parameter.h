@@ -384,7 +384,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor3Position              8    //!!
 #define Aktor4Position              12   //!!
 #define Aktor5Position              16   //!!
-#define AktorMAX                    20   //!!
+#define AktorPrioPosition           20   //!!
+#define AktorMAX                    21   //!!
 
 //DHT11
 #define DHT1Position                0    //!!
