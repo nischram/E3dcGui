@@ -36,6 +36,9 @@ Link für Link
 #### Pi Bildschirmschoner deaktivieren
 [Wichtig Pi Bildschirmschoner deaktivieren](https://github.com/nischram/E3dcGui#wichtig-pi-bildschirmschoner-deaktivieren)
 
+#### LED-Statusanzeige
+[https://github.com/jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x)
+
 #### Uhrzeit automatisch einstellen
 [Github Anleitung](https://github.com/nischram/E3dcGui#aktuelle-uhrzeit-aus-dem-internet-holen)   
 [Aktuelle Uhrzeit aus dem Internet holen](http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen)

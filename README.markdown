@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.60 03.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.61 11.10.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -12,6 +12,7 @@ __Daten von der HomeMatic auf dem Display darstellen__
 __Kleine Hausautomation mit GPIO's__   
 __Wetterinformationen von "Yahoo Weather"__   
 __Dein eigener Abfuhrkalender__   
+__LED Stausanzeige__   
 
 Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.   
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
@@ -206,7 +207,7 @@ Hier ein Anschlussbild als Beispiel:
 Pinbelegung:   
 VCC an Pin 2 (5V)   
 OUT an Pin 16 (GPIO 23/GPIO_GEN 4)   
-GND an Pin 6 (Ground)_  
+GND an Pin 6 (Ground)  
 
 Ich habe den PIR-Sensor "HC-SR501" bei mir im gebrauch.   
 
@@ -227,6 +228,43 @@ Der Teil "-cursor off" verhindert das Blinken des Coursers mitten im Bild.
 
 ## Werte in der HomeMatic nutzen
 Das Nutzen der Werte in der HomeMatic, ist in der [Anleitung für HomeMatic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
+
+## LED Statusanzeige
+Mit RGB-LED's kannst du eine Statusanzeige der E3DC S10 Werte erstellen.   
+Hierfür habe ich die Bibliothek von J.Garff verwendet und angepasst. Du kannst eine oder bis zu 12 LED's anschließen und einrichten. Es gibt folgende möglichkeiten für die LED's:   
+- Batteriefüllstand mit 1x oder 4x LED
+- Solarproduktion
+- Einspeisung / Bezug
+- Hausverbrauch
+- Batterieladung / Endladung
+- Fehler-Status
+- DC-Leistung je PV-Tracker 2x LED
+- Leistung externe Quellen   
+
+Als LED kannst du alle verwenden die einen WS2811 / WS2812 Controller integriert haben. Das Display ist für die Statusanzeige nicht erforderlich. Als Beispiel können folgende LED's oder Streifen verwendet werden:   
+[https://www.amazon.de/PL9823-F8-bgl-WS2812-integrierter-Controller/dp/B00L9I078W](https://www.amazon.de/PL9823-F8-bgl-WS2812-integrierter-Controller/dp/B00L9I078W)   
+[https://www.amazon.de/gp/product/B00PTEP14W](https://www.amazon.de/gp/product/B00PTEP14W)   
+Für die Installation musst du in der parameter.h 'E3DC_LED' auf 1 setzen. Im E3dcGui Verzeichniss muss die Bibliothek von J.Garff kopiert werden danach musst du die LED's in der External/LedMain.c konfigurieren und zu letzt alles Kompilieren. Folgende Befehle sind nötig:
+```shell
+pi@raspberrypi:~ $ cd E3dcGui
+```
+```shell
+pi@raspberrypi:~/E3dcGui $ git clone https://github.com/jgarff/rpi_ws281x.git
+```
+```shell
+pi@raspberrypi:~/E3dcGui $ cd External
+```
+```shell
+pi@raspberrypi:~/E3dcGui/External $ sudo nano LedMain.c
+```
+```shell
+pi@raspberrypi:~/E3dcGui/External $ make
+```
+Informationen zum Anschluss der LED findest du z.B. hier:   
+[https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring](https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring)   
+Für die Idee der LED-Statusanzeige danke ich HCM_Stefan aus dem Homematic-Forum.
+
+Version V1.61 ist die erste Version der Statusanzeige und könnte noch Fehler enthalten. Wenn euch welche auffallen, euch weitere Ideen oder Verbesserungen zu der LED-Statusanzeige einfallen, erstellt doch bitte einen Issue hier im Github.
 
 ## WatchDog
 
@@ -396,11 +434,15 @@ Bildschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 #### Wichtige Ergänzungen
+V1.61 11.10.2017 LED-Statusanzeige integriert   
 V1.52 23.09.2017 Hausautomation integriert   
 V1.49 05.09.2017 Abfuhrkalender eingebaut  
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.61 11.10.2017 LED-Statusanzeige integriert
+- Bibliothek WS281x mit LED-Statusanzeige integriert
+
 V1.60 03.10.2017 Verbesserung Bildschirmschoner
 - Schaltaktor um den Bildschirmschoner abzuschalten
 

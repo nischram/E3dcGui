@@ -25,6 +25,9 @@ int main()
     if(E3DC_S10 ==1){
       system("/home/pi/E3dcGui/RscpMain &");
     }
+    if (E3DC_LED == 1){
+      system("sudo /home/pi/E3dcGui/External/LedMain &");
+    }
     if (Homematic_GUI == 1){
       system("/home/pi/E3dcGui/screenSave &");
       system("/home/pi/E3dcGui/screenSaveHM &");
@@ -38,5 +41,8 @@ int main()
   else{
     system("/home/pi/E3dcGui/RscpMain &");
     system("/home/pi/E3dcGui/watchdog &");
+    if (E3DC_LED == 1){
+      system("sudo /home/pi/E3dcGui/External/LedMain &");
+    }
   }
 }

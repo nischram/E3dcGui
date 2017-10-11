@@ -73,6 +73,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define ScreenSaverTime             180                     // Zeit bis sich der Bilschirmschoner aktiviert (in Sekunden), -1 deaktiviert den Bildschirmschoner
 //Einstellungen Langzeitanzeige (15 Minuten Mittelwerte in duchrlaufender 24 Stundenanzeige)
 #define PowerMax                    5400                    // maximal zu erwartende Leistung als 15Min Mittelwert für Solarproduktion oder Hausverbrauch
+#define BatMax                      3000                    // maximale Batterieleistung
 #define skalaLine                   1000                    // Einteilung der Scala
 
 //#######################################
@@ -221,6 +222,10 @@ Es kann aber zu darstellungsfehler kommen.
 #define DHT5Use                     0                       // DHT 5 deaktiv=0 / aktiv=1
 #define DHT5Name                    "Flur"                  // Bezeichnung
 #define DHT5Pin                     3                       // wiringPi Pin Nummer vom GPIO
+
+//#######################################
+// Status-LED's für E3DC Informationen
+#define E3DC_LED                    1                       // 1= LED's aktiv, bearbeiten der Parameter External/LedMain.c und git clone https://github.com/jgarff/rpi_ws281x.git nötig 0=deaktiv
 
 //##############################################################################
 //########### Ab hier die Parameter nicht verändern! ###########################
