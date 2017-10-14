@@ -398,12 +398,12 @@ Es kann aber zu darstellungsfehler kommen.
 
 //Schaltaktoren
 #define Aktor1Position              0    //!!
-#define Aktor2Position              4    //!!
-#define Aktor3Position              8    //!!
-#define Aktor4Position              12   //!!
-#define Aktor5Position              16   //!!
-#define AktorPrioPosition           20   //!!
-#define AktorMAX                    21   //!!
+#define Aktor2Position              5    //!!
+#define Aktor3Position              10   //!!
+#define Aktor4Position              15   //!!
+#define Aktor5Position              20   //!!
+#define AktorPrioPosition           25   //!!
+#define AktorMAX                    26   //!!
 
 #define counterOn                   0    //!!
 #define counterOff                  1    //!!

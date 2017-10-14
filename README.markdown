@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.61 11.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.62 14.10.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -440,6 +440,9 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.62 14.10.2017 Fehlerkorrektur Aktoren
+- Fehlende Parameteränderung nachgetragen
+
 V1.61 11.10.2017 LED-Statusanzeige integriert
 - Bibliothek WS281x mit LED-Statusanzeige integriert
 
