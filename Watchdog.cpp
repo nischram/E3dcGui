@@ -19,7 +19,7 @@ using namespace std;
 
 int WriteWatchdog(int value)
 {
-  ofstream fout("/home/pi/E3dcGui/WatchdogAktiv.txt");
+  ofstream fout("/home/pi/E3dcGui/Data/WatchdogAktiv.txt");
   if (fout.is_open()) {
     fout << value << endl;
     fout.close();
@@ -29,19 +29,19 @@ int ReadWatchdog()
 {
   int value = 0;
   char read[128];
-  fstream datei("/home/pi/E3dcGui/WatchdogAktiv.txt");
+  fstream datei("/home/pi/E3dcGui/Data/WatchdogAktiv.txt");
   if (datei.is_open()) {
     datei.getline(read ,128, '\n');
     value = atoi(read);
     datei.close();
     return value;
   }
-  else cerr << "Konnte Datei nicht erstellen!\n";
+  else cerr << "Konnte Datei WatchdogAktiv nicht erstellen!\n";
   return 0;
 }
 
 void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, int resetCounter, char OUT[100]){
-  ofstream fout("/home/pi/E3dcGui/Watchdog.csv", ios::app);
+  ofstream fout("/home/pi/E3dcGui/Data/Watchdog.csv", ios::app);
   if (fout.is_open()) {
     fout << DATE << ";" << TIME << ";" << AktuallTime << ";" << UnixTime << ";" << resetCounter << ";" << OUT << endl;
     fout.close();
@@ -49,7 +49,7 @@ void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, 
 }
 void WDcsvKontrolle(char DATE[40],char TIME[40], char pingOUT[40], int AktuallTime, int UnixTimeE3dc, int UnixTimeHM, int UnixTimeGUI, char OUT[100]){
   if (WDkontrolle == 1){
-    ofstream fout("/home/pi/E3dcGui/WatchdogKontrolle.csv", ios::app);
+    ofstream fout("/home/pi/E3dcGui/Data/WatchdogKontrolle.csv", ios::app);
     if (fout.is_open()) {
       fout << DATE << " ; " << TIME << " ; Ping " << pingOUT << " ; PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI <<" >>> "<< OUT <<  endl ;
       fout.close();
@@ -125,14 +125,13 @@ int ping (char* respons)
   snprintf(batch, (size_t)256, "sudo ping -c 1 %s | head -2l | tail -1l | cut -d: -f2 | cut -d\" \" -f4  | cut -b 6-10", RouterIP);
   pingOUT = popen (batch, "r");
   fgets(OUT,sizeof(OUT),pingOUT);
-  double pingTime = atof(OUT);
+  float pingTime = atof(OUT);
   pclose (pingOUT);
-  cout << pingTime << "\n";
-  if (pingTime == 0 || pingTime > 500)
+  if (pingTime == 0 || pingTime > 300)
     snprintf(respons, (size_t)128, "NOK");
   else
     snprintf(respons, (size_t)128, "OK");
-  return 0;
+  return pingTime *100;
 }
 
 
@@ -163,7 +162,8 @@ int main()
       strftime (DATE,40,"%d.%m.%Y",sys);
       strftime (TIME,40,"%H:%M:%S",sys);
 
-      ping (pingOUT);
+      float pingTime = ping (pingOUT);
+      pingTime = pingTime /100;
 
       int UnixTimeE3dc = ReadUnixtime(UnixtimeE3dc, UnixtimeMAX);
       int DiffTimeE3dc = AktuallTime - UnixTimeE3dc;
@@ -316,7 +316,8 @@ int main()
       jump = 0;
       cout << "Watchdog: " << DATE << " ; " << TIME << "\n";
       cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
-      cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << " ; GUI Zähler bis Reboot: " << counterRebootGUI << " \n" ;
+      cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << "\n";
+      cout << "   GUI Zähler bis Reboot: " << counterRebootGUI << " ; Ping: " << pingOUT << " ; Pingzeit: " << pingTime << " ms\n";
       if (WDkontrolle == 1)
         WDcsvKontrolle( DATE, TIME ,pingOUT ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
     }

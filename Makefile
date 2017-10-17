@@ -12,25 +12,40 @@ ROOT_TT=Frame/touchtest
 
 all: $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_HISTORY) $(ROOT_TT)
 
-$(ROOT_WD): clean
+$(ROOT_WD): cleanWD
 	$(CXX) -O1 Watchdog.cpp -o $@
-$(ROOT_SS): clean
+$(ROOT_SS): cleanSS
 	$(CC) -O1 screenSave.c -o $@
-$(ROOT_SSHM): clean
+$(ROOT_SSHM): cleanSSHM
 	$(CC) -O1 screenSaveHM.c -o $@
-$(ROOT_GM): clean
+$(ROOT_GM): cleanGM
 	$(CC) -O1 GuiMain.c -o $@ -lwiringPi
-$(ROOT_START): clean
+$(ROOT_START): cleanSTART
 	$(CC) -O1 start.c -o $@
-$(ROOT_STOP): clean
+$(ROOT_STOP): cleanSTOP
 	$(CC) -O1 stop.c -o $@
-$(ROOT_RM): clean
+$(ROOT_RM): cleanRM
 	$(CXX) -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
-$(ROOT_HISTORY): clean
+$(ROOT_HISTORY): cleanHISTORY
 	$(CXX) -O3 S10history/S10history.cpp S10history/RscpReader.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
-$(ROOT_TT): clean
+$(ROOT_TT): cleanTT
 	$(CC) -O1 Frame/touchtest.c  -o $@
 
-clean:
-	date
-	-rm $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_HISTORY) $(ROOT_TT) $(VECTOR)
+cleanWD:
+		-rm $(ROOT_WD) $(VECTOR)
+cleanSS:
+		-rm $(ROOT_SS) $(VECTOR)
+cleanSSHM:
+		-rm $(ROOT_SSHM) $(VECTOR)
+cleanGM:
+		-rm $(ROOT_GM) $(VECTOR)
+cleanSTART:
+		-rm $(ROOT_START) $(VECTOR)
+cleanSTOP:
+		-rm $(ROOT_STOP) $(VECTOR)
+cleanRM:
+		-rm $(ROOT_RM) $(VECTOR)
+cleanHISTORY:
+		-rm $(ROOT_HISTORY) $(VECTOR)
+cleanTT:
+		-rm $(ROOT_TT) $(VECTOR)

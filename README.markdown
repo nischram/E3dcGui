@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.62 14.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.63 17.10.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -272,12 +272,29 @@ Teilweise bleibt die RSCP-Applikation hängen und die Automatische re-connection
 
 Für dieses Problem habe ich einen einfachen WatchDog geschrieben. Damit der WatchDog den Betrieb der Applikation überwachen kann, lasse ich mit einem kleinen Teil in der RscpMain, eine Datei im RAMDisk erstellen. In der Datei ist die Unixtime des S10, diese wiederum liest der WatchDog ein und vergleicht diese mit einer definierten Differenz mit der aktuellen Zeit.  
 
-Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt werden auch diese Daten überwacht. Da ich die HomeMatic nicht so häufig abfrage, sollten die Einstellungen zum WatchDog nicht großartig geändert werden.   
-Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.   
+Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt können auch diese Daten überwacht werden. Da ich die HomeMatic nicht so häufig abfrage, sollten die Einstellungen zum WatchDog nicht großartig geändert werden.   
+Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui/Data Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.   
 Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über längere Zeit keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Kommandozeile eingeben:
 ```shell
 pi@raspberrypi:~ $ killall watchdog
 ```
+
+## Makefile
+Das Makefile ist so aufgebaut, dass jedes Programmteil auch einzeln Kompiliert werden kann. Folgende Befehle sind möglich:   
+```shell
+make       
+make watchdog   
+make screenSave   
+make screenSaveHM   
+make GuiMain   
+make start   
+make stop   
+make RscpMain   
+make S10history/S10history   
+make Frame/touchtest
+```
+Diese Möglichkeit erspart zum Teil einiges an Zeit, wenn du eigene Änderungen testen möchtest.
+
 ## Aktuelle Uhrzeit aus dem Internet holen
 Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
 Ich habe eine Lösung für diese Problem, auf dieser Seite gefunden:
@@ -440,6 +457,11 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.63 17.10.2017 Verbesserungen
+- Makefile für einfaches kompilieren
+- parameter.h geteilt für einfachere Anpassungen
+- Watchdog Dateien werden im Verzeichnis Data gespeichert
+
 V1.62 14.10.2017 Fehlerkorrektur Aktoren
 - Fehlende Parameteränderung nachgetragen
 
