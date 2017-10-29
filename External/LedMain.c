@@ -45,7 +45,6 @@
 #include "../rpi_ws281x/gpio.h"
 #include "../rpi_ws281x/dma.h"
 #include "../rpi_ws281x/pwm.h"
-#include "../rpi_ws281x/version.h"
 
 #include "../rpi_ws281x/ws2811.h"
 
@@ -60,30 +59,30 @@
 #include "../funktion.h"
 
 
-#define TARGET_FREQ             WS2811_TARGET_FREQ
-#define GPIO_PIN                18
-#define DMA                     5
+#define TARGET_FREQ                 WS2811_TARGET_FREQ
+#define GPIO_PIN                    18
+#define DMA                         5
 
-//#define STRIP_TYPE            WS2811_STRIP_RGB		// WS2812/SK6812RGB integrated chip+leds
-//#define STRIP_TYPE            WS2811_STRIP_RBG		// WS2812/SK6812RGB integrated chip+leds
-//#define STRIP_TYPE            WS2811_STRIP_GBR		// WS2812/SK6812RGB integrated chip+leds
-#define STRIP_TYPE              WS2811_STRIP_GRB		// WS2812/SK6812RGB integrated chip+leds
-//#define STRIP_TYPE            WS2811_STRIP_BRG		// WS2812/SK6812RGB integrated chip+leds
-//#define STRIP_TYPE            WS2811_STRIP_BGR		// WS2812/SK6812RGB integrated chip+leds
-//#define STRIP_TYPE            SK6812_STRIP_RGBW		// SK6812RGBW (NOT SK6812RGB)
+//#define STRIP_TYPE                WS2811_STRIP_RGB		// WS2812/SK6812RGB integrated chip+leds
+//#define STRIP_TYPE                WS2811_STRIP_RBG		// WS2812/SK6812RGB integrated chip+leds
+//#define STRIP_TYPE                WS2811_STRIP_GBR		// WS2812/SK6812RGB integrated chip+leds
+#define STRIP_TYPE                  WS2811_STRIP_GRB		// WS2812/SK6812RGB integrated chip+leds
+//#define STRIP_TYPE                WS2811_STRIP_BRG		// WS2812/SK6812RGB integrated chip+leds
+//#define STRIP_TYPE                WS2811_STRIP_BGR		// WS2812/SK6812RGB integrated chip+leds
+//#define STRIP_TYPE                SK6812_STRIP_RGBW		// SK6812RGBW (NOT SK6812RGB)
 
-#define LED_COUNT               12                  // Anzahl der LED's
-#define BRIGHTNESS              150                 // Helligkeit 0-255 100= ideal < 80 niedrige Werte werden nicht angeziegt > 150 zu hell
-#define maxValue                100                 // Maximale Helligkeit der Anzeigen 50-255 100= ideal
-#define SOC_stripeUse           1                   // 1= SOC Anzeige mit 4x LED grün, 0= 1x LED grün (Nummern der weiteren LED's anpassen)
-#define SOC_LED                 0                   // 1x LED grün oder 4x LED grün
-#define PVI_LED                 4                   // 1x LED gelbe
-#define Grid_LED                5                   // 1x LED blau für Einspeisung oder rot für Bezug
-#define Home_LED                6                   // 1x LED orange
-#define Bat_LED                 7                   // 1x LED glün Laden oder purpele für Endladen
-#define Status_LED              8                   // 1x LED bei Fehler hellrot, Warnung orange, sonst grün
-#define PVI_TRACKER_LED         9                   // 2x LED orange (Nummern der weiteren LED's beachten)
-#define ADD_LED                 11                  // 1x LED cyan
+#define LED_COUNT                   12                  // Anzahl der LED's
+#define BRIGHTNESS                  150                 // Helligkeit 0-255 100= ideal < 80 niedrige Werte werden nicht angeziegt > 150 zu hell
+#define maxValue                    100                 // Maximale Helligkeit der Anzeigen 50-255 100= ideal
+#define SOC_stripeUse               1                   // 1= SOC Anzeige mit 4x LED grün, 0= 1x LED grün (Nummern der weiteren LED's anpassen)
+#define SOC_LED                     4                   // 1x LED grün oder 4x LED grün
+#define PVI_LED                     2                   // 1x LED gelbe
+#define Grid_LED                    0                   // 1x LED blau für Einspeisung oder rot für Bezug
+#define Home_LED                    8                   // 1x LED orange
+#define Bat_LED                     3                   // 1x LED glün Laden oder purpele für Endladen
+#define Status_LED                  1                   // 1x LED bei Fehler hellrot, Warnung orange, sonst grün
+#define PVI_TRACKER_LED             9                   // 2x LED orange (Nummern der weiteren LED's beachten)
+#define ADD_LED                     11                  // 1x LED cyan
 //Wenn du ein Wert nicht Anzeigen möchtest, dann nicht 0 verwenden sondern den "LED_COUNT" anpassen und der LED eine hohe Nr vergeben, denn die 0 ist die erste LED und dann würdest du alles auf der ersten LED anzeigen.
 
 int clear_on_exit = 1;
