@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.64 29.10.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.65 06.11.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -23,7 +23,7 @@ Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohne Wettersymbol)
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
-Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist weiteres unten ein Kapitel __[Material](https://github.com/nischram/E3dcGui#material)__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2017-02.
+Ich nutze diese Applikation auf einem Raspberry Pi 3. Mit dem 7“ Raspberry Touchdisplay. Für das Material und die Installation ist weiteres unten im Kapitel __[Material](https://github.com/nischram/E3dcGui#material)__. Meine HomeMatic hat die Firmware 2.19.9 (zuvor auch 2.17.15 getestet) installiert. Mein S10-E hat Softwareversion 2017-02.
 
 In der Applikation werden die Daten vom S10 mit einer RSCP-Applikation geholt. Diese Applikation bietet E3DC in Downloadbereich an. Ich habe ein paar Änderungen vorgenommen.
 
@@ -457,6 +457,9 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.65 06.11.2017 Fehler Abfuhrkalender
+- Fehler in der Zeilenabfragen Maximalwert war KW44
+
 V1.64 29.10.2017 Fehler LED-Statusanzeige
 - Ohne kompilieren der "rpi_ws281x" fehlt die Datei "version.h"
 

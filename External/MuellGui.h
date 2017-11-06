@@ -20,7 +20,7 @@ int readMuellKW(int kw, char* jahr, char* kwLine, char* kwLine2)
     return -1;
   }
   else {
-    for( c = 1; c < 56; ++c ){
+    for( c = 1; c < 65; ++c ){
       fgets(read,256,fp);
       if ( c == line){
         snprintf (kwLine, (size_t)256, "%s", read);

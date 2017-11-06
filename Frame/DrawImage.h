@@ -165,7 +165,7 @@ void cleanup() {
 }
 
 void sig_handler(int signo) {
-    //cleanup();    //doppelte Freibage des Speichers
+    //cleanup();    //doppelte Freigabe des Speichers
     exit(signo);
 }
 int DrawImage(char* fileName, int posx, int posy)
