@@ -116,8 +116,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define smtpPass                    "1234abc"                                   //Passwort für den eMail Account
 
 //#######################################
-// Yahoo Wetter
-#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
+// Yahoo Wetter (Dienst wurde eingestellt!)
+//#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
 
 //#######################################
 // Abfuhrkalender

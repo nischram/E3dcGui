@@ -30,7 +30,7 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
 #include "HMGui.h"
-#include "External/WetterGui.h"
+//#include "External/WetterGui.h"
 #include "External/MuellGui.h"
 #include "External/dht11.h"
 #include "External/Aktor.h"
@@ -766,12 +766,12 @@ int main(){
 				SmartCounter--;
 				break;
 			}
-//####################################################
+/*//####################################################
 			//Wetter Grafik erstellen
 			case ScreenWetter:{
 				GuiTime = makeWetterGui(GuiTime, counter, weatherTime);    //Ausgelagert in die Datei WetterGui.h
 				break;
-			}
+			}*/
 //####################################################
 			//Müllkalender Grafik erstellen
 			case ScreenMuell:{
@@ -786,7 +786,7 @@ int main(){
 				else if(Homematic_GUI == 1)
 					writeScreen(ScreenChange, ScreenHM);
 				else
-					writeScreen(ScreenChange, ScreenWetter);
+					writeScreen(ScreenChange, ScreenSetup);   //writeScreen(ScreenChange, ScreenWetter);
 					break;
 			}
 		} //switch(screenChange)
@@ -858,11 +858,11 @@ int main(){
 				drawOutput(300,458,170,12, TimestampHM, GREEN);
 			}
 		}
-		else if(GuiTime == WeatherTime && screenState == ScreenOn){
+		/*else if(GuiTime == WeatherTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 458);
 			put_string(400, 458, "Yahoo Datensatz: ", GREY);
 			drawOutput(550,458,170,12, weatherTime, GREEN);
-		}
+		}*/
 		else if(GuiTime == PiTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 458);
 		}
@@ -892,7 +892,7 @@ int main(){
 			else if(Homematic_GUI == 1)
 				writeScreen(ScreenChange, ScreenHM);
 			else
-				writeScreen(ScreenChange, ScreenWetter);
+				writeScreen(ScreenChange, ScreenSetup);    //writeScreen(ScreenChange, ScreenWetter);
 		}
 		writeScreen(ScreenSaver, ScreenSaverCounter);
 //####################################################

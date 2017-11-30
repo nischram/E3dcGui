@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.65 06.11.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.66 30.11.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -10,7 +10,7 @@ __Daten vom E3DC zur HomeMatic Hausautomation senden__
 __Daten vom S10 auf dem Display darstellen__   
 __Daten von der HomeMatic auf dem Display darstellen__   
 __Kleine Hausautomation mit GPIO's__   
-__Wetterinformationen von "Yahoo Weather"__   
+Wetterinformationen von "Yahoo Weather" (Dienst wurde eingestellt)  
 __Dein eigener Abfuhrkalender__   
 __LED Stausanzeige__   
 
@@ -142,6 +142,9 @@ Auf der rechten Seite wird die Display-Helligkeit eingestellt. Auch kannst du hi
 Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
 
 #### 2. Wetteranzeige
+Leider wurde der Dienst eingestellt, der Server von http://weather.tuxnet24.de ist nicht mehr erreichbar.   
+Wenn ich einen neuen Dienst finde binde ich diesen ein.
+
 <img src="https://s20.postimg.org/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
 [http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
@@ -457,6 +460,9 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.65 06.11.2017 WetterGui abgeschaltet
+- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
+
 V1.65 06.11.2017 Fehler Abfuhrkalender
 - Fehler in der Zeilenabfragen Maximalwert war KW44
 
