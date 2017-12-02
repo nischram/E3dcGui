@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.66 30.11.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.67 02.12.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -460,7 +460,11 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
-V1.65 06.11.2017 WetterGui abgeschaltet
+V1.67 02.12.2017 WetterGui abgeschaltet
+- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
+- Ich hatte die Falsche Datei der srceenSaveHM hochgeladen.
+
+V1.66 30.11.2017 WetterGui abgeschaltet
 - Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
 
 V1.65 06.11.2017 Fehler Abfuhrkalender

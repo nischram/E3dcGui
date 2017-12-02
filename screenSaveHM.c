@@ -83,18 +83,6 @@ int main()
 	int buttonCordsJOGWST[4] = {(S7-3),(R1),(Fw+6),(21+3)};
 	int	buttonJOGWST= BUTTON_OFF;
 	int buttonTimerJOGWST = mymillis();
-	int buttonCordsJalAuf[4] = {(S6-3),(R5),(Fw+6),(21+3)};
-	int	buttonJalAuf= BUTTON_OFF;
-	int buttonTimerJalAuf = mymillis();
-	int buttonCordsJalAb[4] = {(S7-3),(R5),(Fw+6),(21+3)};
-	int	buttonJalAb= BUTTON_OFF;
-	int buttonTimerJalAb = mymillis();
-	int buttonCordsAstroRS[4] = {(S5-3),(R5),(Fw+6),(21+3)};
-	int	buttonAstroRS= BUTTON_OFF;
-	int buttonTimerAstroRS = mymillis();
-	int buttonCordsOGFNAS[4] = {(S8-3),(R2),(Fw+6),(21+3)};
-	int	buttonOGFNAS= BUTTON_OFF;
-	int buttonTimerOGFNAS = mymillis();
 
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
@@ -251,58 +239,6 @@ int main()
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenChange, ScreenHM);
 						sleep(2);
-					}
-				}
-				if((scaledX  > buttonCordsJalAuf[X] && scaledX < (buttonCordsJalAuf[X]+buttonCordsJalAuf[W])) && (scaledY > buttonCordsJalAuf[Y] && scaledY < (buttonCordsJalAuf[Y]+buttonCordsJalAuf[H]))){
-					if (mymillis() - buttonTimerJalAuf > 500){
-						buttonTimerJalAuf = mymillis();
-						drawSquare(S6-3,R5,Fw+6,21+3,GREEN);
-						printsendHM(ISE_Jalousie_Astro_Sunrise_X, "true");
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenChange, ScreenHM);
-						sleep(5);
-						printsendHM(ISE_Jalousie_Astro_Sunrise_X, "false");
-					}
-				}
-				if((scaledX  > buttonCordsJalAb[X] && scaledX < (buttonCordsJalAb[X]+buttonCordsJalAb[W])) && (scaledY > buttonCordsJalAb[Y] && scaledY < (buttonCordsJalAb[Y]+buttonCordsJalAb[H]))){
-					if (mymillis() - buttonTimerJalAb > 500){
-						buttonTimerJalAb = mymillis();
-						drawSquare(S7-3,R5,Fw+6,21+3,GREEN);
-						printsendHM(ISE_Jalousie_Astro_Sunset_X, "true");
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenChange, ScreenHM);
-						sleep(5);
-						printsendHM(ISE_Jalousie_Astro_Sunset_X, "false");
-					}
-				}
-				if((scaledX  > buttonCordsAstroRS[X] && scaledX < (buttonCordsAstroRS[X]+buttonCordsAstroRS[W])) && (scaledY > buttonCordsAstroRS[Y] && scaledY < (buttonCordsAstroRS[Y]+buttonCordsAstroRS[H]))){
-					if (mymillis() - buttonTimerAstroRS > 500){
-						buttonTimerAstroRS = mymillis();
-						drawSquare(S5-3,R5,Fw+6,21+3,GREEN);
-						system("killall -9 AstroHM");
-						system("killall -9 watchAstro");
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenChange, ScreenHM);
-						sleep(10);
-						system("/home/pi/Astro/AstroHM &");
-						system("/home/pi/Astro/watchAstro &");
-					}
-				}
-				if((scaledX  > buttonCordsOGFNAS[X] && scaledX < (buttonCordsOGFNAS[X]+buttonCordsOGFNAS[W])) && (scaledY > buttonCordsOGFNAS[Y] && scaledY < (buttonCordsOGFNAS[Y]+buttonCordsOGFNAS[H]))){
-					if (mymillis() - buttonTimerOGFNAS > 500){
-						buttonTimerOGFNAS = mymillis();
-						char OGFNAS[20];
-						read_HM(ISE_OGFNAS, 4, OGFNAS);
-						if (strcmp ("true",OGFNAS) == 0){
-							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_RED);
-							printsendHM(ISE_OGFNAS, "false");
-						}
-						else if (strcmp ("fals",OGFNAS) == 0){
-							drawSquare(S8-3,R2,Fw+6,21+3,LIGHT_GREEN);
-							printsendHM(ISE_OGFNAS, "true");
-						}
-						writeScreen(ScreenCounter, 0);
-						writeScreen(ScreenChange, ScreenHM);
 					}
 				}
 				break; // ScreenHM
