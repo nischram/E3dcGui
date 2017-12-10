@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.67 02.12.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.68 10.12.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -11,6 +11,8 @@ __Daten vom S10 auf dem Display darstellen__
 __Daten von der HomeMatic auf dem Display darstellen__   
 __Kleine Hausautomation mit GPIO's__   
 Wetterinformationen von "Yahoo Weather" (Dienst wurde eingestellt)  
+__Daten einer Grünbeck SC18 anzeigen__   
+__Daten einer Grünbeck SC18 zur HomeMatic senden__    
 __Dein eigener Abfuhrkalender__   
 __LED Stausanzeige__   
 
@@ -190,7 +192,16 @@ Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic u
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).   
 Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Kommentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Dateien `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
-#### 8. Abfuhrkalender
+#### 8. Grünbeck softliQ SC18
+`  #define Gruenbeck               1`   
+<img src="https://s20.postimg.org/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
+Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.   
+__Wichtig__ ist für diese Funktion die Installation von XMLLINT mit folgndem Befehl: `sudo apt-get install libxml2-utils`     
+Weiter ist es möglich die Daten zur HomeMatic zu senden. `#define GruenbeckHM 1` Es werden in der HomeMatic entsprechende Systemvariablen benötigt.  
+Es sollten alle Greäte der Serie softliQ von Grünbeck auslesbar sein. Es könnten Probleme bei anderen Geräten entstehen da diese zum Teil 2 Austauscher haben. Es müssten ggf. Anpassungen an der `External/Gruenbeck.h` und an `External/gruenSave.c` der vorgenommen werden.   
+Es ist auch möglich eine Grünbeck __ohne Display__ am Raspberry mit einer HomeMatic zu verbinden. Hierfür müssen an der `parameter.h` und der `External/Gruenbeck.h` die entsprechenden Einstellungen vorgenommen werden. Das `make` muss ausgeführt werden, dann kann die Datei `External/gruenSave` z.B. per crontab in entsprechenden Abständen ausgeführt werden. Mit entsprechenden Systemvariablen und Scripten kann auch in der HomeMatic die Monats und Jahresberechnung vorgenommen werden. Auf wunsch kann ich per PN die Scripte zusenden.
+
+#### 9. Abfuhrkalender
 `  #define Abfuhrkalender               1`   
 <img src="https://s20.postimg.org/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
@@ -454,12 +465,16 @@ Bildschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
 ## Changelog
 #### Wichtige Ergänzungen
+V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden   
 V1.61 11.10.2017 LED-Statusanzeige integriert   
 V1.52 23.09.2017 Hausautomation integriert   
 V1.49 05.09.2017 Abfuhrkalender eingebaut  
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden
+- Daten einer Grünbeck Wasseraufbereitung am Display anzeige und an die HM senden  
+
 V1.67 02.12.2017 WetterGui abgeschaltet
 - Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
 - Ich hatte die Falsche Datei der srceenSaveHM hochgeladen.

@@ -4,13 +4,14 @@ ROOT_WD=watchdog
 ROOT_SS=screenSave
 ROOT_SSHM=screenSaveHM
 ROOT_GM=GuiMain
+ROOT_GB=External/gruenSave
 ROOT_START=start
 ROOT_STOP=stop
 ROOT_RM=RscpMain
 ROOT_HISTORY=S10history/S10history
 ROOT_TT=Frame/touchtest
 
-all: $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_HISTORY) $(ROOT_TT)
+all: $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_GB) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_HISTORY) $(ROOT_TT)
 
 $(ROOT_WD): cleanWD
 	$(CXX) -O1 Watchdog.cpp -o $@
@@ -20,6 +21,8 @@ $(ROOT_SSHM): cleanSSHM
 	$(CC) -O1 screenSaveHM.c -o $@
 $(ROOT_GM): cleanGM
 	$(CC) -O1 GuiMain.c -o $@ -lwiringPi
+$(ROOT_GB): cleanGB
+	$(CC) -O1 External/gruenSave.c -o $@
 $(ROOT_START): cleanSTART
 	$(CC) -O1 start.c -o $@
 $(ROOT_STOP): cleanSTOP
@@ -39,6 +42,8 @@ cleanSSHM:
 		-rm $(ROOT_SSHM) $(VECTOR)
 cleanGM:
 		-rm $(ROOT_GM) $(VECTOR)
+cleanGB:
+		-rm $(ROOT_GB) $(VECTOR)
 cleanSTART:
 		-rm $(ROOT_START) $(VECTOR)
 cleanSTOP:

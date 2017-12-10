@@ -34,6 +34,7 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "External/MuellGui.h"
 #include "External/dht11.h"
 #include "External/Aktor.h"
+#include "External/Gruenbeck.h"
 
 //####################################
 int main(){
@@ -41,6 +42,9 @@ int main(){
 	writeScreen(ScreenCounter, 0);
 	makeAktor();
 	makeDHT11();
+	if (Gruenbeck == 1){
+		makeGruenRAM();
+	}
 	writeAktor(AktorPrioPosition, 1);
 
 	signal(SIGINT, INThandler);
@@ -54,8 +58,8 @@ int main(){
 
 	int rawX, rawY, rawPressure, scaledX, scaledY;
 
-	int GuiTime, change = 0, changeStop = 0;
-	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64];
+	int GuiTime, change = 0, changeStop = 0, saveGBstate = 0;
+	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64], gruenTime[24];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
@@ -90,6 +94,9 @@ int main(){
 		pinMode(Aktor4Pin, OUTPUT);
 		pinMode(Aktor5Pin, OUTPUT);
 	}
+	if (Gruenbeck == 1){
+		readGruenbeck(gruenTime);
+	}
 	DEBUG("\n### Neustart ###\n");
 
 //####################################
@@ -116,6 +123,10 @@ int main(){
 					writeScreen(ScreenSaver, false);
 				}
 			}
+		}
+
+		if (Gruenbeck == 1){
+			saveGruenbeck(gruenTime);
 		}
 
 		Screen[ScreenCounter] = readScreen(ScreenCounter);
@@ -773,6 +784,13 @@ int main(){
 				break;
 			}*/
 //####################################################
+			//Grünbeck Grafik erstellen
+			case ScreenGB:{
+				if (Gruenbeck == 1)
+					GuiTime = makeGruenbeck(GuiTime, counter, gruenTime);
+				break;
+			}
+//####################################################
 			//Müllkalender Grafik erstellen
 			case ScreenMuell:{
 				if (Abfuhrkalender == 1)
@@ -863,6 +881,11 @@ int main(){
 			put_string(400, 458, "Yahoo Datensatz: ", GREY);
 			drawOutput(550,458,170,12, weatherTime, GREEN);
 		}*/
+		else if(GuiTime == GruenTime && screenState == ScreenOn){
+			putAktuell(WetterS1, 458);
+			put_string(400, 458, "Gr\201nbeck Datensatz: ", GREY);
+			drawOutput(560,458,170,12, gruenTime, GREEN);
+		}
 		else if(GuiTime == PiTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 458);
 		}

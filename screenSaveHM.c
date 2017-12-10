@@ -243,6 +243,10 @@ int main()
 				}
 				break; // ScreenHM
 			}
+			case ScreenGB:{
+				//siehe screnSave.c
+				break; // ScreenGB
+			}
 			case ScreenMuell:{
 				//siehe screnSave.c
 				break; // ScreenMuell

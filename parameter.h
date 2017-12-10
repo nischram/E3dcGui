@@ -116,6 +116,12 @@ Es kann aber zu darstellungsfehler kommen.
 #define smtpPass                    "1234abc"                                   //Passwort für den eMail Account
 
 //#######################################
+// Grünbeck
+#define Gruenbeck                   0                       // 1= Es ist eine Grünbeck Enthätungsanlage vorhanden
+#define GRUEN_IP                    "192.168.178.zzz"        // IP-Adresse der Grünbeck
+#define GruenbeckHM                 0                       // 1= Daten der Grünbeck sollen zur HomeMatic gesendet werden, Einstellungen der ISE_ID in External/Gruenbeck.h
+
+//#######################################
 // Yahoo Wetter (Dienst wurde eingestellt!)
 //#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
 

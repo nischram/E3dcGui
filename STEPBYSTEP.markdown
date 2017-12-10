@@ -49,6 +49,9 @@ Link für Link
 #### WiringPi installieren
 [WiringPi installieren](https://tutorials-raspberrypi.de/wiringpi-installieren-pinbelegung)
 
+#### XMLLINT für die Grünbeck Abfrage installieren
+[XMLLINT installieren](https://jahansyed.co.uk/2016/04/22/how-to-install-xmllint-in-ubuntu/)
+
 #### PIR-Sensor anschließen (optional)
 [PIR-Sensor anschließen](https://tutorials-raspberrypi.de/raspberry-pi-bewegungsmelder-sensor-pir)
 

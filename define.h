@@ -19,6 +19,7 @@
 //#define ScreenWetter                5    //!!
 #define ScreenMuell                 5    //!!
 #define ScreenSmart                 6    //!!
+#define ScreenGB                    7    //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!
@@ -32,6 +33,7 @@
 #define PiTime                      3    //!!
 #define WeatherTime                 4    //!!
 #define SetupTime                   5    //!!
+#define GruenTime                   6    //!!
 
 #define SOC                         0    //!!
 #define Solar                       1    //!!
@@ -97,6 +99,21 @@
 #define PosWBAll900                 8    //!!
 #define PosWBSolar900               9    //!!
 #define PosMAX900                   10   //!!
+
+// Berschreibung Grünbeck
+#define PosGB_CONSUMPTION           0    //!!
+#define PosGB_CURRENT_REGENERATION  1    //!!
+#define PosGB_PERCENT_REGENERATION  2    //!!
+#define PosGB_CURRENT_FLOW          3    //!!
+#define PosGB_R_CAPACITY            4    //!!
+#define PosGB_LAST_REGENERATION     5    //!!
+#define PosGB_STATUS_EMAIL          6    //!!
+#define PosGB_Max                   7    //!!
+
+#define PosSaveMonth                0    //!!
+#define PosSaveYear                 1    //!!
+#define PosSaveAll                  2    //!!
+#define PosSaveMAX                  3    //!!
 
 // Beschreibung für S10history
 #define dataPV                      0    //!!

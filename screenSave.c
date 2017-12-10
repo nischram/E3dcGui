@@ -104,7 +104,9 @@ int main()
 	int buttonTimerSmart = mymillis();
 	int buttonCordsHM[4] = {Picture6,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
-	int buttonCordsMuell[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonCordsGB[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonTimerGB = mymillis();
+	int buttonCordsMuell[4] = {Picture8,PictureLine1,PictureW,PictureH};
 	int buttonTimerMuell = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
@@ -218,6 +220,17 @@ int main()
 				if (mymillis() - buttonTimerHM > 500){
 					buttonTimerHM = mymillis();
 					writeScreen(ScreenChange, ScreenHM);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
+				}
+			}
+		}
+		if(Gruenbeck == 1){
+			if((scaledX  > buttonCordsGB[X] && scaledX < (buttonCordsGB[X]+buttonCordsGB[W])) && (scaledY > buttonCordsGB[Y] && scaledY < (buttonCordsGB[Y]+buttonCordsGB[H]))){
+				if (mymillis() - buttonTimerGB > 500){
+					buttonTimerGB = mymillis();
+					writeScreen(ScreenChange, ScreenGB);
 					writeScreen(ScreenCounter, 0);
 					writeScreen(ScreenSaver, false);
 					writeScreen(ScreenShutdown, ShutdownRun);
@@ -513,6 +526,24 @@ int main()
 			case ScreenHM:{
 				// Alle Touchfuktionen für den Homematic-Scree werden in der Datei screenSaveHM.c weiter verarbeitet
 				break; // ScreenHM
+			}
+			case ScreenGB:{
+				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
+					if (mymillis() - buttonTimerSave > 500){
+						buttonTimerSave = mymillis();
+						int state = readScreen(ScreenState);
+						if(state == ScreenOff){
+							screenOn();
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+						else{
+							screenOff();
+							writeScreen(ScreenSaver, true);
+						}
+					}
+				}
+				break; // ScreenGB
 			}
 			case ScreenMuell:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){

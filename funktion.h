@@ -110,6 +110,17 @@ void writeData(char filePath[100], char write[100]){
 		fclose(fp);
 	}
 }
+void appeendedData(char filePath[100], char write[100]){
+	FILE *fp;
+	fp = fopen(filePath, "a");
+	if(fp == NULL) {
+		printf("%s konnte NICHT geoeffnet werden. (appendedData)\n", filePath);
+	}
+	else {
+		fprintf(fp, "%s\n", write);
+		fclose(fp);
+	}
+}
 //Homematic Fenster ziechnen mit Name
 void createWindow(int Wx, int Wy, int Ww, char room[20], char var[20]){
 	put_string((Wx-3),(Wy-11),room,GREY);
@@ -166,32 +177,36 @@ void createData(int x, int y, char *c){
 // PicturPosition
 int picturePosition()
 {
-  int numberPicture = 2;   // 2=Standard-Button
+  int numberPicture = 1;   // 1=Standard-Button ohne Wetter
   if(E3DC_S10 ==1)
     numberPicture = numberPicture +3;
   if(useAktor == 1 && useDHT11 == 1)
     numberPicture = numberPicture +1;
   if(Homematic_GUI ==1)
     numberPicture = numberPicture +1;
+  if(Gruenbeck ==1)
+    numberPicture = numberPicture +1;
   if(Abfuhrkalender ==1)
     numberPicture = numberPicture +1;
   int piece = (800 - (numberPicture * 80)) / 2;
   Picture1 = piece;
-  piece = piece + 80;
-  Picture2 = piece;
   if(E3DC_S10 ==1){
+    piece = piece + 80;
+    Picture2 = piece;
     piece = piece + 80;
     Picture3 = piece;
     piece = piece + 80;
     Picture4 = piece;
-    piece = piece + 80;
-    Picture5 = piece;
   }
   if(useAktor == 1 && useDHT11 == 1){
     piece = piece + 80;
-    Picture6 = piece;
+    Picture5 = piece;
   }
   if(Homematic_GUI ==1){
+    piece = piece + 80;
+    Picture6 = piece;
+  }
+  if(Gruenbeck ==1){
     piece = piece + 80;
     Picture7 = piece;
   }
@@ -209,16 +224,18 @@ int drawMainScreen()
   drawSquare(12,12,778,458,WHITE);
   drawCorner(12, 12, 778, 458, LTGREY);
   DrawImage("EinstImage", Picture1, PictureLine1);
-  DrawImage("WetterImage", Picture2, PictureLine1);
+  //DrawImage("WetterImage", Picture2, PictureLine1);
   if(E3DC_S10 ==1){
-    DrawImage("AktuellImage", Picture3, PictureLine1);
-    DrawImage("LangzeitImage", Picture4, PictureLine1);
-    DrawImage("MonitorImage", Picture5, PictureLine1);
+    DrawImage("AktuellImage", Picture2, PictureLine1);
+    DrawImage("LangzeitImage", Picture3, PictureLine1);
+    DrawImage("MonitorImage", Picture4, PictureLine1);
   }
   if(useAktor == 1 && useDHT11 == 1)
-    DrawImage("SmartImage", Picture6, PictureLine1);
+    DrawImage("SmartImage", Picture5, PictureLine1);
   if(Homematic_GUI ==1)
-    DrawImage("HMImage", Picture7, PictureLine1);
+    DrawImage("HMImage", Picture6, PictureLine1);
+  if(Gruenbeck ==1)
+    DrawImage("GBImage", Picture7, PictureLine1);
   if(Abfuhrkalender ==1)
     DrawImage("MuellImage", Picture8, PictureLine1);
   return 1;
