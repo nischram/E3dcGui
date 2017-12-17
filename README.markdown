@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.68 10.12.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.69 17.12.2017](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -327,9 +327,9 @@ sudo nano /etc/fstab
 ```
 Einfügen dieser Zeile am Ende der Datei:
 ```
-tmpfs /mnt/RAMDisk tmpfs nodev,nosuid,size=4M 0 0
+tmpfs /mnt/RAMDisk tmpfs nodev,nosuid,size=8M 0 0
 ```
-Die Größe wird über den Parameter "4M" auf 4 MB festgelegt. Jetzt montiert man alle Filesysteme über:
+Die Größe wird über den Parameter "8M" auf 8 MB festgelegt. Jetzt montiert man alle Filesysteme über:
 ```
 sudo mount -a
 ```
@@ -347,7 +347,7 @@ tmpfs 44580 236 44344 1% /run
 tmpfs 5120 0 5120 0% /run/lock
 tmpfs 89140 0 89140 0% /run/shm
 /dev/mmcblk0p1 57288 19712 37576 35% /boot
-tmpfs 4096 0 4096 0% /mnt/RAMDisk
+tmpfs 8192 0 8192 0% /mnt/RAMDisk
 ```
 
 Diesen Teil zum RAMDisk habe ich von hier Kopiert:
@@ -472,6 +472,9 @@ V1.49 05.09.2017 Abfuhrkalender eingebaut
 V1.47 03.09.2017 WetterGui eingebaut  
 
 #### Versionen
+V1.69 17.12.2017 [Issue #26](https://github.com/nischram/E3dcGui/issues/26)
+- Größe des RAMDisk erhöht
+
 V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden
 - Daten einer Grünbeck Wasseraufbereitung am Display anzeige und an die HM senden  
 
