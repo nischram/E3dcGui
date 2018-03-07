@@ -1,0 +1,64 @@
+2018
+gelb=GelberSack(gelb)
+bio=Biomüll(braun)
+papier=Papiermüll(blau)
+rest=Restmüll(schwarz)
+glas=Glassmüll(grün)
+metall=Metall(orange)
+schadstoff=Schadstoffmobil(rot)
+frei=keineTonne(grau)
+feiertag=Feiertag(Stern)
+
+Kalenderwoche	Montag	Tonne1	Tonne2	Dienstag	Tonne1	Tonne2	Mittwoch	Tonne1	Tonne2	Donnerstag	Tonne1	Tonne2	Freitag	Tonne1	Tonne2	Samstag	Tonne1	Tonne2	Sonntag	Tonne1	Tonne2
+KW01	Mon=	frei	frei	Tue=	bio	frei	Wed=	gelb	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW02	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW03	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW04	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW05	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW06	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW07	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW08	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW09	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW10	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW11	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW12	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW13	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	feiertag	frei	Sat=	frei	frei	Sun=	frei	frei
+KW14	Mon=	feiertag	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	papier	frei	Sat=	rest	frei	Sun=	frei	frei
+KW15	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW16	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW17	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW18	Mon=	frei	frei	Tue=	feiertag	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	papier	frei	Sat=	rest	schadstoff	Sun=	frei	frei
+KW19	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	feiertag	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW20	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW21	Mon=	feiertag	frei	Tue=	bio	frei	Wed=	gelb	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW22	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	feiertag	frei	Fri=	papier	frei	Sat=	rest	frei	Sun=	frei	frei
+KW23	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW24	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW25	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW26	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW27	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW28	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW29	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW30	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW31	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW32	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW33	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW34	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW35	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW36	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW37	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW38	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW39	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW40	Mon=	frei	frei	Tue=	frei	frei	Wed=	feiertag	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW41	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW42	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW43	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW44	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	feiertag	frei	Fri=	frei	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW45	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW46	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	frei	frei	Sun=	frei	frei
+KW47	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW48	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW49	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW50	Mon=	frei	frei	Tue=	frei	frei	Wed=	frei	frei	Thu=	papier	frei	Fri=	rest	frei	Sat=	schadstoff	frei	Sun=	frei	frei
+KW51	Mon=	bio	frei	Tue=	gelb	frei	Wed=	frei	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
+KW52	Mon=	frei	frei	Tue=	feiertag	frei	Wed=	feiertag	frei	Thu=	frei	frei	Fri=	frei	frei	Sat=	frei	frei	Sun=	frei	frei
