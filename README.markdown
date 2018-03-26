@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.69 17.12.2017](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.70 26.03.2018](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -458,8 +458,14 @@ Es besteht eine Möglichkeit meine Software auch für Loxone statt für Homemati
 
 #### RSCP
 Downloadbereich E3DC Kundenportal [https://s10.e3dc.com](https://s10.e3dc.com)
-"Zusätzliche Optionen" > " RSCP-Beispielapplikation_2016-04-25.pdf"
-[Link](https://s10.e3dc.com/s10/module/download/get.php?dl=3408) (Benutzerdaten erforderlich)
+"Technische Anleitungen zu Zusatzoptionen der S10 Hauskraftwerke	Stand" > "RSCP-Beispielapplikation (Anleitung für Entwickler)"
+[Link](https://s10.e3dc.com/s10/module/download/get.php?id=280) (Benutzerdaten erforderlich)
+
+#### Vergleichbare Projekte
+HistoryValues vom S10 abfragen von RalfJL: [Link](https://github.com/RalfJL/S10history)
+Sperrzeiten setzen von rella: [Link](https://github.com/rellla/E3DC-Rscp)
+Anbindung des S10 an die Loxone von von Dieter Schmidberger: [Link](http://www.loxwiki.eu/display/LOXBERRY/E3DC2Lox)
+
 #### Grafiken
 Bildschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
 
@@ -471,50 +477,15 @@ V1.52 23.09.2017 Hausautomation integriert
 V1.49 05.09.2017 Abfuhrkalender eingebaut  
 V1.47 03.09.2017 WetterGui eingebaut  
 
+#### Version Abfragen
+Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
+`grep "Stand: " README.markdown |cut -d " " -f 2`
+
 #### Versionen
-V1.69 17.12.2017 [Issue #26](https://github.com/nischram/E3dcGui/issues/26)
-- Größe des RAMDisk erhöht
-
-V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden
-- Daten einer Grünbeck Wasseraufbereitung am Display anzeige und an die HM senden  
-
-V1.67 02.12.2017 WetterGui abgeschaltet
-- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
-- Ich hatte die Falsche Datei der srceenSaveHM hochgeladen.
-
-V1.66 30.11.2017 WetterGui abgeschaltet
-- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
-
-V1.65 06.11.2017 Fehler Abfuhrkalender
-- Fehler in der Zeilenabfragen Maximalwert war KW44
-
-V1.64 29.10.2017 Fehler LED-Statusanzeige
-- Ohne kompilieren der "rpi_ws281x" fehlt die Datei "version.h"
-
-V1.63 17.10.2017 Verbesserungen
-- Makefile für einfaches kompilieren
-- parameter.h geteilt für einfachere Anpassungen
-- Watchdog Dateien werden im Verzeichnis Data gespeichert
-
-V1.62 14.10.2017 Fehlerkorrektur Aktoren
-- Fehlende Parameteränderung nachgetragen
-
-V1.61 11.10.2017 LED-Statusanzeige integriert
-- Bibliothek WS281x mit LED-Statusanzeige integriert
-
-V1.60 03.10.2017 Verbesserung Bildschirmschoner
-- Schaltaktor um den Bildschirmschoner abzuschalten
-
-V1.59 03.10.2017 Verbesserungen: Schaltaktoren + DHT11-Sensor
-- Zeitaktor und Zeitfenster bei den Aktoren hinzugefügt
-- DHT11: Akktualisierung der Werte nur bei erfolgreicher Abfrage des Sensors da die Abfrage häufig fehlschlägt
-
-V1.58 01.10.2017 [Issue #25](https://github.com/nischram/E3dcGui/issues/25) + Korrekturen
-- In Funktion "readWrite900()" fehlt ein "datei.clear()"
-- Gekürter Dateiname "yester.txt" wieder auf "yerterday.txt" geändert, der Fehler lag auch an dem fehlenden "datei.clear()"
-- Datei erstellen wenn diese nicht existiert
-- Datein für Langzeitwerte "xxx900.txt" werden jetzt erstellt wenn diese nicht existieren (gelöscht)
-- Today oder Yesterday Zeit war unter Langzeitwerte und Monitor auch zu sehen
+V1.70 26.03.2018 Anpassungen in der Anleitung
+- Link zur Beispielapplikation von E3DC überarbeiter
+- Vergleichbare Projekte eingetragen
+- Anpassungen in der Anleitung
 - Changelog archiviert
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

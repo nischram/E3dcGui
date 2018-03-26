@@ -1,4 +1,45 @@
 # Changelog Archiv
+V1.70 26.03.2018 Anpassungen in der Anleitung
+- Link zur Beispielapplikation von E3DC überarbeiter
+- Anpassungen in der Anleitung
+- Changelog archiviert
+
+V1.69 17.12.2017 [Issue #26](https://github.com/nischram/E3dcGui/issues/26)
+- Größe des RAMDisk erhöht
+
+V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden
+- Daten einer Grünbeck Wasseraufbereitung am Display anzeige und an die HM senden  
+
+V1.67 02.12.2017 WetterGui abgeschaltet
+- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
+- Ich hatte die Falsche Datei der srceenSaveHM hochgeladen.
+
+V1.66 30.11.2017 WetterGui abgeschaltet
+- Der Wetterdienst von http://weather.tuxnet24.de wurde eingestellt
+
+V1.65 06.11.2017 Fehler Abfuhrkalender
+- Fehler in der Zeilenabfragen Maximalwert war KW44
+
+V1.64 29.10.2017 Fehler LED-Statusanzeige
+- Ohne kompilieren der "rpi_ws281x" fehlt die Datei "version.h"
+
+V1.63 17.10.2017 Verbesserungen
+- Makefile für einfaches kompilieren
+- parameter.h geteilt für einfachere Anpassungen
+- Watchdog Dateien werden im Verzeichnis Data gespeichert
+
+V1.62 14.10.2017 Fehlerkorrektur Aktoren
+- Fehlende Parameteränderung nachgetragen
+
+V1.61 11.10.2017 LED-Statusanzeige integriert
+- Bibliothek WS281x mit LED-Statusanzeige integriert
+
+V1.60 03.10.2017 Verbesserung Bildschirmschoner
+- Schaltaktor um den Bildschirmschoner abzuschalten
+
+V1.59 03.10.2017 Verbesserungen: Schaltaktoren + DHT11-Sensor
+- Zeitaktor und Zeitfenster bei den Aktoren hinzugefügt
+- DHT11: Akktualisierung der Werte nur bei erfolgreicher Abfrage des Sensors da die Abfrage häufig fehlschlägt
 
 V1.58 01.10.2017 [Issue #25](https://github.com/nischram/E3dcGui/issues/25) + Korrekturen
 - In Funktion "readWrite900()" fehlt ein "datei.clear()"
