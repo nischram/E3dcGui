@@ -524,7 +524,9 @@ void checkDEBUG()
     time( &currentTime );
     now = localtime( &currentTime );
     strftime (CLOCK,20,"%H:%M:%S",now);
-    if (strcmp ("00:00:00",CLOCK) == 0){
+    strftime (OUT,100,"CK-DBG_%H:%M:%S ",now);
+    DEBUG(OUT);
+    if (strcmp ("23:59:59",CLOCK) == 0){
       strftime (OUT,100,"DEBUG_%Y-%m-%d",now);
       snprintf (batch, (size_t)128, "cp /mnt/RAMDisk/DEBUG.txt /home/pi/E3dcGui/DEBUG/%s.txt", OUT);
       system(batch);
@@ -682,14 +684,16 @@ int piCPU (char* PiCPU)
 //IP
 int piIP (char host[24], char* PiIPhost)
 {
-  char batch[256], Pihost[128];
+  char batch[256], Pihost[128], firstBlock[24];
+	int firstBlockInt = 0;
   FILE *ipFile;
-  snprintf(batch, (size_t)256, "/sbin/ifconfig | grep \"%s\" | cut -d \":\" -f 1", host);
+	snprintf(batch, (size_t)256, "/sbin/ifconfig %s | grep \"inet \" | cut -d \"t\" -f 2| cut -d \" \" -f 2| cut -d \" \" -f 1| cut -d \".\" -f 1", host);
   ipFile = popen(batch, "r");
-  fgets(Pihost, (size_t)24, ipFile);
+  fgets(firstBlock, (size_t)24, ipFile);
   strtok(Pihost, "\n");
   pclose(ipFile);
-  if (strcmp (host,Pihost) == 0){
+	firstBlockInt = atoi(firstBlock);
+  if (firstBlockInt > 0){
     snprintf(batch, (size_t)256, "/sbin/ifconfig %s | grep \"inet \" | cut -d \"t\" -f 2| cut -d \" \" -f 2| cut -d \" \" -f 1", host);
     ipFile = popen(batch, "r");
     fgets(PiIPhost, (size_t)24, ipFile);
@@ -698,8 +702,8 @@ int piIP (char host[24], char* PiIPhost)
   }
   else{
     snprintf(PiIPhost, (size_t)24, "---");
+		return -1;
   }
-  //snprintf(PiIPhost, (size_t)24, "%s: %s", host, OUT);
   printf("### IP %s ###\n%s\n################\n", host, PiIPhost);
   return 1;
 }

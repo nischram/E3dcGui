@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.70 26.03.2018](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.71 11.04.2018](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -482,6 +482,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.71 11.04.2018 Verbesserung IP Anzeige
+- Bei der Verwendung von W-LAN wird für ETH ein falscher Wert angezeigt
+
 V1.70 26.03.2018 Anpassungen in der Anleitung
 - Link zur Beispielapplikation von E3DC überarbeiter
 - Vergleichbare Projekte eingetragen
