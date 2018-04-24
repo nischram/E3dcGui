@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.71 11.04.2018](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.72 24.04.2018](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -20,7 +20,7 @@ Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zu
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
-<img src="https://s20.postimg.org/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
+<img src="https://s20.postimg.cc/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
 Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohne Wettersymbol)
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
@@ -138,7 +138,7 @@ Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildsc
 Die Darstellung ist in 5 Bildschirmen unterteilt. Diese werden über die Symbole in der oberen Ziele abgerufen. Sollten Funktionen der Software nicht aktiviert sein, bleiben die Symbole ausgeblendet.
 
 #### 1. Setup
-<img src="https://s20.postimg.org/c6bv32kpp/Setup_V1-52.jpg" alt="Setup">  
+<img src="https://s20.postimg.cc/c6bv32kpp/Setup_V1-52.jpg" alt="Setup">  
 Hier kann die Software oder der PI neu gestartet werden.  
 Auf der rechten Seite wird die Display-Helligkeit eingestellt. Auch kannst du hier den PIR-Sensor aktivieren oder deaktivieren werden.  
 Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
@@ -147,7 +147,7 @@ Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 Leider wurde der Dienst eingestellt, der Server von http://weather.tuxnet24.de ist nicht mehr erreichbar.   
 Wenn ich einen neuen Dienst finde binde ich diesen ein.
 
-<img src="https://s20.postimg.org/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
+<img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
 [http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
 In der "parameter.h" muss die Standort-ID eingetragen werden, diese erhält man auf der Yahoo Seite ein dem die Location gesucht wird und man und in der Adresszeile aus dem Link die letzten Zahlen kopiert.   
@@ -157,31 +157,31 @@ Die Wetteranzeigen könnte auch ohne S10 oder HomeMatic genutzt werden.
 
 #### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
-<img src="https://s20.postimg.org/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
+<img src="https://s20.postimg.cc/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhythmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wird auch für diese Daten je ein Symbol angezeigt.
 Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhythmus die Daten abgefragt werden sollen (historyDelay).
 
 #### 4. Langzeit Werte des S10
 `  #define E3DC_S10                    1`    
-<img src="https://s20.postimg.org/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
+<img src="https://s20.postimg.cc/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können, muss die Maximalleistung in der „parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 
 #### 5. Monitor
 `  #define E3DC_S10                    1`    
-<img src="https://s20.postimg.org/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
+<img src="https://s20.postimg.cc/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts ist für neue Ideen noch Platz, gerne darfst du einen Issue erstellen wenn du wünsche hast!
 
 #### 6. SmartHome
-<img src="https://s20.postimg.org/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
+<img src="https://s20.postimg.cc/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
 Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
 `  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung, einer für den Batterie-SOC und ein Zeitaktor. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wird wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben. Weiter ist es möglich den Aktoren ein Zeitfenster zu zuweisen. Nur in diesem Fenster schaltet der Aktor ein und zum Ende des Zeitfensters aus, ein gestarteter Aktor mit einer mindest Einschaltzeit läuft noch so lange, bis zum ablauf der Mindestzeit.
 
 #### 7. HomeMatic
 `  #define Homematic_GUI               1`   
-<img src="https://s20.postimg.org/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
+<img src="https://s20.postimg.cc/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
 Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.   
 Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (Abfragezeit am roten Punkt unten rechts zu erkennen).
 Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.   
@@ -194,7 +194,7 @@ Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Ä
 
 #### 8. Grünbeck softliQ SC18
 `  #define Gruenbeck               1`   
-<img src="https://s20.postimg.org/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
+<img src="https://s20.postimg.cc/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
 Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.   
 __Wichtig__ ist für diese Funktion die Installation von XMLLINT mit folgndem Befehl: `sudo apt-get install libxml2-utils`     
 Weiter ist es möglich die Daten zur HomeMatic zu senden. `#define GruenbeckHM 1` Es werden in der HomeMatic entsprechende Systemvariablen benötigt.  
@@ -203,21 +203,21 @@ Es ist auch möglich eine Grünbeck __ohne Display__ am Raspberry mit einer Home
 
 #### 9. Abfuhrkalender
 `  #define Abfuhrkalender               1`   
-<img src="https://s20.postimg.org/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
+<img src="https://s20.postimg.cc/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
 Für das nächste Jahr musst du eine neue Datei mit der Jahreszahl anlegen, dann wird diese zum Jahreswechsel automatisch verwendet.
 
 ### Bildschirmschoner
 Damit das Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 73 definiert: `#define ScreenSaverTime             180`   
 Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display, dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:   
-<img src="https://s20.postimg.org/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
+<img src="https://s20.postimg.cc/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
 Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
-<img src="https://s20.postimg.org/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
+<img src="https://s20.postimg.cc/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
 Es besteht die Möglichkeit den Bildschirmschoner mit Hilfe eines Bewegungssensors zu deaktivieren. Hierfür muss zum einen WiringPi installiert werden ([siehe unten](https://github.com/nischram/E3dcGui#wiringpi_einrichten)), der Pin des GPIO am Raspberry Pi muss ggf. angepasst werden (parameter.h "#define PirPin   4") und der Bewegungssensor (PIR) muss installiert werden.   
 Hier ein Anschlussbild als Beispiel:   
-<img src="https://s20.postimg.org/etiw6x7q5/pir-364x500.png" alt="fritzing PIRtoPI">   
+<img src="https://s20.postimg.cc/etiw6x7q5/pir-364x500.png" alt="fritzing PIRtoPI">   
 Pinbelegung:   
 VCC an Pin 2 (5V)   
 OUT an Pin 16 (GPIO 23/GPIO_GEN 4)   
@@ -482,6 +482,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.72 24.04.2018 Bilder wurden nicht mehr angezeigt
+- Postimage ist unter postimg.org nicht mehr erreichbar jetz postimg.cc
+
 V1.71 11.04.2018 Verbesserung IP Anzeige
 - Bei der Verwendung von W-LAN wird für ETH ein falscher Wert angezeigt
 

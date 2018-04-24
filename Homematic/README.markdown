@@ -138,7 +138,7 @@ Nun können diverse Programme, Funktionen und Anzeigen mit den Werten in der Hom
 ###	HM Display nutzen
 Im Ordner „HM-Scripte“ befindet sich ein Script, mit dem das Display „HM-Dis-WM55“ angesteuert werden kann. Auf das Anlernen des Displays wird hier nicht näher eingegangen. Damit das Display genutzt werden kann, muss im Bereich „Programme und Verknüpfungen“ > „Programme“ ein neues Programm angelegt werden.
 
-<img src="http://s20.postimg.org/8w1ijw07x/HM_IMG_003.png" alt="HM_IMG_003">
+<img src="https://s20.postimg.cc/8w1ijw07x/HM_IMG_003.png" alt="HM_IMG_003">
 
 Als „Bedingung: „Wenn...“ wird als Gerät das Display mit „Tastendruck kurz“ eingebunden. Die Bezeichnung des Display ist im obigen Bild „EG Display“ mit „:1“ wird der Tastendruck unten ausgewählt.
 Als „Aktivität: Dann...“ wird als „Script“ der Inhalt der im Ordner "HM-Scripte" befindlichen Datei „Display-S10.hm“ eingefügt. Es wird nicht die Datei benötigt. Die Auslösung muss für ein Display „sofort“ erfolgen.
@@ -155,7 +155,7 @@ time RSCPTime = dom.GetObject("S10_RSCP_Time").ToTime();
 ```
 Hier ein Bild vom Display mit der Anzeige der S10-Werte. Die Werte werden je nach Bedingung in unterschiedlichen Farben dargestellt.
 
-<img src="http://s20.postimg.org/pvyuh3tul/IMG_001.png" alt="IMG_001">
+<img src="https://s20.postimg.cc/pvyuh3tul/IMG_001.png" alt="IMG_001">
 
 Durch einen kurzen Tastendruck an der Unterkante des Displays löst man das Programm aus, und die Werte des S10 werden angezeigt.
 
@@ -179,12 +179,12 @@ Im Bereich „Programme und Verknüpfungen“ > „Programme“ wird ein neues P
 Dieses Programm überprüft die momentane Leistung der Spülmaschine. Im Standby benötigen viele Maschinen nur wenig Leistung (Watt). Die von mir verwendete Spülmaschine zieht beim Programmieren maximal 3 – 6 Watt. Wenn die Spülmaschine gestartet wird, erhöht sich die Leistungsaufnahme. Diesen Umstand nutze ich, um den Aktor auszuschalten. Nach dem Ausschalten wartet das Programm auf die Einschaltbedingung und schaltet den Aktor zu. Weiter wird die Bedienung des Aktor gesperrt, damit die Spülmaschine für die Programmlaufzeit nicht abgeschaltet wird. Die Sperre wird nach Ablauf der Zeit aufgehoben.
 Im folgenden Bild ist das gesamte Programm zu sehen, hier mit einer Startbedingung auf den Überschuss mit 2500 Watt. Somit startet die Spülmaschine erst bei einer Überschussleistung von 2500 Watt, was oft erst nach vollständig geladenen Batterien eintritt.
 
-<img src="http://s20.postimg.org/p8bk9mejh/HM_IMG_004.png" alt="HM_IMG_004">
+<img src="https://s20.postimg.cc/p8bk9mejh/HM_IMG_004.png" alt="HM_IMG_004">
 
 Im nächsten Bild ist zu sehen, wie die Spülmaschine bei einer PV-Produktion von 2500 Watt mit definierten Bedingungen startet.
 Meine PV-Anlage ist kleiner und ich erreiche somit selten Überschuss. Somit schlte ich die Spülmaschine schon bei einer PV Produktion von 2500 Watt ein. Wie zuvor beschrieben, kann ein HomeMatic-Programm keine negativen Werte auswerten. Somit kommt hier der Wert „NET-IN“ zum Einsatz.
 
-<img src="http://s20.postimg.org/cms93v3fh/HM_IMG_005.png" alt="HM_IMG_005">
+<img src="https://s20.postimg.cc/cms93v3fh/HM_IMG_005.png" alt="HM_IMG_005">
 
 In beiden Beispielen ist eine zusätzliche Zeitbedingung (hier 15:00 Uhr) enthalten, damit die Spülmaschine am Starttag oder am Folgetag nach dem Start auch durchläuft.
 
@@ -195,12 +195,12 @@ Im Folgenden beschreibe ich ein Programm zum Ansteuern eines Heizstab. (Nur zur 
 Es können diverse Aktoren für diese Anwendung genutzt werden. Daher geben ich keine genauere Bezeichnung für einen Aktor an.
 Es wird wieder ein Programm erstellt. Dieses Programm (Abbildung unten) wertet die Überschussleistung „NET-IN“ aus. Im Beispiel wird bei 510 Watt eingeschaltet und bei einem Bezug „NET-OUT“ von 10 Watt wieder ausgeschaltet.
 
-<img src="http://s20.postimg.org/5kubhnztp/HM_IMG_006.png" alt="HM_IMG_006">
+<img src="https://s20.postimg.cc/5kubhnztp/HM_IMG_006.png" alt="HM_IMG_006">
 
 ### Werte des S10 auf der Startseite der WebUI anzeigen
 Im Beriech „Einstellungen“ > „Benutzerverwaltung“ > „Bearbeiten“ kann man über „Systemvariable hinzufügen“ entsprechend Systemvariablen zur Startseite hinzufügen.
 
-<img src="http://s20.postimg.org/5yvnh9jx9/HM_IMG_007.png" alt="HM_IMG_007">
+<img src="https://s20.postimg.cc/5yvnh9jx9/HM_IMG_007.png" alt="HM_IMG_007">
 
 ### Diverse Anwendungen für S10-Werte
 
@@ -208,7 +208,7 @@ __Zeitstempel umrechnen__
 
 Hier ein Programm, um den Zeitstempel „S10_RSCP_Time“ von UnixTime auf Uhrzeit und Datum  für "S10_Zeitstempel" umzurechnen, sieht wie folgt aus:
 
-<img src="http://s20.postimg.org/l8viogffh/HM_IMG_008.png" alt="HM_IMG_008">
+<img src="https://s20.postimg.cc/l8viogffh/HM_IMG_008.png" alt="HM_IMG_008">
 
 Der Inhalt des Scripts sieht wie folgendermaßen aus:
 ```shell
@@ -224,7 +224,7 @@ __Tagesmaximalwert der PV-Leistung als Variable anlegen__
 Speichern der Maximalwerte von PV-Leistung in eine Systemvariable. Diese Variable muss als Variablentyp „Zahl“ angelegt werden.
 Folgendes Programm ist nötig:
 
-<img src="http://s20.postimg.org/4mijt4bvh/HM_IMG_009.png" alt="HM_IMG_009">
+<img src="https://s20.postimg.cc/4mijt4bvh/HM_IMG_009.png" alt="HM_IMG_009">
 
 Das Script sieht so aus:
 ```shell
