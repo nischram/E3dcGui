@@ -177,12 +177,12 @@ __Programm anlegen__
 
 Im Bereich „Programme und Verknüpfungen“ > „Programme“ wird ein neues Programm erstellt.
 Dieses Programm überprüft die momentane Leistung der Spülmaschine. Im Standby benötigen viele Maschinen nur wenig Leistung (Watt). Die von mir verwendete Spülmaschine zieht beim Programmieren maximal 3 – 6 Watt. Wenn die Spülmaschine gestartet wird, erhöht sich die Leistungsaufnahme. Diesen Umstand nutze ich, um den Aktor auszuschalten. Nach dem Ausschalten wartet das Programm auf die Einschaltbedingung und schaltet den Aktor zu. Weiter wird die Bedienung des Aktor gesperrt, damit die Spülmaschine für die Programmlaufzeit nicht abgeschaltet wird. Die Sperre wird nach Ablauf der Zeit aufgehoben.
-Im folgenden Bild ist das gesamte Programm zu sehen, hier mit einer Startbedingung auf den Überschuss mit 2500 Watt. Somit startet die Spülmaschine erst bei einer Überschussleistung von 2500 Watt, was oft erst nach vollständig geladenen Batterien eintritt.
+Im folgenden Bild ist das gesamte Programm zu sehen, hier mit einer Startbedingung auf den Überschuss mit 2500 Watt. Somit startet die Spülmaschine erst bei einer Überschussleistung von 2500 Watt, was oft erst nach vollständig geladenen Batterien eintritt. Wie zuvor beschrieben, kann ein HomeMatic-Programm keine negativen Werte auswerten. Somit kommt hier der Wert „NET-IN“ zum Einsatz.
 
 <img src="https://s20.postimg.cc/p8bk9mejh/HM_IMG_004.png" alt="HM_IMG_004">
 
 Im nächsten Bild ist zu sehen, wie die Spülmaschine bei einer PV-Produktion von 2500 Watt mit definierten Bedingungen startet.
-Meine PV-Anlage ist kleiner und ich erreiche somit selten Überschuss. Somit schlte ich die Spülmaschine schon bei einer PV Produktion von 2500 Watt ein. Wie zuvor beschrieben, kann ein HomeMatic-Programm keine negativen Werte auswerten. Somit kommt hier der Wert „NET-IN“ zum Einsatz.
+Meine PV-Anlage ist kleiner und ich erreiche somit selten Überschuss. Somit schalte ich die Spülmaschine schon bei einer PV Produktion von 2500 Watt ein. Hierfür nehme ich den Wert "POWER_PV".
 
 <img src="https://s20.postimg.cc/cms93v3fh/HM_IMG_005.png" alt="HM_IMG_005">
 
