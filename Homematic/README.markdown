@@ -119,6 +119,8 @@ Es ist wichtig, dass alle Variable mit dem Variablentyp „Zahl“ erstellt werd
 
 Zusätzlich sind noch Variablen wie z.B. Autarky oder Eigenstrom möglich.
 
+In [Issue #30](https://github.com/nischram/E3dcGui/issues/30) habe ich erklärt wie man weitere Variablen in den Quellcode einbauen kann.
+
 ### XML-API einrichten
 Damit der Raspberry Pi die Werte des S10 zur HomeMatic senden kann, benötigt die HomeMatic die Zusatz-Software „XML-API“.
 Alle technischen Informationen entnehmen Sie bitte der Anleitung des Anbieters.
@@ -261,5 +263,7 @@ Passend dazu ist das Skript „S10-min-maxSOC.hm“ ist im Ordner „HM-Scripte�
 Die Scripte für die HM habe ich mir zu Teil aus Informationen des Homematic-Forum zusammengebaut.
 
 ## Changelog
+25.06.2018 [Issue #30](https://github.com/nischram/E3dcGui/issues/30)
+- Beispieländerung für Issue #30
 
 14.08.2016 Repository neu erstellt
