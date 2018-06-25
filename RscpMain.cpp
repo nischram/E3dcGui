@@ -399,10 +399,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                             if (index == 0){
                               cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
                               writeRscp(PosPVIDCP1,TAG_OUT_PVI_DC_POWER);
+                              printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_1, TAG_OUT_PVI_DC_POWER);
                             }
                             else if (index == 1){
                               cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
                               writeRscp(PosPVIDCP2,TAG_OUT_PVI_DC_POWER);
+                              printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_2, TAG_OUT_PVI_DC_POWER);
                             }
                     }
                 }

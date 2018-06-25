@@ -51,6 +51,8 @@
 #define PVI_TRACKER                 2
 //Weclche Werte sollen vom Tracker/ von den Trackern abgefragt werden
 #define TRACKER_POWER               1
+#define TAG_EMS_ISE_TRACKER_1       38884
+#define TAG_EMS_ISE_TRACKER_2       38885
 #define TRACKER_VOLTAGE             1
 #define TRACKER_CURRENT             1
 //Abfragen der History Values
