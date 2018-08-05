@@ -33,7 +33,7 @@ void printsendCharHM(int CounterHM, int id, char value[32])
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
       snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
-      printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
+      printf("send to Homematic ISE_ID %i new Value = %s\n",id, value);
       system(batch);
     }
   }

@@ -32,6 +32,8 @@
 #define TAG_EMS_ISE_POWER_NET_OUT   38876
 #define TAG_BAT_ISE_SOC             38878
 #define TAG_EMS_ISE_UNIXTIME        38946
+#define sendTime                    0                       // Wenn der Zeitstempel gesendet werden soll =1; wenn die HM diesen Berechnen soll =0
+#define ISE_TIMESTAMP_HM            39619
 //Wenn vorhandene Bitte für Additional (Externe-Quelle) und
 //Wallbox je ein 1, sonst 0 eintragen.
 #define Additional                  0

@@ -194,6 +194,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
           cout << "System Timezone is " << TAG_EMS_OUT_TZ << "\n";
           printsendHM(CounterHM, TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
+          if (sendTime == 1){
+            char SEND[64];
+            snprintf (SEND, (size_t)64, "%s_%s", TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME);
+            printsendCharHM(CounterHM, ISE_TIMESTAMP_HM, SEND);
+          }
           break;
       }
       case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV

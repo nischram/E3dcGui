@@ -207,7 +207,11 @@ Im Beriech „Einstellungen“ > „Benutzerverwaltung“ > „Bearbeiten“ kan
 ### Diverse Anwendungen für S10-Werte
 
 __Zeitstempel umrechnen__
+05.08.2018 Das Script scheint nicht mehr zu laufen (Fehler nicht erkannt!)
+Als neue Möglichkeit, kann jetzt der Zeitstempel direkt gesendet werden, dann wird kein weiteres Programm in der HM benötigt.
+Hierfür nur die ISE in die "parameter.h" eintragen, unter "ISE_TIMESTAMP_HM" und den Wert "sendTime" auf "1" setzen.
 
+Alt:
 Hier ein Programm, um den Zeitstempel „S10_RSCP_Time“ von UnixTime auf Uhrzeit und Datum  für "S10_Zeitstempel" umzurechnen, sieht wie folgt aus:
 
 <img src="https://s20.postimg.cc/l8viogffh/HM_IMG_008.png" alt="HM_IMG_008">
