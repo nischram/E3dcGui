@@ -30,7 +30,7 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
 #include "HMGui.h"
-//#include "External/WetterGui.h"
+#include "External/WetterGui.h"
 #include "External/MuellGui.h"
 #include "External/dht11.h"
 #include "External/Aktor.h"
@@ -777,12 +777,12 @@ int main(){
 				SmartCounter--;
 				break;
 			}
-/*//####################################################
+//####################################################
 			//Wetter Grafik erstellen
 			case ScreenWetter:{
 				GuiTime = makeWetterGui(GuiTime, counter, weatherTime);    //Ausgelagert in die Datei WetterGui.h
 				break;
-			}*/
+			}
 //####################################################
 			//Grünbeck Grafik erstellen
 			case ScreenGB:{
@@ -815,7 +815,6 @@ int main(){
 //####################################################
 	//Debug.txt um 0:00Uhr speichern
 		checkDEBUG();
-		DEBUG("CK-DBG ");
 //####################################################
 	//WatchdogHM Daten für WD schreiben
 		int Unixtime[UnixtimeMAX];

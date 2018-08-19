@@ -107,10 +107,10 @@ int main()
 				//siehe screnSave.c
 				break; // ScreenSetup
 			}
-			/*case ScreenWetter:{
+			case ScreenWetter:{
 				//siehe screnSave.c
 				break; // ScreenWetter
-			}*/
+			}
 			case ScreenSmart:{
 				//siehe screnSave.c
 				break; // ScreenSmart

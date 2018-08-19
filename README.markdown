@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.74 05.08.2018](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.75 19.08.2018](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -10,7 +10,7 @@ __Daten vom E3DC zur HomeMatic Hausautomation senden__
 __Daten vom S10 auf dem Display darstellen__   
 __Daten von der HomeMatic auf dem Display darstellen__   
 __Kleine Hausautomation mit GPIO's__   
-Wetterinformationen von "Yahoo Weather" (Dienst wurde eingestellt)  
+__Wetterinformationen von "Yahoo Weather" mit "tuxnet24.de"__
 __Daten einer Grünbeck SC18 anzeigen__   
 __Daten einer Grünbeck SC18 zur HomeMatic senden__    
 __Dein eigener Abfuhrkalender__   
@@ -144,9 +144,6 @@ Auf der rechten Seite wird die Display-Helligkeit eingestellt. Auch kannst du hi
 Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
 
 #### 2. Wetteranzeige
-Leider wurde der Dienst eingestellt, der Server von http://weather.tuxnet24.de ist nicht mehr erreichbar.   
-Wenn ich einen neuen Dienst finde binde ich diesen ein.
-
 <img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
 [http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
@@ -482,6 +479,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.75 19.08.2018 WetterGui wieder aktiviert [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
+- Issue #32 Der Wetterdienst über weather.tuxnet24.de ist als https wieder aktiv.
+
 V1.74 05.08.2018 Zeitstempel zur HM senden
 - Das Script in der HM arbeitet nicht mehr, jetzt kann der Zeitstempel gesendet werden.
 

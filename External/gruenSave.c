@@ -20,7 +20,7 @@ void readWriteSendGB(char *name, char *unit, char *para, int pos, int ise)
   char value[128];
   readGB(para, value);
   writeGruenRAM(pos, atof(value));
-  if (GruenbeckHM == 1){
+  if (GruenbeckHM == 1 && ise > 0){
     printsendHM(ise, value);
   }
   printf("\n%s: %s %s\n", name, value, unit);
@@ -36,5 +36,7 @@ void main()
   readWriteSendGB("Letzte Regeneration vor", "Std", GB_LAST_REGENERATION, PosGB_LAST_REGENERATION, ISE_GB_LAST_REGENERATION);
   readWriteSendGB("Status letzte eMail", " ", GB_STATUS_EMAIL, PosGB_STATUS_EMAIL, ISE_GB_STATUS_EMAIL);
   snprintf(value, (size_t)8, "%i", OK);
-  printsendHM(ISE_GB_PI_SEND_OK, value);
+  if (ISE_GB_PI_SEND_OK > 0){
+    printsendHM(ISE_GB_PI_SEND_OK, value);
+  }
 }

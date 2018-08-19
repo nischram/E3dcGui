@@ -16,10 +16,10 @@
 #define ScreenSetup                 2    //!!
 #define ScreenMonitor               3    //!!
 #define ScreenHM                    4    //!!
-//#define ScreenWetter                5    //!!
-#define ScreenMuell                 5    //!!
-#define ScreenSmart                 6    //!!
-#define ScreenGB                    7    //!!
+#define ScreenWetter                5    //!!
+#define ScreenMuell                 6    //!!
+#define ScreenSmart                 7    //!!
+#define ScreenGB                    8    //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!

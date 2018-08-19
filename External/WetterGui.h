@@ -392,7 +392,7 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 		drawCorner(760,440,20,20,WHITE);
 		//Wetterdaten einlesen
 		memset(&batch, 0, sizeof(batch));
-		snprintf(batch, (size_t)256, "curl http://weather.tuxnet24.de/?id=%i", weatherID);
+		snprintf(batch, (size_t)256, "curl https://weather.tuxnet24.de/?id=%i", weatherID);
 		FILE *out = NULL;
 		out = popen( batch, "r" );
 		if( out != NULL ){

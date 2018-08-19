@@ -118,10 +118,11 @@ ws2811_led_t dotcolors[] =
     0x00201000,  // [2] = orange
     0x00202000,  // [3] = yellow
     0x00002000,  // [4] = green
-    0x00002020,  // [5] = lightblue
-    0x00000020,  // [6] = blue
-    0x00100010,  // [7] = purple
-    0x00200010,  // [8] = pink
+    0x00002010,  // [5] = cyan
+    0x00002020,  // [6] = lightblue
+    0x00000020,  // [7] = blue
+    0x00100010,  // [8] = purple
+    0x00200010,  // [9] = pink
 };
 
 static void ctrl_c_handler(int signum)
@@ -389,9 +390,9 @@ int main(void)
       return ret;
   }
 
-  //int ro = 0;
-  //int gr = 0;
-  //int bl = 0;
+  //int ro = 100;
+  //int gr = 100;
+  //int bl = 100;
   //unsigned long rgbHEX;
 
   while (running) {

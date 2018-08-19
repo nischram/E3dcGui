@@ -126,8 +126,7 @@ Es kann aber zu darstellungsfehler kommen.
 #define GruenbeckHM                 0                       // 1= Daten der Grünbeck sollen zur HomeMatic gesendet werden, Einstellungen der ISE_ID in External/Gruenbeck.h
 
 //#######################################
-// Yahoo Wetter (Dienst wurde eingestellt!)
-//#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather
+#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather oder https://weather.tuxnet24.de/?action=citycode&lang=de
 
 //#######################################
 // Abfuhrkalender

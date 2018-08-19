@@ -24,6 +24,7 @@ int Picture5;
 int Picture6;
 int Picture7;
 int Picture8;
+int Picture9;
 
 // Zusatzfunktion für die Jalousie-Funktin "readJalou_HM" und Aktor.h
 unsigned replace_character(char* string, char from, char to){
@@ -49,7 +50,7 @@ int read_HM(int id, int cutnumber, char* value){
   cutlast = 8 + cutnumber - 1;
   char batch[256];
   memset(&batch, 0, sizeof(batch));
-  snprintf(batch, (size_t)256, "curl http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, id, cutlast);
+  snprintf(batch, (size_t)256, "curl -s http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, id, cutlast);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -70,7 +71,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
   char batch[256], res_Jal[20];
   memset(&batch, 0, sizeof(batch));
   memset(&res_Jal, 0, sizeof(res_Jal));
-  snprintf(batch, (size_t)256, "curl http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, id);
+  snprintf(batch, (size_t)256, "curl -s http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, id);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -94,7 +95,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
 void printsendHM(int id, char value[20]){
     char batch[128];
     memset(batch, 0x00, sizeof(batch));
-    snprintf(batch, sizeof(batch), "curl \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" &",HM_IP , id, value);
+    snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\">/dev/null &",HM_IP , id, value);
     //printf("send :[%s]\n",batch);
     system(batch);
 }
@@ -177,7 +178,7 @@ void createData(int x, int y, char *c){
 // PicturPosition
 int picturePosition()
 {
-  int numberPicture = 1;   // 1=Standard-Button ohne Wetter
+  int numberPicture = 2;   // 1=Standard-Button ohne Wetter
   if(E3DC_S10 ==1)
     numberPicture = numberPicture +3;
   if(useAktor == 1 && useDHT11 == 1)
@@ -190,29 +191,31 @@ int picturePosition()
     numberPicture = numberPicture +1;
   int piece = (800 - (numberPicture * 80)) / 2;
   Picture1 = piece;
+  piece = piece + 80;
+  Picture2 = piece;
   if(E3DC_S10 ==1){
-    piece = piece + 80;
-    Picture2 = piece;
     piece = piece + 80;
     Picture3 = piece;
     piece = piece + 80;
     Picture4 = piece;
-  }
-  if(useAktor == 1 && useDHT11 == 1){
     piece = piece + 80;
     Picture5 = piece;
   }
-  if(Homematic_GUI ==1){
+  if(useAktor == 1 && useDHT11 == 1){
     piece = piece + 80;
     Picture6 = piece;
   }
-  if(Gruenbeck ==1){
+  if(Homematic_GUI ==1){
     piece = piece + 80;
     Picture7 = piece;
   }
-  if(Abfuhrkalender ==1){
+  if(Gruenbeck ==1){
     piece = piece + 80;
     Picture8 = piece;
+  }
+  if(Abfuhrkalender ==1){
+    piece = piece + 80;
+    Picture9 = piece;
   }
   return 1;
 }
@@ -224,20 +227,20 @@ int drawMainScreen()
   drawSquare(12,12,778,458,WHITE);
   drawCorner(12, 12, 778, 458, LTGREY);
   DrawImage("EinstImage", Picture1, PictureLine1);
-  //DrawImage("WetterImage", Picture2, PictureLine1);
+  DrawImage("WetterImage", Picture2, PictureLine1);
   if(E3DC_S10 ==1){
-    DrawImage("AktuellImage", Picture2, PictureLine1);
-    DrawImage("LangzeitImage", Picture3, PictureLine1);
-    DrawImage("MonitorImage", Picture4, PictureLine1);
+    DrawImage("AktuellImage", Picture3, PictureLine1);
+    DrawImage("LangzeitImage", Picture4, PictureLine1);
+    DrawImage("MonitorImage", Picture5, PictureLine1);
   }
   if(useAktor == 1 && useDHT11 == 1)
-    DrawImage("SmartImage", Picture5, PictureLine1);
+    DrawImage("SmartImage", Picture6, PictureLine1);
   if(Homematic_GUI ==1)
-    DrawImage("HMImage", Picture6, PictureLine1);
+    DrawImage("HMImage", Picture7, PictureLine1);
   if(Gruenbeck ==1)
-    DrawImage("GBImage", Picture7, PictureLine1);
+    DrawImage("GBImage", Picture8, PictureLine1);
   if(Abfuhrkalender ==1)
-    DrawImage("MuellImage", Picture8, PictureLine1);
+    DrawImage("MuellImage", Picture9, PictureLine1);
   return 1;
 }
 // Bit aus einer Datei lesen, ändern und schreiben
