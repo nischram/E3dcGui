@@ -32,7 +32,7 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "HMGui.h"
 #include "External/WetterGui.h"
 #include "External/MuellGui.h"
-#include "External/dht11.h"
+#include "External/dht.h"
 #include "External/Aktor.h"
 #include "External/Gruenbeck.h"
 

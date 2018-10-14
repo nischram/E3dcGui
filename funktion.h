@@ -181,7 +181,7 @@ int picturePosition()
   int numberPicture = 2;   // 1=Standard-Button ohne Wetter
   if(E3DC_S10 ==1)
     numberPicture = numberPicture +3;
-  if(useAktor == 1 && useDHT11 == 1)
+  if(useAktor == 1 && useDHT == 1)
     numberPicture = numberPicture +1;
   if(Homematic_GUI ==1)
     numberPicture = numberPicture +1;
@@ -201,7 +201,7 @@ int picturePosition()
     piece = piece + 80;
     Picture5 = piece;
   }
-  if(useAktor == 1 && useDHT11 == 1){
+  if(useAktor == 1 && useDHT == 1){
     piece = piece + 80;
     Picture6 = piece;
   }
@@ -233,7 +233,7 @@ int drawMainScreen()
     DrawImage("LangzeitImage", Picture4, PictureLine1);
     DrawImage("MonitorImage", Picture5, PictureLine1);
   }
-  if(useAktor == 1 && useDHT11 == 1)
+  if(useAktor == 1 && useDHT == 1)
     DrawImage("SmartImage", Picture6, PictureLine1);
   if(Homematic_GUI ==1)
     DrawImage("HMImage", Picture7, PictureLine1);

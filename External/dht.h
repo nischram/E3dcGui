@@ -8,7 +8,7 @@
 
 #define MAXTIMINGS	85
 
-int dht11_dat[5] = { 0, 0, 0, 0, 0 };
+int dht_data[5] = { 0, 0, 0, 0, 0 };
 
 int writeDHT11(int DHT11Position, int NewValue)
 {
@@ -26,7 +26,7 @@ int makeDHT11()
   return 0;
 }
 
-int read_dht11_dat(int DHTPin, char* hum, char* temp)
+int read_dht_data(int DHTPin, char* hum, char* temp)
 {
 	if ( wiringPiSetup() == -1 )
 		return -1;
@@ -37,7 +37,7 @@ int read_dht11_dat(int DHTPin, char* hum, char* temp)
 	//float	f; /* fahrenheit */
 	char OUT[56];
 
-	dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
+	dht_data[0] = dht_data[1] = dht_data[2] = dht_data[3] = dht_data[4] = 0;
 
 	/* pull pin down for 18 milliseconds */
 	pinMode( DHTPin, OUTPUT );
@@ -56,7 +56,7 @@ int read_dht11_dat(int DHTPin, char* hum, char* temp)
 		while ( digitalRead( DHTPin ) == laststate )
 		{
 			counter++;
-			delayMicroseconds( 2 );
+			delayMicroseconds( 3 );
 			if ( counter == 255 )
 			{
 				break;
@@ -71,9 +71,9 @@ int read_dht11_dat(int DHTPin, char* hum, char* temp)
 		if ( (i >= 4) && (i % 2 == 0) )
 		{
 			/* shove each bit into the storage bytes */
-			dht11_dat[j / 8] <<= 1;
+			dht_data[j / 8] <<= 1;
 			if ( counter > 16 )
-				dht11_dat[j / 8] |= 1;
+				dht_data[j / 8] |= 1;
 			j++;
 		}
 	}
@@ -82,13 +82,24 @@ int read_dht11_dat(int DHTPin, char* hum, char* temp)
 	 * print it out if data is good
 	 */
 	if ( (j >= 40) &&
-	     (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) )
+	     (dht_data[4] == ( (dht_data[0] + dht_data[1] + dht_data[2] + dht_data[3]) & 0xFF) ) )
 	{
-		//f = dht11_dat[2] * 9. / 5. + 32;
-		//printf( "Humidity = %d.%d %% Temperature = %d.%d *C (%.1f *F)\n",
-			//dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
-		snprintf(hum, (size_t)56, "%d.%d", dht11_dat[0], dht11_dat[1]);
-		snprintf(temp, (size_t)56, "%d.%d", dht11_dat[2], dht11_dat[3]);
+    float h = (float)((dht_data[0] << 8) + dht_data[1]) / 10;
+		if ( h > 100 )
+		{
+			h = dht_data[0];	// for DHT11
+		}
+		float c = (float)(((dht_data[2] & 0x7F) << 8) + dht_data[3]) / 10;
+		if ( c > 125 )
+		{
+			c = dht_data[2];	// for DHT11
+		}
+		if ( dht_data[2] & 0x80 )
+		{
+			c = -c;
+		}
+		snprintf(hum, (size_t)56, "%.1f", h);
+		snprintf(temp, (size_t)56, "%.1f", c);
 		return 1;
 	}else  {
 		//printf( "Data not good, skip\n" );
@@ -98,7 +109,7 @@ int read_dht11_dat(int DHTPin, char* hum, char* temp)
 	}
 }
 
-int saveDHT11(int DHTUse, int DHTPosition, int DHTPin)
+int saveDHT(int DHTUse, int DHTPosition, int DHTPin)
 {
   if (DHTUse == false)
     return 0;
@@ -110,7 +121,7 @@ int saveDHT11(int DHTUse, int DHTPosition, int DHTPin)
 
   for( i = 0; i < 10; ++i )
   {
-    ret = read_dht11_dat( DHTPin, read1, read2);
+    ret = read_dht_data( DHTPin, read1, read2);
     float hum = atof(read1);
     float temp = atof(read2);
     writeDHT11(DHTPosition +2,ret);
@@ -170,7 +181,7 @@ int drawDHTState(int DHTUse, int DHTPin, int DHTPosition, char *DHTName, int Lin
 }
 int makeDHTFrame()
 {
-  if (useDHT11 == 1){
+  if (useDHT == 1){
     drawDHTFrame(DHT1Use, "Sensor 1", R1);
     drawDHTFrame(DHT2Use, "Sensor 2", R2);
     drawDHTFrame(DHT3Use, "Sensor 3", R3);
@@ -182,19 +193,19 @@ int makeDHTFrame()
 }
 int makeDHTState()
 {
-  if (useDHT11 == 1){
+  if (useDHT == 1){
     //Read Daten Beginn (roter Punkt unten rechts)
     drawSquare(760,440,20,20,LIGHT_RED);
     drawCorner(760,440,20,20,WHITE);
-    saveDHT11(DHT1Use, DHT1Position, DHT1Pin);
+    saveDHT(DHT1Use, DHT1Position, DHT1Pin);
     drawDHTState(DHT1Use, DHT1Pin, DHT1Position, DHT1Name, R1);
-    saveDHT11(DHT2Use, DHT2Position, DHT2Pin);
+    saveDHT(DHT2Use, DHT2Position, DHT2Pin);
     drawDHTState(DHT2Use, DHT2Pin, DHT2Position, DHT2Name, R2);
-    saveDHT11(DHT3Use, DHT3Position, DHT3Pin);
+    saveDHT(DHT3Use, DHT3Position, DHT3Pin);
     drawDHTState(DHT3Use, DHT3Pin, DHT3Position, DHT3Name, R3);
-    saveDHT11(DHT4Use, DHT4Position, DHT4Pin);
+    saveDHT(DHT4Use, DHT4Position, DHT4Pin);
     drawDHTState(DHT4Use, DHT4Pin, DHT4Position, DHT4Name, R4);
-    saveDHT11(DHT5Use, DHT5Position,DHT5Pin);
+    saveDHT(DHT5Use, DHT5Position,DHT5Pin);
     drawDHTState(DHT5Use, DHT5Pin, DHT5Position, DHT5Name, R5);
     //Read Daten Ende (grüner Punkt unten rechts)
     drawSquare(760,440,20,20,GREEN);

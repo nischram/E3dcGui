@@ -213,7 +213,7 @@ Es kann aber zu darstellungsfehler kommen.
 
 //#######################################
 //Temperatur und Luftfeuchtesensoren
-#define useDHT11                    1                       // DHT11 verwenden =1 / deaktiv=0
+#define useDHT                      1                       // DHT11 verwenden =1 / deaktiv=0
 #define DHT1Use                     1                       // DHT 1 deaktiv=0 / aktiv=1
 #define DHT1Name                    "Flur"                  // Bezeichnung
 #define DHT1Pin                     7                       // wiringPi Pin Nummer vom GPIO
