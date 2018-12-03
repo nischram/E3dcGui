@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.76 14.10.2018](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.77 03.12.2018](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -479,6 +479,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
+- screenSave.c Zeile 207 useDHT11 geändert in useDHT
+
 V1.76 14.10.2018 SmartHome angepasst für DHT11 und DHT22 Sensoren
 - dht11.c ausgetauscht gegen dht.h damit auch die DHT22 Sensoren möglich sind.
 

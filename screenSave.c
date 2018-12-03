@@ -204,7 +204,7 @@ int main()
 				writeScreen(ScreenShutdown, ShutdownRun);
 			}
 		}
-		if(useAktor == 1 && useDHT11 == 1){
+		if(useAktor == 1 && useDHT == 1){
 			if((scaledX  > buttonCordsSmart[X] && scaledX < (buttonCordsSmart[X]+buttonCordsSmart[W])) && (scaledY > buttonCordsSmart[Y] && scaledY < (buttonCordsSmart[Y]+buttonCordsSmart[H]))){
 				if (mymillis() - buttonTimerSmart > 500){
 					buttonTimerSmart = mymillis();
