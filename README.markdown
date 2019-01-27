@@ -482,6 +482,7 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 #### Versionen
 V1.78 27.01.2019 Wetteranzeige umgabaut auf OpenWeatherMap
 - für die Wetteranzeige ist nun ein Api-Key von OpenWeatherMap (Account) erforderlich
+- [Issue #32](https://github.com/nischram/E3dcGui/issues/32) 
 
 V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
 - screenSave.c Zeile 207 useDHT11 geändert in useDHT
