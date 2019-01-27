@@ -780,7 +780,8 @@ int main(){
 //####################################################
 			//Wetter Grafik erstellen
 			case ScreenWetter:{
-				GuiTime = makeWetterGui(GuiTime, counter, weatherTime);    //Ausgelagert in die Datei WetterGui.h
+				if (wetterGui == 1)
+					GuiTime = makeWetterGui(GuiTime, counter, weatherTime);    //Ausgelagert in die Datei WetterGui.h
 				break;
 			}
 //####################################################
@@ -875,11 +876,12 @@ int main(){
 				drawOutput(300,458,170,12, TimestampHM, GREEN);
 			}
 		}
-		/*else if(GuiTime == WeatherTime && screenState == ScreenOn){
+		else if(GuiTime == WeatherTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 458);
-			put_string(400, 458, "Yahoo Datensatz: ", GREY);
-			drawOutput(550,458,170,12, weatherTime, GREEN);
-		}*/
+			int AktuallTime = time(NULL);
+			put_string(400, 458, "OpenWeatherMap Datensatz: ", GREY);
+			drawOutput(610,458,170,12, weatherTime, GREEN);
+		}
 		else if(GuiTime == GruenTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 458);
 			put_string(400, 458, "Gr\201nbeck Datensatz: ", GREY);

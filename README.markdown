@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.77 03.12.2018](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.78 27.01.2019](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -10,7 +10,7 @@ __Daten vom E3DC zur HomeMatic Hausautomation senden__
 __Daten vom S10 auf dem Display darstellen__   
 __Daten von der HomeMatic auf dem Display darstellen__   
 __Kleine Hausautomation mit GPIO's__   
-__Wetterinformationen von "Yahoo Weather" mit "tuxnet24.de"__
+__Wetterinformationen von "OpenWeatherMap" mit "tuxnet24.de"__
 __Daten einer Grünbeck SC18 anzeigen__   
 __Daten einer Grünbeck SC18 zur HomeMatic senden__    
 __Dein eigener Abfuhrkalender__   
@@ -21,7 +21,7 @@ Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Da
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
 <img src="https://s20.postimg.cc/kxtyqs93x/E3_DC_Display.jpg" alt="E3DC-Display">  
-Hier ein Foto mit der Software auf dem 7-Zoll Display. (noch ohne Wettersymbol)
+Hier ein Foto mit der Software auf dem 7-Zoll Display. (ohne Wettersymbol)
 
 Diese Kombination bietet eine sehr gute Möglichkeit um das S10 einfach und schnell mit einem eigenem Display zu überwachen.
 
@@ -145,12 +145,13 @@ Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 
 #### 2. Wetteranzeige
 <img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
-Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen kostenlosen Service, welcher die aktuellen Wetterdaten von Yahoo! holt.   
+Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen Service, welcher die aktuellen Wetterdaten von OpenWeatherMap holt. Als API wird folgnede Seite verwendet:  
 [http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
-In der "parameter.h" muss die Standort-ID eingetragen werden, diese erhält man auf der Yahoo Seite ein dem die Location gesucht wird und man und in der Adresszeile aus dem Link die letzten Zahlen kopiert.   
-`113 #define weatherID                   638242`   
-Beispeil zur Adresszeile: "https://www.yahoo.com/news/weather/germany/berlin/berlin-638242"   
-Die Wetteranzeigen könnte auch ohne S10 oder HomeMatic genutzt werden.
+Du musst dir zuvor einen kostenlosen Account bei "OpenWeatherMap" einrichten. Dort bekommst du einen API-Key den du in die parameter.h eintragen musst. Auf der Seite OpenWeatherMap kannst du für deinen Standort die ID ermitteln, auch diese muss in die parameter.h eingetragen werden. Da eventuell nicht alle einen Account einrichten wollen kann man nun die Wetter-Seite ausblenden. Dies erfolgt mit
+`113 #define wetterGui                   1`
+`113 #define weatherID                   638242`
+`114 #define weatherKey                      "12345678910111213141516171819202"`  
+Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
 
 #### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `   
@@ -479,6 +480,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.78 27.01.2019 Wetteranzeige umgabaut auf OpenWeatherMap
+- für die Wetteranzeige ist nun ein Api-Key von OpenWeatherMap (Account) erforderlich
+
 V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
 - screenSave.c Zeile 207 useDHT11 geändert in useDHT
 

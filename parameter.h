@@ -126,7 +126,10 @@ Es kann aber zu darstellungsfehler kommen.
 #define GruenbeckHM                 0                       // 1= Daten der Grünbeck sollen zur HomeMatic gesendet werden, Einstellungen der ISE_ID in External/Gruenbeck.h
 
 //#######################################
-#define weatherID                   638242                  //ID vom Standort hier erhältlich: https://www.yahoo.com/news/weather oder https://weather.tuxnet24.de/?action=citycode&lang=de
+// Wetterdienst von OpenWeatherMap
+#define wetterGui                   1
+#define weatherID                   2950159     //https://openweathermap.org Location-ID
+#define weatherKey                  "12345678910111213141516171819202"   //https://openweathermap.org API Key (Kostenlos 10.000 Abfragen per Monat)
 
 //#######################################
 // Abfuhrkalender

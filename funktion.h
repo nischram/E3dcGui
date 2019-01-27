@@ -178,7 +178,9 @@ void createData(int x, int y, char *c){
 // PicturPosition
 int picturePosition()
 {
-  int numberPicture = 2;   // 1=Standard-Button ohne Wetter
+  int numberPicture = 1;
+  if(wetterGui ==1)
+    numberPicture = numberPicture +1;
   if(E3DC_S10 ==1)
     numberPicture = numberPicture +3;
   if(useAktor == 1 && useDHT == 1)
@@ -191,8 +193,10 @@ int picturePosition()
     numberPicture = numberPicture +1;
   int piece = (800 - (numberPicture * 80)) / 2;
   Picture1 = piece;
-  piece = piece + 80;
-  Picture2 = piece;
+  if(wetterGui ==1){
+    piece = piece + 80;
+    Picture2 = piece;
+  }
   if(E3DC_S10 ==1){
     piece = piece + 80;
     Picture3 = piece;
@@ -227,7 +231,8 @@ int drawMainScreen()
   drawSquare(12,12,778,458,WHITE);
   drawCorner(12, 12, 778, 458, LTGREY);
   DrawImage("EinstImage", Picture1, PictureLine1);
-  DrawImage("WetterImage", Picture2, PictureLine1);
+  if(wetterGui == 1)
+    DrawImage("WetterImage", Picture2, PictureLine1);
   if(E3DC_S10 ==1){
     DrawImage("AktuellImage", Picture3, PictureLine1);
     DrawImage("LangzeitImage", Picture4, PictureLine1);

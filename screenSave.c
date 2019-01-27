@@ -195,13 +195,15 @@ int main()
 				writeScreen(ScreenShutdown, ShutdownRun);
 			}
 		}
-		if((scaledX  > buttonCordsWetter[X] && scaledX < (buttonCordsWetter[X]+buttonCordsWetter[W])) && (scaledY > buttonCordsWetter[Y] && scaledY < (buttonCordsWetter[Y]+buttonCordsWetter[H]))){
-			if (mymillis() - buttonTimerWetter > 500){
-				buttonTimerWetter = mymillis();
-				writeScreen(ScreenChange, ScreenWetter);
-				writeScreen(ScreenCounter, 0);
-				writeScreen(ScreenSaver, false);
-				writeScreen(ScreenShutdown, ShutdownRun);
+		if(wetterGui ==1){
+			if((scaledX  > buttonCordsWetter[X] && scaledX < (buttonCordsWetter[X]+buttonCordsWetter[W])) && (scaledY > buttonCordsWetter[Y] && scaledY < (buttonCordsWetter[Y]+buttonCordsWetter[H]))){
+				if (mymillis() - buttonTimerWetter > 500){
+					buttonTimerWetter = mymillis();
+					writeScreen(ScreenChange, ScreenWetter);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
+				}
 			}
 		}
 		if(useAktor == 1 && useDHT == 1){
