@@ -196,6 +196,7 @@ int makeCharRscp()
   snprintf (TAG_Time, (size_t)128, "00:00:00");
   snprintf (serialnumber, (size_t)128, "S10-XXXXXXXXXXXX");
   writeCharRscp(TAG_Date, TAG_Time, serialnumber);
+  return 1;
 }
 int writeUnixtime(int Position, int NewTime)
 {
