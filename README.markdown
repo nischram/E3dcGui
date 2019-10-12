@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.78 27.01.2019](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.79 01.09.2019](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -480,9 +480,12 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.79 01.09.2019 Speicherzugriffsfehler behoben [Issue #33](https://github.com/nischram/E3dcGui/issues/33)
+- Issue #33 Durch fehlende "return" in "int" Funktionen gibt es bei der RscpMain einen Speicherzugriffsfehler
+
 V1.78 27.01.2019 Wetteranzeige umgabaut auf OpenWeatherMap
 - für die Wetteranzeige ist nun ein Api-Key von OpenWeatherMap (Account) erforderlich
-- [Issue #32](https://github.com/nischram/E3dcGui/issues/32) 
+- [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
 
 V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
 - screenSave.c Zeile 207 useDHT11 geändert in useDHT

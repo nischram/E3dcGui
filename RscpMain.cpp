@@ -516,6 +516,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         printf("Unknown tag %08X\n", response->tag);
         break;
     }
+    return 1;
 }
 static int processReceiveBuffer(const unsigned char * ucBuffer, int iLength)
 {
