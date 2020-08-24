@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.79 01.09.2019](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.80 24.08.2020](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -480,6 +480,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.80 24.08.2019 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)
+- Issue #35 Mit einem Schalter in der parameter.h kann die Größe eingesgellt werden
+
 V1.79 01.09.2019 Speicherzugriffsfehler behoben [Issue #33](https://github.com/nischram/E3dcGui/issues/33)
 - Issue #33 Durch fehlende "return" in "int" Funktionen gibt es bei der RscpMain einen Speicherzugriffsfehler
 

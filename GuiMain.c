@@ -21,7 +21,12 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "parameterHM.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
-#include "Frame/framebuffer.c"
+#ifdef FONT_8X8
+	#include "Frame/framebuffer.c"
+#endif
+#ifdef FONT_8X16
+	#include "Frame/framebuffer8x16.c"
+#endif
 #include "Frame/DrawSkala.c"
 #include "Frame/DrawLine.c"
 #include "Frame/DrawSOC.c"
