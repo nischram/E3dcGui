@@ -365,7 +365,7 @@ pi@raspberry:~$ sudo apt-get install git git-core
 ```   
 Jetzt kann WiringPi heruntergeladen   
 ```
-pi@raspberry:~$ git clone https://github.com/WiringPi/WiringPi
+pi@raspberry:~$ git clone git://git.drogon.net/wiringPi
 pi@raspberry:~$ cd wiringPi
 ```
 und installiert werden:   
