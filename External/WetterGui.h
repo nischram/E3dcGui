@@ -1,6 +1,48 @@
 #ifndef __WETTERGUI_H_
 #define __WETTERGUI_H_
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include "weather/jsmn.h"
+#include "weather/get_weather_data.h"
+
+/**
+ * Print a string with the desired format from an array of chars.
+ * @param char * format
+ * @param char * data The array of chars with the parsed json
+ * @param jsmntok_t token The token that is used to compure the string length
+ */
+void print_key_value(char * format, char * data, jsmntok_t token) {
+    printf(format, token.end - token.start, data + token.start);
+}
+void key_value(char *value, char * data, jsmntok_t token) {
+    snprintf(value, 256, "%.*s", token.end - token.start, data + token.start);
+}
+int key_value_int(char * data, jsmntok_t token) {
+    char value[256];
+    snprintf(value, 256, "%.*s", token.end - token.start, data + token.start);
+    return atoi(value);
+}
+float key_value_float(char * data, jsmntok_t token) {
+    char value[256];
+    snprintf(value, 256, "%.*s", token.end - token.start, data + token.start);
+    return atof(value);
+}
+void makeDayString(char *uTime, char *timeString){
+  time_t read_time = atoi(uTime);
+  strftime (timeString, 100, "%a %d.%m.%Y", localtime (&read_time));
+}
+void makeSunString(char *uTime, char *timeString){
+  time_t read_time = atoi(uTime);
+  strftime (timeString, 100, "%H:%M Uhr", localtime (&read_time));
+}
+void makeNowString(char *timeString){
+  time_t read_time = time(NULL);
+  strftime (timeString, 100, "%d.%m.%Y %H:%M:%S", localtime (&read_time));
+}
+
 int find(char * str, char chr, int pos) {
     char * p = str + pos;
 
@@ -107,23 +149,149 @@ int changeToText(int code, char * output){
   else if (code == 	781	) snprintf(output, (size_t)64, "Tornado");
   else if (code == 	800	) snprintf(output, (size_t)64, "klarer Himmel");
   else if (code == 	801	) snprintf(output, (size_t)64, "ein paar Wolken");
-  else if (code == 	802	) snprintf(output, (size_t)64, "aufgelockerte Bew\224=lkung");
-  else if (code == 	803	) snprintf(output, (size_t)64, "aufgelockert bew\224=lkt");
+  else if (code == 	802	) snprintf(output, (size_t)64, "aufgelockerte Bew\224lkung");
+  else if (code == 	803	) snprintf(output, (size_t)64, "aufgelockert bew\224lkt");
   else if (code == 	804	) snprintf(output, (size_t)64, "wolkig");
   else snprintf(output, (size_t)64, "Unbest\204ndig");
 }
+//Difiniton der Variablen die auf dem Display angezeigt werden sollen.
+char country[64], city[64];
+double longitude, latitude;
+int weatherTimeZone;
+char current_date[64], current_text[64], sunrise[64], sunset[64];
+char forecast0_date[64], forecast0_text[64], forecast1_date[64], forecast1_text[64], forecast2_date[64], forecast2_text[64];
+char current_image[64], forecast0_image[64], forecast1_image[64], forecast2_image[64];
+double current_temp, current_temp_night, current_temp_day, speed;
+double forecast0_temp_night, forecast0_temp_day, forecast1_temp_night, forecast1_temp_day, forecast2_temp_night, forecast2_temp_day;
+int current_code, forecast0_code, forecast1_code, forecast2_code;
+int humidity, pressure, windDeg;
+/**
+ * Output the weather data to the terminal.
+ * @param char * data The array of chars with the parsed json
+ * @param struct Parsed_Json parsed_json contains all the parsed tokens
+ * @return void
+ */
+void copyWeatherData(char * data, struct Parsed_Json weather) {
+     int cityInt = 0,day = 0;
+     char output[256], timeString[100];
+     int tempDay = 0, tempNight = 0;
+     for (int i = 1; i < weather.number_of_tokens; i++) {
+        int length = weather.tokens[i].end - weather.tokens[i].start;
+        char string[length + 1];
 
+        strncpy(string, data + weather.tokens[i].start, length);
+        string[length] = '\0';
+
+        if (check_json_string("country", string, weather.tokens[i]) == 0 && cityInt == 0) {
+            key_value(country, data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("name", string, weather.tokens[i]) == 0 && cityInt == 0) {
+            key_value(city, data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("lon", string, weather.tokens[i]) == 0 && cityInt == 0) {
+            longitude = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("lat", string, weather.tokens[i]) == 0 && cityInt == 0) {
+            latitude = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("timezone", string, weather.tokens[i]) == 0 && cityInt == 0) {
+            weatherTimeZone = key_value_int(data,  weather.tokens[i + 1]);
+            cityInt = 1;
+        }
+
+        if (check_json_string("dt", string, weather.tokens[i]) == 0) {
+            key_value(output, data,  weather.tokens[i + 1]);
+            makeDayString(output, timeString);
+
+            if(day == 0) snprintf(current_date, 256, "%s", timeString);
+            else if(day == 1) snprintf(forecast0_date, 256, "%s", timeString);
+            else if(day == 2) snprintf(forecast1_date, 256, "%s", timeString);
+            else if(day == 3) snprintf(forecast2_date, 256, "%s", timeString);
+            day = day + 1;
+        }
+        if (check_json_string("sunrise", string, weather.tokens[i]) == 0) {
+            key_value(output, data,  weather.tokens[i + 1]);
+            makeSunString(output, timeString);
+            if(day - 1 == 0) snprintf(sunrise, 256, "%s", timeString);
+        }
+
+        if (check_json_string("sunset", string, weather.tokens[i]) == 0) {
+            key_value(output, data,  weather.tokens[i + 1]);
+            makeSunString(output, timeString);
+            if(day - 1 == 0) snprintf(sunset, 256, "%s", timeString);
+        }
+
+        if (check_json_string("id", string, weather.tokens[i]) == 0  && cityInt != 0) {
+            if(day - 1 == 0){
+              current_code = key_value_int(data,  weather.tokens[i + 1]);
+              changeToText(current_code, current_text);
+            }
+            else if(day - 1 == 1){
+              forecast0_code = key_value_int(data,  weather.tokens[i + 1]);
+              changeToText(forecast0_code, forecast0_text);
+            }
+            else if(day - 1 == 2){
+              forecast1_code = key_value_int(data,  weather.tokens[i + 1]);
+              changeToText(forecast1_code, forecast1_text);
+            }
+            else if(day - 1 == 3){
+              forecast2_code = key_value_int(data,  weather.tokens[i + 1]);
+              changeToText(forecast2_code, forecast2_text);
+            }
+        }
+
+        if (check_json_string("icon", string, weather.tokens[i]) == 0 ) {
+          if(day - 1 == 0) key_value(current_image, data,  weather.tokens[i + 1]);
+          else if(day - 1 == 1) key_value(forecast0_image, data,  weather.tokens[i + 1]);
+          else if(day - 1 == 2) key_value(forecast1_image, data,  weather.tokens[i + 1]);
+          else if(day - 1 == 3) key_value(forecast2_image, data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("temp", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+          current_temp = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("day", string, weather.tokens[i]) == 0 ) {
+          if(day - 1 == 0) current_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 1) forecast0_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 2) forecast1_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 3) forecast2_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("night", string, weather.tokens[i]) == 0 ) {
+          if(day - 1 == 0) current_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 1) forecast0_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 2) forecast1_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+          else if(day - 1 == 3) forecast2_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("humidity", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+            humidity  = key_value_int(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("pressure", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+            pressure  = key_value_int(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("speed", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+            speed  = key_value_float(data,  weather.tokens[i + 1]);
+        }
+
+        if (check_json_string("deg", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+            windDeg  = key_value_int(data,  weather.tokens[i + 1]);
+        }
+    }
+
+    printf("\n--------------------------------------------------------\n\n");
+}
 //Wetter Grafik erstellen
 int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 {
-	//Difiniton der Variablen die auf dem Display angezeigt werden sollen.
-  char country[64], region[64], city[64], current_date[64], current_text[64], direction[64], sunrise[64], sunset[64];
-  char forecast0_date[64], forecast0_text[64], forecast1_date[64], forecast1_text[64], forecast2_date[64], forecast2_text[64];
-  char current_image[64], forecast0_image[64], forecast1_image[64], forecast2_image[64];
-  double longitude, latitude, visibility, current_temp, current_temp_low, current_temp_high, speed;
-  double forecast0_temp_low, forecast0_temp_high, forecast1_temp_low, forecast1_temp_high, forecast2_temp_low, forecast2_temp_high;
-  int humidity, pressure, current_code, forecast0_code, forecast1_code, forecast2_code;
-  char OUT[128], value[128], read[128], read1[64], read2[64], read3[64], read4[64], read5[64], read6[64], off[128], batch[256];
+  char OUT[128];
 	//Read Daten Beginn (roter Punkt unten rechts)
 	GuiTime = WeatherTime;
 	if (counter == 0){
@@ -131,121 +299,25 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 		drawMainScreen();
 		drawSquare(760,440,20,20,LIGHT_RED);
 		drawCorner(760,440,20,20,WHITE);
-		//Wetterdaten einlesen
-		memset(&batch, 0, sizeof(batch));
-		snprintf(batch, (size_t)256, "curl \"https://weather.tuxnet24.de/?apikey=%s&id=%i&unit=metric&mode=xml\"", weatherKey, weatherID);
-		FILE *out = NULL;
-		out = popen( batch, "r" );
-		if( out != NULL ){
-      fgets(off, 128, out);                           //xml version
-      fgets(off, 128, out);                           //leer
-      fgets(off, 128, out);                           //info
-      fgets(off, 128, out);                           //id
-      fgets(read, 128, out);                          //longitude
-      longitude = extraktDouble(read, '<');
-      fgets(read, 128, out);                          //latitude
-      latitude = extraktDouble(read, '<');
-      fgets(read, 128, out);                          //country
-      extraktChar(read, '<', country);
-      fgets(read, 128, out);                          //region
-      extraktChar(read, '<', region);
-      fgets(read, 128, out);                          //city
-      extraktChar(read, '<', city);
-      fgets(read, 128, out);                          //humidity
-      humidity = extraktInt(read, '%');
-      fgets(read, 128, out);                          //visibility
-      visibility = extraktDouble(read, '<');
-      fgets(read, 128, out);                          //pressure
-      pressure = extraktDouble(read, 'h');
-      fgets(off, 128, out);                           //rising
-      fgets(read, 128, out);                          //sunrise
-      extraktChar(read, '<', sunrise);
-      fgets(read, 128, out);                          //sunset
-      extraktChar(read, '<', sunset);
-      fgets(read, 128, out);                          //current_code
-      current_code = extraktInt(read, '<');
-      changeToText(current_code, current_text);
-      fgets(off, 128, out);                           //current_day
-      fgets(read, 128, out);                          //current_date
-      extraktDay(read, '<', current_date);
-      extraktTime(read, '<', weatherTime);
-      fgets(read, 128, out);                          //current_temp
-      current_temp = extraktDouble(read, '&');
-      fgets(read, 128, out);                          //current_temp_low
-      current_temp_low = extraktDouble(read, '&');
-      fgets(read, 128, out);                          //current_temp_high
-      current_temp_high = extraktDouble(read, '&');
-      fgets(off, 128, out);                           //current_text
-      fgets(off, 128, out);                           //current_description
-      fgets(read, 128, out);                          //current_image
-      extraktChar(read, '.', current_image);
-      fgets(off, 128, out);                           //current_icon
-      fgets(read, 128, out);                          //speed
-      speed = extraktDouble(read, 'm');
-      fgets(read, 128, out);                          //direction
-      extraktChar(read, '&', direction);
-      fgets(off, 128, out);                           //chill
-      fgets(read, 128, out);                          //forecast0_day
-      extraktChar(read, '<', read1);
-      fgets(read, 128, out);                          //forecast0_date
-      extraktDate(read, '<', read2);
-      snprintf(forecast0_date, (size_t)64, "%s %s", read1, read2);
-      fgets(read, 128, out);                          //forecast0_temp_low
-      sscanf(read, "%s", value);
-      forecast0_temp_low = extraktDouble(read, '&');
-      fgets(read, 128, out);                          //forecast0_temp_high
-      forecast0_temp_high = extraktDouble(read, '&');
-      fgets(off, 128, out);                           //forecast0_text
-      fgets(off, 128, out);                           //forecast0_description
-      fgets(read, 128, out);                          //forecast0_code
-      forecast0_code = extraktInt(read, '<');
-      changeToText(forecast0_code, forecast0_text);
-      fgets(off, 128, out);                           //forecast0_icon
-      fgets(read, 128, out);                          //forecast0_image
-      extraktChar(read, '.', forecast0_image);
-      fgets(read, 128, out);                          //forecast1_day
-      extraktChar(read, '<', read1);
-      fgets(read, 128, out);                          //forecast1_date
-      extraktDate(read, '<', read2);
-      snprintf(forecast1_date, (size_t)64, "%s %s", read1, read2);
-      fgets(read, 128, out);                          //forecast1_temp_low
-      forecast1_temp_low = extraktDouble(read, '&');
-      fgets(read, 128, out);                          //forecast1_temp_high
-      forecast1_temp_high = extraktDouble(read, '&');
-      fgets(off, 128, out);                           //forecast1_text
-      fgets(off, 128, out);                           //forecast1_description
-      fgets(read, 128, out);                          //forecast1_code
-      forecast1_code = extraktInt(read, '<');
-      changeToText(forecast1_code, forecast1_text);
-      fgets(off, 128, out);                           //forecast1_icon
-      fgets(read, 128, out);                          //forecast1_image
-      extraktChar(read, '.', forecast1_image);
-      fgets(read, 128, out);                          //forecast2_day
-      extraktChar(read, '<', read1);
-      fgets(read, 128, out);                          //forecast2_date
-      extraktDate(read, '<', read2);
-      snprintf(forecast2_date, (size_t)64, "%s %s", read1, read2);
-      fgets(read, 128, out);                          //forecast2_temp_low
-      forecast2_temp_low = extraktDouble(read, '&');
-      fgets(read, 128, out);                          //forecast2_temp_high
-      forecast2_temp_high = extraktDouble(read, '&');
-      fgets(off, 128, out);                           //forecast2_text
-      fgets(off, 128, out);                           //forecast2_description
-      fgets(read, 128, out);                          //forecast2_code
-      forecast2_code = extraktInt(read, '<');
-      changeToText(forecast2_code, forecast2_text);
-      fgets(off, 128, out);                           //forecast2_icon
-      fgets(read, 128, out);                          //forecast2_image
-      extraktChar(read, '.', forecast2_image);
-      pclose(out);
-    }
-    printf("OpenWeatherMap Time: %s %s\n", current_date, weatherTime);
-    printf(" %4.5f %4.5f %s %s %s\n", latitude, longitude, city,  region, country, humidity, pressure, speed, direction);
-    printf(" %i %i %.2f %s\n", humidity, pressure, speed, direction);
-    printf(" %s %.0f %.0f %.0f %s %s %i\n", current_date, current_temp, current_temp_low, current_temp_high, current_text, current_image, current_code);
-    printf(" %s %.0f %.0f %s %s %i\n", forecast0_date, forecast0_temp_low, forecast0_temp_high, forecast0_text, forecast0_image, forecast0_code);
-    printf(" %s %.0f %.0f %s %s %i\n", forecast1_date, forecast1_temp_low, forecast1_temp_high, forecast1_text, forecast1_image, forecast1_code);
-    printf(" %s %.0f %.0f %s %s %i\n", forecast2_date, forecast2_temp_low, forecast2_temp_high, forecast2_text, forecast2_image, forecast2_code);
+		//Wetterdaten einlesen mit Teilen der Software von https://github.com/gabrieledarrigo/c-weather
+    // Retrieve the data from the API
+    char * weather_data = getWeatherData();
+
+    // Parse the api json result
+    struct Parsed_Json weather = parse_json(weather_data, 2048);
+
+    // Copy the result
+    copyWeatherData(weather_data, weather);
+    makeNowString(weatherTime);
+
+    // Print weather date
+    printf("OpenWeatherMap Time: %s %s", current_date, weatherTime);
+    printf(" %4.5f %4.5f %s %s\n", latitude, longitude, city, country);
+    printf(" %.1f %i %.2f %i\n", humidity, pressure, speed, windDeg);
+    printf(" %s %.0f %.0f %.0f %s %s %i\n", current_date, current_temp, current_temp_night, current_temp_day, current_text, current_image, current_code);
+    printf(" %s %.0f %.0f %s %s %i\n", forecast0_date, forecast0_temp_night, forecast0_temp_day, forecast0_text, forecast0_image, forecast0_code);
+    printf(" %s %.0f %.0f %s %s %i\n", forecast1_date, forecast1_temp_night, forecast1_temp_day, forecast1_text, forecast1_image, forecast1_code);
+    printf(" %s %.0f %.0f %s %s %i\n", forecast2_date, forecast2_temp_night, forecast2_temp_day, forecast2_text, forecast2_image, forecast2_code);
 
 		//Read Daten Ende (grüner Punkt unten rechts)
 		drawSquare(760,440,20,20,GREEN);
@@ -278,36 +350,36 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 		drawCorner(760,440,20,20,WHITE);
 
 		//Grafiken erstellen
-		snprintf(OUT, (size_t)64, "%s", current_date);
+		snprintf(OUT, (size_t)64, "     %s", current_date);
 		put_string(WetterS1, WetterZ1, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Wetter/%s", current_image);
 		DrawImage(OUT, WetterS1+70, WetterZ2-10);
-		snprintf(OUT, (size_t)64, "Temperatur:          %.0f%cC", current_temp, 248);
+    snprintf(OUT, (size_t)64, "%s ", current_text);
 		put_string(WetterS1, WetterZ4, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Temperatur Max.:     %.0f%cC", current_temp_high, 248);
+		snprintf(OUT, (size_t)64, "Temperatur Tag  :    %.0f%cC", current_temp_day, 248);
 		put_string(WetterS1, WetterZ5, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Temperatur Min.:     %.0f%cC", current_temp_low, 248);
+		snprintf(OUT, (size_t)64, "Temperatur Nacht:    %.0f%cC", current_temp_night, 248);
 		put_string(WetterS1, WetterZ6, OUT, GREY);
-		snprintf(OUT, (size_t)64, "%s ", current_text);
-		put_string(WetterS1, WetterZ7, OUT, GREY);
 
 		snprintf(OUT, (size_t)64, "%s", city);
 		put_string(WetterS2, WetterZ2, OUT, GREY);
-		snprintf(OUT, (size_t)64, "%s   %s", region, country);
+		snprintf(OUT, (size_t)64, "%s", country);
 		put_string(WetterS2, WetterZ3, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Location-ID: %i", weatherID);
+    snprintf(OUT, (size_t)64, "Location-ID: %i", weatherID);
 		put_string(WetterS2, WetterZ4, OUT, GREY);
+    snprintf(OUT, (size_t)64, "Latitude : %4.5f", latitude);
+		put_string(WetterS2, WetterZ5, OUT, GREY);
+    snprintf(OUT, (size_t)64, "Longitude: %4.5f", longitude);
+		put_string(WetterS2, WetterZ6, OUT, GREY);
 
 
 		snprintf(OUT, (size_t)64, "Luftfeuchtigkeit:     %i %%", humidity);
-		put_string(WetterS3-70, WetterZ1, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Fernsicht:            %.0f km", visibility);
 		put_string(WetterS3-70, WetterZ2, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Luftdruck:            %i hPa", pressure);
 		put_string(WetterS3-70, WetterZ3, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Windgeschwindigkeit:  %.1f m/s", speed);
 		put_string(WetterS3-70, WetterZ4, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Windrichtung:         %s%c ", direction, 248);
+		snprintf(OUT, (size_t)64, "Windrichtung:         %i%c ", windDeg, 248);
 		put_string(WetterS3-70, WetterZ5, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Sonnenaufgang:        %s", sunrise);
 		put_string(WetterS3-70, WetterZ6, OUT, GREY);
@@ -318,33 +390,33 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 		put_string(WetterS1, WetterUZ1, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Wetter/%s", forecast0_image);
 		DrawImage(OUT, WetterS1+70, WetterUZ2-10);
-		snprintf(OUT, (size_t)64, "Temperatur Max.:     %.0f%cC", forecast0_temp_high, 248);
+    snprintf(OUT, (size_t)64, "%s ", forecast0_text);
 		put_string(WetterS1, WetterUZ4, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Temperatur Min.:     %.0f%cC", forecast0_temp_low, 248);
+		snprintf(OUT, (size_t)64, "Temperatur Tag  :    %.0f%cC", forecast0_temp_day, 248);
 		put_string(WetterS1, WetterUZ5, OUT, GREY);
-		snprintf(OUT, (size_t)64, "%s ", forecast0_text);
+		snprintf(OUT, (size_t)64, "Temperatur Nacht:    %.0f%cC", forecast0_temp_night, 248);
 		put_string(WetterS1, WetterUZ6, OUT, GREY);
 
 		snprintf(OUT, (size_t)64, "     %s", forecast1_date);
 		put_string(WetterS2, WetterUZ1, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Wetter/%s", forecast1_image);
 		DrawImage(OUT, WetterS2+70, WetterUZ2-10);
-		snprintf(OUT, (size_t)64, "Temperatur Max.:     %.0f%cC", forecast1_temp_high, 248);
+    snprintf(OUT, (size_t)64, "%s ", forecast1_text);
 		put_string(WetterS2, WetterUZ4, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Temperatur Min.:     %.0f%cC", forecast1_temp_low, 248);
+		snprintf(OUT, (size_t)64, "Temperatur Tag  :    %.0f%cC", forecast1_temp_day, 248);
 		put_string(WetterS2, WetterUZ5, OUT, GREY);
-		snprintf(OUT, (size_t)64, "%s ", forecast1_text);
+		snprintf(OUT, (size_t)64, "Temperatur Nacht:    %.0f%cC", forecast1_temp_night, 248);
 		put_string(WetterS2, WetterUZ6, OUT, GREY);
 
 		snprintf(OUT, (size_t)64, "     %s", forecast2_date);
 		put_string(WetterS3, WetterUZ1, OUT, GREY);
 		snprintf(OUT, (size_t)64, "Wetter/%s", forecast2_image);
 		DrawImage(OUT, WetterS3+70, WetterUZ2-10);
-		snprintf(OUT, (size_t)64, "Temperatur Max.:     %.0f%cC", forecast2_temp_high, 248);
+    snprintf(OUT, (size_t)64, "%s ", forecast2_text);
 		put_string(WetterS3, WetterUZ4, OUT, GREY);
-		snprintf(OUT, (size_t)64, "Temperatur Min.:     %.0f%cC", forecast2_temp_low, 248);
+		snprintf(OUT, (size_t)64, "Temperatur Tag  :    %.0f%cC", forecast2_temp_day, 248);
 		put_string(WetterS3, WetterUZ5, OUT, GREY);
-		snprintf(OUT, (size_t)64, "%s ", forecast2_text);
+		snprintf(OUT, (size_t)64, "Temperatur Nacht:    %.0f%cC", forecast2_temp_night, 248);
 		put_string(WetterS3, WetterUZ6, OUT, GREY);
 	}
 	return GuiTime;

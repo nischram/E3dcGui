@@ -1,22 +1,22 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.80 24.08.2020](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.81 08.09.2020](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
 Als Schnittstelle zwischen S10 und HomeMatic dient ein Raspberry Pi. Die Applikation, kann auf dem Raspberry PI vielseitig eingesetzt werden.
 
-__Daten per RSCP vom E3DC-S10 Speicher abfragen__   
-__Daten vom E3DC zur HomeMatic Hausautomation senden__   
-__Daten vom S10 auf dem Display darstellen__   
-__Daten von der HomeMatic auf dem Display darstellen__   
-__Kleine Hausautomation mit GPIO's__   
-__Wetterinformationen von "OpenWeatherMap" mit "tuxnet24.de"__
-__Daten einer Grünbeck SC18 anzeigen__   
-__Daten einer Grünbeck SC18 zur HomeMatic senden__    
-__Dein eigener Abfuhrkalender__   
+__Daten per RSCP vom E3DC-S10 Speicher abfragen__  
+__Daten vom E3DC zur HomeMatic Hausautomation senden__  
+__Daten vom S10 auf dem Display darstellen__  
+__Daten von der HomeMatic auf dem Display darstellen__  
+__Kleine Hausautomation mit GPIO's__  
+__Wetterinformationen von "OpenWeatherMap"__  
+__Daten einer Grünbeck SC18 anzeigen__  
+__Daten einer Grünbeck SC18 zur HomeMatic senden__  
+__Dein eigener Abfuhrkalender__  
 __LED Stausanzeige__   
 
-Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.   
+Die verschiedenen Möglichkeiten können in unterschiedlichen Konstellationen zusammen genutzt werden.  
 Es kann entweder ein Raspberry Pi __ohne Display__ eingesetzt werden, der die Daten vom S10 abfragt und/oder zur HomeMatic senden.  
 Oder es wird ein Raspberry Pi mit __7“ Display__ eingesetzt um diverse Daten darzustellen.  
 
@@ -33,18 +33,18 @@ Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand we
 
 Wenn ein 7" Display genutzt wird, kommen C Programme zum Einsatz, um die diversen Grafiken zu erstellen.
 
-## Vorbereitung am S10    
+## Vorbereitung am S10  
 Hauptmenü > Einstellungen
 Am S10 muss im „Hauptmenü“ unter „Einstellungen“ > "Personalisieren" ein RSCP-Passwort gesetzt werden. Das gesetzte Passwort wird später in den Parametern der Software benötigt.
 Im selben Menü „Einstellungen“ > "Netzwerk" ist die IP-Adresse des S10 zu finden.
 
-## Raspberry Pi   
-Die Erstinstallation eines Raspberry Pi erkläre ich hier nicht im Detail, nur mit einer Schritt für Schritt Zusammenfassung von diversen Links.    
-[Schritt für Schritt](https://github.com/nischram/E3dcGui/blob/master/STEPBYSTEP.markdown)   
+## Raspberry Pi  
+Die Erstinstallation eines Raspberry Pi erkläre ich hier nicht im Detail, nur mit einer Schritt für Schritt Zusammenfassung von diversen Links.  
+[Schritt für Schritt](https://github.com/nischram/E3dcGui/blob/master/STEPBYSTEP.markdown)  
 Diese Anleitung setzt einen lokalen Zugriff oder SSH-Zugriff auf den Raspberry voraus.
 
 ### Netzwerk   
-Es ist Wichtig darauf zu achten, dass der Raspberry Pi im selben Netzwerk wie das S10 installiert ist. Der IP-Adressbereich muss gleich sein, zum Beispiel so: 192.168.178.xxx   
+Es ist Wichtig darauf zu achten, dass der Raspberry Pi im selben Netzwerk wie das S10 installiert ist. Der IP-Adressbereich muss gleich sein, zum Beispiel so: 192.168.178.xxx  
 Auch darf die Verbindung zwischen S10 und Raspberry Pi nicht über eine VPN-Verbindung hergestellt werden.
 
 ### Applikation auf den Raspberry kopieren   
@@ -67,7 +67,7 @@ pi@raspberrypi:~/E3dcGui $  nano parameter.h
 Es wird jetzt die Datei im Bearbeitungsprogramm „nano“ geöffnet.
 
 ### Inhalt der „parameter.h“   
-Da ich in der Datei alles beschrieben habe, gehe ich jetzt nur auf das wichtigste Einstellungen ein.   
+Da ich in der Datei alles beschrieben habe, gehe ich jetzt nur auf das wichtigste Einstellungen ein.  
 Die wichtigsten Einstellungen sind:
 ```shell
 6    #define GUI                         1
@@ -91,8 +91,8 @@ Damit die SD-Karte des Raspberry Pi nicht übermäßig beansprucht wird, nutzt i
 
 ### Vorbereitung der HomeMatic CCU /CCU2   
 Wenn du in den Einstellungen die Nutzung der HomeMatic aktiviert hast (`#define Homematic_E3DC     1`), muss die HomeMatic nun vorbereitet werden.
-Diesen Teil der Anleitung habe ich separat in dem Ordner Homematic erstellt.   
-[HomeMatic README.markdown](https://github.com/nischram/E3dcGui/tree/master/Homematic)   
+Diesen Teil der Anleitung habe ich separat in dem Ordner Homematic erstellt.  
+[HomeMatic README.markdown](https://github.com/nischram/E3dcGui/tree/master/Homematic)  
 Wenn das Display nur für das E3DC S10 genutzt wird (`#define Homematic_E3DC     0`), ist die Anleitung nicht nötig. Sollte die Nutzung aktiviert sein und die HM nicht vorbereitet dann würde die Applikation für jeden Sendebefehl mehrere Sekunden benötigen und nicht ordnungsgemäss laufen. Ausser alle ISE_ID's in der Datei "parameterHM.h" werden auf 0 gesetzt (default).
 
 ### Applikation starten
@@ -115,8 +115,6 @@ Die Crontab ruft man auf mit:
 ```shell
 pi@raspberrypi ~/E3dcGui $  crontab -e
 ```
-- Crontab für die Bearbeitung öffnen
-
 In der geöffneten Crontab wird eine neue Zeile mit diesem Inhalt eingefügt:
 ```shell
 @reboot /home/pi/E3dcGui/start
@@ -131,7 +129,7 @@ Damit die Applikation gestartet wird, kann nun der Raspberry neu gestartet werde
 ```shell
 pi@raspberrypi ~/E3dcGui $  sudo reboot
 ```
-- Reboot Befehl mit Administrator-Rechten
+- Reboot Befehl mit Administrator-Rechten  
 Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildschirmausgaben ausgeführt. Nach ca. 1 Minute werden die Werte der Systemvariablen der HomeMatic wieder aktualisiert. Oder das Display zeigt die Applikation
 
 ## Display bedienen
@@ -144,31 +142,33 @@ Auf der rechten Seite wird die Display-Helligkeit eingestellt. Auch kannst du hi
 Unterhalb werden Informationen zum Raspberry Pi ausgegeben.   
 
 #### 2. Wetteranzeige
-<img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">  
-Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen Service, welcher die aktuellen Wetterdaten von OpenWeatherMap holt. Als API wird folgnede Seite verwendet:  
-[http://weather.tuxnet24.de](http://weather.tuxnet24.de)   
-Du musst dir zuvor einen kostenlosen Account bei "OpenWeatherMap" einrichten. Dort bekommst du einen API-Key den du in die parameter.h eintragen musst. Auf der Seite OpenWeatherMap kannst du für deinen Standort die ID ermitteln, auch diese muss in die parameter.h eingetragen werden. Da eventuell nicht alle einen Account einrichten wollen kann man nun die Wetter-Seite ausblenden. Dies erfolgt mit
-`113 #define wetterGui                   1`
-`113 #define weatherID                   638242`
-`114 #define weatherKey                      "12345678910111213141516171819202"`  
+<img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">     
+Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen Service, welcher die aktuellen Wetterdaten von OpenWeatherMap holt.
+Du musst dir zuvor einen kostenlosen Account bei [OpenWeatherMap](https://openweathermap.org/guide#how) einrichten. Dort bekommst du einen API-Key den du hier eintragen musst:  
+`133 #define weatherKey                      "12345678910111213141516171819202"`   
+Auf der Seite OpenWeatherMap kannst du für deinen Standort die ID ermitteln, auch diese muss hier in die parameter.h eingetragen werden:  
+`132 #define weatherID                   2950159`  
+(Stadt suchen mit "Search City" und dann im Browser in der Adresszeile die ID entnehmen. z.B. für Berlin: https://openweathermap.org/city/2950159˘)
+Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:  
+`131 #define wetterGui                   1`  
 Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
 
 #### 3. Aktuelle Werte des S10
-`  #define E3DC_S10                    1 `   
+`  #define E3DC_S10                    1 `  
 <img src="https://s20.postimg.cc/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
 Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhythmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wird auch für diese Daten je ein Symbol angezeigt.
 Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhythmus die Daten abgefragt werden sollen (historyDelay).
 
 #### 4. Langzeit Werte des S10
-`  #define E3DC_S10                    1`    
+`  #define E3DC_S10                    1`  
 <img src="https://s20.postimg.cc/43orl757h/Langzeit_Werte.jpg" alt="Langzeit_Werte">  
 Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespeichert.
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können, muss die Maximalleistung in der „parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 
 #### 5. Monitor
-`  #define E3DC_S10                    1`    
+`  #define E3DC_S10                    1`  
 <img src="https://s20.postimg.cc/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts ist für neue Ideen noch Platz, gerne darfst du einen Issue erstellen wenn du wünsche hast!
 
@@ -178,47 +178,47 @@ Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 od
 `  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung, einer für den Batterie-SOC und ein Zeitaktor. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wird wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben. Weiter ist es möglich den Aktoren ein Zeitfenster zu zuweisen. Nur in diesem Fenster schaltet der Aktor ein und zum Ende des Zeitfensters aus, ein gestarteter Aktor mit einer mindest Einschaltzeit läuft noch so lange, bis zum ablauf der Mindestzeit.
 
 #### 7. HomeMatic
-`  #define Homematic_GUI               1`   
+`  #define Homematic_GUI               1`  
 <img src="https://s20.postimg.cc/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
-Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.   
+Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.  
 Es werden verschiedene Etagen, Räume und Geräte angezeigt. Die Werte werden erst abgefragt, und danach die Grafik erstellt (Abfragezeit am roten Punkt unten rechts zu erkennen).
-Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.   
-Die Räume haben unterschiedliche Fenstereinteilungen es gibt zum Teil Räume mit zwei Fenster und Jalousien (im Foto an OG Wohnz. zu sehen).   
-Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp auf's Symbol sendet einen einen Wert zur HomeMatic wie z.B. der Brunnen kann per Display eingeschaltet werden (programmiert in der "screenSaveHM.c").   
-Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.   
-Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.   
-Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).   
+Die Etagen haben eine rote oder grüne Umrandung für den Verschluss aller Fenster und Türen.  
+Die Räume haben unterschiedliche Fenstereinteilungen es gibt zum Teil Räume mit zwei Fenster und Jalousien (im Foto an OG Wohnz. zu sehen).  
+Die Geräte und Variablen in rechten Bereich sind sogar bedienbar. Also ein Tipp auf's Symbol sendet einen einen Wert zur HomeMatic wie z.B. der Brunnen kann per Display eingeschaltet werden (programmiert in der "screenSaveHM.c").  
+Für HM CPU, Sonnenaufgang, Sonnenuntergang, Vollmond usw. habe ich in der HomeMatic Systemvariablen angelegt die ich abfrage.  
+Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic und meine Gegebenheiten eingerichtet ist, könnt ihr diesen Teil ggf. nicht nutzen. Ich empfehle erstmal diesen Teil nicht zu aktivieren, also `#define Homematic_GUI          0` eintragen.  
+Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).  
 Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Kommentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Dateien `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
 #### 8. Grünbeck softliQ SC18
-`  #define Gruenbeck               1`   
+`  #define Gruenbeck               1`  
 <img src="https://s20.postimg.cc/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
-Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.   
-__Wichtig__ ist für diese Funktion die Installation von XMLLINT mit folgndem Befehl: `sudo apt-get install libxml2-utils`     
+Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.  
+__Wichtig__ ist für diese Funktion die Installation von XMLLINT mit folgndem Befehl: `sudo apt-get install libxml2-utils`  
 Weiter ist es möglich die Daten zur HomeMatic zu senden. `#define GruenbeckHM 1` Es werden in der HomeMatic entsprechende Systemvariablen benötigt.  
-Es sollten alle Greäte der Serie softliQ von Grünbeck auslesbar sein. Es könnten Probleme bei anderen Geräten entstehen da diese zum Teil 2 Austauscher haben. Es müssten ggf. Anpassungen an der `External/Gruenbeck.h` und an `External/gruenSave.c` der vorgenommen werden.   
+Es sollten alle Greäte der Serie softliQ von Grünbeck auslesbar sein. Es könnten Probleme bei anderen Geräten entstehen da diese zum Teil 2 Austauscher haben. Es müssten ggf. Anpassungen an der `External/Gruenbeck.h` und an `External/gruenSave.c` der vorgenommen werden.  
 Es ist auch möglich eine Grünbeck __ohne Display__ am Raspberry mit einer HomeMatic zu verbinden. Hierfür müssen an der `parameter.h` und der `External/Gruenbeck.h` die entsprechenden Einstellungen vorgenommen werden. Das `make` muss ausgeführt werden, dann kann die Datei `External/gruenSave` z.B. per crontab in entsprechenden Abständen ausgeführt werden. Mit entsprechenden Systemvariablen und Scripten kann auch in der HomeMatic die Monats und Jahresberechnung vorgenommen werden. Auf wunsch kann ich per PN die Scripte zusenden.
 
 #### 9. Abfuhrkalender
-`  #define Abfuhrkalender               1`   
+`  #define Abfuhrkalender               1`  
 <img src="https://s20.postimg.cc/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
 Für das nächste Jahr musst du eine neue Datei mit der Jahreszahl anlegen, dann wird diese zum Jahreswechsel automatisch verwendet.
 
 ### Bildschirmschoner
-Damit das Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 73 definiert: `#define ScreenSaverTime             180`   
-Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display, dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:   
-<img src="https://s20.postimg.cc/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">   
-Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:   
-<img src="https://s20.postimg.cc/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">   
+Damit das Display nicht permanent hell ist, habe ich eine Bildschirmschoner-Funktion eingefügt. Die Zeit für den Bildschirmschoner ist in der „parameter.h“ auf Zeile 80 definiert: `#define ScreenSaverTime             180`  
+Um den Bildschirmschoner zu beenden reicht ein Tipp auf das Display, dann wird es wieder hell. Für diesen Tipp ist nicht das ganze Display vorgesehen, da die anderen Funktionen versehentlich ausgelöst werden könnten. Der Bereich ist hier zu sehen:  
+<img src="https://s20.postimg.cc/9vovscf19/Bildschirmschoner.jpg" alt="Bildschirmschoner">  
+Im HomeMatic Menü ist der Bereich noch kleiner. Hier zu sehen:  
+<img src="https://s20.postimg.cc/6dcvvye59/Bildschirmschoner_HM.jpg" alt="Bildschirmschoner_HM">  
 Das Display kann auch sofort Dunkel geschaltet werden, ein Tipp in den oben gezeigten Bereichen reicht hierfür.  
 
-Es besteht die Möglichkeit den Bildschirmschoner mit Hilfe eines Bewegungssensors zu deaktivieren. Hierfür muss zum einen WiringPi installiert werden ([siehe unten](https://github.com/nischram/E3dcGui#wiringpi_einrichten)), der Pin des GPIO am Raspberry Pi muss ggf. angepasst werden (parameter.h "#define PirPin   4") und der Bewegungssensor (PIR) muss installiert werden.   
-Hier ein Anschlussbild als Beispiel:   
-<img src="https://s20.postimg.cc/etiw6x7q5/pir-364x500.png" alt="fritzing PIRtoPI">   
-Pinbelegung:   
-VCC an Pin 2 (5V)   
-OUT an Pin 16 (GPIO 23/GPIO_GEN 4)   
+Es besteht die Möglichkeit den Bildschirmschoner mit Hilfe eines Bewegungssensors zu deaktivieren. Hierfür muss zum einen WiringPi installiert werden ([siehe unten](https://github.com/nischram/E3dcGui#wiringpi_einrichten)), der Pin des GPIO am Raspberry Pi muss ggf. angepasst werden (parameter.h "#define PirPin   4") und der Bewegungssensor (PIR) muss installiert werden.  
+Hier ein Anschlussbild als Beispiel:  
+<img src="https://s20.postimg.cc/etiw6x7q5/pir-364x500.png" alt="fritzing PIRtoPI">  
+Pinbelegung:  
+VCC an Pin 2 (5V)  
+OUT an Pin 16 (GPIO 23/GPIO_GEN 4)  
 GND an Pin 6 (Ground)  
 
 Ich habe den PIR-Sensor "HC-SR501" bei mir im gebrauch.   
@@ -242,20 +242,20 @@ Der Teil "-cursor off" verhindert das Blinken des Coursers mitten im Bild.
 Das Nutzen der Werte in der HomeMatic, ist in der [Anleitung für HomeMatic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
 
 ## LED Statusanzeige
-Mit RGB-LED's kannst du eine Statusanzeige der E3DC S10 Werte erstellen.   
+Mit RGB-LED's kannst du eine Statusanzeige der E3DC S10 Werte erstellen.  
 Hierfür habe ich die Bibliothek von J.Garff verwendet und angepasst. Du kannst eine oder bis zu 12 LED's anschließen und einrichten. Es gibt folgende möglichkeiten für die LED's:   
-- Batteriefüllstand mit 1x oder 4x LED
-- Solarproduktion
-- Einspeisung / Bezug
-- Hausverbrauch
-- Batterieladung / Endladung
-- Fehler-Status
-- DC-Leistung je PV-Tracker 2x LED
-- Leistung externe Quellen   
+- Batteriefüllstand mit 1x oder 4x LED  
+- Solarproduktion  
+- Einspeisung / Bezug  
+- Hausverbrauch  
+- Batterieladung / Endladung  
+- Fehler-Status  
+- DC-Leistung je PV-Tracker 2x LED  
+- Leistung externe Quellen  
 
-Als LED kannst du alle verwenden die einen WS2811 / WS2812 Controller integriert haben. Das Display ist für die Statusanzeige nicht erforderlich. Als Beispiel können folgende LED's oder Streifen verwendet werden:   
+Als LED kannst du alle verwenden die einen WS2811 / WS2812 Controller integriert haben. Das Display ist für die Statusanzeige nicht erforderlich. Als Beispiel können folgende LED's oder Streifen verwendet werden:  
 [https://www.amazon.de/PL9823-F8-bgl-WS2812-integrierter-Controller/dp/B00L9I078W](https://www.amazon.de/PL9823-F8-bgl-WS2812-integrierter-Controller/dp/B00L9I078W)   
-[https://www.amazon.de/gp/product/B00PTEP14W](https://www.amazon.de/gp/product/B00PTEP14W)   
+[https://www.amazon.de/gp/product/B00PTEP14W](https://www.amazon.de/gp/product/B00PTEP14W)  
 Für die Installation musst du in der parameter.h 'E3DC_LED' auf 1 setzen. Im E3dcGui Verzeichniss muss die Bibliothek von J.Garff kopiert werden danach musst du die LED's in der External/LedMain.c konfigurieren und zu letzt alles Kompilieren. Folgende Befehle sind nötig:
 ```shell
 pi@raspberrypi:~ $ cd E3dcGui
@@ -272,8 +272,8 @@ pi@raspberrypi:~/E3dcGui/External $ sudo nano LedMain.c
 ```shell
 pi@raspberrypi:~/E3dcGui/External $ make
 ```
-Informationen zum Anschluss der LED findest du z.B. hier:   
-[https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring](https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring)   
+Informationen zum Anschluss der LED findest du z.B. hier:  
+[https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring](https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring)  
 Für die Idee der LED-Statusanzeige danke ich HCM_Stefan aus dem Homematic-Forum.
 
 Version V1.61 ist die erste Version der Statusanzeige und könnte noch Fehler enthalten. Wenn euch welche auffallen, euch weitere Ideen oder Verbesserungen zu der LED-Statusanzeige einfallen, erstellt doch bitte einen Issue hier im Github.
@@ -284,8 +284,8 @@ Teilweise bleibt die RSCP-Applikation hängen und die Automatische re-connection
 
 Für dieses Problem habe ich einen einfachen WatchDog geschrieben. Damit der WatchDog den Betrieb der Applikation überwachen kann, lasse ich mit einem kleinen Teil in der RscpMain, eine Datei im RAMDisk erstellen. In der Datei ist die Unixtime des S10, diese wiederum liest der WatchDog ein und vergleicht diese mit einer definierten Differenz mit der aktuellen Zeit.  
 
-Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt können auch diese Daten überwacht werden. Da ich die HomeMatic nicht so häufig abfrage, sollten die Einstellungen zum WatchDog nicht großartig geändert werden.   
-Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui/Data Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.   
+Ein paar Einstellmöglichkeiten für den WatchDog hast du bestimmt schon in der „parameter.h“ gesehen. Wenn die Applikation auch Daten von der HomeMatic holt können auch diese Daten überwacht werden. Da ich die HomeMatic nicht so häufig abfrage, sollten die Einstellungen zum WatchDog nicht großartig geändert werden.  
+Wenn der Watchdog zuschlägt, erstellt er eine Datei "Watchdog.csv" im E3dcGui/Data Ordner. Somit ist eine Kontrolle der Aktivität möglich. Es wird je Aktivität eine Zeile erstellt, du kannst erkennen was der WatchDog neu gestartet hat.  
 Der WatchDog startet den Raspberry Pi auch neu, wenn die Applikation über längere Zeit keine aktuellen Daten (E3DC oder HomeMatic) liefert. Hierdurch ergibt sich noch ein Problem, sollte die Netzwerkverbindung zum System oder die Geräte gestört sein, würde der Raspberry Pi mehrfach mit einem Reboot neu gestartet. Um dies zu stoppen musst du folgendes in der Kommandozeile eingeben:
 ```shell
 pi@raspberrypi:~ $ killall watchdog
@@ -354,7 +354,7 @@ Diesen Teil zum RAMDisk habe ich von hier Kopiert:
 ## WiringPI einrichten
 
 Für diverse Anwendungen der GPIO des Raspberry Pi muss die Software WiringPi installiert werden.
-Es ist folgendes einzugeben.   
+Es ist folgendes einzugeben.  
 Zum home Verzeichnis wechslen:  
 ```
 pi@raspberrypi ~/E3dcGui $ cd
@@ -420,7 +420,7 @@ __Wichtig:__ Bitte bei neueren Raspberry Versionen zur Fehlerbehebung [Issue#11]
 
 ## Material
 Ich nutze die Software auf einem Komplettpaket von Conrad. Das Set besteht aus dem Raspberry Pi 3, SD-Karte (Noobs vorinstalliert), 7-Zoll Raspberry Touchdisplay, Standgehäuse und Netzteil.  
-Hier die Artikelnummer von Conrad: [1437995-62](https://www.conrad.de/de/raspberry-pi-3-model-b-starter-set-1-gb-noobs-inkl-betriebssystem-noobs-inkl-gehaeuse-inkl-netzteil-inkl-software-1437995.html)   
+Hier die Artikelnummer von Conrad: [1437995-62](https://www.conrad.de/de/raspberry-pi-3-model-b-starter-set-1-gb-noobs-inkl-betriebssystem-noobs-inkl-gehaeuse-inkl-netzteil-inkl-software-1437995.html)  
 Die Grundinstallation ist einfach, da es im Internet schon viele Anleitungen hierzu gibt, gehe ich im Moment hierauf nicht näher ein.
 
 ### Desktop deaktivieren
@@ -465,13 +465,14 @@ Sperrzeiten setzen von rella: [Link](https://github.com/rellla/E3DC-Rscp)
 Anbindung des S10 an die Loxone von von Dieter Schmidberger: [Link](http://www.loxwiki.eu/display/LOXBERRY/E3DC2Lox)
 
 #### Grafiken
-Bildschirmfotos aus dem E3DC Portal (Ich hoffe E3DC hat nichts dagegen!?)
+Bildschirmfotos aus dem E3DC Portal
 
 ## Changelog
 #### Wichtige Ergänzungen
-V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden   
-V1.61 11.10.2017 LED-Statusanzeige integriert   
-V1.52 23.09.2017 Hausautomation integriert   
+V1.81 08.09.2020 WetterGui auf OpenWeatherMap.org umgestellt
+V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden  
+V1.61 11.10.2017 LED-Statusanzeige integriert  
+V1.52 23.09.2017 Hausautomation integriert  
 V1.49 05.09.2017 Abfuhrkalender eingebaut  
 V1.47 03.09.2017 WetterGui eingebaut  
 
@@ -480,42 +481,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
-V1.80 24.08.2019 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)
-- Issue #35 Mit einem Schalter in der parameter.h kann die Größe eingesgellt werden
+V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
+- Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org    
+- Changelog archiviert  
 
-V1.79 01.09.2019 Speicherzugriffsfehler behoben [Issue #33](https://github.com/nischram/E3dcGui/issues/33)
-- Issue #33 Durch fehlende "return" in "int" Funktionen gibt es bei der RscpMain einen Speicherzugriffsfehler
-
-V1.78 27.01.2019 Wetteranzeige umgabaut auf OpenWeatherMap
-- für die Wetteranzeige ist nun ein Api-Key von OpenWeatherMap (Account) erforderlich
-- [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
-
-V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
-- screenSave.c Zeile 207 useDHT11 geändert in useDHT
-
-V1.76 14.10.2018 SmartHome angepasst für DHT11 und DHT22 Sensoren
-- dht11.c ausgetauscht gegen dht.h damit auch die DHT22 Sensoren möglich sind.
-
-V1.75 19.08.2018 WetterGui wieder aktiviert [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
-- Issue #32 Der Wetterdienst über weather.tuxnet24.de ist als https wieder aktiv.
-
-V1.74 05.08.2018 Zeitstempel zur HM senden
-- Das Script in der HM arbeitet nicht mehr, jetzt kann der Zeitstempel gesendet werden.
-
-V1.73 25.06.2018 [Issue #30](https://github.com/nischram/E3dcGui/issues/30) + Korrekturen
-- Beispieländerung für Issue #30
-- Rückmeldung im "CURL-Befehl" abgestellt
-
-V1.72 24.04.2018 Bilder wurden nicht mehr angezeigt
-- Postimage ist unter postimg.org nicht mehr erreichbar jetz postimg.cc
-
-V1.71 11.04.2018 Verbesserung IP Anzeige
-- Bei der Verwendung von W-LAN wird für ETH ein falscher Wert angezeigt
-
-V1.70 26.03.2018 Anpassungen in der Anleitung
-- Link zur Beispielapplikation von E3DC überarbeiter
-- Vergleichbare Projekte eingetragen
-- Anpassungen in der Anleitung
-- Changelog archiviert
+V1.80 24.08.2020 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)
+- Issue #35 Mit einem Schalter in der parameter.h kann die Größe eingesgellt werden  
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

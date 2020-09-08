@@ -18,9 +18,9 @@ $(ROOT_WD): cleanWD
 $(ROOT_SS): cleanSS
 	$(CC) -O1 screenSave.c -o $@
 $(ROOT_SSHM): cleanSSHM
-	$(CC) -O1 screenSaveHM.c -o $@
+	$(CC) -O1 screenSaveHM.c -o $@ -lwiringPi
 $(ROOT_GM): cleanGM
-	$(CC) -O1 GuiMain.c -o $@ -lwiringPi
+	$(CC) -O1 GuiMain.c -lcurl -o $@ -lwiringPi
 $(ROOT_GB): cleanGB
 	$(CC) -O1 External/gruenSave.c -o $@
 $(ROOT_START): cleanSTART

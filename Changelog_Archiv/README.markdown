@@ -1,4 +1,40 @@
 # Changelog Archiv
+V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
+- Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org  
+- Changelog archiviert  
+
+V1.80 24.08.2020 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)
+- Issue #35 Mit einem Schalter in der parameter.h kann die Größe eingesgellt werden  
+
+V1.79 01.09.2019 Speicherzugriffsfehler behoben [Issue #33](https://github.com/nischram/E3dcGui/issues/33)
+- Issue #33 Durch fehlende "return" in "int" Funktionen gibt es bei der RscpMain einen Speicherzugriffsfehler  
+
+V1.78 27.01.2019 Wetteranzeige umgabaut auf OpenWeatherMap
+- für die Wetteranzeige ist nun ein Api-Key von OpenWeatherMap (Account) erforderlich
+- [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
+
+V1.77 03.12.2018 Fehler nach Update für DHT22 behoben
+- screenSave.c Zeile 207 useDHT11 geändert in useDHT
+
+V1.76 14.10.2018 SmartHome angepasst für DHT11 und DHT22 Sensoren
+- dht11.c ausgetauscht gegen dht.h damit auch die DHT22 Sensoren möglich sind.
+
+V1.75 19.08.2018 WetterGui wieder aktiviert [Issue #32](https://github.com/nischram/E3dcGui/issues/32)
+- Issue #32 Der Wetterdienst über weather.tuxnet24.de ist als https wieder aktiv.
+
+V1.74 05.08.2018 Zeitstempel zur HM senden
+- Das Script in der HM arbeitet nicht mehr, jetzt kann der Zeitstempel gesendet werden.
+
+V1.73 25.06.2018 [Issue #30](https://github.com/nischram/E3dcGui/issues/30) + Korrekturen
+- Beispieländerung für Issue #30
+- Rückmeldung im "CURL-Befehl" abgestellt
+
+V1.72 24.04.2018 Bilder wurden nicht mehr angezeigt
+- Postimage ist unter postimg.org nicht mehr erreichbar jetz postimg.cc
+
+V1.71 11.04.2018 Verbesserung IP Anzeige
+- Bei der Verwendung von W-LAN wird für ETH ein falscher Wert angezeigt
+
 V1.70 26.03.2018 Anpassungen in der Anleitung
 - Link zur Beispielapplikation von E3DC überarbeiter
 - Anpassungen in der Anleitung
