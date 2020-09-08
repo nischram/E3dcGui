@@ -152,6 +152,10 @@ Auf der Seite OpenWeatherMap kannst du für deinen Standort die ID ermitteln, au
 Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:  
 `131 #define wetterGui                   1`  
 Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
+__Wichtig:__ für die Abfragen muss auf dem Raspberry noch eine CURL-Library installiert werden. Es muss folgender Befehl durchgeführt werden:  
+```shell
+sudo apt-get install libcurl4-openssl-dev
+```
 
 #### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `  
