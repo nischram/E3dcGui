@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.81 08.09.2020](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.82 03.11.2020](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -81,6 +81,7 @@ Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen w
 Die Änderungen in der „parameter.h“ speicherst du mit „STRG“ und „O“ und beendet wird der Editor mit „STRG“ und „X“.
 
 ### Applikation Kompilieren   
+Vor dem ersten kompilieren der Applikation, musse auf den Raspberry WiringPi installiert werden (Anleitung siehe unten).  
 Das „Makefile“ ist komplett vorbereitet du brauchst nur noch „make“ in der Kommandozeile eingeben, dann läuft das Kompilieren von alleine durch.
 ```shell
 pi@raspberrypi ~/E3dcGui $  make
@@ -369,13 +370,14 @@ pi@raspberry:~$ sudo apt-get install git git-core
 ```   
 Jetzt kann WiringPi heruntergeladen   
 ```
-pi@raspberry:~$ git clone git://git.drogon.net/wiringPi
+pi@raspberry:~$ git clone https://github.com/wiringpi/wiringpi
 pi@raspberry:~$ cd wiringPi
 ```
 und installiert werden:   
 ```
 pi@raspberrypi ~/wiringPi $ ./build
 ```
+Information: In der letzten Zeit gab es Probleme mit den Servern, sollten die Server nicht erreichbar sein, musst du ggf. Google befragen und einen anderen Weg suchen.  
 
 ## eMail senden Installieren und aktivieren
 Damit der Watchdog oder andere Programmteile eine eMail senden können, muss eine eMail Option installiert werden. Ich habe mich hier für "SendEmail" entschieden. Die Version 1.56 habe ich in meinem Github integriert, somit muss die Software nicht Heruntergeladen werden, was das installieren wesentlich einfacher macht. Folgende Befehle sind der Reihe nach auszuführen:
@@ -485,6 +487,10 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.82 03.11.2020 Anpassungen für WiringPi [Issue #38](https://github.com/nischram/E3dcGui/issues/38)
+- Issue #38
+- WiringPi Server angepasst 
+
 V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
 - Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org    
 - Changelog archiviert  
