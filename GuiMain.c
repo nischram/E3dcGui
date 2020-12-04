@@ -166,7 +166,7 @@ int main(){
 							DrawImage("ExtImage", 40, 220);
 						if(Wallbox == 1)
 							DrawImage("WallboxImage", 650, 220);
-						if (E3DC_S10 ==1 && historyAktiv == true){
+						if (E3DC_S10 ==1 && historyAktiv == 1){
 							if (Screen[ScreenHistory] == today)
 								DrawImage("Yesterday", 370, 405);
 							else if (Screen[ScreenHistory] == yesterday)
@@ -352,7 +352,7 @@ int main(){
 					snprintf (OUT, (size_t)100, "Eigenstrom");
 					put_string(310,392,OUT,GREY);
 					//HistoryValues
-					if(counter == 0 && Screen[ScreenHistory] > 0 && historyAktiv == true){
+					if(counter == 0 && Screen[ScreenHistory] > 0 && historyAktiv == 1){
 						float historyPV = readHistory(dataPV, Screen[ScreenHistory]);
 						snprintf (OUT, (size_t)100, "%.1f kWh", historyPV/1000);
 						put_stringRGB(180, 155, OUT, 225, 122, 34);
@@ -926,7 +926,7 @@ int main(){
 		writeScreen(ScreenSaver, ScreenSaverCounter);
 //####################################################
 	//HistoryValues vom S10 mit "S10history" abfragen.
-		if (historyAktiv == true){
+		if (historyAktiv == 1){
 			if(HistoryCounter == 0){
 				system("/home/pi/E3dcGui/S10history/S10history -T &");// > /dev/null 2>&1");
 				HistoryCounter = historyDelay;

@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.82 03.11.2020](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.83 04.12.2020](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -487,9 +487,13 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.83 04.12.2020 [Issue #42](https://github.com/nischram/E3dcGui/issues/42)
+- Fehlerbehebung für Issue #42
+- printsendHM auf float geändert für Issue #42
+
 V1.82 03.11.2020 Anpassungen für WiringPi [Issue #38](https://github.com/nischram/E3dcGui/issues/38)
 - Issue #38
-- WiringPi Server angepasst 
+- WiringPi Server angepasst
 
 V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
 - Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org    

@@ -14,13 +14,13 @@
 
 using namespace std;
 
-void printsendHM(int CounterHM, int id, int value)
+void printsendHM(int CounterHM, int id, float value)
 {
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%i\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.3f\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %i\n",id, value);
       system(batch);
     }

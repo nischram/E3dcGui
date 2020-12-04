@@ -1,7 +1,7 @@
 #ifndef __RWData_H_
 #define __RWData_H_
 
-void printsendHM(int CounterHM, int id, int value);
+void printsendHM(int CounterHM, int id, float value);
 void printsendCharHM(int CounterHM, int id, char value[32]);
 void readWrite900(char *fileName, int NewValue);
 int writeData(char *Path, int Position, int NewValue, int max);
