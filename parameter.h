@@ -129,8 +129,11 @@ Es kann aber zu darstellungsfehler kommen.
 //#######################################
 // Wetterdienst von OpenWeatherMap
 #define wetterGui                   1
-#define weatherID                   2950159     //https://openweathermap.org Location-ID
-#define weatherKey                  "12345678910111213141516171819202"   //https://openweathermap.org API Key (Kostenlos 10.000 Abfragen per Monat)
+#define WEATHER_COUNTRY             "Deutschland"
+#define WEATHER_CITY                "Berlin"
+#define WEATHER_LON                 "52.520855"
+#define WEATHER_LAN                 "13.409389"
+#define WEATHER_KEY                 "12345678910111213141516171819202"   //https://openweathermap.org API Key (Kostenlos 10.000 Abfragen per Monat)
 
 //#######################################
 // Abfuhrkalender

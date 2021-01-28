@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.83 04.12.2020](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.84 28.01.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -146,12 +146,10 @@ Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 <img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">     
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen Service, welcher die aktuellen Wetterdaten von OpenWeatherMap holt.
 Du musst dir zuvor einen kostenlosen Account bei [OpenWeatherMap](https://openweathermap.org/guide#how) einrichten. Dort bekommst du einen API-Key den du hier eintragen musst:  
-`133 #define weatherKey                      "12345678910111213141516171819202"`   
-Auf der Seite OpenWeatherMap kannst du für deinen Standort die ID ermitteln, auch diese muss hier in die parameter.h eingetragen werden:  
-`132 #define weatherID                   2950159`  
-(Stadt suchen mit "Search City" und dann im Browser in der Adresszeile die ID entnehmen. z.B. für Berlin: https://openweathermap.org/city/2950159˘)
+`#define WEATHER_KEY                      "12345678910111213141516171819202"`   
+Die OpenWeatherMap Anzeige ist auf die "OneCall-API" angepasst, leider ist in dieser API die Standortsuche nur per Koordinaten möglich, so musst du für dein Standort die Koordinaten ermittel und diese unter WEATER_LON und WEATHER_LAN eintragen. Der Name der Stadt und vom Land sind nur für die Anzeige im Display.
 Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:  
-`131 #define wetterGui                   1`  
+`#define wetterGui                   0`  
 Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
 __Wichtig:__ für die Abfragen muss auf dem Raspberry noch eine CURL-Library installiert werden. Es muss folgender Befehl durchgeführt werden:  
 ```shell
@@ -487,6 +485,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.84 28.01.2021 OpenWeatherMap OneCall Anpassung [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
+- Issue #47
+
 V1.83 04.12.2020 [Issue #42](https://github.com/nischram/E3dcGui/issues/42)
 - Fehlerbehebung für Issue #42
 - printsendHM auf float geändert für Issue #42

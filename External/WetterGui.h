@@ -157,7 +157,7 @@ int changeToText(int code, char * output){
 //Difiniton der Variablen die auf dem Display angezeigt werden sollen.
 char country[64], city[64];
 double longitude, latitude;
-int weatherTimeZone;
+int weatherTimeZone, dtCount;
 char current_date[64], current_text[64], sunrise[64], sunset[64];
 char forecast0_date[64], forecast0_text[64], forecast1_date[64], forecast1_text[64], forecast2_date[64], forecast2_text[64];
 char current_image[64], forecast0_image[64], forecast1_image[64], forecast2_image[64];
@@ -172,121 +172,126 @@ int humidity, pressure, windDeg;
  * @return void
  */
 void copyWeatherData(char * data, struct Parsed_Json weather) {
-     int cityInt = 0,day = 0;
-     char output[256], timeString[100];
-     int tempDay = 0, tempNight = 0;
-     for (int i = 1; i < weather.number_of_tokens; i++) {
-        int length = weather.tokens[i].end - weather.tokens[i].start;
-        char string[length + 1];
+   int cityInit = 0,day = 0, dailyInit = 0;
+   char output[256], timeString[100];
+   int tempDay = 0, tempNight = 0;
+   for (int i = 1; i < weather.number_of_tokens; i++) {
+      int length = weather.tokens[i].end - weather.tokens[i].start;
+      char string[length + 1];
 
-        strncpy(string, data + weather.tokens[i].start, length);
-        string[length] = '\0';
+      strncpy(string, data + weather.tokens[i].start, length);
+      string[length] = '\0';
 
-        if (check_json_string("country", string, weather.tokens[i]) == 0 && cityInt == 0) {
-            key_value(country, data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("country", string, weather.tokens[i]) == 0 && cityInit == 0) {
+          key_value(country, data,  weather.tokens[i + 1]);
+      }
+      else snprintf(country, 64, "%s",WEATHER_COUNTRY);
 
-        if (check_json_string("name", string, weather.tokens[i]) == 0 && cityInt == 0) {
-            key_value(city, data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("name", string, weather.tokens[i]) == 0 && cityInit == 0) {
+          key_value(city, data,  weather.tokens[i + 1]);
+      }
+      else snprintf(city, 64, "%s",WEATHER_CITY);
 
-        if (check_json_string("lon", string, weather.tokens[i]) == 0 && cityInt == 0) {
-            longitude = key_value_float(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("lon", string, weather.tokens[i]) == 0 && cityInit == 0) {
+          longitude = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("lat", string, weather.tokens[i]) == 0 && cityInt == 0) {
-            latitude = key_value_float(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("lat", string, weather.tokens[i]) == 0 && cityInit == 0) {
+          latitude = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("timezone", string, weather.tokens[i]) == 0 && cityInt == 0) {
-            weatherTimeZone = key_value_int(data,  weather.tokens[i + 1]);
-            cityInt = 1;
-        }
+      if (check_json_string("timezone_offset", string, weather.tokens[i]) == 0 && cityInit == 0) {
+          weatherTimeZone = key_value_int(data,  weather.tokens[i + 1]);
+          cityInit = 1;
+      }
+      if (check_json_string("sunrise", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+          key_value(output, data,  weather.tokens[i + 1]);
+          makeSunString(output, sunrise);
+      }
 
-        if (check_json_string("dt", string, weather.tokens[i]) == 0) {
-            key_value(output, data,  weather.tokens[i + 1]);
-            makeDayString(output, timeString);
+      if (check_json_string("sunset", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+          key_value(output, data,  weather.tokens[i + 1]);
+          makeSunString(output, sunset);
+      }
+      if (check_json_string("humidity", string, weather.tokens[i]) == 0 ) {
+          humidity  = key_value_int(data,  weather.tokens[i + 1]);
+      }
 
-            if(day == 0) snprintf(current_date, 256, "%s", timeString);
-            else if(day == 1) snprintf(forecast0_date, 256, "%s", timeString);
-            else if(day == 2) snprintf(forecast1_date, 256, "%s", timeString);
-            else if(day == 3) snprintf(forecast2_date, 256, "%s", timeString);
-            day = day + 1;
-        }
-        if (check_json_string("sunrise", string, weather.tokens[i]) == 0) {
-            key_value(output, data,  weather.tokens[i + 1]);
-            makeSunString(output, timeString);
-            if(day - 1 == 0) snprintf(sunrise, 256, "%s", timeString);
-        }
+      if (check_json_string("pressure", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+          pressure  = key_value_int(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("sunset", string, weather.tokens[i]) == 0) {
-            key_value(output, data,  weather.tokens[i + 1]);
-            makeSunString(output, timeString);
-            if(day - 1 == 0) snprintf(sunset, 256, "%s", timeString);
-        }
+      if (check_json_string("wind_speed", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+          speed  = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("id", string, weather.tokens[i]) == 0  && cityInt != 0) {
-            if(day - 1 == 0){
-              current_code = key_value_int(data,  weather.tokens[i + 1]);
-              changeToText(current_code, current_text);
-            }
-            else if(day - 1 == 1){
-              forecast0_code = key_value_int(data,  weather.tokens[i + 1]);
-              changeToText(forecast0_code, forecast0_text);
-            }
-            else if(day - 1 == 2){
-              forecast1_code = key_value_int(data,  weather.tokens[i + 1]);
-              changeToText(forecast1_code, forecast1_text);
-            }
-            else if(day - 1 == 3){
-              forecast2_code = key_value_int(data,  weather.tokens[i + 1]);
-              changeToText(forecast2_code, forecast2_text);
-            }
-        }
+      if (check_json_string("wind_deg", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+          windDeg  = key_value_int(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("icon", string, weather.tokens[i]) == 0 ) {
-          if(day - 1 == 0) key_value(current_image, data,  weather.tokens[i + 1]);
-          else if(day - 1 == 1) key_value(forecast0_image, data,  weather.tokens[i + 1]);
-          else if(day - 1 == 2) key_value(forecast1_image, data,  weather.tokens[i + 1]);
-          else if(day - 1 == 3) key_value(forecast2_image, data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("dt", string, weather.tokens[i]) == 0 && dailyInit == 0) {
+        dtCount++;
+      }
+      if (check_json_string("daily", string, weather.tokens[i]) == 0) {
+        dailyInit = 1;
+      }
+      if (check_json_string("dt", string, weather.tokens[i]) == 0 & dailyInit == 1) {
+          key_value(output, data,  weather.tokens[i + 1]);
+          makeDayString(output, timeString);
 
-        if (check_json_string("temp", string, weather.tokens[i]) == 0 && day - 1 == 0) {
-          current_temp = key_value_float(data,  weather.tokens[i + 1]);
-        }
+          if(day == 0) snprintf(current_date, 256, "%s", timeString);
+          else if(day == 1) snprintf(forecast0_date, 256, "%s", timeString);
+          else if(day == 2) snprintf(forecast1_date, 256, "%s", timeString);
+          else if(day == 3) snprintf(forecast2_date, 256, "%s", timeString);
+          day = day + 1;
+      }
+      if (check_json_string("id", string, weather.tokens[i]) == 0  && cityInit != 0) {
+          if(day - 1 == 0){
+            current_code = key_value_int(data,  weather.tokens[i + 1]);
+            changeToText(current_code, current_text);
+          }
+          else if(day - 1 == 1){
+            forecast0_code = key_value_int(data,  weather.tokens[i + 1]);
+            changeToText(forecast0_code, forecast0_text);
+          }
+          else if(day - 1 == 2){
+            forecast1_code = key_value_int(data,  weather.tokens[i + 1]);
+            changeToText(forecast1_code, forecast1_text);
+          }
+          else if(day - 1 == 3){
+            forecast2_code = key_value_int(data,  weather.tokens[i + 1]);
+            changeToText(forecast2_code, forecast2_text);
+          }
+      }
 
-        if (check_json_string("day", string, weather.tokens[i]) == 0 ) {
-          if(day - 1 == 0) current_temp_day = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 1) forecast0_temp_day = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 2) forecast1_temp_day = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 3) forecast2_temp_day = key_value_float(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("icon", string, weather.tokens[i]) == 0 ) {
+        if(day - 1 == 0) key_value(current_image, data,  weather.tokens[i + 1]);
+        else if(day - 1 == 1) key_value(forecast0_image, data,  weather.tokens[i + 1]);
+        else if(day - 1 == 2) key_value(forecast1_image, data,  weather.tokens[i + 1]);
+        else if(day - 1 == 3) key_value(forecast2_image, data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("night", string, weather.tokens[i]) == 0 ) {
-          if(day - 1 == 0) current_temp_night = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 1) forecast0_temp_night = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 2) forecast1_temp_night = key_value_float(data,  weather.tokens[i + 1]);
-          else if(day - 1 == 3) forecast2_temp_night = key_value_float(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("temp", string, weather.tokens[i]) == 0 && day - 1 == 0) {
+        current_temp = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("humidity", string, weather.tokens[i]) == 0 && day - 1 == 0) {
-            humidity  = key_value_int(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("day", string, weather.tokens[i]) == 0 ) {
+        if(day - 1 == 0) current_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 1) forecast0_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 2) forecast1_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 3) forecast2_temp_day = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("pressure", string, weather.tokens[i]) == 0 && day - 1 == 0) {
-            pressure  = key_value_int(data,  weather.tokens[i + 1]);
-        }
+      if (check_json_string("night", string, weather.tokens[i]) == 0 ) {
+        if(day - 1 == 0) current_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 1) forecast0_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 2) forecast1_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+        else if(day - 1 == 3) forecast2_temp_night = key_value_float(data,  weather.tokens[i + 1]);
+      }
 
-        if (check_json_string("speed", string, weather.tokens[i]) == 0 && day - 1 == 0) {
-            speed  = key_value_float(data,  weather.tokens[i + 1]);
-        }
+  }
 
-        if (check_json_string("deg", string, weather.tokens[i]) == 0 && day - 1 == 0) {
-            windDeg  = key_value_int(data,  weather.tokens[i + 1]);
-        }
-    }
-
-    printf("\n--------------------------------------------------------\n\n");
+  printf("\n--------------------------------------------------------\n\n");
 }
 //Wetter Grafik erstellen
 int makeWetterGui(int GuiTime, int counter, char* weatherTime)
@@ -365,12 +370,10 @@ int makeWetterGui(int GuiTime, int counter, char* weatherTime)
 		put_string(WetterS2, WetterZ2, OUT, GREY);
 		snprintf(OUT, (size_t)64, "%s", country);
 		put_string(WetterS2, WetterZ3, OUT, GREY);
-    snprintf(OUT, (size_t)64, "Location-ID: %i", weatherID);
-		put_string(WetterS2, WetterZ4, OUT, GREY);
     snprintf(OUT, (size_t)64, "Latitude : %4.5f", latitude);
-		put_string(WetterS2, WetterZ5, OUT, GREY);
+		put_string(WetterS2, WetterZ4, OUT, GREY);
     snprintf(OUT, (size_t)64, "Longitude: %4.5f", longitude);
-		put_string(WetterS2, WetterZ6, OUT, GREY);
+		put_string(WetterS2, WetterZ5, OUT, GREY);
 
 
 		snprintf(OUT, (size_t)64, "Luftfeuchtigkeit:     %i %%", humidity);
