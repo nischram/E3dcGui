@@ -131,8 +131,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define wetterGui                   1
 #define WEATHER_COUNTRY             "Deutschland"
 #define WEATHER_CITY                "Berlin"
-#define WEATHER_LON                 "52.520855"
-#define WEATHER_LAN                 "13.409389"
+#define WEATHER_LAT                 "52.520855"
+#define WEATHER_LON                 "13.409389"
 #define WEATHER_KEY                 "12345678910111213141516171819202"   //https://openweathermap.org API Key (Kostenlos 10.000 Abfragen per Monat)
 
 //#######################################

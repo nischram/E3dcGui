@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.84 28.01.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.85 30.01.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -146,10 +146,10 @@ Unterhalb werden Informationen zum Raspberry Pi ausgegeben.
 <img src="https://s20.postimg.cc/5ewglai59/Wetter.jpg" alt="Wetteranzeige">     
 Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf einen Service, welcher die aktuellen Wetterdaten von OpenWeatherMap holt.
 Du musst dir zuvor einen kostenlosen Account bei [OpenWeatherMap](https://openweathermap.org/guide#how) einrichten. Dort bekommst du einen API-Key den du hier eintragen musst:  
-`#define WEATHER_KEY                      "12345678910111213141516171819202"`   
+`  #define WEATHER_KEY                      "12345678910111213141516171819202"`   
 Die OpenWeatherMap Anzeige ist auf die "OneCall-API" angepasst, leider ist in dieser API die Standortsuche nur per Koordinaten möglich, so musst du für dein Standort die Koordinaten ermittel und diese unter WEATER_LON und WEATHER_LAN eintragen. Der Name der Stadt und vom Land sind nur für die Anzeige im Display.
 Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:  
-`#define wetterGui                   0`  
+`  #define wetterGui                   0`  
 Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
 __Wichtig:__ für die Abfragen muss auf dem Raspberry noch eine CURL-Library installiert werden. Es muss folgender Befehl durchgeführt werden:  
 ```shell
@@ -392,12 +392,12 @@ pi@raspberrypi ~/E3dcGui $ sudo apt-get install libio-socket-ssl-perl
 Jetzt müssen die eMail Einstellung in den "parameter.h" definiert werden.
 ```
 // sendEmail Parameter
-108  #define FromEmailAdress             "max.mustermann@web.de"
-109  #define smtpServer                  "smtp.web.de"
-110  #define smtpPort                    "587"
-111  #define smtpTLS                     "yes"
-112   #define smtpBenutzer                "max.mustermann@web.de"
-113   #define smtpPass                    "1234abc"
+  #define FromEmailAdress             "max.mustermann@web.de"
+  #define smtpServer                  "smtp.web.de"
+  #define smtpPort                    "587"
+  #define smtpTLS                     "yes"
+  #define smtpBenutzer                "max.mustermann@web.de"
+  #define smtpPass                    "1234abc"
 ```
 Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
@@ -411,12 +411,12 @@ Dies ist für Web.de (von mir getestet) und so muss es für gmail.com aussehen.
 ```
 Für den Watchdog ist in der "parameter.h" noch die eMail-Adresse einzustellen in der die Nachrichten gesendet werden sollen:
 ```
-95  #define WDtoEmailAdress             "max.mustermann@web.de"
+  #define WDtoEmailAdress             "max.mustermann@web.de"
 ```
 Mit den Parametern
 ```
-93   #define WDsendEmailReboot           1
-94   #define WDsendEmailKill             0
+   #define WDsendEmailReboot           1
+   #define WDsendEmailKill             0
 ```
 kann noch definiert werden ob für Kill und/oder Reboot die eMail gesendet werden soll. Beide Parameter auf "0", dann wird keine eMail gesendet und die Software muss __nicht__ installiert werden.
 
@@ -485,6 +485,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.85 30.01.2021 Fehlerkorrektur bei der Wetteranzeige [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
+- Issue #47
+
 V1.84 28.01.2021 OpenWeatherMap OneCall Anpassung [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
 - Issue #47
 

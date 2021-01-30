@@ -135,7 +135,7 @@ char * getWeatherData() {
 
     // Build the url
     char base_url[256];
-    snprintf(base_url, (size_t)256, "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&exclude=minutely,hourly&appid=%s&units=metric", WEATHER_LON, WEATHER_LAN, WEATHER_KEY);
+    snprintf(base_url, (size_t)256, "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&exclude=minutely,hourly&appid=%s&units=metric", WEATHER_LAT, WEATHER_LON, WEATHER_KEY);
     char length = strlen(base_url);
     char * url = malloc(sizeof(char) * length + 1);
     memset(url, 0, length);
