@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.85 30.01.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.86 13.02.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -81,7 +81,8 @@ Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen w
 Die Änderungen in der „parameter.h“ speicherst du mit „STRG“ und „O“ und beendet wird der Editor mit „STRG“ und „X“.
 
 ### Applikation Kompilieren   
-Vor dem ersten kompilieren der Applikation, musse auf den Raspberry WiringPi installiert werden (Anleitung siehe unten).  
+Vor dem ersten kompilieren der Applikation, musse auf den Raspberry WiringPi installiert werden (Anleitung siehe unter "WiringPI einrichten").  
+Auch muss zuvor libcurl4 installiert werden für die Wetterdaten (Anleitung siehe unter "2. Wetteranzeige").  
 Das „Makefile“ ist komplett vorbereitet du brauchst nur noch „make“ in der Kommandozeile eingeben, dann läuft das Kompilieren von alleine durch.
 ```shell
 pi@raspberrypi ~/E3dcGui $  make
@@ -148,10 +149,10 @@ Hier werden Standort bezogene Wetterdaten eingeblendet. Die Daten basieren auf e
 Du musst dir zuvor einen kostenlosen Account bei [OpenWeatherMap](https://openweathermap.org/guide#how) einrichten. Dort bekommst du einen API-Key den du hier eintragen musst:  
 `  #define WEATHER_KEY                      "12345678910111213141516171819202"`   
 Die OpenWeatherMap Anzeige ist auf die "OneCall-API" angepasst, leider ist in dieser API die Standortsuche nur per Koordinaten möglich, so musst du für dein Standort die Koordinaten ermittel und diese unter WEATER_LON und WEATHER_LAN eintragen. Der Name der Stadt und vom Land sind nur für die Anzeige im Display.
-Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:  
+Da eventuell nicht alle einen Account einrichten wollen, kann man die Wetter-Seite ausblenden. Dies erfolgt mit:   
 `  #define wetterGui                   0`  
 Die Wetteranzeigen kann auch ohne S10 oder HomeMatic genutzt werden.
-__Wichtig:__ für die Abfragen muss auf dem Raspberry noch eine CURL-Library installiert werden. Es muss folgender Befehl durchgeführt werden:  
+__Wichtig:__ für die Abfragen muss auf dem Raspberry noch eine CURL-Library installiert werden. Es muss folgender Befehl durchgeführt werden:
 ```shell
 sudo apt-get install libcurl4-openssl-dev
 ```
@@ -279,8 +280,6 @@ Informationen zum Anschluss der LED findest du z.B. hier:
 [https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring](https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring)  
 Für die Idee der LED-Statusanzeige danke ich HCM_Stefan aus dem Homematic-Forum.
 
-Version V1.61 ist die erste Version der Statusanzeige und könnte noch Fehler enthalten. Wenn euch welche auffallen, euch weitere Ideen oder Verbesserungen zu der LED-Statusanzeige einfallen, erstellt doch bitte einen Issue hier im Github.
-
 ## WatchDog
 
 Teilweise bleibt die RSCP-Applikation hängen und die Automatische re-connection in der RSCP-Applikation funktioniert leider nicht immer. So wird ein Neustart der RSCP-Applikation nötig.
@@ -369,7 +368,7 @@ pi@raspberry:~$ sudo apt-get install git git-core
 Jetzt kann WiringPi heruntergeladen   
 ```
 pi@raspberry:~$ git clone https://github.com/wiringpi/wiringpi
-pi@raspberry:~$ cd wiringPi
+pi@raspberry:~$ cd wiringpi
 ```
 und installiert werden:   
 ```
@@ -485,6 +484,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
+V1.86 13.02.2021 Fehlerkorrektur für neuere Rasbain Versionen [Issue #48](https://github.com/nischram/E3dcGui/issues/48)
+- Issue #48
+- Anpassungen an der README
+- Anpassungen an der STEPBYSTEP
+
 V1.85 30.01.2021 Fehlerkorrektur bei der Wetteranzeige [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
 - Issue #47
 

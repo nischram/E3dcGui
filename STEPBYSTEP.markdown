@@ -24,10 +24,12 @@ Link für Link
 [Erstinbetriebnahme](https://raspberry.tips/raspberrypi-einsteiger/raspberry-pi-einsteiger-guide-konfigurieren-teil-3/)
 
 #### SSH-Verbindung
-[Anleitung via Windows Putty](https://tutorials-raspberrypi.de/raspberry-pi-ssh-windows-zugriff-putty/)   
+[Anleitung via Windows Putty](https://tutorials-raspberrypi.de/raspberry-pi-ssh-windows-zugriff-putty/)  
 [Aleitung via MAC](https://www.raspberrypi.org/documentation/remote-access/ssh/unix.md)
 
 #### Bildschirm drehen
+[RPI 7" Touch 180 Grad gedreht](https://www.raspberrypi.org/forums/viewtopic.php?t=121662#p821060)  
+Alternativ wenn der Tocuh nicht mitdrehen soll:  
 [Bildschirm-Anzeige drehen](https://tutorials-raspberrypi.de/tipps-tricks-faq-zum-offiziellen-7-raspberry-pi-touchscreen/#drehen)
 
 #### StartX deaktivieren
@@ -40,7 +42,7 @@ Link für Link
 [https://github.com/jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x)
 
 #### Uhrzeit automatisch einstellen
-[Github Anleitung](https://github.com/nischram/E3dcGui#aktuelle-uhrzeit-aus-dem-internet-holen)   
+[Github Anleitung](https://github.com/nischram/E3dcGui#aktuelle-uhrzeit-aus-dem-internet-holen)  
 [Aktuelle Uhrzeit aus dem Internet holen](http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen)
 
 #### RAMDisk einrichten

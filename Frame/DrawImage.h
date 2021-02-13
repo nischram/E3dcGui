@@ -155,9 +155,9 @@ void cleanup() {
     // unmap fb file from memory
     munmap(fbpI, fix.smem_len);
     // reset the display mode
-    if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &orig_var)){
+    /*if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &orig_var)){
         printf("Error re-setting variable information.\n");
-		}
+		}*/
     // close fb file
     close(fbfd);
     // free image data

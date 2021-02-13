@@ -17,7 +17,7 @@ g++ -O1 Watchdog.cpp -o watchdog
 
 using namespace std;
 
-int WriteWatchdog(int value)
+void WriteWatchdog(int value)
 {
   ofstream fout("/home/pi/E3dcGui/Data/WatchdogAktiv.txt");
   if (fout.is_open()) {
@@ -57,7 +57,7 @@ void WDcsvKontrolle(char DATE[40],char TIME[40], char pingOUT[40], int AktuallTi
   }
 }
 
-int sendEmail(char EmailAdress[128], char Betreff[128], char Text[512])
+void sendEmail(char EmailAdress[128], char Betreff[128], char Text[512])
 {
   char batch[512];
   snprintf(batch, (size_t)768, "sudo sendEmail -o tls=%s -f %s -t %s -s %s:%s -xu %s -xp %s -u \"%s\" -m \"%s\"", smtpTLS, FromEmailAdress, EmailAdress, smtpServer, smtpPort, smtpBenutzer, smtpPass, Betreff, Text);
@@ -81,6 +81,7 @@ int ReadUnixtime(int Position, int max)
     return out[Position];
   }
   else cerr << "Konnte Datei nicht erstellen!\n";
+  return -1;
 }
 int WriteScreen(int Position, int NewValue, int max)
 {
@@ -176,7 +177,7 @@ int main()
 
       if ((strcmp ("NOK",pingOUT) == 0) && (PingWD == 1 || resetWLAN == 1)){
         counterReboot ++;
-        if (counterReboot == rebootCounter && PingWD == 1){
+        if (counterReboot == rebootCounter+2 && PingWD == 1){
           snprintf (OUT, (size_t)100, "PING-reboot");
           WriteDataWDcsv(DATE, TIME, AktuallTime, AktuallTime, resetCounter, OUT);
           WriteScreen(ScreenShutdown, ShutdownWD, ScreenMAX);
