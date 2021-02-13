@@ -488,6 +488,7 @@ V1.86 13.02.2021 Fehlerkorrektur für neuere Rasbain Versionen [Issue #48](https
 - Issue #48
 - Anpassungen an der README
 - Anpassungen an der STEPBYSTEP
+- Anpassungen GuiMain.c Zeitstempel
 
 V1.85 30.01.2021 Fehlerkorrektur bei der Wetteranzeige [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
 - Issue #47

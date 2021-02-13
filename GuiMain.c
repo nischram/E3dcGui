@@ -840,17 +840,17 @@ int main(){
 	//Time
 		int screenState = readScreen(ScreenState);
 		if(GuiTime == RscpTime && E3DC_S10 == 1 && screenState == ScreenOn){
-			put_string(20, 458, "Letzter Zeitstempel: ", GREY);
+			put_string(20, 456, "Letzter Zeitstempel: ", GREY);
 			int AktuallTime = time(NULL);
 			int TAG_UnixTime = readUnixtime(UnixtimeE3dc);
 			int DiffTime = AktuallTime - TAG_UnixTime;
 			snprintf (OUT, (size_t)100, "%s %s", TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME);
 			if(DiffTime > 180){
-				drawOutput(190,458,170,12, OUT, RED);
+				drawOutput(190,456,170,12, OUT, RED);
 				changeStop = 1;
 			}
 			else{
-				drawOutput(190,458,170,12, OUT, GREEN);
+				drawOutput(190,456,170,12, OUT, GREEN);
 				changeStop = 0;
 			}
 			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn && screenChange ==	ScreenAktuell){
@@ -871,34 +871,34 @@ int main(){
 			}
 		}
 		else if(GuiTime == HomematicTime && Homematic_GUI == 1 && screenState == ScreenOn){
-			put_string(20, 458, "Letzter Zeitstempel der Homematic: ", GREY);
+			put_string(20, 456, "Letzter Zeitstempel der Homematic: ", GREY);
 			int AktuallTime = time(NULL);
 			int DiffTime = AktuallTime - UnixTime;
 			if(DiffTime > 180){
-				drawOutput(300,458,170,12, TimestampHM, RED);
+				drawOutput(300,456,170,12, TimestampHM, RED);
 			}
 			else{
-				drawOutput(300,458,170,12, TimestampHM, GREEN);
+				drawOutput(300,456,170,12, TimestampHM, GREEN);
 			}
 		}
 		else if(GuiTime == WeatherTime && screenState == ScreenOn){
-			putAktuell(WetterS1, 458);
+			putAktuell(WetterS1, 456);
 			int AktuallTime = time(NULL);
-			put_string(400, 458, "OpenWeatherMap Datensatz: ", GREY);
-			drawOutput(610,458,170,12, weatherTime, GREEN);
+			put_string(400, 454, "OpenWeatherMap Datensatz: ", GREY);
+			drawOutput(610,456,170,12, weatherTime, GREEN);
 		}
 		else if(GuiTime == GruenTime && screenState == ScreenOn){
-			putAktuell(WetterS1, 458);
-			put_string(400, 458, "Gr\201nbeck Datensatz: ", GREY);
-			drawOutput(560,458,170,12, gruenTime, GREEN);
+			putAktuell(WetterS1, 456);
+			put_string(400, 456, "Gr\201nbeck Datensatz: ", GREY);
+			drawOutput(560,456,170,12, gruenTime, GREEN);
 		}
 		else if(GuiTime == PiTime && screenState == ScreenOn){
-			putAktuell(WetterS1, 458);
+			putAktuell(WetterS1, 456);
 		}
 		else if(GuiTime == SetupTime && screenState == ScreenOn){
-			putAktuell(20, 458);
+			putAktuell(20, 456);
 			madeBy(OUT);
-			put_string(325,458, OUT, BLUE);
+			put_string(325,456, OUT, BLUE);
 		}
 //####################################################
 	//Bildschirmschoner
