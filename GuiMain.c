@@ -68,8 +68,10 @@ int main(){
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
+	int wbCheckSumOld = 0;
 
-  screenOn();
+	screenOn();
+	writeScreen(ScreenCounter, 0);
 
 	int Screen[ScreenMAX];
 
@@ -113,7 +115,8 @@ int main(){
 		strftime (OUT,100,"%H:%M:%S ",now);
 		DEBUG(OUT);
 
-		system ("cp /mnt/RAMDisk/E3dcGuiData.txt /mnt/RAMDisk/E3dcGuiCache.txt");
+		system ("cp /mnt/RAMDisk/E3dcCache.txt /mnt/RAMDisk/E3dcGuiData.txt");
+		system ("cp /mnt/RAMDisk/E3dcWbCache.txt /mnt/RAMDisk/E3dcGuiWbData.txt ");
 
 		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
 		GuiTime = PiTime;
@@ -148,7 +151,7 @@ int main(){
 //####################################
 		switch(screenChange){
 //####################################
-//Aktuell Grafik erstellen
+			//Aktuell Grafik erstellen
 			case ScreenAktuell:{
 				GuiTime = RscpTime;
 				int screenState = readScreen(ScreenState);
@@ -164,8 +167,22 @@ int main(){
 						DrawImage("S10Image", 270, 110);
 						if(Additional == 1)
 							DrawImage("ExtImage", 40, 220);
-						if(Wallbox == 1)
-							DrawImage("WallboxImage", 650, 220);
+						if(Wallbox == 1){
+							if(readRscpWb(PosWbLED_ERR)==1)
+								DrawImage("Wallbox/WbError", 650, 220);
+							else if(readRscpWb(PosWbLED_SON)==1){
+								if (readRscpWb(PosWbLED_BAT)==1)
+									DrawImage("Wallbox/WbSunOn", 650, 220);
+								else
+									DrawImage("Wallbox/WbSunOff", 650, 220);
+							}
+							else {
+								if (readRscpWb(PosWbLED_BAT)==1)
+									DrawImage("Wallbox/WbMixOn", 650, 220);
+								else
+									DrawImage("Wallbox/WbMixOff", 650, 220);
+							}
+						}
 						if (E3DC_S10 ==1 && historyAktiv == 1){
 							if (Screen[ScreenHistory] == today)
 								DrawImage("Yesterday", 370, 405);
@@ -496,6 +513,117 @@ int main(){
 				break;
 			}
 //####################################################
+			//Wallbox Grafik erstellen
+			case ScreenWallbox:{
+				GuiTime = RscpTime;
+				int screenState = readScreen(ScreenState);
+				if(counter == 0 ){
+					writeScreen(ScreenCounter, 60);
+					if(screenState == ScreenOn){
+						drawMainScreen();
+						drawSquare(WB1,R1-20,740,353,GREY);
+						drawCorner(WB1,R1-20,740,353,WHITE);
+						drawSquare(WB1+3,R1+40,734,290,WHITE);
+						drawCorner(WB1+3,R1+40,734,290,GREY);
+						put_string(370, R1+4, "Wallbox", WHITE);
+					}
+				}
+				if(counter == 0 || screenState == ScreenOn){
+					int TAG_WbAll = readRscp(PosWbAll);
+					int TAG_WbSolar = readRscp(PosWbSolar);
+					int WbGrid = TAG_WbAll - TAG_WbSolar;
+
+					if (counter == 0 || wbCheckSumOld != readRscpWb(PosWbCheckSum)){
+						if (readRscpWb(PosWbLED_BAT)==1){
+							if(TAG_WbSolar > 200 && WbGrid < 200)
+								DrawImage("Wallbox/CarSun",     WBCARX, WBCARY+93);
+							else if(TAG_WbSolar < 200 && WbGrid > 200)
+								DrawImage("Wallbox/CarGrid",    WBCARX, WBCARY+93);
+							else
+								DrawImage("Wallbox/CarMix",     WBCARX, WBCARY+93);
+						}
+						else if (readRscpWb(PosWbLocked)==1)
+							DrawImage("Wallbox/CarLocked",  WBCARX, WBCARY+93);
+						else if (readRscpWb(PosWbConnect)==1)
+							DrawImage("Wallbox/CarConnect", WBCARX, WBCARY+93);
+						else
+							DrawImage("Wallbox/Car",        WBCARX, WBCARY+93);
+						if(readRscpWb(PosWbLED_ERR)==1)
+							DrawImage("Wallbox/Mon_WbError", WBCARX+265, WBCARY);
+						else if(readRscpWb(PosWbLED_SON)==1){
+							if (readRscpWb(PosWbLED_BAT)==1)
+								DrawImage("Wallbox/Mon_WbSunOn", WBCARX+265, WBCARY);
+							else
+								DrawImage("Wallbox/Mon_WbSunOff", WBCARX+265, WBCARY);
+						}
+						else {
+							if (readRscpWb(PosWbLED_BAT)==1)
+								DrawImage("Wallbox/Mon_WbMixOn", WBCARX+265, WBCARY);
+							else
+								DrawImage("Wallbox/Mon_WbMixOff", WBCARX+265, WBCARY);
+						}
+
+						snprintf (OUT, (size_t)100, "Wallbox/Current/%iA", readRscpWb(PosWbCurrent));
+						DrawImage(OUT, WBCURX, WBCURY);
+						put_string(WBCURX-1,WBCURY+33,"Ladestrom",GREY);
+						if((readRscpWb(PosWbCurrent)-10) >= 6)
+							DrawImage("Switch/Minus10", WBCURX-58-58-58, WBCURY);
+						else
+							DrawImage("Switch/Minus10Off", WBCURX-58-58-58, WBCURY);
+						if((readRscpWb(PosWbCurrent)-2) >= 6)
+							DrawImage("Switch/Minus2", WBCURX-58-58, WBCURY);
+						else
+							DrawImage("Switch/Minus2Off", WBCURX-58-58, WBCURY);
+						if((readRscpWb(PosWbCurrent)-1) >= 6)
+							DrawImage("Switch/Minus", WBCURX-58, WBCURY);
+						else
+							DrawImage("Switch/MinusOff", WBCURX-58, WBCURY);
+						if((readRscpWb(PosWbCurrent)+1) <= 32)
+							DrawImage("Switch/Plus", WBCURX+82, WBCURY);
+						else
+							DrawImage("Switch/Plus", WBCURX+82, WBCURY);
+						if((readRscpWb(PosWbCurrent)+2) <= 32)
+							DrawImage("Switch/Plus2", WBCURX+82+58, WBCURY);
+						else
+							DrawImage("Switch/Plus2Off", WBCURX+82+58, WBCURY);
+						if((readRscpWb(PosWbCurrent)+10) <= 32)
+							DrawImage("Switch/Plus10", WBCURX+82+58+58, WBCURY);
+						else
+							DrawImage("Switch/Plus10Off", WBCURX+82+58+58, WBCURY);
+
+						if (readRscpWb(PosWbMode)==1)
+							DrawImage("Switch/On", WBMODEX, WBMODEY);
+						else
+							DrawImage("Switch/Off", WBMODEX, WBMODEY);
+						put_string(WBMODEX-8,WBMODEY+33,"Sonnenmodus",GREY);
+						if (readRscpWb(PosWbBtC)==1)
+							DrawImage("Switch/On", WBBTCX, WBBTCY);
+						else
+							DrawImage("Switch/Off", WBBTCX, WBBTCY);
+						put_string(WBBTCX-19,WBBTCY+33,"Batterie zu Auto",GREY);
+						if (readRscpWb(PosWbBbC)==1)
+							DrawImage("Switch/On", WBBBCX, WBBBCY);
+						else
+							DrawImage("Switch/Off", WBBBCX, WBBBCY);
+						put_string(WBBBCX-23,WBBBCY+33,"Batterie vor Auto",GREY);
+					}
+
+					snprintf (OUT, (size_t)100, "%5d W Auto", TAG_WbAll);
+					if(TAG_WbSolar > 200 && WbGrid < 200)
+						drawOutput(400,288,120,12, OUT, GREEN);
+					else if(TAG_WbSolar < 200 && WbGrid > 200)
+						drawOutputRGB(400,288,120,12, OUT, 225, 122, 34);
+					else
+						drawOutput(400,288,120,12, OUT, GREY);
+					snprintf (OUT, (size_t)100, "%5d W Netz", WbGrid);
+					drawOutputRGB(400,256,120,12, OUT, 34, 122, 225);
+					snprintf (OUT, (size_t)100, "%5d W Solar", TAG_WbSolar);
+					drawOutput(400,272,120,12, OUT, GREEN);
+					wbCheckSumOld = readRscpWb(PosWbCheckSum);
+				}
+				break;
+			}
+//####################################################
 			//Monitor Grafik erstellen
 			case ScreenMonitor:{
 				GuiTime = RscpTime;
@@ -637,8 +765,8 @@ int main(){
 					readVersion(OUT, Value);
 					drawSquare(S1,R1-20,180,30,GREY);
 					drawCorner(S1,R1-20,180,30, WHITE);
-					put_string(S1+20,R1-18, OUT, WHITE);
-					put_string(S1+20,R1-6, Value, WHITE);
+					put_string(S1+20,R1-20, OUT, WHITE);
+					put_string(S1+20,R1-8, Value, WHITE);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIPeth0[24], PiIPwlan0[24], Pieth0[24], Piwlan0[24], Pihost[24];
 					//Pi Temp
@@ -737,23 +865,23 @@ int main(){
 					// CPU
 					if (PiCPUint > 5){
 						drawSquare(S6-20, R4, Fw, 21, LIGHT_GREEN);
-						createData(S6-10, R4, PiCPU);
+						createData(S6-15, R4, PiCPU);
 					}
 					else if (PiCPUint > 10){
 						drawSquare(S6-20, R4, Fw, 21, LIGHT_RED);
-						createData(S6-10, R4, PiCPU);
+						createData(S6-15, R4, PiCPU);
 					}
 					else if (PiCPUint > 20){
 						drawSquare(S6-20, R4, Fw, 21, RED);
-						createData(S6-10, R4, PiCPU);
+						createData(S6-15, R4, PiCPU);
 					}
 					else{
 						drawSquare(S6-20, R4, Fw, 21, GREEN);
-						createData(S6-10, R4, PiCPU);
+						createData(S6-15, R4, PiCPU);
 					}
 					// IP
-					createData(S6-50, R5-24, PiIPeth0);
-					createData(S6-50, R5-12, PiIPwlan0);
+					createData(S6-50, R5-26, PiIPeth0);
+					createData(S6-50, R5-10, PiIPwlan0);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;
@@ -840,7 +968,7 @@ int main(){
 	//Time
 		int screenState = readScreen(ScreenState);
 		if(GuiTime == RscpTime && E3DC_S10 == 1 && screenState == ScreenOn){
-			put_string(20, 456, "Letzter Zeitstempel: ", GREY);
+			put_string(20, 454, "Letzter Zeitstempel: ", GREY);
 			int AktuallTime = time(NULL);
 			int TAG_UnixTime = readUnixtime(UnixtimeE3dc);
 			int DiffTime = AktuallTime - TAG_UnixTime;
@@ -871,7 +999,7 @@ int main(){
 			}
 		}
 		else if(GuiTime == HomematicTime && Homematic_GUI == 1 && screenState == ScreenOn){
-			put_string(20, 456, "Letzter Zeitstempel der Homematic: ", GREY);
+			put_string(20, 454, "Letzter Zeitstempel der Homematic: ", GREY);
 			int AktuallTime = time(NULL);
 			int DiffTime = AktuallTime - UnixTime;
 			if(DiffTime > 180){
@@ -889,7 +1017,7 @@ int main(){
 		}
 		else if(GuiTime == GruenTime && screenState == ScreenOn){
 			putAktuell(WetterS1, 456);
-			put_string(400, 456, "Gr\201nbeck Datensatz: ", GREY);
+			put_string(400, 454, "Gr\201nbeck Datensatz: ", GREY);
 			drawOutput(560,456,170,12, gruenTime, GREEN);
 		}
 		else if(GuiTime == PiTime && screenState == ScreenOn){
@@ -898,7 +1026,7 @@ int main(){
 		else if(GuiTime == SetupTime && screenState == ScreenOn){
 			putAktuell(20, 456);
 			madeBy(OUT);
-			put_string(325,456, OUT, BLUE);
+			put_string(325,454, OUT, BLUE);
 		}
 //####################################################
 	//Bildschirmschoner

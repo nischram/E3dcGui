@@ -30,7 +30,7 @@ static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_TZ [20], T
 static int CounterHM = 0;
 static int Counter900 = 0;
 static int time_zone = 7200;
-
+static uint8_t WbExt[8];
 
 using namespace std;
 
@@ -69,7 +69,10 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_HOME);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_GRID);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_BAT_SOC);
-
+        if (Wallbox == 1){
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_TO_CAR_MODE);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_BEFORE_CAR_MODE);
+        }
         // request battery information
         SRscpValue batteryContainer;
         protocol.createContainerValue(&batteryContainer, TAG_BAT_REQ_DATA);
@@ -133,6 +136,20 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         // free memory of sub-container as it is now copied to rootValue
         protocol.destroyValueData(PMContainer);
 
+        // request Wallbox information
+        if (Wallbox == 1){
+          SRscpValue WBContainer;
+          protocol.createContainerValue(&WBContainer, TAG_WB_REQ_DATA) ;
+          // add index 0 to select first wallbox
+          protocol.appendValue(&WBContainer, TAG_WB_INDEX,0);
+          protocol.appendValue(&WBContainer, TAG_WB_REQ_DEVICE_STATE);
+          protocol.appendValue(&WBContainer, TAG_WB_REQ_PM_ACTIVE_PHASES);
+          protocol.appendValue(&WBContainer, TAG_WB_REQ_EXTERN_DATA_ALG);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, WBContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(WBContainer);
+        }
     }
 
     // create buffer frame to send data to the S10
@@ -153,365 +170,529 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
     }
     // check the SRscpValue TAG to detect which response it is
     switch(response->tag){
-    case TAG_RSCP_AUTHENTICATION: {
-        // It is possible to check the response->dataType value to detect correct data type
-        // and call the correct function. If data type is known,
-        // the correct function can be called directly like in this case.
-        uint8_t ucAccessLevel = protocol->getValueAsUChar8(response);
-        if(ucAccessLevel > 0) {
-            iAuthenticated = 1;
+        case TAG_RSCP_AUTHENTICATION: {
+            // It is possible to check the response->dataType value to detect correct data type
+            // and call the correct function. If data type is known,
+            // the correct function can be called directly like in this case.
+            uint8_t ucAccessLevel = protocol->getValueAsUChar8(response);
+            if(ucAccessLevel > 0) {
+                iAuthenticated = 1;
+            }
+            printf("RSCP authentitication level %i\n", ucAccessLevel);
+            break;
         }
-        printf("RSCP authentitication level %i\n", ucAccessLevel);
-        break;
-    }
-      case TAG_INFO_SERIAL_NUMBER: {    // response for TAG_INFO_REQ_SERIAL_NUMBER
-        string serialNr = protocol->getValueAsString(response);
-        cout << "Serial-Number is " << serialNr << "\n";
-        strcpy(TAG_EMS_OUT_SERIAL_NUMBER, serialNr.c_str());
-        printsendCharHM(CounterHM, TAG_EMS_ISE_SERIAL_NUMBER, TAG_EMS_OUT_SERIAL_NUMBER);
-        break;
-      }
-      case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
-          int32_t unixTimestamp = protocol->getValueAsInt32(response);
-          time_t timestamp;
-          tm *sys;
-          timestamp = unixTimestamp;
-          sys = localtime(&timestamp);
-          strftime (TAG_EMS_OUT_TZ,40,"%z",sys);
-          if (strcmp ("+0200",TAG_EMS_OUT_TZ) == 0)
-            time_zone = 7200;
-          else if (strcmp ("+0100",TAG_EMS_OUT_TZ) == 0)
-            time_zone = 3600;
-          else
-            time_zone = 7200;
-          TAG_EMS_OUT_UNIXTIME = unixTimestamp - time_zone;
-          timestamp = TAG_EMS_OUT_UNIXTIME;
-          sys = localtime(&timestamp);
-          strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
-          strftime (TAG_EMS_OUT_TIME,40,"%H:%M:%S",sys);
-          writeUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
-          cout << "System Time is " << TAG_EMS_OUT_DATE << "_" << TAG_EMS_OUT_TIME << "\n";
-          cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
-          cout << "System Timezone is " << TAG_EMS_OUT_TZ << "\n";
-          printsendHM(CounterHM, TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
-          if (sendTime == 1){
-            char SEND[64];
-            snprintf (SEND, (size_t)64, "%s_%s", TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME);
-            printsendCharHM(CounterHM, ISE_TIMESTAMP_HM, SEND);
-          }
+        case TAG_INFO_SERIAL_NUMBER: {    // response for TAG_INFO_REQ_SERIAL_NUMBER
+          string serialNr = protocol->getValueAsString(response);
+          cout << "Serial-Number is " << serialNr << "\n";
+          strcpy(TAG_EMS_OUT_SERIAL_NUMBER, serialNr.c_str());
+          printsendCharHM(CounterHM, TAG_EMS_ISE_SERIAL_NUMBER, TAG_EMS_OUT_SERIAL_NUMBER);
           break;
-      }
-      case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
-        int32_t TAG_EMS_OUT_POWER_PV = protocol->getValueAsInt32(response);
-        cout << "PV Power is " << TAG_EMS_OUT_POWER_PV <<" W\n";
-        writeRscp(PosPVI,TAG_EMS_OUT_POWER_PV);
-        char file[20];
-        snprintf (file, (size_t)20, "Solar900");
-        write900(PosPVI900, file, TAG_EMS_OUT_POWER_PV, Counter900);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_PV, TAG_EMS_OUT_POWER_PV);
-        break;
-      }
-      case TAG_EMS_POWER_BAT: {    // response for TAG_EMS_REQ_POWER_BAT
-        int32_t TAG_EMS_OUT_POWER_BAT = protocol->getValueAsInt32(response);
-        cout << "Battery Power is " << TAG_EMS_OUT_POWER_BAT << " W\n";
-        writeRscp(PosBat,TAG_EMS_OUT_POWER_BAT);
-        char fileIN[20], fileOUT[20];
-        snprintf (fileIN, (size_t)20, "BatIn900");
-        snprintf (fileOUT, (size_t)20, "BatOut900");
-        if (TAG_EMS_OUT_POWER_BAT < 0){
-          write900(PosBatOut900, fileOUT, (TAG_EMS_OUT_POWER_BAT* -1), Counter900);
-          write900(PosBatIn900, fileIN, 0 , Counter900);
         }
-        else {
-          write900(PosBatIn900, fileIN, TAG_EMS_OUT_POWER_BAT , Counter900);
-          write900(PosBatOut900, fileOUT, 0, Counter900);
+        case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
+            int32_t unixTimestamp = protocol->getValueAsInt32(response);
+            time_t timestamp;
+            tm *sys;
+            timestamp = unixTimestamp;
+            sys = localtime(&timestamp);
+            strftime (TAG_EMS_OUT_TZ,40,"%z",sys);
+            if (strcmp ("+0200",TAG_EMS_OUT_TZ) == 0)
+              time_zone = 7200;
+            else if (strcmp ("+0100",TAG_EMS_OUT_TZ) == 0)
+              time_zone = 3600;
+            else
+              time_zone = 7200;
+            TAG_EMS_OUT_UNIXTIME = unixTimestamp - time_zone;
+            timestamp = TAG_EMS_OUT_UNIXTIME;
+            sys = localtime(&timestamp);
+            strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
+            strftime (TAG_EMS_OUT_TIME,40,"%H:%M:%S",sys);
+            writeUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
+            cout << "System Time is " << TAG_EMS_OUT_DATE << "_" << TAG_EMS_OUT_TIME << "\n";
+            cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
+            cout << "System Timezone is " << TAG_EMS_OUT_TZ << "\n";
+            printsendHM(CounterHM, TAG_EMS_ISE_UNIXTIME, TAG_EMS_OUT_UNIXTIME);
+            if (sendTime == 1){
+              char SEND[64];
+              snprintf (SEND, (size_t)64, "%s_%s", TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME);
+              printsendCharHM(CounterHM, ISE_TIMESTAMP_HM, SEND);
+            }
+            break;
         }
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_BAT, TAG_EMS_OUT_POWER_BAT);
-        break;
-      }
-      case TAG_EMS_POWER_HOME: {    // response for TAG_EMS_REQ_POWER_HOME
-        int32_t TAG_EMS_OUT_POWER_HOME = protocol->getValueAsInt32(response);
-        cout << "House Power is " << TAG_EMS_OUT_POWER_HOME << " W\n";
-        writeRscp(PosHome,TAG_EMS_OUT_POWER_HOME);
-        char file[20];
-        snprintf (file, (size_t)20, "Home900");
-        write900(PosHome900, file, TAG_EMS_OUT_POWER_HOME, Counter900);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_HOME, TAG_EMS_OUT_POWER_HOME);
-        break;
-      }
-      case TAG_EMS_POWER_GRID: {    // response for TAG_EMS_REQ_POWER_GRID
-        int32_t TAG_EMS_OUT_POWER_GRID = protocol->getValueAsInt32(response);
-        cout << "Grid Power is " << TAG_EMS_OUT_POWER_GRID << " W\n";
-        writeRscp(PosGrid,TAG_EMS_OUT_POWER_GRID);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_GRID, TAG_EMS_OUT_POWER_GRID);
-        char fileIN[20], fileOUT[20];
-        snprintf (fileIN, (size_t)20, "NetIn900");
-        snprintf (fileOUT, (size_t)20, "NetOut900");
-        if(TAG_EMS_OUT_POWER_GRID >= 0) {
-            int TAG_EMS_OUT_POWER_NET_IN = 0;
-            int TAG_EMS_OUT_POWER_NET_OUT = TAG_EMS_OUT_POWER_GRID;
+        case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
+          int32_t TAG_EMS_OUT_POWER_PV = protocol->getValueAsInt32(response);
+          cout << "PV Power is " << TAG_EMS_OUT_POWER_PV <<" W\n";
+          writeRscp(PosPVI,TAG_EMS_OUT_POWER_PV);
+          char file[20];
+          snprintf (file, (size_t)20, "Solar900");
+          write900(PosPVI900, file, TAG_EMS_OUT_POWER_PV, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_PV, TAG_EMS_OUT_POWER_PV);
+          break;
+        }
+        case TAG_EMS_POWER_BAT: {    // response for TAG_EMS_REQ_POWER_BAT
+          int32_t TAG_EMS_OUT_POWER_BAT = protocol->getValueAsInt32(response);
+          cout << "Battery Power is " << TAG_EMS_OUT_POWER_BAT << " W\n";
+          writeRscp(PosBat,TAG_EMS_OUT_POWER_BAT);
+          char fileIN[20], fileOUT[20];
+          snprintf (fileIN, (size_t)20, "BatIn900");
+          snprintf (fileOUT, (size_t)20, "BatOut900");
+          if (TAG_EMS_OUT_POWER_BAT < 0){
+            write900(PosBatOut900, fileOUT, (TAG_EMS_OUT_POWER_BAT* -1), Counter900);
+            write900(PosBatIn900, fileIN, 0 , Counter900);
+          }
+          else {
+            write900(PosBatIn900, fileIN, TAG_EMS_OUT_POWER_BAT , Counter900);
+            write900(PosBatOut900, fileOUT, 0, Counter900);
+          }
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_BAT, TAG_EMS_OUT_POWER_BAT);
+          break;
+        }
+        case TAG_EMS_POWER_HOME: {    // response for TAG_EMS_REQ_POWER_HOME
+          int32_t TAG_EMS_OUT_POWER_HOME = protocol->getValueAsInt32(response);
+          cout << "House Power is " << TAG_EMS_OUT_POWER_HOME << " W\n";
+          writeRscp(PosHome,TAG_EMS_OUT_POWER_HOME);
+          char file[20];
+          snprintf (file, (size_t)20, "Home900");
+          write900(PosHome900, file, TAG_EMS_OUT_POWER_HOME, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_HOME, TAG_EMS_OUT_POWER_HOME);
+          break;
+        }
+        case TAG_EMS_POWER_GRID: {    // response for TAG_EMS_REQ_POWER_GRID
+          int32_t TAG_EMS_OUT_POWER_GRID = protocol->getValueAsInt32(response);
+          cout << "Grid Power is " << TAG_EMS_OUT_POWER_GRID << " W\n";
+          writeRscp(PosGrid,TAG_EMS_OUT_POWER_GRID);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_GRID, TAG_EMS_OUT_POWER_GRID);
+          char fileIN[20], fileOUT[20];
+          snprintf (fileIN, (size_t)20, "NetIn900");
+          snprintf (fileOUT, (size_t)20, "NetOut900");
+          if(TAG_EMS_OUT_POWER_GRID >= 0) {
+              int TAG_EMS_OUT_POWER_NET_IN = 0;
+              int TAG_EMS_OUT_POWER_NET_OUT = TAG_EMS_OUT_POWER_GRID;
+              write900(PosNetIn900, fileIN, TAG_EMS_OUT_POWER_NET_IN, Counter900);
+              write900(PosNetOut900, fileOUT, TAG_EMS_OUT_POWER_NET_OUT, Counter900);
+              printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
+              printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
+          }
+          else {
+            int neg_GRID = (TAG_EMS_OUT_POWER_GRID * -1);
+            int TAG_EMS_OUT_POWER_NET_IN = neg_GRID;
+            int TAG_EMS_OUT_POWER_NET_OUT = 0;
             write900(PosNetIn900, fileIN, TAG_EMS_OUT_POWER_NET_IN, Counter900);
             write900(PosNetOut900, fileOUT, TAG_EMS_OUT_POWER_NET_OUT, Counter900);
             printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
             printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
+          }
+          break;
         }
-        else {
-          int neg_GRID = (TAG_EMS_OUT_POWER_GRID * -1);
-          int TAG_EMS_OUT_POWER_NET_IN = neg_GRID;
-          int TAG_EMS_OUT_POWER_NET_OUT = 0;
-          write900(PosNetIn900, fileIN, TAG_EMS_OUT_POWER_NET_IN, Counter900);
-          write900(PosNetOut900, fileOUT, TAG_EMS_OUT_POWER_NET_OUT, Counter900);
-          printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_IN, TAG_EMS_OUT_POWER_NET_IN);
-          printsendHM(CounterHM, TAG_EMS_ISE_POWER_NET_OUT, TAG_EMS_OUT_POWER_NET_OUT);
+        case TAG_EMS_BAT_SOC: {     // response for TAG_EMS_REQ_BAT_SOC
+          float fSOC = protocol->getValueAsUChar8(response);
+          int TAG_EMS_OUT_SOC = fSOC;
+          cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
+          writeRscp(PosSOC,TAG_EMS_OUT_SOC);
+          char file[20];
+          snprintf (file, (size_t)20, "SOC900");
+          write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
+          printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
+          break;
         }
-        break;
-      }
-      case TAG_EMS_BAT_SOC: {     // response for TAG_EMS_REQ_BAT_SOC
-        float fSOC = protocol->getValueAsUChar8(response);
-        int TAG_EMS_OUT_SOC = fSOC;
-        cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
-        writeRscp(PosSOC,TAG_EMS_OUT_SOC);
-        char file[20];
-        snprintf (file, (size_t)20, "SOC900");
-        write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
-        printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
-        break;
-      }
-      case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
-        int32_t ADD_REAL = protocol->getValueAsInt32(response);
-        int32_t TAG_EMS_OUT_POWER_ADD = ADD_REAL * -1;
-        cout << "Additional Power is " << TAG_EMS_OUT_POWER_ADD << " W\n";
-        writeRscp(PosADD,TAG_EMS_OUT_POWER_ADD);
-        char file[20];
-        snprintf (file, (size_t)20, "Add900");
-        write900(PosAdd900, file, TAG_EMS_OUT_POWER_ADD, Counter900);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_ADD, TAG_EMS_OUT_POWER_ADD);
-        break;
-      }
-      case TAG_EMS_POWER_WB_ALL: {    // response for TAG_EMS_REQ_POWER_WB_ALL
-        int32_t TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
-        cout << "Wallbox Power All is " << TAG_EMS_OUT_POWER_WB_ALL << " W\n";
-        writeRscp(PosWbAll,TAG_EMS_OUT_POWER_WB_ALL);
-        char file[20];
-        snprintf (file, (size_t)20, "WBAll900");
-        write900(PosWBAll900, file, TAG_EMS_OUT_POWER_WB_ALL, Counter900);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_ALL, TAG_EMS_OUT_POWER_WB_ALL);
-        break;
-      }
-      case TAG_EMS_POWER_WB_SOLAR: {    // response for TAG_EMS_REQ_POWER_WB_SOLAR
-        int32_t TAG_EMS_OUT_POWER_WB_SOLAR = protocol->getValueAsInt32(response);
-        cout << "Wallbox Power Solar is " << TAG_EMS_OUT_POWER_WB_SOLAR << " W\n";
-        writeRscp(PosWbSolar,TAG_EMS_OUT_POWER_WB_SOLAR);
-        char file[20];
-        snprintf (file, (size_t)20, "WBSolar900");
-        write900(PosWBSolar900, file, TAG_EMS_OUT_POWER_WB_SOLAR, Counter900);
-        printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
-        break;
-      }
-      case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
-        float TAG_EMS_OUT_AUTARKY = protocol->getValueAsFloat32(response);
-        cout << "Autarky is " << setprecision(3) << TAG_EMS_OUT_AUTARKY << " %\n";
-        writeRscp(PosAutarky,TAG_EMS_OUT_AUTARKY);
-        if (Autarky == 1){
-          printsendHM(CounterHM, TAG_EMS_ISE_AUTARKY, TAG_EMS_OUT_AUTARKY);
+        case TAG_EMS_BATTERY_TO_CAR_MODE: {     // response for TAG_EMS_REQ_BATTERY_TO_CAR_MODE
+          float fSOC = protocol->getValueAsUChar8(response);
+          bool TAG_EMS_OUT_BATTERY_TO_CAR_MODE = fSOC;
+          cout << "Battery to Car " << TAG_EMS_OUT_BATTERY_TO_CAR_MODE << "\n";
+          writeRscpWb(PosWbBtC,TAG_EMS_OUT_BATTERY_TO_CAR_MODE);
+          break;
         }
-        break;
-      }
-      case TAG_EMS_SELF_CONSUMPTION: {    // response for TAG_EMS_REQ_SELF_CONSUMPTION
-        float TAG_EMS_OUT_SELF_CONSUMPTION = protocol->getValueAsFloat32(response);
-        cout << "Self Consumption is " << setprecision(3) << TAG_EMS_OUT_SELF_CONSUMPTION << " %\n";
-        writeRscp(PosSelfCon,TAG_EMS_OUT_SELF_CONSUMPTION);
-        if (Eigenstrom == 1){
-          printsendHM(CounterHM, TAG_EMS_ISE_SELFCON, TAG_EMS_OUT_SELF_CONSUMPTION);
+        case TAG_EMS_BATTERY_BEFORE_CAR_MODE: {     // response for TAG_EMS_REQ_BATTERY_BEFORE_CAR_MODE
+          float fSOC = protocol->getValueAsUChar8(response);
+          bool TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE = fSOC;
+          cout << "Battery bevor Car " << TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE << "\n";
+          writeRscpWb(PosWbBbC,TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE);
+          break;
         }
-        break;
-      }
-    case TAG_BAT_DATA: {        // resposne for TAG_BAT_REQ_DATA
-        uint8_t ucBatteryIndex = 0;
-        std::vector<SRscpValue> batteryData = protocol->getValueAsContainer(response);
-        for(size_t i = 0; i < batteryData.size(); ++i) {
-            if(batteryData[i].dataType == RSCP::eTypeError) {
-                // handle error for example access denied errors
-                uint32_t uiErrorCode = protocol->getValueAsUInt32(&batteryData[i]);
-                printf("Tag 0x%08X received error code %u.\n", batteryData[i].tag, uiErrorCode);
-                return -1;
-            }
-            // check each battery sub tag
-            switch(batteryData[i].tag) {
-            case TAG_BAT_INDEX: {
-                ucBatteryIndex = protocol->getValueAsUChar8(&batteryData[i]);
-                break;
-            }
-            case TAG_BAT_RSOC: {              // response for TAG_BAT_REQ_RSOC
-                float fSOC = protocol->getValueAsFloat32(&batteryData[i]);
-                int TAG_EMS_OUT_SOC = fSOC;
-                writeRscp(PosSOC,TAG_EMS_OUT_SOC);
-                cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
-                char file[20];
-                snprintf (file, (size_t)20, "SOC900");
-                write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
-                printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
-                break;
-            }
-            case TAG_BAT_DEVICE_STATE: {    // response for TAG_BAT_REQ_DEVICE_STATE
-                bool TAG_EMS_OUT_BAT_STATE = protocol->getValueAsBool(&batteryData[i]);
-                writeRscp(PosBatState,TAG_EMS_OUT_BAT_STATE);
-                cout << "Battery State = " << TAG_EMS_OUT_BAT_STATE << " \n";
-                break;
-            }
-            // ...
-            default:
-                // default behaviour
-                printf("Unknown battery tag %08X\n", response->tag);
-                break;
-            }
+        case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
+          int32_t ADD_REAL = protocol->getValueAsInt32(response);
+          int32_t TAG_EMS_OUT_POWER_ADD = ADD_REAL * -1;
+          cout << "Additional Power is " << TAG_EMS_OUT_POWER_ADD << " W\n";
+          writeRscp(PosADD,TAG_EMS_OUT_POWER_ADD);
+          char file[20];
+          snprintf (file, (size_t)20, "Add900");
+          write900(PosAdd900, file, TAG_EMS_OUT_POWER_ADD, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_ADD, TAG_EMS_OUT_POWER_ADD);
+          break;
         }
-        protocol->destroyValueData(batteryData);
-        break;
-    }
-    case TAG_PVI_DATA: {        // resposne for TAG_PVI_REQ_DATA
-        uint8_t ucPVIIndex = 0;
-        std::vector<SRscpValue> PVIData = protocol->getValueAsContainer(response);
-        for(size_t i = 0; i < PVIData.size(); ++i) {
-            if(PVIData[i].dataType == RSCP::eTypeError) {
-                // handle error for example access denied errors
-                uint32_t uiErrorCode = protocol->getValueAsUInt32(&PVIData[i]);
-                printf("Tag 0x%08X received error code %u.\n", PVIData[i].tag, uiErrorCode);
-                return -1;
-            }
-            // check each battery sub tag
-            switch(PVIData[i].tag) {
-            case TAG_PVI_INDEX: {
-                ucPVIIndex = protocol->getValueAsUChar8(&PVIData[i]);
-                break;
-            }
-            case TAG_PVI_ON_GRID: {              // response for TAG_PVI_REQ_ON_GRID
-                bool TAG_EMS_OUT_PVI_STATE = protocol->getValueAsBool(&PVIData[i]);
-                cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
-                writeRscp(PosPVIState,TAG_EMS_OUT_PVI_STATE);
-                break;
-            }
-            case TAG_PVI_DC_POWER: {
-                int index = -1;
-                float TAG_OUT_PVI_DC_POWER = 0;
-                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
-                for(size_t n = 0; n < container.size(); n++) {
-                    if((container[n].tag == TAG_PVI_INDEX) ) {
-                        index = protocol->getValueAsUInt16(&container[n]);
-                    }
-                    else if((container[n].tag == TAG_PVI_VALUE)) {
-                            TAG_OUT_PVI_DC_POWER = protocol->getValueAsFloat32(&container[n]);
-                            if (index == 0){
-                              cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
-                              writeRscp(PosPVIDCP1,TAG_OUT_PVI_DC_POWER);
-                              printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_1, TAG_OUT_PVI_DC_POWER);
-                            }
-                            else if (index == 1){
-                              cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
-                              writeRscp(PosPVIDCP2,TAG_OUT_PVI_DC_POWER);
-                              printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_2, TAG_OUT_PVI_DC_POWER);
-                            }
-                    }
+        case TAG_EMS_POWER_WB_ALL: {    // response for TAG_EMS_REQ_POWER_WB_ALL
+          int32_t TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
+          cout << "Wallbox Power All is " << TAG_EMS_OUT_POWER_WB_ALL << " W\n";
+          writeRscp(PosWbAll,TAG_EMS_OUT_POWER_WB_ALL);
+          char file[20];
+          snprintf (file, (size_t)20, "WBAll900");
+          write900(PosWBAll900, file, TAG_EMS_OUT_POWER_WB_ALL, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_ALL, TAG_EMS_OUT_POWER_WB_ALL);
+          break;
+        }
+        case TAG_EMS_POWER_WB_SOLAR: {    // response for TAG_EMS_REQ_POWER_WB_SOLAR
+          int32_t TAG_EMS_OUT_POWER_WB_SOLAR = protocol->getValueAsInt32(response);
+          cout << "Wallbox Power Solar is " << TAG_EMS_OUT_POWER_WB_SOLAR << " W\n";
+          writeRscp(PosWbSolar,TAG_EMS_OUT_POWER_WB_SOLAR);
+          char file[20];
+          snprintf (file, (size_t)20, "WBSolar900");
+          write900(PosWBSolar900, file, TAG_EMS_OUT_POWER_WB_SOLAR, Counter900);
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
+          break;
+        }
+        case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
+          float TAG_EMS_OUT_AUTARKY = protocol->getValueAsFloat32(response);
+          cout << "Autarky is " << setprecision(3) << TAG_EMS_OUT_AUTARKY << " %\n";
+          writeRscp(PosAutarky,TAG_EMS_OUT_AUTARKY);
+          if (Autarky == 1){
+            printsendHM(CounterHM, TAG_EMS_ISE_AUTARKY, TAG_EMS_OUT_AUTARKY);
+          }
+          break;
+        }
+        case TAG_EMS_SELF_CONSUMPTION: {    // response for TAG_EMS_REQ_SELF_CONSUMPTION
+          float TAG_EMS_OUT_SELF_CONSUMPTION = protocol->getValueAsFloat32(response);
+          cout << "Self Consumption is " << setprecision(3) << TAG_EMS_OUT_SELF_CONSUMPTION << " %\n";
+          writeRscp(PosSelfCon,TAG_EMS_OUT_SELF_CONSUMPTION);
+          if (Eigenstrom == 1){
+            printsendHM(CounterHM, TAG_EMS_ISE_SELFCON, TAG_EMS_OUT_SELF_CONSUMPTION);
+          }
+          break;
+        }
+        case TAG_BAT_DATA: {        // resposne for TAG_BAT_REQ_DATA
+            uint8_t ucBatteryIndex = 0;
+            std::vector<SRscpValue> batteryData = protocol->getValueAsContainer(response);
+            for(size_t i = 0; i < batteryData.size(); ++i) {
+                if(batteryData[i].dataType == RSCP::eTypeError) {
+                    // handle error for example access denied errors
+                    uint32_t uiErrorCode = protocol->getValueAsUInt32(&batteryData[i]);
+                    printf("Tag 0x%08X received error code %u.\n", batteryData[i].tag, uiErrorCode);
+                    return -1;
                 }
-                protocol->destroyValueData(container);
-                break;
-            }
-            case TAG_PVI_DC_VOLTAGE: {
-                int index = -1;
-                float TAG_OUT_PVI_DC_VOLTAGE = 0;
-                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
-                for(size_t n = 0; n < container.size(); n++) {
-                    if((container[n].tag == TAG_PVI_INDEX) ) {
-                        index = protocol->getValueAsUInt16(&container[n]);
-                    }
-                    else if((container[n].tag == TAG_PVI_VALUE)) {
-                            TAG_OUT_PVI_DC_VOLTAGE = protocol->getValueAsFloat32(&container[n]);
-                            if (index == 0){
-                              cout << "PVI DC-Voltage 1 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
-                              writeRscp(PosPVIDCU1,TAG_OUT_PVI_DC_VOLTAGE);
-                            }
-                            if (index == 1){
-                              cout << "PVI DC-Voltage 2 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
-                              writeRscp(PosPVIDCU2,TAG_OUT_PVI_DC_VOLTAGE);
-                            }
-                    }
+                // check each battery sub tag
+                switch(batteryData[i].tag) {
+                case TAG_BAT_INDEX: {
+                    ucBatteryIndex = protocol->getValueAsUChar8(&batteryData[i]);
+                    break;
                 }
-                protocol->destroyValueData(container);
-                break;
-            }
-            case TAG_PVI_DC_CURRENT: {
-                int index = -1;
-                float TAG_OUT_PVI_DC_CURRENT = 0;
-                std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
-                for(size_t n = 0; n < container.size(); n++) {
-                    if((container[n].tag == TAG_PVI_INDEX) ) {
-                        index = protocol->getValueAsUInt16(&container[n]);
-                    }
-                    else if((container[n].tag == TAG_PVI_VALUE)) {
-                            TAG_OUT_PVI_DC_CURRENT = protocol->getValueAsFloat32(&container[n]);
-                            if (index == 0){
-                              cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
-                              writeRscp(PosPVIDCI1,TAG_OUT_PVI_DC_CURRENT*100);
-                            }
-                            if (index == 1){
-                              cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
-                              writeRscp(PosPVIDCI2,TAG_OUT_PVI_DC_CURRENT*100);
-                            }
-                    }
+                case TAG_BAT_RSOC: {              // response for TAG_BAT_REQ_RSOC
+                    float fSOC = protocol->getValueAsFloat32(&batteryData[i]);
+                    int TAG_EMS_OUT_SOC = fSOC;
+                    writeRscp(PosSOC,TAG_EMS_OUT_SOC);
+                    cout << "Battery SOC is " << TAG_EMS_OUT_SOC << " %\n";
+                    char file[20];
+                    snprintf (file, (size_t)20, "SOC900");
+                    write900(PosSOC900, file, TAG_EMS_OUT_SOC, Counter900);
+                    printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
+                    break;
                 }
-                protocol->destroyValueData(container);
-                break;
+                case TAG_BAT_DEVICE_STATE: {    // response for TAG_BAT_REQ_DEVICE_STATE
+                    bool TAG_EMS_OUT_BAT_STATE = protocol->getValueAsBool(&batteryData[i]);
+                    writeRscp(PosBatState,TAG_EMS_OUT_BAT_STATE);
+                    cout << "Battery State = " << TAG_EMS_OUT_BAT_STATE << " \n";
+                    break;
+                }
+                // ...
+                default:
+                    // default behaviour
+                    printf("Unknown battery tag %08X\n", response->tag);
+                    break;
+                }
             }
-            // ...
-            default:
-                // default behaviour
-                printf("Unknown PVI tag %08X\n", response->tag);
-                break;
-            }
+            protocol->destroyValueData(batteryData);
+            break;
         }
-        protocol->destroyValueData(PVIData);
-        break;
-    }
-    case TAG_PM_DATA: {        // resposne for TAG_PM_REQ_DATA
-        uint8_t ucPMIndex = 0;
-        std::vector<SRscpValue> PMData = protocol->getValueAsContainer(response);
-        for(size_t i = 0; i < PMData.size(); ++i) {
-            if(PMData[i].dataType == RSCP::eTypeError) {
-                // handle error for example access denied errors
-                uint32_t uiErrorCode = protocol->getValueAsUInt32(&PMData[i]);
-                printf("Tag 0x%08X received error code %u.\n", PMData[i].tag, uiErrorCode);
-                return -1;
+        case TAG_PVI_DATA: {        // resposne for TAG_PVI_REQ_DATA
+            uint8_t ucPVIIndex = 0;
+            std::vector<SRscpValue> PVIData = protocol->getValueAsContainer(response);
+            for(size_t i = 0; i < PVIData.size(); ++i) {
+                if(PVIData[i].dataType == RSCP::eTypeError) {
+                    // handle error for example access denied errors
+                    uint32_t uiErrorCode = protocol->getValueAsUInt32(&PVIData[i]);
+                    printf("Tag 0x%08X received error code %u.\n", PVIData[i].tag, uiErrorCode);
+                    return -1;
+                }
+                // check each battery sub tag
+                switch(PVIData[i].tag) {
+                case TAG_PVI_INDEX: {
+                    ucPVIIndex = protocol->getValueAsUChar8(&PVIData[i]);
+                    break;
+                }
+                case TAG_PVI_ON_GRID: {              // response for TAG_PVI_REQ_ON_GRID
+                    bool TAG_EMS_OUT_PVI_STATE = protocol->getValueAsBool(&PVIData[i]);
+                    cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
+                    writeRscp(PosPVIState,TAG_EMS_OUT_PVI_STATE);
+                    break;
+                }
+                case TAG_PVI_DC_POWER: {
+                    int index = -1;
+                    float TAG_OUT_PVI_DC_POWER = 0;
+                    std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                    for(size_t n = 0; n < container.size(); n++) {
+                        if((container[n].tag == TAG_PVI_INDEX) ) {
+                            index = protocol->getValueAsUInt16(&container[n]);
+                        }
+                        else if((container[n].tag == TAG_PVI_VALUE)) {
+                                TAG_OUT_PVI_DC_POWER = protocol->getValueAsFloat32(&container[n]);
+                                if (index == 0){
+                                  cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                                  writeRscp(PosPVIDCP1,TAG_OUT_PVI_DC_POWER);
+                                  printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_1, TAG_OUT_PVI_DC_POWER);
+                                }
+                                else if (index == 1){
+                                  cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                                  writeRscp(PosPVIDCP2,TAG_OUT_PVI_DC_POWER);
+                                  printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_2, TAG_OUT_PVI_DC_POWER);
+                                }
+                        }
+                    }
+                    protocol->destroyValueData(container);
+                    break;
+                }
+                case TAG_PVI_DC_VOLTAGE: {
+                    int index = -1;
+                    float TAG_OUT_PVI_DC_VOLTAGE = 0;
+                    std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                    for(size_t n = 0; n < container.size(); n++) {
+                        if((container[n].tag == TAG_PVI_INDEX) ) {
+                            index = protocol->getValueAsUInt16(&container[n]);
+                        }
+                        else if((container[n].tag == TAG_PVI_VALUE)) {
+                                TAG_OUT_PVI_DC_VOLTAGE = protocol->getValueAsFloat32(&container[n]);
+                                if (index == 0){
+                                  cout << "PVI DC-Voltage 1 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                                  writeRscp(PosPVIDCU1,TAG_OUT_PVI_DC_VOLTAGE);
+                                }
+                                if (index == 1){
+                                  cout << "PVI DC-Voltage 2 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                                  writeRscp(PosPVIDCU2,TAG_OUT_PVI_DC_VOLTAGE);
+                                }
+                        }
+                    }
+                    protocol->destroyValueData(container);
+                    break;
+                }
+                case TAG_PVI_DC_CURRENT: {
+                    int index = -1;
+                    float TAG_OUT_PVI_DC_CURRENT = 0;
+                    std::vector<SRscpValue> container = protocol->getValueAsContainer(&PVIData[i]);
+                    for(size_t n = 0; n < container.size(); n++) {
+                        if((container[n].tag == TAG_PVI_INDEX) ) {
+                            index = protocol->getValueAsUInt16(&container[n]);
+                        }
+                        else if((container[n].tag == TAG_PVI_VALUE)) {
+                                TAG_OUT_PVI_DC_CURRENT = protocol->getValueAsFloat32(&container[n]);
+                                if (index == 0){
+                                  cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                                  writeRscp(PosPVIDCI1,TAG_OUT_PVI_DC_CURRENT*100);
+                                }
+                                if (index == 1){
+                                  cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                                  writeRscp(PosPVIDCI2,TAG_OUT_PVI_DC_CURRENT*100);
+                                }
+                        }
+                    }
+                    protocol->destroyValueData(container);
+                    break;
+                }
+                // ...
+                default:
+                    // default behaviour
+                    printf("Unknown PVI tag %08X\n", response->tag);
+                    break;
+                }
             }
-            // check each battery sub tag
-            switch(PMData[i].tag) {
-            case TAG_PM_INDEX: {
-                ucPMIndex = protocol->getValueAsUChar8(&PMData[i]);
-                break;
-            }
-            case TAG_PM_DEVICE_STATE: {              // response for TAG_PM_REQ_DEVICE_STATE
-                bool TAG_EMS_OUT_PM_STATE = protocol->getValueAsBool(&PMData[i]);
-                cout << "LM0 State = " << TAG_EMS_OUT_PM_STATE << " \n";
-                writeRscp(PosPMState,TAG_EMS_OUT_PM_STATE);
-                break;
-            }
-            case TAG_PM_ACTIVE_PHASES: {              // response for TAG_PM_REQ_ACTIVE_PHASES
-                int32_t TAG_PM_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&PMData[i]);
-                cout << "LM0 Aktiv Phases = " << TAG_PM_OUT_ACTIVE_PHASES << " \n";
-                writeRscp(PosPMPhases,TAG_PM_OUT_ACTIVE_PHASES);
-                break;
-            }
-            // ...
-            default:
-                // default behaviour
-                printf("Unknown PM tag %08X\n", response->tag);
-                break;
-            }
+            protocol->destroyValueData(PVIData);
+            break;
         }
-        protocol->destroyValueData(PMData);
-        break;
-    }
-    // ...
-    default:
+        case TAG_PM_DATA: {        // resposne for TAG_PM_REQ_DATA
+            uint8_t ucPMIndex = 0;
+            std::vector<SRscpValue> PMData = protocol->getValueAsContainer(response);
+            for(size_t i = 0; i < PMData.size(); ++i) {
+                if(PMData[i].dataType == RSCP::eTypeError) {
+                    // handle error for example access denied errors
+                    uint32_t uiErrorCode = protocol->getValueAsUInt32(&PMData[i]);
+                    printf("Tag 0x%08X received error code %u.\n", PMData[i].tag, uiErrorCode);
+                    return -1;
+                }
+                // check each battery sub tag
+                switch(PMData[i].tag) {
+                case TAG_PM_INDEX: {
+                    ucPMIndex = protocol->getValueAsUChar8(&PMData[i]);
+                    break;
+                }
+                case TAG_PM_DEVICE_STATE: {              // response for TAG_PM_REQ_DEVICE_STATE
+                    bool TAG_EMS_OUT_PM_STATE = protocol->getValueAsBool(&PMData[i]);
+                    cout << "LM0 State = " << TAG_EMS_OUT_PM_STATE << " \n";
+                    writeRscp(PosPMState,TAG_EMS_OUT_PM_STATE);
+                    break;
+                }
+                case TAG_PM_ACTIVE_PHASES: {              // response for TAG_PM_REQ_ACTIVE_PHASES
+                    int32_t TAG_PM_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&PMData[i]);
+                    cout << "LM0 Aktiv Phases = " << TAG_PM_OUT_ACTIVE_PHASES << " \n";
+                    writeRscp(PosPMPhases,TAG_PM_OUT_ACTIVE_PHASES);
+                    break;
+                }
+                // ...
+                default:
+                    // default behaviour
+                    printf("Unknown PM tag %08X\n", response->tag);
+                    break;
+                }
+            }
+            protocol->destroyValueData(PMData);
+            break;
+        }
+        case TAG_WB_DATA: {        // resposne for TAG_WB_REQ_DATA
+            uint8_t ucWBIndex = 0;
+            std::vector<SRscpValue> WBData = protocol->getValueAsContainer(response);
+            for(size_t i = 0; i < WBData.size(); ++i) {
+                if(WBData[i].dataType == RSCP::eTypeError) {
+                    // handle error for example access denied errors
+                    uint32_t uiErrorCode = protocol->getValueAsUInt32(&WBData[i]);
+                    printf("Tag 0x%08X received error code %u.\n", WBData[i].tag, uiErrorCode);
+                    return -1;
+                }
+                switch(WBData[i].tag) {
+                  case TAG_WB_INDEX: {
+                      ucWBIndex = protocol->getValueAsUChar8(&WBData[i]);
+                      break;
+                  }
+                  case TAG_WB_DEVICE_STATE: {              // response for TAG_WB_REQ_DEVICE_STATE
+                      bool TAG_EMS_OUT_WB_STATE = protocol->getValueAsBool(&WBData[i]);
+                      cout << "WB0 State = " << TAG_EMS_OUT_WB_STATE << " \n";
+                      writeRscpWb(PosWbState, TAG_EMS_OUT_WB_STATE);
+
+                      break;
+                  }
+                  case TAG_WB_PM_ACTIVE_PHASES: {              // response for TAG_WB_REQ_ACTIVE_PHASES
+                      int32_t TAG_WB_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&WBData[i]);
+                      cout << "WB0 Aktiv Phases = " << TAG_WB_OUT_ACTIVE_PHASES << " \n";
+                      writeRscpWb(PosWbActPhases, TAG_WB_OUT_ACTIVE_PHASES);
+                      break;
+                  }
+                  case TAG_WB_EXTERN_DATA_ALG: {              // response for TAG_WB_REQ_EXTERN_DATA_ALG
+                    std::vector<SRscpValue> WbCont2 = protocol->getValueAsContainer(&WBData[i]);
+                    for(size_t i = 0; i < WbCont2.size(); ++i) {
+                      if(WbCont2[i].dataType == RSCP::eTypeError) {
+                         uint32_t uiErrorCode = protocol->getValueAsUInt32(&WbCont2[i]);
+                         printf("Tag 0x%08X received error code %u.\n", WbCont2[i].tag, uiErrorCode);
+                         return -1;
+                      }
+                      switch(WbCont2[i].tag) {
+                        case TAG_WB_EXTERN_DATA: {              // response for TAG_WB_REQ_EXTERN_DATA_ALG
+                          /*
+                          response for TAG_WB_REQ_EXTERN_DATA_ALG:
+                          Byte 1: uint8, PreCharge in [%]
+                          Byte 2: uint8, Anzahl akt. Phasen [0-3]
+                          Byte 3: Einzelbits, Status 1
+                          Byte 4: uint8, Strombegrenzung in [A]
+                          Byte 5: Einzelbits, Status 2
+                          Byte 6: n.b.
+                          Byte 7: uint8,Anzeige von Info/Warn/Err
+                          -- Status 1
+                          Byte 3, Bit 7: 1: Sonnenmode aktiv 0: Mischmode aktiv
+                          Byte 3, Bit 6: 1: Laden abgebrochen 0: Laden freigegeben
+                          Byte 3, Bit 5: 1: Auto lädt 0: Auto lädt nicht
+                          Byte 3, Bit 4: 1: Typ2 verriegelt 0: Typ2 entriegelt
+                          Byte 3, Bit 3: 1: Typ2 gesteckt   0: Typ2 nicht gesteckt
+                          Byte 3, Bit 2: 1: Schuko an 0: Schuko aus
+                          Byte 3, Bit 1: 1: Schuko gesteckt 0: Schuko nicht gesteckt
+                          Byte 3, Bit 0: 1: Schuko gesperrt 0: Schuko freigegeben
+                          -- Staus 2
+                          Byte 5, Bit 7: 1: LED-ERR an (rot) 0: LED-ERR aus
+                          Byte 5, Bit 6: 1: LED-SON an (gelb) 0: LED-SON aus
+                          Byte 5, Bit 5: 1: LED-BAT an (grün) 0: LED-BAT aus
+                          Byte 5, Bit 4: 1: Relais an, 16A 1Phase, Schuko 0: Relais aus, 16A 1Phase, Schuko
+                          Byte 5, Bit 3: 1: Relais an, 16A 3Phasen, Typ2 0: Relais aus, 16A 3Phasen, Typ2
+                          Byte 5, Bit 2: 1: Relais an, 32A 3Phasen, Typ2 0: Relais aus, 32A 3Phasen, Typ2
+                          Byte 5, Bit 1: 1: Fzg. Lüfter an 0: Fzg. Lüfter aus
+                          Byte 5, Bit 0: n.b.
+                          --
+                          Byte 7, „Anzeige von Info/Warn/Err“ stellt den Inhalt des Infobalkens auf dem Display unten dar. Es gibt folgende Werte:
+                          Keine Anzeige:
+                              0x00
+                          Infos:
+                              0x10 Schuko nicht möglich, int. LM defekt
+                              0x11 Schuko nicht möglich, Typ 2 > 16A
+                              0x12 Schuko nicht möglich, Temp > 70*C
+                              0x13 Schuko nicht möglich, Notstrombetrieb
+                              0x14 Schuko nicht möglich, Typ 2 vor Schuko
+                              0x15 Nicht möglich, Schuko oder Typ2 gesteckt
+                              0x16 Schuko nicht möglich, extern gesperrt
+                              0x18 Sonnenmodus nicht möglich, kein ext. LM
+                              0x19 Ext. Abbruch gewünscht
+                              0x1A Bereichsüberschreitung
+                              0x1B Passwort falsch
+                              0x1C Passwort geändert
+                          Warnungen:
+                              0x20 Gehäusetemperatur > 50*C, Derating
+                              0x21 Interner LM nicht vorhanden
+                              0x22 FRAM CRC falsch, Default Parameter
+                              0x23 Flash CRC falsch
+                              0x24 FRAM CRC falsch, Zählerstände
+                              0x25 Notstrommode aktiv
+                              0x26 Negative Leistung am Typ 2
+                              0x27 T-Sensor nicht kalibriert, Imax 16A
+                          Fehler:
+                              0x40 FRAM defekt, Default Parameter
+                              0x41 Flash defekt
+                              0x42 CAN defekt
+                              0x43 Gehäusetemperatur > 70*C, alles aus
+                              0x44 Ladefehler, CP Pegel im Graubereich
+                              0x45 Ladefehler, Diode defekt
+                              0x46 Ladefehler, PP unbekannt
+                              0x47 Ladegeschirr defekt, PP control
+                          */
+                            memcpy(&WbExt,&WbCont2[i].data[0],sizeof(WbExt));
+                            writeRscpWb(PosWbUsePhases, WbExt[1]);
+                            writeRscpWb(PosWbSLocked , checkBit(WbExt[2], 1));
+                            writeRscpWb(PosWbSConnect , checkBit(WbExt[2], 2));
+                            writeRscpWb(PosWbSOn      , checkBit(WbExt[2], 4));
+                            writeRscpWb(PosWbConnect  , checkBit(WbExt[2], 8));
+                            writeRscpWb(PosWbLocked   , checkBit(WbExt[2], 16));
+                            writeRscpWb(PosWbCharge   , checkBit(WbExt[2], 32));
+                            writeRscpWb(PosWbReady    , checkBit(WbExt[2], 64));
+                            writeRscpWb(PosWbMode     , checkBit(WbExt[2], 128));
+                            writeRscpWb(PosWbCurrent  , WbExt[3]);
+                            writeRscpWb(PosWbRelais32 , checkBit(WbExt[4], 4));
+                            writeRscpWb(PosWbRelais16 , checkBit(WbExt[4], 8));
+                            writeRscpWb(PosWbSRelais  , checkBit(WbExt[4], 16));
+                            writeRscpWb(PosWbLED_BAT  , checkBit(WbExt[4], 32));
+                            writeRscpWb(PosWbLED_SON  , checkBit(WbExt[4], 64));
+                            writeRscpWb(PosWbLED_ERR  , checkBit(WbExt[4], 128));
+                            writeRscpWb(PosWbDebug    , WbExt[6]);
+                            writeRscpWb(PosWbCheckSum , WbExt[1]+ WbExt[2]+ WbExt[3]+ WbExt[4]+ WbExt[6]);
+                            printf("WB0 ALG EXTERN_DATA = ");
+                            for(size_t x = 0; x < sizeof(WbExt); ++x){
+                              uint8_t y;
+                              y=WbExt[x];
+                              printf("%02X ", y);
+                            }
+                            printf("\n");
+                            break;
+                        }
+                        case TAG_WB_EXTERN_DATA_LEN: {              // response for TAG_WB_REQ_EXTERN_DATA_ALG
+                            uint8_t iLen = protocol->getValueAsUChar8(&WbCont2[i]);
+                            break;
+                        }
+                      default:
+                          printf("Unknown WB_EXT_ALG tag %08X\n", WbCont2[i].tag);
+                      }
+                    }
+                    protocol->destroyValueData(WbCont2);
+                  break;
+                }
+                // ...
+                default:
+                    // default behaviour
+                    printf("Unknown WB tag %08X\n", response->tag);
+                    break;
+                }
+            }
+            protocol->destroyValueData(WBData);
+            break;
+        }
+        // ...
+        default:
         // default behavior
         printf("Unknown tag %08X\n", response->tag);
         break;
@@ -713,7 +894,8 @@ static void mainLoop(void)
           Counter900 = 0;
         }
         Counter900 ++;
-        system ("cp /mnt/RAMDisk/E3dcRscpCache.txt /mnt/RAMDisk/E3dcGuiData.txt");
+        system ("cp /mnt/RAMDisk/E3dcRscpData.txt /mnt/RAMDisk/E3dcCache.txt");
+        system ("cp /mnt/RAMDisk/E3dcRscpWbData.txt /mnt/RAMDisk/E3dcWbCache.txt");
         // main loop sleep / cycle time before next request
         int sleeptime = 1;
         if ( GUI == 1 && E3DC_S10 == 1)
@@ -743,6 +925,9 @@ int main()
   writeRscp(PosPMState, 1);
   writeRscp(PosTimeZone,time_zone);
   make900();
+  for(int i = 0; i < PosWbMAX; i++){
+    writeRscpWb(i,0);
+  }
 
     // endless application which re-connections to server on connection lost
     while(true){

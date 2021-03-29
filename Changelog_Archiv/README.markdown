@@ -1,6 +1,26 @@
 # Changelog Archiv
+V1.86 13.02.2021 Fehlerkorrektur für neuere Rasbain Versionen [Issue #48](https://github.com/nischram/E3dcGui/issues/48)
+- Issue #48
+- Anpassungen an der README
+- Anpassungen an der STEPBYSTEP
+- Anpassungen GuiMain.c Zeitstempel
+
+V1.85 30.01.2021 Fehlerkorrektur bei der Wetteranzeige [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
+- Issue #47
+
+V1.84 28.01.2021 OpenWeatherMap OneCall Anpassung [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
+- Issue #47
+
+V1.83 04.12.2020 [Issue #42](https://github.com/nischram/E3dcGui/issues/42)
+- Fehlerbehebung für Issue #42
+- printsendHM auf float geändert für Issue #42
+
+V1.82 03.11.2020 Anpassungen für WiringPi [Issue #38](https://github.com/nischram/E3dcGui/issues/38)
+- Issue #38
+- WiringPi Server angepasst
+
 V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
-- Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org  
+- Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org    
 - Changelog archiviert  
 
 V1.80 24.08.2020 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)

@@ -12,6 +12,8 @@ int writeRscp(int Position, int NewValue);
 int makeRscp();
 int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER);
 int makeCharRscp();
+int writeRscpWb(int Position, int NewValue);
+int checkBit(int Value, int Bit);
 int writeUnixtime(int Position, int NewTime);
 int write900(int Position, char *fileName, int NewValue, int Counter900);
 int make900();

@@ -20,7 +20,7 @@ void printsendHM(int CounterHM, int id, float value)
     if(CounterHM == HM_Intervall){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.3f\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.1f\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %.3f\n",id, value);
       system(batch);
     }
@@ -178,7 +178,7 @@ int readData(char *Path, int Position, int max)
 int writeRscp(int Position, int NewValue)
 {
   char PathRscp [128];
-  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcRscpCache.txt");
+  snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcRscpData.txt");
   writeData(PathRscp, Position, NewValue, PosMAX);
   return 1;
 }
@@ -197,6 +197,19 @@ int makeCharRscp()
   snprintf (serialnumber, (size_t)128, "S10-XXXXXXXXXXXX");
   writeCharRscp(TAG_Date, TAG_Time, serialnumber);
   return 1;
+}
+int writeRscpWb(int Position, int NewValue)
+{
+  char PathRscpWb [128];
+  snprintf (PathRscpWb, (size_t)128, "/mnt/RAMDisk/E3dcRscpWbData.txt");
+  writeData(PathRscpWb, Position, NewValue, PosWbMAX);
+  return 1;
+}
+int checkBit(int Value, int Bit)
+{
+  bool response = Value&Bit;
+  if(response)return 1;
+  else return 0;
 }
 int writeUnixtime(int Position, int NewTime)
 {

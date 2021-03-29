@@ -41,6 +41,8 @@ int main()
 
 	//Umschalten auf 16Bit Display
 	char OUT[128];
+	char WbMode[24],WbBtC[24],WbBbC[24];
+	int WbCurrent;
 	snprintf (OUT, (size_t)128, "fbset -fb %s -depth 16", framebuffer_File);
 	system(OUT);
 
@@ -90,23 +92,25 @@ int main()
 	int buttonCordsSaveHalb[4] = {5,110,400,280};
 	int	buttonSaveHalb= BUTTON_OFF;
 	int buttonTimerSaveHalb = mymillis();
+	int buttonCordsSetup[4] = {Picture1,PictureLine1,PictureW,PictureH};
+	int buttonTimerSetup = mymillis();
+	int buttonCordsWetter[4] = {Picture2,PictureLine1,PictureW,PictureH};
+	int buttonTimerWetter = mymillis();
 	int buttonCordsAktuell[4] = {Picture3,PictureLine1,PictureW,PictureH};
 	int buttonTimerAktuell = mymillis();
 	int buttonCordsLangzeit[4] = {Picture4,PictureLine1,PictureW,PictureH};
 	int buttonTimerLangzeit = mymillis();
-	int buttonCordsSetup[4] = {Picture1,PictureLine1,PictureW,PictureH};
-	int buttonTimerSetup = mymillis();
-	int buttonCordsMonitor[4] = {Picture5,PictureLine1,PictureW,PictureH};
+	int buttonCordsWallbox[4] = {Picture5,PictureLine1,PictureW,PictureH};
+	int buttonTimerWallbox = mymillis();
+	int buttonCordsMonitor[4] = {Picture6,PictureLine1,PictureW,PictureH};
 	int buttonTimerMonitor = mymillis();
-	int buttonCordsWetter[4] = {Picture2,PictureLine1,PictureW,PictureH};
-	int buttonTimerWetter = mymillis();
-	int buttonCordsSmart[4] = {Picture6,PictureLine1,PictureW,PictureH};
+	int buttonCordsSmart[4] = {Picture7,PictureLine1,PictureW,PictureH};
 	int buttonTimerSmart = mymillis();
-	int buttonCordsHM[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonCordsHM[4] = {Picture8,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
-	int buttonCordsGB[4] = {Picture8,PictureLine1,PictureW,PictureH};
+	int buttonCordsGB[4] = {Picture9,PictureLine1,PictureW,PictureH};
 	int buttonTimerGB = mymillis();
-	int buttonCordsMuell[4] = {Picture9,PictureLine1,PictureW,PictureH};
+	int buttonCordsMuell[4] = {Picture10,PictureLine1,PictureW,PictureH};
 	int buttonTimerMuell = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
@@ -147,6 +151,25 @@ int main()
 	int buttonCordsLeADD[4] = {735,438,50,30};
 	int buttonTimerLeADD = mymillis();
 
+	int buttonCordsMinus10[4] = {WBCURX-58-58-58, WBCURY,54,30};
+	int buttonTimerMinus10 = mymillis();
+	int buttonCordsMinus2[4] = {WBCURX-58-58, WBCURY,54,30};
+	int buttonTimerMinus2 = mymillis();
+	int buttonCordsMinus[4] = {WBCURX-58, WBCURY,54,30};
+	int buttonTimerMinus = mymillis();
+	int buttonCordsPlus[4] = {WBCURX+82, WBCURY,54,30};
+	int buttonTimerPlus = mymillis();
+	int buttonCordsPlus2[4] = {WBCURX+82+58, WBCURY,54,30};
+	int buttonTimerPlus2 = mymillis();
+	int buttonCordsPlus10[4] = {WBCURX+82+58+58, WBCURY,54,30};
+	int buttonTimerPlus10 = mymillis();
+	int buttonCordsWbMode[4] = {WBMODEX,WBMODEY,82,30};
+	int buttonTimerWbMode = mymillis();
+	int buttonCordsWbBtC[4] = {WBBTCX,WBBTCY,82,30};
+	int buttonTimerWbBtC = mymillis();
+	int buttonCordsWbBbC[4] = {WBBBCX,WBBBCY,82,30};
+	int buttonTimerWbBbC = mymillis();
+
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
 		scaledX = rawX/scaleXvalue;
@@ -174,6 +197,17 @@ int main()
 					writeScreen(ScreenCounter, 0);
 					writeScreen(ScreenSaver, false);
 					writeScreen(ScreenShutdown, ShutdownRun);
+				}
+			}
+			if(Wallbox ==1){
+				if((scaledX  > buttonCordsWallbox[X] && scaledX < (buttonCordsWallbox[X]+buttonCordsWallbox[W])) && (scaledY > buttonCordsWallbox[Y] && scaledY < (buttonCordsWallbox[Y]+buttonCordsWallbox[H]))){
+					if (mymillis() - buttonTimerWallbox > 500){
+						buttonTimerWallbox = mymillis();
+						writeScreen(ScreenChange, ScreenWallbox);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
+					}
 				}
 			}
 			if((scaledX  > buttonCordsMonitor[X] && scaledX < (buttonCordsMonitor[X]+buttonCordsMonitor[W])) && (scaledY > buttonCordsMonitor[Y] && scaledY < (buttonCordsMonitor[Y]+buttonCordsMonitor[H]))){
@@ -506,6 +540,170 @@ int main()
 					}
 				}
 				break; // ScreenSmart
+			}
+			case ScreenWallbox:{
+				if((scaledX  > buttonCordsMinus10[X] && scaledX < (buttonCordsMinus10[X]+buttonCordsMinus10[W])) && (scaledY > buttonCordsMinus10[Y] && scaledY < (buttonCordsMinus10[Y]+buttonCordsMinus10[H]))){
+					if (mymillis() - buttonTimerMinus10 > 500){
+						buttonTimerMinus10 = mymillis();
+						if((readRscpWb(PosWbCurrent)-10) >= 6){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) -10;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsMinus2[X] && scaledX < (buttonCordsMinus2[X]+buttonCordsMinus2[W])) && (scaledY > buttonCordsMinus2[Y] && scaledY < (buttonCordsMinus2[Y]+buttonCordsMinus2[H]))){
+					if (mymillis() - buttonTimerMinus2 > 500){
+						buttonTimerMinus2 = mymillis();
+						if((readRscpWb(PosWbCurrent)-2) >= 6){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) -2;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsMinus[X] && scaledX < (buttonCordsMinus[X]+buttonCordsMinus[W])) && (scaledY > buttonCordsMinus[Y] && scaledY < (buttonCordsMinus[Y]+buttonCordsMinus[H]))){
+					if (mymillis() - buttonTimerMinus > 500){
+						buttonTimerMinus = mymillis();
+						if((readRscpWb(PosWbCurrent)-1) >= 6){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) -1;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus[X] && scaledX < (buttonCordsPlus[X]+buttonCordsPlus[W])) && (scaledY > buttonCordsPlus[Y] && scaledY < (buttonCordsPlus[Y]+buttonCordsPlus[H]))){
+					if (mymillis() - buttonTimerPlus > 500){
+						buttonTimerPlus = mymillis();
+						if((readRscpWb(PosWbCurrent)+1) <= 32){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) +1;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus2[X] && scaledX < (buttonCordsPlus2[X]+buttonCordsPlus2[W])) && (scaledY > buttonCordsPlus2[Y] && scaledY < (buttonCordsPlus2[Y]+buttonCordsPlus2[H]))){
+					if (mymillis() - buttonTimerPlus2 > 500){
+						buttonTimerPlus2 = mymillis();
+						if((readRscpWb(PosWbCurrent)+2) <= 32){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) +2;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus10[X] && scaledX < (buttonCordsPlus10[X]+buttonCordsPlus10[W])) && (scaledY > buttonCordsPlus10[Y] && scaledY < (buttonCordsPlus10[Y]+buttonCordsPlus10[H]))){
+					if (mymillis() - buttonTimerPlus10 > 500){
+						buttonTimerPlus10 = mymillis();
+						if((readRscpWb(PosWbCurrent)+2) <= 32){
+							DrawImage("Switch/Send", WBCURX, WBCURY);
+							WbCurrent = readRscpWb(PosWbCurrent) +10;
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsWbMode[X] && scaledX < (buttonCordsWbMode[X]+buttonCordsWbMode[W])) && (scaledY > buttonCordsWbMode[Y] && scaledY < (buttonCordsWbMode[Y]+buttonCordsWbMode[H]))){
+					if (mymillis() - buttonTimerWbMode > 500){
+						buttonTimerWbMode = mymillis();
+						DrawImage("Switch/Send", WBMODEX, WBMODEY);
+						WbCurrent = readRscpWb(PosWbCurrent);
+						if(readRscpWb(PosWbMode)==1) snprintf (WbMode, (size_t)128, "-mix");
+						else snprintf (WbMode, (size_t)128, "-sonne");
+						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+						else snprintf (WbBtC, (size_t)128, "-BtCyes");
+						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+						else snprintf (WbBbC, (size_t)128, "-BbCyes");
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsWbBtC[X] && scaledX < (buttonCordsWbBtC[X]+buttonCordsWbBtC[W])) && (scaledY > buttonCordsWbBtC[Y] && scaledY < (buttonCordsWbBtC[Y]+buttonCordsWbBtC[H]))){
+					if (mymillis() - buttonTimerWbBtC > 500){
+						DrawImage("Switch/Send", WBBTCX, WBBTCY);
+						WbCurrent = readRscpWb(PosWbCurrent);
+						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+						else snprintf (WbMode, (size_t)128, "-sonne");
+						if(readRscpWb(PosWbBtC)==1) snprintf (WbBtC, (size_t)128, "-BtCno");
+						else {
+							snprintf (WbBtC, (size_t)128, "-BtCyes");
+							snprintf (WbBbC, (size_t)128, "-BbCno");
+						}
+						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+						else snprintf (WbBbC, (size_t)128, "-BbCyes");
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						system(OUT);
+						sleep(2);
+						buttonTimerWbBtC = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
+					}
+				}
+				if((scaledX  > buttonCordsWbBbC[X] && scaledX < (buttonCordsWbBbC[X]+buttonCordsWbBbC[W])) && (scaledY > buttonCordsWbBbC[Y] && scaledY < (buttonCordsWbBbC[Y]+buttonCordsWbBbC[H]))){
+					if (mymillis() - buttonTimerWbBbC > 500){
+						DrawImage("Switch/Send", WBBBCX, WBBBCY);
+						WbCurrent = readRscpWb(PosWbCurrent);
+						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+						else snprintf (WbMode, (size_t)128, "-sonne");
+						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+						else snprintf (WbBtC, (size_t)128, "-BtCyes");
+						if(readRscpWb(PosWbBbC)==1) snprintf (WbBbC, (size_t)128, "-BbCno");
+						else {
+							snprintf (WbBtC, (size_t)128, "-BtCno");
+							snprintf (WbBbC, (size_t)128, "-BbCyes");
+						}
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						system(OUT);
+						sleep(2);
+						buttonTimerWbBbC = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
+					}
+				}
+				break; // ScreenWallbox
 			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){

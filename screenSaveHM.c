@@ -115,6 +115,10 @@ int main()
 				//siehe screnSave.c
 				break; // ScreenSmart
 			}
+			case ScreenWallbox:{
+				//siehe screnSave.c
+				break; // ScreenWallbox
+			}
 			case ScreenMonitor:{
 				//siehe screnSave.c
 				break; // ScreenMonitor

@@ -150,7 +150,7 @@ int readRscpLed(int RscpPosition)
 
 int read100RscpLed(int RscpPosition)
 {
-  int ret = readRscp(RscpPosition);
+  int ret = readRscpLed(RscpPosition);
   if (ret > 100)
     return 100;
   else if (ret < 0)

@@ -25,6 +25,7 @@ int Picture6;
 int Picture7;
 int Picture8;
 int Picture9;
+int Picture10;
 
 // Zusatzfunktion für die Jalousie-Funktin "readJalou_HM" und Aktor.h
 unsigned replace_character(char* string, char from, char to){
@@ -55,6 +56,7 @@ int read_HM(int id, int cutnumber, char* value){
   out = popen( batch, "r" );
   if( out != NULL ){
     fscanf(out, "%s", value);
+    //printf("ID: %i = %s\n", id, value);
     pclose(out);
     return 1;
   }
@@ -124,7 +126,7 @@ void appeendedData(char filePath[100], char write[100]){
 }
 //Homematic Fenster ziechnen mit Name
 void createWindow(int Wx, int Wy, int Ww, char room[20], char var[20]){
-	put_string((Wx-3),(Wy-11),room,GREY);
+	put_string((Wx-3),(Wy-15),room,GREY);
 	if (strcmp ("fals",var) == 0){
 		drawSquare(Wx,Wy,Ww,21,GREEN);
 	}
@@ -172,17 +174,19 @@ void createJalousie(int Jx, int Jy, int Jw, char Value[20])
 }
 // Homematic Daten einfügen z.B. Temperatur
 void createData(int x, int y, char *c){
-  drawSquare(x-5,y+21,60,12,WHITE);
-	put_string(x+5, (y+22), c,GREY);
+  drawSquare(x-5,y+19,60,12,WHITE);
+	put_string(x+5, (y+20), c,GREY);
 }
 // PicturPosition
 int picturePosition()
 {
-  int numberPicture = 1;
+  int numberPicture = 1;   // 1=Standard-Button ohne Wetter
   if(wetterGui ==1)
     numberPicture = numberPicture +1;
   if(E3DC_S10 ==1)
     numberPicture = numberPicture +3;
+  if(Wallbox ==1)
+    numberPicture = numberPicture +1;
   if(useAktor == 1 && useDHT == 1)
     numberPicture = numberPicture +1;
   if(Homematic_GUI ==1)
@@ -191,35 +195,39 @@ int picturePosition()
     numberPicture = numberPicture +1;
   if(Abfuhrkalender ==1)
     numberPicture = numberPicture +1;
-  int piece = (800 - (numberPicture * 80)) / 2;
+  int piece = (800 - (numberPicture * 76)) / 2;
   Picture1 = piece;
   if(wetterGui ==1){
-    piece = piece + 80;
+    piece = piece + 76;
     Picture2 = piece;
   }
   if(E3DC_S10 ==1){
-    piece = piece + 80;
+    piece = piece + 76;
     Picture3 = piece;
-    piece = piece + 80;
+    piece = piece + 76;
     Picture4 = piece;
-    piece = piece + 80;
-    Picture5 = piece;
-  }
-  if(useAktor == 1 && useDHT == 1){
-    piece = piece + 80;
+    if(Wallbox ==1){
+      piece = piece + 76;
+      Picture5 = piece;
+    }
+    piece = piece + 76;
     Picture6 = piece;
   }
-  if(Homematic_GUI ==1){
-    piece = piece + 80;
+  if(useAktor == 1 && useDHT == 1){
+    piece = piece + 76;
     Picture7 = piece;
   }
-  if(Gruenbeck ==1){
-    piece = piece + 80;
+  if(Homematic_GUI ==1){
+    piece = piece + 76;
     Picture8 = piece;
   }
-  if(Abfuhrkalender ==1){
-    piece = piece + 80;
+  if(Gruenbeck ==1){
+    piece = piece + 76;
     Picture9 = piece;
+  }
+  if(Abfuhrkalender ==1){
+    piece = piece + 76;
+    Picture10 = piece;
   }
   return 1;
 }
@@ -236,16 +244,18 @@ int drawMainScreen()
   if(E3DC_S10 ==1){
     DrawImage("AktuellImage", Picture3, PictureLine1);
     DrawImage("LangzeitImage", Picture4, PictureLine1);
-    DrawImage("MonitorImage", Picture5, PictureLine1);
+    if(Wallbox == 1)
+      DrawImage("Wallbox", Picture5, PictureLine1);
+    DrawImage("MonitorImage", Picture6, PictureLine1);
   }
   if(useAktor == 1 && useDHT == 1)
-    DrawImage("SmartImage", Picture6, PictureLine1);
+    DrawImage("SmartImage", Picture7, PictureLine1);
   if(Homematic_GUI ==1)
-    DrawImage("HMImage", Picture7, PictureLine1);
+    DrawImage("HMImage", Picture8, PictureLine1);
   if(Gruenbeck ==1)
-    DrawImage("GBImage", Picture8, PictureLine1);
+    DrawImage("GBImage", Picture9, PictureLine1);
   if(Abfuhrkalender ==1)
-    DrawImage("MuellImage", Picture9, PictureLine1);
+    DrawImage("MuellImage", Picture10, PictureLine1);
   return 1;
 }
 // Bit aus einer Datei lesen, ändern und schreiben
@@ -418,7 +428,7 @@ int changePirUse()
 
 int readRscp(int RscpPosition)
 {
-  int ret = BitRead("/mnt/RAMDisk/E3dcGuiCache.txt", RscpPosition,PosMAX);
+  int ret = BitRead("/mnt/RAMDisk/E3dcGuiData.txt", RscpPosition,PosMAX);
   return ret;
 }
 int read100Rscp(int RscpPosition)
@@ -430,6 +440,11 @@ int read100Rscp(int RscpPosition)
     return 0;
   else
     return ret;
+}
+int readRscpWb(int RscpWbPosition)
+{
+  int ret = BitRead("/mnt/RAMDisk/E3dcGuiWbData.txt", RscpWbPosition,PosWbMAX);
+  return ret;
 }
 
 //Lesen der RSCP Daten aus dem RAMDisk
@@ -648,7 +663,7 @@ int piTemp (char* PiTemp)
   fscanf (temperatureFile, "%lf", &T);
   fclose (temperatureFile);
   T /= 1000;
-  snprintf (PiTemp, (size_t)20, "%3.1f 'C", T);
+  snprintf (PiTemp, (size_t)20, "%3.1f %cC", T, 248);
   return T;
 }
 
@@ -693,6 +708,7 @@ int piCPU (char* PiCPU)
 int piIP (char host[24], char* PiIPhost)
 {
   char batch[256], Pihost[128], firstBlock[24];
+  memset(firstBlock, 0x00, sizeof(firstBlock));
 	int firstBlockInt = 0;
   FILE *ipFile;
 	snprintf(batch, (size_t)256, "/sbin/ifconfig %s | grep \"inet \" | cut -d \"t\" -f 2| cut -d \" \" -f 2| cut -d \" \" -f 1| cut -d \".\" -f 1", host);
@@ -720,7 +736,7 @@ int piIP (char host[24], char* PiIPhost)
 int putAktuell(int x, int y)
 {
   char OUT[128];
-  put_string(x, y, "Aktuelle Zeit: ", GREY);
+  put_string(x, y-2, "Aktuelle Zeit: ", GREY);
   time_t timeStamp;
   struct tm *now;
   time( &timeStamp );

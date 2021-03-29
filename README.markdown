@@ -1,5 +1,5 @@
 # E3DC to HomeMatic mit GUI
-[Stand: V1.86 13.02.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.87 29.03.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine HomeMatic Hausautomation von eQ-3 anbinden kannst.
 
@@ -9,6 +9,7 @@ __Daten per RSCP vom E3DC-S10 Speicher abfragen__
 __Daten vom E3DC zur HomeMatic Hausautomation senden__  
 __Daten vom S10 auf dem Display darstellen__  
 __Daten von der HomeMatic auf dem Display darstellen__  
+__Daten der E3DC Wallbox anzeigen oder steuern__  
 __Kleine Hausautomation mit GPIO's__  
 __Wetterinformationen von "OpenWeatherMap"__  
 __Daten einer Grünbeck SC18 anzeigen__  
@@ -171,17 +172,28 @@ Diese Werte werden von der RSCP-Applikation mit ein 15 Minuten Mittelwert gespei
 Die verschiedenen Kurven lassen sich durch einen Tipp auf das Symbol in der Legende ein oder ausblenden. Leider reagiert das Display mit der Software nicht empfindlich genug, somit muss eventuell häufiger gedrückt werden um eine Kurve auszublenden. Für Additional gibt es eine Kurve, für die Wallbox habe ich nichts eingebaut.
 Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können, muss die Maximalleistung in der „parameter.h" mit PowerMax definiert werden. Für Große Anlagen ist diese Grafik nicht geeignet. Die Langzeitwerte sind für 24 Stunden und werden durchlaufend dargestellt. Der 0:00 Uhr Punkt verschiebt sich und wird durch eine Linie gekennzeichnet.
 
-#### 5. Monitor
+#### 5. Wallbox
+`  #define Wallbox                    1`  
+Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kann man per Schalter steuern. Gesteuert werden kann:
+- Ladestrom > maximaler Ladestrom je Phase mit dem das Auto geladen wird.
+- Sonnenmodus > wechseln zwischen Sonnenmode oder Mischbetrieb.
+- Batterie vor Auto > hiermit wird zuvor die Batterie geladen dann erst das Auto. *
+- Batterie zu Auto > hiermit wird freigegeben ob die Batterie entladen werde darf. *
+  * sind abhängig voneinander
+In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).
+__Wichtig__: Ich habe die Funktion nur für die CAN-Bus Walbox getestet, ob die Netzwerk-Wallbox auch funktioniert kann ich nicht testen.
+
+#### 6. Monitor
 `  #define E3DC_S10                    1`  
 <img src="https://s20.postimg.cc/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
 Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts ist für neue Ideen noch Platz, gerne darfst du einen Issue erstellen wenn du wünsche hast!
 
-#### 6. SmartHome
+#### 7. SmartHome
 <img src="https://s20.postimg.cc/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
 Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 oder DHT22 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
 `  #define E3DC_S10                    1` Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine HomeMatic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung, einer für den Batterie-SOC und ein Zeitaktor. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wird wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben. Weiter ist es möglich den Aktoren ein Zeitfenster zu zuweisen. Nur in diesem Fenster schaltet der Aktor ein und zum Ende des Zeitfensters aus, ein gestarteter Aktor mit einer mindest Einschaltzeit läuft noch so lange, bis zum ablauf der Mindestzeit.
 
-#### 7. HomeMatic
+#### 8. HomeMatic
 `  #define Homematic_GUI               1`  
 <img src="https://s20.postimg.cc/z0fw5rehp/Homematic.jpg" alt="HomeMatic">  
 Da es für die HomeMatic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der HomeMatic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.  
@@ -194,7 +206,7 @@ Ich biete den Teil der Software hier gerne an, aber da die auf meine HomeMatic u
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen (`#define Homematic_E3DC       1`).  
 Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Kommentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Dateien `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
-#### 8. Grünbeck softliQ SC18
+#### 9. Grünbeck softliQ SC18
 `  #define Gruenbeck               1`  
 <img src="https://s20.postimg.cc/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
 Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.  
@@ -203,7 +215,7 @@ Weiter ist es möglich die Daten zur HomeMatic zu senden. `#define GruenbeckHM 1
 Es sollten alle Greäte der Serie softliQ von Grünbeck auslesbar sein. Es könnten Probleme bei anderen Geräten entstehen da diese zum Teil 2 Austauscher haben. Es müssten ggf. Anpassungen an der `External/Gruenbeck.h` und an `External/gruenSave.c` der vorgenommen werden.  
 Es ist auch möglich eine Grünbeck __ohne Display__ am Raspberry mit einer HomeMatic zu verbinden. Hierfür müssen an der `parameter.h` und der `External/Gruenbeck.h` die entsprechenden Einstellungen vorgenommen werden. Das `make` muss ausgeführt werden, dann kann die Datei `External/gruenSave` z.B. per crontab in entsprechenden Abständen ausgeführt werden. Mit entsprechenden Systemvariablen und Scripten kann auch in der HomeMatic die Monats und Jahresberechnung vorgenommen werden. Auf wunsch kann ich per PN die Scripte zusenden.
 
-#### 9. Abfuhrkalender
+#### 10. Abfuhrkalender
 `  #define Abfuhrkalender               1`  
 <img src="https://s20.postimg.cc/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
@@ -304,6 +316,7 @@ make GuiMain
 make start   
 make stop   
 make RscpMain   
+make Rscp/RscpWb   
 make S10history/S10history   
 make Frame/touchtest
 ```
@@ -451,10 +464,6 @@ network={
 ```
 Bitte nicht vergessen, dass nur der Pi3 W-Lan on Board hat, bei einem älteren Pi musst du entweder per Kabel oder per W-Lan USB-Stick die Netzwerkverbindung herstellen.
 
-## RSCP to Loxone
-Es besteht eine Möglichkeit meine Software auch für Loxone statt für Homematic zu nutzen. Dies ist in einer separaten Anleitung beschrieben.
-[Loxone README](https://github.com/nischram/E3dcGui/blob/master/Loxone)
-
 ## Quelle
 
 #### RSCP
@@ -472,6 +481,7 @@ Bildschirmfotos aus dem E3DC Portal
 
 ## Changelog
 #### Wichtige Ergänzungen
+V1.87 29.03.2021 Wallbox anzeigen o. steuern
 V1.81 08.09.2020 WetterGui auf OpenWeatherMap.org umgestellt
 V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden  
 V1.61 11.10.2017 LED-Statusanzeige integriert  
@@ -484,31 +494,10 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 #### Versionen
-V1.86 13.02.2021 Fehlerkorrektur für neuere Rasbain Versionen [Issue #48](https://github.com/nischram/E3dcGui/issues/48)
-- Issue #48
-- Anpassungen an der README
-- Anpassungen an der STEPBYSTEP
-- Anpassungen GuiMain.c Zeitstempel
-
-V1.85 30.01.2021 Fehlerkorrektur bei der Wetteranzeige [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
-- Issue #47
-
-V1.84 28.01.2021 OpenWeatherMap OneCall Anpassung [Issue #47](https://github.com/nischram/E3dcGui/issues/47)
-- Issue #47
-
-V1.83 04.12.2020 [Issue #42](https://github.com/nischram/E3dcGui/issues/42)
-- Fehlerbehebung für Issue #42
-- printsendHM auf float geändert für Issue #42
-
-V1.82 03.11.2020 Anpassungen für WiringPi [Issue #38](https://github.com/nischram/E3dcGui/issues/38)
-- Issue #38
-- WiringPi Server angepasst
-
-V1.81 08.09.2020 Wetteranzeige erneuert [Issue #36](https://github.com/nischram/E3dcGui/issues/36)
-- Issue #36 Wetter-API umgestellt auf OpenWeatherMap.org    
+V1.87 29.03.2021 Wallbox anzeigen o. steuern / Fehlerbehebung
+- Wallbox-Menü zur Anzeige und Steuerung
+- Fehlerkorrektur im Setup-Menü
+- kleine Fehlerkorrekturen
 - Changelog archiviert  
-
-V1.80 24.08.2020 Anpassung für Schriftgröße [Issue #35](https://github.com/nischram/E3dcGui/issues/35)
-- Issue #35 Mit einem Schalter in der parameter.h kann die Größe eingesgellt werden  
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

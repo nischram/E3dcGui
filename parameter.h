@@ -243,7 +243,7 @@ Es kann aber zu darstellungsfehler kommen.
 
 //#######################################
 // Status-LED's für E3DC Informationen
-#define E3DC_LED                    1                       // 1= LED's aktiv, bearbeiten der Parameter External/LedMain.c und git clone https://github.com/jgarff/rpi_ws281x.git nötig 0=deaktiv
+#define E3DC_LED                    0                       // 1= LED's aktiv, bearbeiten der Parameter External/LedMain.c und git clone https://github.com/jgarff/rpi_ws281x.git nötig 0=deaktiv
 
 //#######################################
 

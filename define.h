@@ -20,6 +20,7 @@
 #define ScreenMuell                 6    //!!
 #define ScreenSmart                 7    //!!
 #define ScreenGB                    8    //!!
+#define ScreenWallbox               9    //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!
@@ -100,6 +101,30 @@
 #define PosWBSolar900               9    //!!
 #define PosMAX900                   10   //!!
 
+#define PosWbState                  0    //!!
+#define PosWbActPhases              1    //!!
+#define PosWbMode                   2    //!!
+#define PosWbReady                  3    //!!
+#define PosWbCharge                 4    //!!
+#define PosWbLocked                 5    //!!
+#define PosWbConnect                6    //!!
+#define PosWbSOn                    7    //!!
+#define PosWbSConnect               8    //!!
+#define PosWbSLocked                9     //!!
+#define PosWbLED_ERR                10    //!!
+#define PosWbLED_SON                11    //!!
+#define PosWbLED_BAT                12    //!!
+#define PosWbSRelais                13    //!!
+#define PosWbRelais16               14    //!!
+#define PosWbRelais32               15    //!!
+#define PosWbUsePhases              16    //!!
+#define PosWbCurrent                17    //!!
+#define PosWbDebug                  18    //!!
+#define PosWbCheckSum               19    //!!
+#define PosWbBtC                    20    //!!
+#define PosWbBbC                    21    //!!
+#define PosWbMAX                    22    //!!
+
 // Berschreibung Grünbeck
 #define PosGB_CONSUMPTION           0    //!!
 #define PosGB_CURRENT_REGENERATION  1    //!!
@@ -175,6 +200,17 @@
 //Screen
 #define T1                          230 //!!
 #define T2                          405 //!!
+#define WB1                         30  //!!
+#define WBCARX                      375 //!!
+#define WBCARY                      199 //!!
+#define WBCURX                      228 //!!
+#define WBCURY                      165 //!!
+#define WBMODEX                     WBCURX       //!!
+#define WBMODEY                     WBCURY  + 55 //!!
+#define WBBTCX                      WBCURX       //!!
+#define WBBTCY                      WBMODEY + 55 //!!
+#define WBBBCX                      WBCURX       //!!
+#define WBBBCY                      WBBTCY  + 55 //!!
 
 //wiringPi
 #define OK                          1   //!!
