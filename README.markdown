@@ -174,13 +174,14 @@ Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können,
 
 #### 5. Wallbox
 `  #define Wallbox                    1`  
+![Wallbox](https://user-images.githubusercontent.com/19279623/112896384-9dd42e80-90de-11eb-9140-25904abe8fb7.jpg)  
 Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kann man per Schalter steuern. Gesteuert werden kann:
 - Ladestrom > maximaler Ladestrom je Phase mit dem das Auto geladen wird.
 - Sonnenmodus > wechseln zwischen Sonnenmode oder Mischbetrieb.
 - Batterie vor Auto > hiermit wird zuvor die Batterie geladen dann erst das Auto. *
-- Batterie zu Auto > hiermit wird freigegeben ob die Batterie entladen werde darf. *
-  * sind abhängig voneinander
-In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).
+- Batterie zu Auto > hiermit wird freigegeben ob die Batterie entladen werde darf. *   
+  *sind abhängig voneinander   
+In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).  
 __Wichtig__: Ich habe die Funktion nur für die CAN-Bus Walbox getestet, ob die Netzwerk-Wallbox auch funktioniert kann ich nicht testen.
 
 #### 6. Monitor
