@@ -33,10 +33,10 @@ Alternativ wenn der Tocuh nicht mitdrehen soll:
 [Bildschirm-Anzeige drehen](https://tutorials-raspberrypi.de/tipps-tricks-faq-zum-offiziellen-7-raspberry-pi-touchscreen/#drehen)
 
 #### StartX deaktivieren
-[Desktop deaktivieren](https://github.com/nischram/E3dcGui#desktop-deaktivieren)
+[Desktop deaktivieren](https://github.com/nischram/E3dcGui/wiki/Pi-Funktionen-deaktivieren)
 
 #### Pi Bildschirmschoner deaktivieren
-[Wichtig Pi Bildschirmschoner deaktivieren](https://github.com/nischram/E3dcGui#wichtig-pi-bildschirmschoner-deaktivieren)
+[Wichtig Pi Bildschirmschoner deaktivieren](https://github.com/nischram/E3dcGui/wiki/Pi-Funktionen-deaktivieren)
 
 #### LED-Statusanzeige
 [https://github.com/jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x)
@@ -46,7 +46,7 @@ Alternativ wenn der Tocuh nicht mitdrehen soll:
 [Aktuelle Uhrzeit aus dem Internet holen](http://logicals.at/de/forum/raspberry-pi/48-aktuelle-uhrzeit-aus-dem-internet-holen)
 
 #### RAMDisk einrichten
-[RAMDisk einrichten](https://github.com/nischram/E3dcGui#ramdisk)
+[RAMDisk einrichten](https://github.com/nischram/E3dcGui/wiki/RAMDisk)
 
 #### WiringPi installieren
 [WiringPi installieren](https://tutorials-raspberrypi.de/wiringpi-installieren-pinbelegung)
@@ -55,10 +55,11 @@ Alternativ wenn der Tocuh nicht mitdrehen soll:
 [XMLLINT installieren](https://jahansyed.co.uk/2016/04/22/how-to-install-xmllint-in-ubuntu/)
 
 #### PIR-Sensor anschließen (optional)
+[Bewegungsmelder](https://github.com/nischram/E3dcGui/wiki/Bewegungsmelder)  
 [PIR-Sensor anschließen](https://tutorials-raspberrypi.de/raspberry-pi-bewegungsmelder-sensor-pir)
 
 #### Vorbereitung am S10
-[RSCP-Passwort setzen](https://github.com/nischram/E3dcGui#vorbereitung-am-s10)
+[RSCP-Passwort setzen](https://github.com/nischram/E3dcGui#am-s10)
 
 #### E3dcGui kopieren
 [Applikation auf den Raspberry kopieren](https://github.com/nischram/E3dcGui#applikation-auf-den-raspberry-kopieren)
@@ -67,8 +68,7 @@ Alternativ wenn der Tocuh nicht mitdrehen soll:
 [Einstellungen vornehmen](https://github.com/nischram/E3dcGui#einstellungen-vornehmen)
 
 #### sendEmail einrichten
-[sendEmail einrichten](https://github.com/nischram/E3dcGui#email-senden-installieren-und-aktivieren)   
-[Wichtig Issue#11](https://github.com/nischram/E3dcGui/issues/11)
+[sendEmail einrichten](https://github.com/nischram/E3dcGui/wiki/EMail-Tool)  
 
 #### Applikation kompilieren
 [Kompilieren](https://github.com/nischram/E3dcGui#applikation-kompilieren)

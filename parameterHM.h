@@ -5,7 +5,7 @@ Wenn das Display für HM Daten genutzt wird
 aber die ISE_ID noch nicht angepasst sind,
 wird es zu langen wartezeiten beim lesen der
 Daten (read_HM) kommen. Damit diese Wartezeiten
-unterbunden werden, alle ISE_ID au "0" setzen!
+unterbunden werden, alle ISE_ID auf "0" setzen!
 Es kann aber zu darstellungsfehler kommen.
 */
 // Weitere Parameter zur Homematic bitte in der HMparameter.h definieren
