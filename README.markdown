@@ -203,7 +203,7 @@ Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kan
   *sind abhängig voneinander  
 
 In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).  
-__Wichtig__: Ich habe die Funktion nur für die CAN-Bus Walbox getestet, ob die Netzwerk-Wallbox auch funktioniert kann ich nicht testen.
+Ich habe die Funktion an meiner E3DC Walbox mit CAN-Bus getestet, die E3DC Easy Connect Wallbox mit Netzwerk hat Thomas (Issue #55) getestet.
 
 ### 6. Monitor
 `  #define E3DC_S10                    1`  
