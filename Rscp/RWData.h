@@ -3,6 +3,7 @@
 
 void printsendHM(int CounterHM, int id, float value);
 void printsendCharHM(int CounterHM, int id, char value[32]);
+void printsendBitHM(int CounterHM, int id, int Value, int Bit);
 void readWrite900(char *fileName, int NewValue);
 int writeData(char *Path, int Position, int NewValue, int max);
 int makeData(char *Path, int NewValue, int max);

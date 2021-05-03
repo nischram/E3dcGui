@@ -114,18 +114,18 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
     }
     case TAG_INFO_SERIAL_NUMBER: {    // response for TAG_INFO_REQ_SERIAL_NUMBER
       string serialNr = protocol->getValueAsString(response);
-      cout << "Serial-Number is " << serialNr << "\n";
+      cout << "Send to Serial-Number " << serialNr << "\n";
       strcpy(TAG_EMS_OUT_SERIAL_NUMBER, serialNr.c_str());
       break;
     }
     case TAG_EMS_SET_BATTERY_TO_CAR_MODE: {    // response for TAG_EMS_REQ_SET_BATTERY_TO_CAR_MODE
       uint8_t BtC = protocol->getValueAsUChar8(response);
-      cout << "Set Battery to Car = " << BtC << "\n";
+      //cout << "Set Battery to Car = " << BtC << "\n";
       break;
     }
     case TAG_EMS_SET_BATTERY_BEFORE_CAR_MODE: {    // response for TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE
       uint8_t BbC = protocol->getValueAsUChar8(response);
-      cout << "Set Battery bevor Car = " << BbC << "\n";
+      //cout << "Set Battery bevor Car = " << BbC << "\n";
       break;
     }
     case TAG_WB_DATA: {        // resposne for TAG_WB_REQ_DATA

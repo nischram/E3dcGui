@@ -662,6 +662,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                             writeRscpWb(PosWbDebug    , WbExt[6]);
                             writeRscpWb(PosWbCheckSum , WbExt[1]+ WbExt[2]+ WbExt[3]+ WbExt[4]+ WbExt[6]);
                             printf("WB0 ALG EXTERN_DATA = ");
+                            printsendHM(CounterHM, TAG_EMS_ISE_WB_PHASES, WbExt[1]);
+                            printsendBitHM(CounterHM, TAG_EMS_ISE_WB_CONNECT, WbExt[2], 8);
+                            printsendBitHM(CounterHM, TAG_EMS_ISE_WB_LOCKED, WbExt[2], 16);
+                            printsendBitHM(CounterHM, TAG_EMS_ISE_WB_CHARGE, WbExt[2], 32);
+                            printsendBitHM(CounterHM, TAG_EMS_ISE_WB_MODE, WbExt[2], 128);
+                            printsendHM(CounterHM, TAG_EMS_ISE_WB_CURRENT, WbExt[3]);
                             for(size_t x = 0; x < sizeof(WbExt); ++x){
                               uint8_t y;
                               y=WbExt[x];

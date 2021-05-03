@@ -5,7 +5,7 @@
 Anleitung zur Anbindung deines S10 Hauskraftwerk von E3DC an deine HomeMatic Hausautomation von eQ-3.
 
 ### Softwareversion
-Meine HomeMatic hat die Firmware 2.27.8 installiert.
+Ich nutze eine RaspbarryMatic, aber ich sehe bislang keine Einschränkungen für alle anderen Versionen.
 
 ### Schnittstelle
 Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet (Zusatz-Software)
@@ -120,6 +120,10 @@ Es ist wichtig, dass alle Variable mit dem Variablentyp „Zahl“ erstellt werd
 Zusätzlich sind noch Variablen wie z.B. Autarky oder Eigenstrom möglich.
 
 In [Issue #30](https://github.com/nischram/E3dcGui/issues/30) habe ich erklärt wie man weitere Variablen in den Quellcode einbauen kann.
+
+### Wallbox einbinden
+Seit der Version V1.89 ist es möglich Werte der Wallbox zur Homematic zu senden oder Parameter in der HM setzen, um die Wallbox zu steuern.
+Hier im Wiki findest du detallierte Informationen dazu: [Wallbox in die Homematic einbinden](https://github.com/nischram/E3dcGui/wiki/Wallbox-in-die-Homematic-einbinden)
 
 ### XML-API einrichten
 Damit der Raspberry Pi die Werte des S10 zur HomeMatic senden kann, benötigt die HomeMatic die Zusatz-Software „XML-API“.

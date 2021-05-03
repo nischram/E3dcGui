@@ -9,6 +9,7 @@ ROOT_START=start
 ROOT_STOP=stop
 ROOT_RM=RscpMain
 ROOT_RB=Rscp/RscpWb
+ROOT_WBCK=Rscp/wbCheckHM
 ROOT_HISTORY=S10history/S10history
 ROOT_TT=Frame/touchtest
 
@@ -32,6 +33,8 @@ $(ROOT_RM): cleanRM
 	$(CXX) -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
 $(ROOT_RB): cleanRB
 	$(CXX) -O3 Rscp/RscpWb.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
+$(ROOT_WBCK): cleanWBCK
+	$(CC) -O1 Rscp/wbCheckHM.c -o $@
 $(ROOT_HISTORY): cleanHISTORY
 	$(CXX) -O3 S10history/S10history.cpp S10history/RscpReader.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
 $(ROOT_TT): cleanTT
@@ -55,6 +58,8 @@ cleanRM:
 		-rm $(ROOT_RM) $(VECTOR)
 cleanRB:
 		-rm $(ROOT_RB) $(VECTOR)
+cleanWBCK:
+		-rm $(ROOT_WBCK) $(VECTOR)
 cleanHISTORY:
 		-rm $(ROOT_HISTORY) $(VECTOR)
 cleanTT:

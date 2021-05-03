@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V1.88 03.04.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.89 03.05.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -10,6 +10,7 @@ __Daten vom E3DC zur Homematic Hausautomation senden__
 __Daten vom S10 auf dem Display darstellen__  
 __Daten von der Homematic auf dem Display darstellen__  
 __Daten der E3DC Wallbox anzeigen oder steuern__  
+__Werte aus der Homematic lesen und an die Wallbox senden__  
 __Kleine Hausautomation mit GPIO's__  
 __Wetterinformationen von "OpenWeatherMap"__  
 __Daten einer Grünbeck SC18 anzeigen__  
@@ -263,6 +264,7 @@ Der Raspberry Pi hat einen eignen Bildschirmschoner und eine Desktopanwendung, d
 
 ## Werte in der Homematic nutzen
 Das Nutzen der Werte in der Homematic, ist in der [Anleitung für Homematic](https://github.com/nischram/E3dcGui/tree/master/Homematic) in dem Ordner Homematic zu finden.
+Die Wallbox-Werte werden an die Homematic gesendet, es können Paremeter abgefragt werden und zur Wallbox gesendet werden.
 
 ## LED Statusanzeige
 Mit RGB-LED's kannst du eine Statusanzeige der E3DC S10 Werte erstellen.  
@@ -384,6 +386,10 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V1.89 03.05.2021 Wallbox Daten an HM senden und auslesen
+- Wallbox-Werte an die HM senden
+- Wallbox-Parameter aus HM lesen und an WB senden
+
 V1.88 03.04.2021 Anleitung überarbeitet  
 
 V1.87 29.03.2021 Wallbox anzeigen o. steuern / Fehlerbehebung

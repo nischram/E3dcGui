@@ -35,13 +35,27 @@
 #define TAG_EMS_ISE_UNIXTIME        38946
 #define sendTime                    0                       // Wenn der Zeitstempel gesendet werden soll =1; wenn die HM diesen Berechnen soll =0
 #define ISE_TIMESTAMP_HM            39619
-//Wenn vorhandene Bitte für Additional (Externe-Quelle) und
-//Wallbox je ein 1, sonst 0 eintragen.
+//Wenn vorhandene Bitte für Additional (Externe-Quelle) ein 1, sonst 0 eintragen.
 #define Additional                  0
 #define TAG_EMS_ISE_POWER_ADD       38877
+//Wenn vorhandene Bitte für die Wallbox ein 1, sonst 0 eintragen.
 #define Wallbox                     0
 #define TAG_EMS_ISE_POWER_WB_ALL    38879
 #define TAG_EMS_ISE_POWER_WB_SOLAR  38880
+#define TAG_EMS_ISE_WB_CURRENT      0                // ISE_ID Maximaler Ladestrom
+#define TAG_EMS_ISE_WB_MODE         0                // ISE_ID Sonnenmodus / Mischmodus
+#define TAG_EMS_ISE_WB_CHARGE       0                // ISE_ID Auto lädt / Auto lädt nicht
+#define TAG_EMS_ISE_WB_LOCKED       0                // ISE_ID verriegelt / nicht verriegelt
+#define TAG_EMS_ISE_WB_CONNECT      0                // ISE_ID Typ2 gesteckt / Typ2 nicht gesteckt
+#define TAG_EMS_ISE_WB_PHASES       0                // ISE_ID Anzahl der Pahsen
+//Wallbox Werte lesen und senden
+#define WALLBOX_SEND                0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte zur Wallbox gesendet
+#define WALLBOX_INTERVAL            15               // Abfrageintervall in Sekunden, Empfehlung = 15 (nicht keliner, nur größer)
+#define ISE_WB_SEND_NOW             0                // ISE_ID Anvorderung fürs senden
+#define ISE_WB_SEND_CURRENT         0                // ISE_ID Maximaler Ladestrom
+#define ISE_WB_SEND_MODE            0                // ISE_ID Sonnenmodus / Mischmodus
+#define ISE_WB_SEND_BTC             0                // ISE_ID Batterie vor Auto (Priorität)
+#define ISE_WB_SEND_BBC             0                // ISE_ID Batterie nach Auto (Batteriestrom erlauben)
 //Soll Seriennummer, Autarky und Eigenstrom auch zur Homematic gesendet werden
 // Ja = 1, Nien = 0, Wenn Ja bitte ISE_ID eingeben
 #define Seriennummer                0

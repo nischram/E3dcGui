@@ -582,7 +582,7 @@ int madeBy(char *OUT){
 //Killen der Applikationen
 int killall()
 {
-  system("killall -9 GuiMain RscpMain watchdog");
+  system("killall -9 GuiMain RscpMain watchdog wbCheckHM");
   system("sudo killall LedMain");
 }
 

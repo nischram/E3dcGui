@@ -69,6 +69,9 @@ int main(){
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
 	int wbCheckSumOld = 0;
+	char wallboxSendNow[20], wallboxSendMode[20], wallboxSendCurrent[20], wallboxSendBtC[20], wallboxSendBbC[20];
+	char WbMode[24],WbBtC[24],WbBbC[24];
+	int WbCurrent, wallboxSendTime = 0;
 
 	screenOn();
 	writeScreen(ScreenCounter, 0);
@@ -1028,6 +1031,30 @@ int main(){
 			madeBy(OUT);
 			put_string(325,454, OUT, BLUE);
 		}
+//####################################################
+	//Wallbox HM read and senden
+	if(WALLBOX_SEND == 1){
+		if( time(NULL) - wallboxSendTime >= WALLBOX_INTERVAL){
+			wallboxSendTime = time(NULL);
+			read_HM(ISE_WB_SEND_NOW, 4, wallboxSendNow);
+			if (strcmp ("true",wallboxSendNow) == 0){
+				read_HM(ISE_WB_SEND_MODE, 4, wallboxSendMode);
+				read_HM(ISE_WB_SEND_CURRENT, 2, wallboxSendCurrent);
+				read_HM(ISE_WB_SEND_BTC, 4, wallboxSendBtC);
+				read_HM(ISE_WB_SEND_BBC, 4, wallboxSendBbC);
+				if(strcmp ("true",wallboxSendMode) == 0) snprintf (WbMode, (size_t)128, "-sonne");
+				else snprintf (WbMode, (size_t)128, "-mix");
+				WbCurrent = atoi(wallboxSendCurrent);
+				if(strcmp ("true",wallboxSendBtC) == 0) snprintf (WbBtC, (size_t)128, "-BtCyes");
+				else snprintf (WbBtC, (size_t)128, "-BtCno");
+				if(strcmp ("true",wallboxSendBbC) == 0) snprintf (WbBbC, (size_t)128, "-BbCyes");
+				else snprintf (WbBbC, (size_t)128, "-BbCno");
+				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s", WbMode, WbCurrent, WbBtC, WbBbC);
+				system(OUT);
+				printsendHM(ISE_WB_SEND_NOW, "false");
+			}
+		}
+	}
 //####################################################
 	//Bildschirmschoner
 		Screen[ScreenSaver] = readScreen(ScreenSaver);      //Zählerdatei für den Bildschirmschoner auslesen

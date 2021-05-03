@@ -41,6 +41,9 @@ int main()
   else{
     system("/home/pi/E3dcGui/RscpMain &");
     system("/home/pi/E3dcGui/watchdog &");
+    if(WALLBOX_SEND == 1){
+      system("/home/pi/E3dcGui/Rscp/wbCheckHM &");
+    }
     if (E3DC_LED == 1){
       system("sudo /home/pi/E3dcGui/External/LedMain &");
     }
