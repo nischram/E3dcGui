@@ -34,6 +34,9 @@ In der Applikation werden die Daten vom S10 mit der RSCP-Schnittstelle vom S10 a
 Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand, werden auf Wunsch per CURL-Befehl an die XML-API Schnittstelle der Homematic gesendet.  
 Die Meisten Funktionen meiner Software sind für das 7" Display geschrieben.
 
+### Einbindung Wallbox
+Neben der der grafischen Darstellung, können die Werte der Wallbox auch an die Homematic gesendet werden. Das Senden der Daten kann mit oder auch ohne Display erfolgen. Es besteht auch die Möglich Parameter in der HM einzutragen und diese werden dann in der Wallbox gesetzt. So ist die Steuerung der Wallbox nicht nur per Display sondern auch per Homematic möglich. Für weiter Informationen siehe im Wiki: [Wallbox in die Homematic einbinden](https://github.com/nischram/E3dcGui/wiki/Wallbox-in-die-Homematic-einbinden)
+
 ## Vorbereitung
 ### am S10  
 Am S10 muss im „Hauptmenü“ unter „Einstellungen“ > "Personalisieren" ein RSCP-Passwort gesetzt werden. Das gesetzte Passwort wird später in den Parametern der Software benötigt.
