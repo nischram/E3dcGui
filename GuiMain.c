@@ -64,7 +64,7 @@ int main(){
 	int rawX, rawY, rawPressure, scaledX, scaledY;
 
 	int GuiTime, change = 0, changeStop = 0, saveGBstate = 0;
-	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64], gruenTime[24];
+	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64], gruenTime[24], changepf[20];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
