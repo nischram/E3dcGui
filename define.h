@@ -55,6 +55,9 @@
 #define false                       0    //!!
 #define ScreenOn                    1    //!!
 #define ScreenOff                   0    //!!
+#define NO                          0    //!!
+#define WATT                        1    //!!
+#define PERCENT                     2    //!!
 
 #define PictureLine1                12   //!!
 #define PictureW                    75   //!!

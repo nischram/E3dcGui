@@ -258,6 +258,78 @@ int drawMainScreen()
     DrawImage("MuellImage", Picture10, PictureLine1);
   return 1;
 }
+// Zahlen darstellen
+int drawNo(int x, int y, int i, int col){
+  char pic[20], color[6];
+  if      (col == BLACK)snprintf (color, (size_t)6, "sw");
+  else if (col == CYAN)snprintf (color, (size_t)6, "cy");
+  else if (col == BLUE)snprintf (color, (size_t)6, "bl");
+  else if (col == GREEN)snprintf (color, (size_t)6, "gr");
+  else if (col == ORANGE)snprintf (color, (size_t)6, "or");
+  if      (i == 0)snprintf (pic, (size_t)20, "Zahlen/z0%s", color);
+  else if (i == 1)snprintf (pic, (size_t)20, "Zahlen/z1%s", color);
+  else if (i == 2)snprintf (pic, (size_t)20, "Zahlen/z2%s", color);
+  else if (i == 3)snprintf (pic, (size_t)20, "Zahlen/z3%s", color);
+  else if (i == 4)snprintf (pic, (size_t)20, "Zahlen/z4%s", color);
+  else if (i == 5)snprintf (pic, (size_t)20, "Zahlen/z5%s", color);
+  else if (i == 6)snprintf (pic, (size_t)20, "Zahlen/z6%s", color);
+  else if (i == 7)snprintf (pic, (size_t)20, "Zahlen/z7%s", color);
+  else if (i == 8)snprintf (pic, (size_t)20, "Zahlen/z8%s", color);
+  else if (i == 9)snprintf (pic, (size_t)20, "Zahlen/z9%s", color);
+  DrawImage(pic, x, y);
+  return i;
+}
+int drawNumber(int x, int y, int input, int typ, int col){
+  char pic[20], color[6];
+  int num = 0;
+  if      (col == BLACK)snprintf (color, (size_t)6, "sw");
+  else if (col == CYAN)snprintf (color, (size_t)6, "cy");
+  else if (col == BLUE)snprintf (color, (size_t)6, "bl");
+  else if (col == GREEN)snprintf (color, (size_t)6, "gr");
+  else if (col == ORANGE)snprintf (color, (size_t)6, "or");
+  if(typ == WATT){
+    int a = input / 10000;
+    if(a > 0){
+      drawNo(x,y,a,col);
+      num = 1;
+    }
+    else DrawImage("Zahlen/white", x, y);
+    x = x + 12;
+    input = input - a * 10000;
+    int b = input / 1000;
+    if(b > 0 || num == 1){
+      drawNo(x,y,b,col);
+      num = 1;
+    }
+    else DrawImage("Zahlen/white", x, y);
+    x = x + 12;
+    input = input - b * 1000;
+  }
+  int c = input / 100;
+  if(c > 0 || num == 1){
+    drawNo(x,y,c,col);
+    num = 1;
+  }
+  else DrawImage("Zahlen/white", x, y);
+  x = x + 12;
+  input = input - c * 100;
+  int d = input / 10;
+  if(d > 0 || num == 1){
+    drawNo(x,y,d,col);
+    num = 1;
+  }
+  else DrawImage("Zahlen/white", x, y);
+  x = x + 12;
+  input = input - d * 10;
+  int e = input ;
+  drawNo(x,y,e,col);
+  x = x + 14;
+  if (typ == WATT)  snprintf (pic, (size_t)20, "Zahlen/watt%s", color);
+  else if (typ == PERCENT)  snprintf (pic, (size_t)20, "Zahlen/percent%s", color);
+  else if (typ == NO)  snprintf (pic, (size_t)20, "Zahlen/white", color);
+  DrawImage(pic, x, y);
+  return x + 22;
+}
 // Bit aus einer Datei lesen, ändern und schreiben
 int BitChange(char *filePath, int Position, int max)
 {

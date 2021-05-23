@@ -165,9 +165,11 @@ int main(){
 						DrawImage("PviImage", 40, 90);
 						int pmAktivPhases = readRscp(PosPMPhases);
 						DrawNetImage(640, 90, pmAktivPhases);              //Einfügen der Grafik für NetImage oder NetImageOff je nach Status der Phasen am LM in der Frame/DrawNetImage.h
-						DrawImage("BatImage", 50, 318);
+						DrawImage("BatImage", 60, 318);
 						DrawImage("HomeImage", 640, 340);
 						DrawImage("S10Image", 270, 110);
+						DrawImage("Eigenstrom", 320, 270);
+						DrawImage("Autarkie", 465, 270);
 						if(Additional == 1)
 							DrawImage("ExtImage", 40, 220);
 						if(Wallbox == 1){
@@ -200,13 +202,11 @@ int main(){
 				if(screenState == ScreenOn){
 					//Bildwechsel für > > >
 					if(changeStop == 0){
-						if(change == 1){
-							change = 0;
-						}
-						else{
-							change = 1;
-						}
+						change ++;
+						if(change > 3)change = 1;
+						snprintf (changepf, (size_t)100, "Zahlen/pf%i", change);
 					}
+					else snprintf (changepf, (size_t)100, "Zahlen/pf0");
 					//Programm-Start
 					drawOutput(340,100,140,12, serialnumber, GREY);
 					//PVI
@@ -218,18 +218,14 @@ int main(){
 					snprintf (OUT, (size_t)100, "%i W", TAG_PVI);
 					if(TAG_PVIState >= 1){
 						if(TAG_PVI > 50)
-							drawOutputRGB(190,135,80,12, OUT, 225,122,34);
+							drawNumber(160, 115, TAG_PVI, WATT, ORANGE);
 						else
-							drawOutput(190,135,80,12, OUT, GREY);
-						if(TAG_PVI > 0){
-							if(change == 1)
-								drawOutput(190,115,80,12, "> > >",GREY);
-							else
-								drawOutput(190,115,80,12, " > > ",GREY);
-						}
+							drawNumber(160, 115, TAG_PVI, WATT, BLACK);
+						if(TAG_PVI > 0)DrawImage(changepf, 180, 140);
+						else DrawImage("Zahlen/pf0", 180, 140);
 					}
 					else
-						drawOutput(190,135,80,12, "PVI-DOWN", RED);
+						drawOutput(160,115,80,12, "PVI-DOWN", RED);
 					//Grid
 					int TAG_Grid = readRscp(PosGrid);
 					int TAG_PMState = readRscp(PosPMState);
@@ -239,100 +235,75 @@ int main(){
 					if(TAG_PMState >= 1){
 						if(TAG_Grid < 0){
 							TAG_Grid = TAG_Grid * -1;
-							snprintf (OUT, (size_t)100, "%i W", TAG_Grid);
-							drawOutput(570,135,80,12, OUT, CYAN);
 							if (TAG_Grid > 15){
-								if(change == 1)
-									drawOutput(570,115,80,12, "> > >",GREY);
-								else
-									drawOutput(570,115,80,12, " > > ",GREY);
+								drawNumber(550, 115, TAG_Grid, WATT, CYAN);
+								DrawImage(changepf, 570, 140);
 							}
-							else
-								drawOutput(570,135,80,12, OUT, LIGHT_BLUE);
+							else {
+								drawNumber(550, 115, TAG_Grid, WATT, GREEN);
+								DrawImage("Zahlen/pf0", 570, 140);
+
+							}
 						}
 						else{
-							snprintf (OUT, (size_t)100, "%i W", TAG_Grid);
-							drawOutput(570,135,80,12, OUT, BLUE);
-							if (TAG_Grid > 5){
-								if(change == 1)
-									drawOutput(570,115,80,12, "< < <",GREY);
-								else
-									drawOutput(570,115,80,12, " < < ",GREY);
+							if (TAG_Grid > 15){
+								drawNumber(550, 115, TAG_Grid, WATT, BLUE);
+								snprintf (OUT, (size_t)100, "%sn", changepf);
+								DrawImage(OUT, 570, 140);
 							}
-							else
-								drawOutput(570,135,80,12, OUT, GREEN);
+							else{
+								drawNumber(550, 115, TAG_Grid, WATT, GREEN);
+								DrawImage("Zahlen/pf0", 570, 140);
+							}
 						}
 					}
 					else
-						drawOutput(570,135,80,12, "LM-DOWN", RED);
+						drawOutput(550,115,80,12, "LM-DOWN", RED);
 					//Home
 					int TAG_Home = readRscp(PosHome);
 					DEBUG("Home ");
 					DEBUGint(TAG_Home);
-					snprintf (OUT, (size_t)100, "%i W", TAG_Home);
-					drawOutput(570,360,80,12, OUT, GREY);
-					if(change == 1)
-						drawOutput(570,380,80,12,"> > >", GREY);
-					else
-						drawOutput(570,380,80,12," > > ", GREY);
+					drawNumber(550, 360, TAG_Home, WATT, 0);
+					DrawImage(changepf, 570, 385);
 					//Battery
 					int TAG_Bat = readRscp(PosBat);
 					DEBUG("Bat ");
 					DEBUGint(TAG_Bat);
 					if(TAG_Bat < 0){
 						TAG_Bat = TAG_Bat * -1;
-						snprintf (OUT, (size_t)100, "%i W", TAG_Bat);
-						drawOutput(190,360,80,12, OUT, GREY);
-						if(change == 1)
-							drawOutput(190,380,80,12,"> > >",GREY);
-						else
-							drawOutput(190,380,80,12," > > ",GREY);
+						DrawImage(changepf, 180, 385);
 					}
 					else{
-						snprintf (OUT, (size_t)100, "%i W", TAG_Bat);
-						drawOutput(190,360,80,12, OUT, GREY);
 						if(TAG_Bat > 0){
-							if(change == 1)
-								drawOutput(190,380,80,12,"< < <", GREY);
-							else
-								drawOutput(190,380,80,12," < < ", GREY);
+							snprintf (OUT, (size_t)100, "%sn", changepf);
+							DrawImage(OUT, 180, 385);
 						}
+						else DrawImage("Zahlen/pf0", 180, 385);
 					}
+					drawNumber(160, 360, TAG_Bat, WATT, BLACK);
 					//Additional
 					if(Additional == 1){
 						int TAG_ADD = readRscp(PosADD);
-						snprintf (OUT, (size_t)100, "%i W", TAG_ADD);
-						drawOutput(190,248,60,12, OUT, GREY);
-						if(TAG_ADD > 0){
-							if(change == 1)
-								drawOutput(190,236,60,12,"> > >",GREY);
-							else
-								drawOutput(190,236,60,12," > > ",GREY);
-						}
+						drawNumber(160, 236, TAG_ADD, WATT, BLACK);
+						if(TAG_ADD > 15) DrawImage(changepf, 180, 261);
+						else DrawImage("Zahlen/pf0", 180, 261);
 					}
 					//Wallbox
 					if(Wallbox == 1){
 						int TAG_WbAll = readRscp(PosWbAll);
 						int TAG_WbSolar = readRscp(PosWbSolar);
-						if(TAG_WbAll > 1){
-							if(change == 1)
-								drawOutput(570,236,60,12,"> > >",GREY);
-							else
-								drawOutput(570,236,60,12," > > ",GREY);
-						}
-						if(TAG_WbSolar > 0){
-						 snprintf (OUT, (size_t)100, "%i W", TAG_WbAll);
-						 drawOutput(570,248,60,12, OUT, GREY);
-						 put_string(570,258,"All",GREY);
-						 snprintf (OUT, (size_t)100, "%i W", TAG_WbSolar);
-						 drawOutputRGB(570,224,60,12, OUT, 225, 122, 34);
-						 put_stringRGB(570,214,"Solar", 225, 122, 34);
-						}
+						if(TAG_WbAll > 15) DrawImage(changepf, 570, 261);
+						else DrawImage("Zahlen/pf0", 570, 261);
+						//if(TAG_WbSolar > 15){
+							drawNumber(550, 236, TAG_WbAll, WATT, BLACK);
+							//put_string(570,224,"All",GREY);
+							drawNumber(550, 276, TAG_WbSolar, WATT, ORANGE);
+							//put_stringRGB(570,296,"Solar", 225, 122, 34);
+					/*	}
 						else{
-							snprintf (OUT, (size_t)100, "%i W", TAG_WbAll);
-							drawOutput(570,248,60,12, OUT, GREY);
-							put_string(570,258,"All",GREY);
-						}
+							drawNumber(550, 236, TAG_WbAll, WATT, BLACK);
+							put_string(570,224,"All",GREY);
+						}*/
 					}
 					//SOC
 					int TAG_SOC = read100Rscp(PosSOC);
@@ -342,9 +313,10 @@ int main(){
 					int TAG_BatState = readRscp(PosBatState);
 					if(TAG_BatState >= 1){
 						int SOCx = TAG_SOC * 0.82;
-						drawSquare(74,348,48,82,WHITE);
-						drawSquare(74,348+82-SOCx,48,SOCx,BLUE);
-						drawOutput(80,440,50,12, OUT, GREY);
+						drawSquare(84,348,48,82,WHITE);
+						drawSquare(84,348+82-SOCx,48,SOCx,BLUE);
+						drawNumber(80, 440, TAG_SOC, PERCENT, BLUE);
+
 					}
 					else{
 						drawOutput(80,440,50,12,"OFF",RED);
@@ -356,10 +328,7 @@ int main(){
 					int Autarkyx = 2 * TAG_Autarky;
 					drawSquare(405,366-200,60,200-Autarkyx,WHITE);
 					drawSquare(405,366-Autarkyx,60,Autarkyx,GREEN);
-					snprintf (OUT, (size_t)100, "%i %%", TAG_Autarky);
-					drawOutput(420,380,45,12, OUT, GREY);
-					snprintf (OUT, (size_t)100, "Autarkie");
-					put_string(420,392,OUT,GREY);
+					drawNumber(405, 140, TAG_Autarky, PERCENT, BLACK);
 					//SelfConsumption
 					int TAG_SelfCon = read100Rscp(PosSelfCon);
 					DEBUG("SelfCon ");
@@ -367,10 +336,7 @@ int main(){
 					int SelfConx = 2 * TAG_SelfCon;
 					drawSquare(340,366-200,60,200-SelfConx,WHITE);
 					drawSquare(340,366-SelfConx,60,SelfConx,LTGREY);
-					snprintf (OUT, (size_t)100, "%i %%", TAG_SelfCon);
-					drawOutput(350,380,45,12, OUT, GREY);
-					snprintf (OUT, (size_t)100, "Eigenstrom");
-					put_string(310,392,OUT,GREY);
+					drawNumber(340, 140, TAG_SelfCon, PERCENT, BLACK);
 					//HistoryValues
 					if(counter == 0 && Screen[ScreenHistory] > 0 && historyAktiv == 1){
 						float historyPV = readHistory(dataPV, Screen[ScreenHistory]);
@@ -610,18 +576,24 @@ int main(){
 							DrawImage("Switch/Off", WBBBCX, WBBBCY);
 						put_string(WBBBCX-23,WBBBCY+33,"Batterie vor Auto",GREY);
 					}
+					int x;
+					if(TAG_WbSolar > 200 && WbGrid < 200){
+						x = drawNumber(390, 270, TAG_WbAll, WATT, GREEN);
+						DrawImage("Wallbox/Autogr", x, 270);
+					}
+					else if(TAG_WbSolar < 200 && WbGrid > 200){
+						x = drawNumber(390, 270, TAG_WbAll, WATT, ORANGE);
+						DrawImage("Wallbox/Autoor", x, 270);
+					}
+					else{
+						x = drawNumber(390, 270, TAG_WbAll, WATT, BLACK);
+						DrawImage("Wallbox/Autosw", x, 270);
+					}
 
-					snprintf (OUT, (size_t)100, "%5d W Auto", TAG_WbAll);
-					if(TAG_WbSolar > 200 && WbGrid < 200)
-						drawOutput(400,288,120,12, OUT, GREEN);
-					else if(TAG_WbSolar < 200 && WbGrid > 200)
-						drawOutputRGB(400,288,120,12, OUT, 225, 122, 34);
-					else
-						drawOutput(400,288,120,12, OUT, GREY);
-					snprintf (OUT, (size_t)100, "%5d W Netz", WbGrid);
-					drawOutputRGB(400,256,120,12, OUT, 34, 122, 225);
-					snprintf (OUT, (size_t)100, "%5d W Solar", TAG_WbSolar);
-					drawOutput(400,272,120,12, OUT, GREEN);
+					x = drawNumber(390, 220, WbGrid, WATT, BLUE);
+					DrawImage("Wallbox/Netzbl", x, 220);
+					x = drawNumber(390, 245, TAG_WbSolar, WATT, ORANGE);
+					DrawImage("Wallbox/Solaror", x, 245);
 					wbCheckSumOld = readRscpWb(PosWbCheckSum);
 				}
 				break;
@@ -971,17 +943,17 @@ int main(){
 	//Time
 		int screenState = readScreen(ScreenState);
 		if(GuiTime == RscpTime && E3DC_S10 == 1 && screenState == ScreenOn){
-			put_string(20, 454, "Letzter Zeitstempel: ", GREY);
+			put_string(330, 454, "Letzter Zeitstempel: ", GREY);
 			int AktuallTime = time(NULL);
 			int TAG_UnixTime = readUnixtime(UnixtimeE3dc);
 			int DiffTime = AktuallTime - TAG_UnixTime;
 			snprintf (OUT, (size_t)100, "%s %s", TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME);
 			if(DiffTime > 180){
-				drawOutput(190,456,170,12, OUT, RED);
+				drawOutput(500,456,170,12, OUT, RED);
 				changeStop = 1;
 			}
 			else{
-				drawOutput(190,456,170,12, OUT, GREEN);
+				drawOutput(500,456,170,12, OUT, GREEN);
 				changeStop = 0;
 			}
 			if(E3DC_S10 == 1 && counter == 0 && Screen[ScreenHistory] > 0 && screenState == ScreenOn && screenChange ==	ScreenAktuell){

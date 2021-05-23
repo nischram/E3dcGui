@@ -176,14 +176,14 @@ int DrawImage(char* fileName, int posx, int posy)
 		// read the image file
     int ret = read_ppm(Path, &image);
     if (ret != 0) {
-        printf("Reading image failed. errno = %i\n",ret);
+        //printf("Reading image failed. errno = %i\n",ret);
         return ret;
     }
 
     // Open the file for reading and writing
     fbfd = open(framebuffer_File, O_RDWR);
     if (fbfd == -1) {
-      printf("Error: cannot open framebuffer device.\n");
+      //printf("Error: cannot open framebuffer device.\n");
       return(1);
     }
 
@@ -192,7 +192,7 @@ int DrawImage(char* fileName, int posx, int posy)
 
     // Get variable screen information
     if (ioctl(fbfd, FBIOGET_VSCREENINFO, &var)){
-      printf("Error reading variable information.\n");
+      //printf("Error reading variable information.\n");
 		}
 
     // Store for reset (copy var to var_orig)
@@ -200,7 +200,7 @@ int DrawImage(char* fileName, int posx, int posy)
 
     // Get fixed screen information
     if (ioctl(fbfd, FBIOGET_FSCREENINFO, &fix)){
-      printf("Error reading fixed information.\n");
+      //printf("Error reading fixed information.\n");
 		}
     //page_size = fix.line_length * var.yres;
 
@@ -219,12 +219,12 @@ int DrawImage(char* fileName, int posx, int posy)
               0);
 
     if ((int)fbpI == -1) {
-        printf("Failed to mmap.\n");
+        //printf("Failed to mmap.\n");
     }
     else {
         // draw...
         draw(&image, posx, posy);
-				printf("Draw %s Ok\n",fileName);
+				//printf("Draw %s Ok\n",fileName);
     }
     cleanup();
     return 0;

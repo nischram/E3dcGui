@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V1.89 03.05.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.90 23.05.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -184,8 +184,8 @@ sudo apt-get install libcurl4-openssl-dev
 
 ### 3. Aktuelle Werte des S10
 `  #define E3DC_S10                    1 `  
-<img src="https://s20.postimg.cc/7m0rhl63h/Aktuelle_Werte.jpg" alt="Aktuelle_Werte">  
-Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhythmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`
+<img src="https://user-images.githubusercontent.com/19279623/119260233-2ac4d100-bbd2-11eb-9d6a-6db5259b03da.jpg" alt="Aktuelle_Werte">  
+Wenn die Aktuellen Werte des S10 im Display angezeigt werden, wird im Sekundenrhythmus aktualisiert. Sonst kann der Intervall definiert werden `#define SleepTime   1`.  
 Wenn eine externe Quelle (Additional) oder die Wallbox aktiviert sind, wird auch für diese Daten je ein Symbol angezeigt.
 Mit dem Symbol "History Today" können die HistoryValues für den Aktuellen Tag eingeblendet werden, ein weiteres Tippen jetzt auf "History Yesterday" blendet die Energiewerte für den Vortag ein und danach kann mit dem Tippen auf "History Off" die Einblendung abgeschaltet werden. Unter dem Symbol, mit dem man in die nächste Ansicht wechseln kann, wird der Zeitstempel der Daten angezeigt. In der parameter.h kannst du definieren ob du die Abfrage der HistoryValues aktivieren willst (historyAktiv) und in welchem Rhythmus die Daten abgefragt werden sollen (historyDelay).
 
@@ -336,6 +336,7 @@ make start
 make stop   
 make RscpMain   
 make Rscp/RscpWb   
+make Rscp/wbCheckHM   
 make S10history/S10history   
 make Frame/touchtest
 ```
@@ -374,6 +375,10 @@ Homematic-Forum: [Anbindung an Stromspeicher E3DC](https://homematic-forum.de/fo
 ### Grafiken
 Bildschirmfotos aus dem E3DC Portal
 
+## Ideen
+Hier eine tolle Idee das Raspberry-Display in die Wand einzulasse, so dass es bündig aufliegt.  
+[https://christian-bleser.de/raspberry-pi-touch-display-wandeinbau/](https://christian-bleser.de/raspberry-pi-touch-display-wandeinbau/)  
+
 ## Changelog
 ### Wichtige Ergänzungen
 V1.87 29.03.2021 Wallbox anzeigen o. steuern  
@@ -389,6 +394,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V1.90 23.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Schriftgröße der Leistungswerte
+- Für Issue #58 Schriftgöße angepasset
+
 V1.89 03.05.2021 Wallbox Daten an HM senden und auslesen
 - Wallbox-Werte an die HM senden
 - Wallbox-Parameter aus HM lesen und an WB senden
