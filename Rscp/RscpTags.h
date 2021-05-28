@@ -696,4 +696,16 @@
 #define TAG_WB_REQ_PARAM_1                                  	0x0E04101B
 #define TAG_WB_RSP_PARAM_1                                  	0x0E84101B
 
+#define TAG_SE_REQ_SET_EP_RESERVE                             0x1B000010
+#define TAG_SE_REQ_EP_RESERVE                                 0x1B000009
+#define TAG_SE_EP_RESERVE                                     0x1B800009
+#define TAG_SE_PARAM_INDEX                                    0x1B040000
+#define TAG_SE_PARAM_EP_RESERVE                               0x1B040023
+#define TAG_SE_PARAM_EP_RESERVE_W                             0x1B040033
+#define TAG_SE_PARAM_EP_RESERVE_MAX_W                         0x1B040034
+#define TAG_SE_PARAM_TIME_LAST_EMPTY                          0x1B040025
+#define TAG_SE_PARAM_TIME_LAST_FULL                           0x1B040024
+#define TAG_SE_PARAM_LAST_SOC                                 0x1B040026
+#define TAG_SE_PARAM_INT                                      0x1B040011
+
 #endif

@@ -294,16 +294,8 @@ int main(){
 						int TAG_WbSolar = readRscp(PosWbSolar);
 						if(TAG_WbAll > 15) DrawImage(changepf, 570, 261);
 						else DrawImage("Zahlen/pf0", 570, 261);
-						//if(TAG_WbSolar > 15){
-							drawNumber(550, 236, TAG_WbAll, WATT, BLACK);
-							//put_string(570,224,"All",GREY);
-							drawNumber(550, 276, TAG_WbSolar, WATT, ORANGE);
-							//put_stringRGB(570,296,"Solar", 225, 122, 34);
-					/*	}
-						else{
-							drawNumber(550, 236, TAG_WbAll, WATT, BLACK);
-							put_string(570,224,"All",GREY);
-						}*/
+						drawNumber(550, 236, TAG_WbAll, WATT, BLACK);
+						drawNumber(550, 276, TAG_WbSolar, WATT, ORANGE);
 					}
 					//SOC
 					int TAG_SOC = read100Rscp(PosSOC);
@@ -313,10 +305,15 @@ int main(){
 					int TAG_BatState = readRscp(PosBatState);
 					if(TAG_BatState >= 1){
 						int SOCx = TAG_SOC * 0.82;
+						int EpResx = readRscp(PosEpReserv);
+						if(EpResx > 0){
+							drawSquare(75,348,66,82,GREY);
+							drawSquare(75,348+82-EpResx,66,EpResx,GREEN);
+							drawSquare(75,348+82,66,9,GREEN);
+						}
 						drawSquare(84,348,48,82,WHITE);
 						drawSquare(84,348+82-SOCx,48,SOCx,BLUE);
 						drawNumber(80, 440, TAG_SOC, PERCENT, BLUE);
-
 					}
 					else{
 						drawOutput(80,440,50,12,"OFF",RED);
@@ -575,6 +572,15 @@ int main(){
 						else
 							DrawImage("Switch/Off", WBBBCX, WBBBCY);
 						put_string(WBBBCX-23,WBBBCY+33,"Batterie vor Auto",GREY);
+						if (readRscpWb(PosWbUsePhases)==3)
+							DrawImage("Switch/3Ph", WBPHX, WBPHY);
+						else
+							DrawImage("Switch/1Ph", WBPHX, WBPHY);
+						put_string(WBPHX-23,WBPHY+33,"Erwartete Phasen",GREY);
+						if (readRscpWb(PosWbLED_BAT)==1)
+							DrawImage("Switch/Stop", WBSTOPX, WBSTOPY);
+						else
+							DrawImage("Switch/StopOff", WBSTOPX, WBSTOPY);
 					}
 					int x;
 					if(TAG_WbSolar > 200 && WbGrid < 200){
@@ -612,18 +618,24 @@ int main(){
 						drawCorner(T1,R1-20,160,340,WHITE);
 						drawSquare(T1+3,R1+40,154,277,WHITE);
 						drawCorner(T1+3,R1+40,154,277,GREY);
-						put_string(T1+40, R1+4, "Tracker 1", WHITE);
+						DrawImage("EpReserve/Tracker1", T1+20, R1-5);
 						DrawImage("PV_Modul_aktiv", T1+20, 200);
 						// Grafik für Tracker2
 						drawSquare(T2,R1-20,160,340,GREY);
 						drawCorner(T2,R1-20,160,340,WHITE);
 						drawSquare(T2+3,R1+40,154,277,WHITE);
 						drawCorner(T2+3,R1+40,154,277,GREY);
-						put_string(T2+40, R1+4, "Tracker 2", WHITE);
+						DrawImage("EpReserve/Tracker2", T2+20, R1-5);
 						if (PVI_TRACKER == 2)
 							DrawImage("PV_Modul_aktiv", T2+20, 200);
 						else
 							DrawImage("PV_Modul_deaktiv", T2+20, 200);
+						// Grafik für EP_Reserve
+						drawSquare(EP,R1-20,335,340,GREY);
+						drawCorner(EP,R1-20,335,340,WHITE);
+						drawSquare(EP+3,R1+40,329,277,WHITE);
+						drawCorner(EP+3,R1+40,329,277,GREY);
+						DrawImage("EpReserve/NotRes", EP+60, R1-5);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -631,15 +643,14 @@ int main(){
 					int TAG_PVIState = readRscp(PosPVIState);
 					if(TAG_PVIState >= 1){
 						int TAG_PVIDCP1 = readRscp(PosPVIDCP1);
-						snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP1);
-						drawOutput(T1+50,320,80,12, OUT, GREY);
-						int TAG_PVIDCU1 = readRscp(PosPVIDCU1);
-						snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU1);
-						drawOutput(T1+50,340,80,12,OUT, GREY);
+						drawNumber(T1+30, 320, TAG_PVIDCP1, WATT, BLACK);
+						drawNumber(T1+30, 345, readRscp(PosPVIDCU2), VOLT, BLACK);
 						if(TAG_PVIDCP1 > 0){
-							double TAG_PVIDCI1 = readRscp(PosPVIDCI1);
-							snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI1/100);
-							drawOutput(T1+50,360,80,12, OUT, GREY);
+							double TAG_PVIDCI1 = readRscp(PosPVIDCI2);
+							int pviA = TAG_PVIDCI1/100;
+							int pviDotA = (TAG_PVIDCI1/100 - pviA) * 100;
+							int x = drawNumber(T1+30-5, 370, pviA, DOT, BLACK);
+							drawNumber(x, 370, pviDotA, AMP, BLACK);
 						}
 					}
 					else{
@@ -650,20 +661,50 @@ int main(){
 						//PVI DC Power2
 						if(TAG_PVIState >= 1){
 							int TAG_PVIDCP2 = readRscp(PosPVIDCP2);
-							snprintf (OUT, (size_t)100, "%i W", TAG_PVIDCP2);
-							drawOutput(T2+50, 320,80,12, OUT, GREY);
-							int TAG_PVIDCU2 = readRscp(PosPVIDCU2);
-							snprintf (OUT, (size_t)100, "%i V", TAG_PVIDCU2);
-							drawOutput(T2+50, 340,80,12, OUT, GREY);
+							drawNumber(T2+30, 320, TAG_PVIDCP2, WATT, BLACK);
+							drawNumber(T2+30, 345, readRscp(PosPVIDCU2), VOLT, BLACK);
 							if(TAG_PVIDCP2 > 0){
 								double TAG_PVIDCI2 = readRscp(PosPVIDCI2);
-								snprintf (OUT, (size_t)100, "%2.2f A", TAG_PVIDCI2/100);
-								drawOutput(T2+50, 360,80,12, OUT, GREY);
+								int pviA = TAG_PVIDCI2/100;
+								int pviDotA = (TAG_PVIDCI2/100 - pviA) * 100;
+								int x = drawNumber(T2+30-5, 370, pviA, DOT, BLACK);
+								drawNumber(x, 370, pviDotA, AMP, BLACK);
 							}
 						}
 						else
 							drawOutput(T2+30, 320,80,12, "PVI-DOWN", RED);
 					}
+					//EP_Reserve
+					int x;
+					int maxW = readRscp(PosEpReservMaxW)*0.8;
+					int maxC = maxW / 500;
+					int maxSet = maxC * 500;
+					writeTo(PosToEpMax,maxSet);
+					drawNumber(EPPERX -10+24, EPPERY, readRscp(PosEpReserv), PERCENT, BLACK);
+					x = drawNumber(EPWX -10, EPWY, readRscp(PosEpReservW), WATTH, BLACK);
+					DrawImage("EpReserve/reservesw", x, EPWY);
+					DrawImage("EpReserve/reservesw", x, EPPERY);
+					x = drawNumber(EPWMAXX -10, EPWMAXY, maxSet, WATTH, BLACK);
+					DrawImage("EpReserve/maxsw", x, EPWMAXY);
+					if (readRscp(PosEpReservW) > 0)
+						DrawImage("Switch/On", EPSWX, EPSWY);
+					else
+						DrawImage("Switch/Off", EPSWX, EPSWY);
+					x = drawNumber(EPSETX -10, EPSETY, readTo(PosToEpSet), WATTH, BLACK);
+					DrawImage("EpReserve/setsw", x, EPSETY);
+					DrawImage("EpReserve/Set", EPSETS2, EPSETR1);
+					if(readTo(PosToEpSet) - 500 >= 0 ) DrawImage("EpReserve/Minus500", EPSETS1, EPSETR1);
+					else DrawImage("EpReserve/Minus500Off", EPSETS1, EPSETR1);
+					if(readTo(PosToEpSet) + 500 <= maxSet ) DrawImage("EpReserve/Plus500", EPSETS3, EPSETR1);
+					else DrawImage("EpReserve/Plus500Off", EPSETS3, EPSETR1);
+					if(readTo(PosToEpSet) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", EPSETS1, EPSETR2);
+					else DrawImage("EpReserve/Minus2000Off", EPSETS1, EPSETR2);
+					if(readTo(PosToEpSet) + 2000 <= maxSet ) DrawImage("EpReserve/Plus2000", EPSETS3, EPSETR2);
+					else DrawImage("EpReserve/Plus2000Off", EPSETS3, EPSETR2);
+					if(readTo(PosToEpSet) - 10000 >= 0 ) DrawImage("EpReserve/Minus10000", EPSETS1, EPSETR3);
+					else DrawImage("EpReserve/Minus10000Off", EPSETS1, EPSETR3);
+					if(readTo(PosToEpSet) + 10000 <= maxSet ) DrawImage("EpReserve/Plus10000", EPSETS3, EPSETR3);
+					else DrawImage("EpReserve/Plus10000Off", EPSETS3, EPSETR3);
 				}
 				break;
 			}
@@ -704,6 +745,12 @@ int main(){
 							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
 							break;
 						}
+						case ShutdownSStop:{
+							drawSquare(S1,R5-20,180,30,RED);
+							drawCorner(S1,R5-20,180,30, WHITE);
+							put_string(S1+20,R5-20+8, "Software Stoppen", WHITE);
+							break;
+						}
 						case ShutdownSDN:{
 							drawSquare(S1,R2-20,180,30,RED);
 							drawCorner(S1,R2-20,180,30, WHITE);
@@ -729,6 +776,9 @@ int main(){
 							drawSquare(S1,R4-20,180,30,GREY);
 							drawCorner(S1,R4-20,180,30, WHITE);
 							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
+							drawSquare(S1,R5-20,180,30,GREY);
+							drawCorner(S1,R5-20,180,30, WHITE);
+							put_string(S1+20,R5-20+8, "Software Stoppen", WHITE);
 							break;
 						}
 						default:{
@@ -1021,7 +1071,7 @@ int main(){
 				else snprintf (WbBtC, (size_t)128, "-BtCno");
 				if(strcmp ("true",wallboxSendBbC) == 0) snprintf (WbBbC, (size_t)128, "-BbCyes");
 				else snprintf (WbBbC, (size_t)128, "-BbCno");
-				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s", WbMode, WbCurrent, WbBtC, WbBbC);
+				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no", WbMode, WbCurrent, WbBtC, WbBbC);
 				system(OUT);
 				printsendHM(ISE_WB_SEND_NOW, "false");
 			}

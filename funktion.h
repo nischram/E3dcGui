@@ -287,7 +287,7 @@ int drawNumber(int x, int y, int input, int typ, int col){
   else if (col == BLUE)snprintf (color, (size_t)6, "bl");
   else if (col == GREEN)snprintf (color, (size_t)6, "gr");
   else if (col == ORANGE)snprintf (color, (size_t)6, "or");
-  if(typ == WATT){
+  if(typ == WATT || typ == WATTH || typ == VOLT){
     int a = input / 10000;
     if(a > 0){
       drawNo(x,y,a,col);
@@ -305,14 +305,16 @@ int drawNumber(int x, int y, int input, int typ, int col){
     x = x + 12;
     input = input - b * 1000;
   }
-  int c = input / 100;
-  if(c > 0 || num == 1){
-    drawNo(x,y,c,col);
-    num = 1;
+  if(typ == WATT || typ == WATTH || typ == VOLT || typ == DOT || typ == PERCENT){
+    int c = input / 100;
+    if(c > 0 || num == 1){
+      drawNo(x,y,c,col);
+      num = 1;
+    }
+    else DrawImage("Zahlen/white", x, y);
+    x = x + 12;
+    input = input - c * 100;
   }
-  else DrawImage("Zahlen/white", x, y);
-  x = x + 12;
-  input = input - c * 100;
   int d = input / 10;
   if(d > 0 || num == 1){
     drawNo(x,y,d,col);
@@ -324,11 +326,37 @@ int drawNumber(int x, int y, int input, int typ, int col){
   int e = input ;
   drawNo(x,y,e,col);
   x = x + 14;
-  if (typ == WATT)  snprintf (pic, (size_t)20, "Zahlen/watt%s", color);
-  else if (typ == PERCENT)  snprintf (pic, (size_t)20, "Zahlen/percent%s", color);
-  else if (typ == NO)  snprintf (pic, (size_t)20, "Zahlen/white", color);
+  int xpic;
+  if (typ == WATT) {
+    snprintf (pic, (size_t)20, "Zahlen/watt%s", color);
+    xpic = 22;
+  }
+  else if (typ == WATTH) {
+    snprintf (pic, (size_t)20, "Zahlen/wh%s", color);
+    xpic = 34;
+  }
+  else if (typ == PERCENT) {
+    snprintf (pic, (size_t)20, "Zahlen/percent%s", color);
+    xpic = 14;
+  }
+  else if (typ == AMP) {
+    snprintf (pic, (size_t)20, "Zahlen/a%s", color);
+    xpic = 18;
+  }
+  else if (typ == VOLT) {
+    snprintf (pic, (size_t)20, "Zahlen/v%s", color);
+    xpic = 18;
+  }
+  else if (typ == DOT) {
+    snprintf (pic, (size_t)20, "Zahlen/dot%s", color);
+    xpic = 5;
+  }
+  else if (typ == NO) {
+    snprintf (pic, (size_t)20, "Zahlen/white", color);
+    xpic = 14;
+  }
   DrawImage(pic, x, y);
-  return x + 22;
+  return x + xpic;
 }
 // Bit aus einer Datei lesen, ändern und schreiben
 int BitChange(char *filePath, int Position, int max)
@@ -517,6 +545,21 @@ int readRscpWb(int RscpWbPosition)
 {
   int ret = BitRead("/mnt/RAMDisk/E3dcGuiWbData.txt", RscpWbPosition,PosWbMAX);
   return ret;
+}
+int writeTo(int Position, int NewValue)
+{
+  BitWrite("/mnt/RAMDisk/ValueTo.txt", Position, NewValue, PosToMAX);
+  return 1;
+}
+int readTo(int Position)
+{
+  int ret = BitRead("/mnt/RAMDisk/ValueTo.txt", Position,PosToMAX);
+  return ret;
+}
+int makeTo()
+{
+	BitMake("/mnt/RAMDisk/ValueTo.txt", PosToMAX);
+  return 0;
 }
 
 //Lesen der RSCP Daten aus dem RAMDisk

@@ -8,12 +8,12 @@ ROOT_GB=External/gruenSave
 ROOT_START=start
 ROOT_STOP=stop
 ROOT_RM=RscpMain
-ROOT_RB=Rscp/RscpWb
+ROOT_RSET=Rscp/RscpSet
 ROOT_WBCK=Rscp/wbCheckHM
 ROOT_HISTORY=S10history/S10history
 ROOT_TT=Frame/touchtest
 
-all: $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_GB) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_RB) $(ROOT_HISTORY) $(ROOT_TT)
+all: $(ROOT_WD) $(ROOT_SS) $(ROOT_SSHM) $(ROOT_GM) $(ROOT_GB) $(ROOT_START) $(ROOT_STOP) $(ROOT_RM) $(ROOT_RSET) $(ROOT_HISTORY) $(ROOT_TT)
 
 $(ROOT_WD): cleanWD
 	$(CXX) -O1 Watchdog.cpp -o $@
@@ -31,8 +31,8 @@ $(ROOT_STOP): cleanSTOP
 	$(CC) -O1 stop.c -o $@
 $(ROOT_RM): cleanRM
 	$(CXX) -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
-$(ROOT_RB): cleanRB
-	$(CXX) -O3 Rscp/RscpWb.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
+$(ROOT_RSET): cleanRSet
+	$(CXX) -O3 Rscp/RscpSet.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cpp Rscp/RWData.cpp -o $@
 $(ROOT_WBCK): cleanWBCK
 	$(CC) -O1 Rscp/wbCheckHM.c -o $@
 $(ROOT_HISTORY): cleanHISTORY
@@ -56,8 +56,8 @@ cleanSTOP:
 		-rm $(ROOT_STOP) $(VECTOR)
 cleanRM:
 		-rm $(ROOT_RM) $(VECTOR)
-cleanRB:
-		-rm $(ROOT_RB) $(VECTOR)
+cleanRSet:
+		-rm $(ROOT_RSET) $(VECTOR)
 cleanWBCK:
 		-rm $(ROOT_WBCK) $(VECTOR)
 cleanHISTORY:

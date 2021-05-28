@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V1.90 23.05.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V1.91 28.05.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -198,12 +198,14 @@ Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können,
 
 ### 5. Wallbox
 `  #define Wallbox                    1`  
-![Wallbox](https://user-images.githubusercontent.com/19279623/112896384-9dd42e80-90de-11eb-9140-25904abe8fb7.jpg)  
+<img src="https://user-images.githubusercontent.com/19279623/120030051-40cdf980-bff7-11eb-8e55-b255f24432c4.jpg" alt="Wallbox">  
 Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kann man per Schalter steuern. Gesteuert werden kann:
-- Ladestrom > maximaler Ladestrom je Phase mit dem das Auto geladen wird.
-- Sonnenmodus > wechseln zwischen Sonnenmode oder Mischbetrieb.
-- Batterie vor Auto > hiermit wird zuvor die Batterie geladen dann erst das Auto. *
+- Ladestrom > maximaler Ladestrom je Phase mit dem das Auto geladen wird.  
+- Sonnenmodus > wechseln zwischen Sonnenmode oder Mischbetrieb.  
+- Batterie vor Auto > hiermit wird zuvor die Batterie geladen dann erst das Auto. *  
 - Batterie zu Auto > hiermit wird freigegeben ob die Batterie entladen werde darf. *  
+- Anzahl der Phasen für Solarladung vorwählen.  
+- Ladung stoppen.  
   *sind abhängig voneinander  
 
 In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).  
@@ -211,8 +213,9 @@ Ich habe die Funktion an meiner E3DC Walbox mit CAN-Bus getestet, die E3DC Easy 
 
 ### 6. Monitor
 `  #define E3DC_S10                    1`  
-<img src="https://s20.postimg.cc/d55f3bcnx/Monitor_Neu.jpg" alt="Monitor">  
-Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts ist für neue Ideen noch Platz, gerne darfst du einen Issue erstellen wenn du wünsche hast!
+<img src="https://user-images.githubusercontent.com/19279623/120030046-40356300-bff7-11eb-8753-675c353bdb00.jpg" alt="Monitor">  
+Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts kann die Notstrom-Reserve im Speicher aktiviert werden. Sie wird in % oder Wh angezeigt. Die Höhe der Reserve kann in 500, 2000, oder 10000 Wh Schritte vorgewählt und mit "Set" gesetzt werden. Der Schalter setzt die Reserve ggf. direkt auf 0 Wh. Im Hauptbildschirm wird die höhe der Reserve in Prozent mit einem grünen Rahmen bei der Batterie dargestellt.  
+<img src="https://user-images.githubusercontent.com/19279623/120030042-3f043600-bff7-11eb-8fa6-5c08ac469d0d.png" alt="Batterie">
 
 ### 7. SmartHome
 <img src="https://s20.postimg.cc/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
@@ -335,7 +338,7 @@ make GuiMain
 make start   
 make stop   
 make RscpMain   
-make Rscp/RscpWb   
+make Rscp/RscpSet   
 make Rscp/wbCheckHM   
 make S10history/S10history   
 make Frame/touchtest
@@ -394,6 +397,12 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V1.91 28.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Notstrom-Reserve des Speichers  
+- Für [Issue #58](https://github.com/nischram/E3dcGui/issues/58) kann nun die Reserve aktiviert oder eingestellt werden  
+- Für [Issue #59](https://github.com/nischram/E3dcGui/issues/59) Stop-Button im Setup-Menü  
+- Für [Issue #55](https://github.com/nischram/E3dcGui/issues/55) zur Wallbox kann jetzt die Anzahl der Phasen vorgewählt werden  
+- Für [Issue #56](https://github.com/nischram/E3dcGui/issues/56) kann jetzt eine Ladung gestoppt werden  
+
 V1.90 23.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Schriftgröße der Leistungswerte
 - Für Issue #58 Schriftgöße angepasset
 

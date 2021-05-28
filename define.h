@@ -57,7 +57,11 @@
 #define ScreenOff                   0    //!!
 #define NO                          0    //!!
 #define WATT                        1    //!!
-#define PERCENT                     2    //!!
+#define WATTH                       2    //!!
+#define PERCENT                     3    //!!
+#define AMP                         4    //!!
+#define VOLT                        5    //!!
+#define DOT                         6    //!!
 
 #define PictureLine1                12   //!!
 #define PictureW                    75   //!!
@@ -90,7 +94,10 @@
 #define PosPMState                  18   //!!
 #define PosPMPhases                 19   //!!
 #define PosTimeZone                 20   //!!
-#define PosMAX                      21   //!!
+#define PosEpReserv                 21   //!!
+#define PosEpReservW                22   //!!
+#define PosEpReservMaxW             23   //!!
+#define PosMAX                      24   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!
@@ -200,20 +207,43 @@
 #define MuellZ2                     230 //!!
 #define MuellZ3                     340 //!!
 
-//Screen
-#define T1                          230 //!!
-#define T2                          405 //!!
+//Screen Monitor
+#define T1                          50  //!!
+#define T2                          225 //!!
+#define EP                          420 //!!
+#define EPPERX                      EP + 120     //!!
+#define EPPERY                      160          //!!
+#define EPWX                        EPPERX       //!!
+#define EPWY                        EPPERY + 25  //!!
+#define EPWMAXX                     EPPERX       //!!
+#define EPWMAXY                     EPWY + 25    //!!
+#define EPSWX                       EPPERX       //!!
+#define EPSWY                       EPWMAXY + 30 //!!
+#define EPSETX                      EPPERX       //!!
+#define EPSETY                      EPSWY + 36   //!!
+#define EPSETS1                     EPPERX - 90  //!!
+#define EPSETS2                     EPPERX       //!!
+#define EPSETS3                     EPPERX + 90  //!!
+#define EPSETR1                     EPSETY + 36  //!!
+#define EPSETR2                     EPSETR1 + 36 //!!
+#define EPSETR3                     EPSETR2 + 36 //!!
+
+//Screen Wallbox
 #define WB1                         30  //!!
 #define WBCARX                      375 //!!
 #define WBCARY                      199 //!!
 #define WBCURX                      228 //!!
-#define WBCURY                      165 //!!
+#define WBCURY                      160 //!!
 #define WBMODEX                     WBCURX       //!!
 #define WBMODEY                     WBCURY  + 55 //!!
 #define WBBTCX                      WBCURX       //!!
 #define WBBTCY                      WBMODEY + 55 //!!
 #define WBBBCX                      WBCURX       //!!
 #define WBBBCY                      WBBTCY  + 55 //!!
+#define WBPHX                       WBCURX       //!!
+#define WBPHY                       WBBBCY  + 55 //!!
+#define WBSTOPX                     655          //!!
+#define WBSTOPY                     WBCURY       //!!
 
 //wiringPi
 #define OK                          1   //!!

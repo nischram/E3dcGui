@@ -25,6 +25,8 @@ int main()
 	makeScreen();
 	makeLegende();
 	makeUnixtime();
+	makeTo();
+	writeTo(PosToEpSet,2000);
 
 	signal(SIGINT, INThandler);
 
@@ -123,6 +125,8 @@ int main()
 	int buttonTimerSRS = mymillis();
 	int buttonCordsHRS[4] = {S1,R4-20,180,30};
 	int buttonTimerHRS = mymillis();
+	int buttonCordsSStop[4] = {S1,R5-20,180,30};
+	int buttonTimerSStop = mymillis();
 	int buttonCordsBrigh25[4] = {(S4+105),(R1),(Fw+6),(21+3)};
 	int buttonTimerBrigh25 = mymillis();
 	int buttonCordsBrigh76[4] = {(S4+160),(R1),(Fw+6),(21+3)};
@@ -169,6 +173,27 @@ int main()
 	int buttonTimerWbBtC = mymillis();
 	int buttonCordsWbBbC[4] = {WBBBCX,WBBBCY,82,30};
 	int buttonTimerWbBbC = mymillis();
+	int buttonCordsWbSwPh[4] = {WBPHX,WBPHY,82,30};
+	int buttonTimerWbSwPh = mymillis();
+	int buttonCordsWbStop[4] = {WBSTOPX,WBSTOPY,82,30};
+	int buttonTimerWbStop = mymillis();
+
+	int buttonCordsMinus500[4] = {EPSETS1-2, EPSETR1-2,82,32};
+	int buttonTimerMinus500 = mymillis();
+	int buttonCordsPlus500[4] = {EPSETS3-2, EPSETR1-2,82,32};
+	int buttonTimerPlus500 = mymillis();
+	int buttonCordsMinus2000[4] = {EPSETS1-2, EPSETR2-2,82,32};
+	int buttonTimerMinus2000 = mymillis();
+	int buttonCordsPlus2000[4] = {EPSETS3-2, EPSETR2-2,82,32};
+	int buttonTimerPlus2000 = mymillis();
+	int buttonCordsMinus10000[4] = {EPSETS1-2, EPSETR3-2,82,32};
+	int buttonTimerMinus10000 = mymillis();
+	int buttonCordsPlus10000[4] = {EPSETS3-2, EPSETR3-2,82,32};
+	int buttonTimerPlus10000 = mymillis();
+	int buttonCordsEpSet[4] = {EPSETS2-2, EPSETR1-2,82,32};
+	int buttonTimerEpSet = mymillis();
+	int buttonCordsEpSetOnOff[4] = {EPSWX-2, EPSWY-2,82,32};
+	int buttonTimerEpSetOnOff = mymillis();
 
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
@@ -428,7 +453,8 @@ int main()
 						killall();
 						system("/home/pi/E3dcGui/start &");
 						drawSquare(2,2,800,480,LTGREY);
-						system("killall -9 screenSave screenSaveHM");
+						system("sudo killall -9 screenSaveHM");
+						system("killall -9 screenSave");
 						return 0;
 					}
 				}
@@ -442,7 +468,20 @@ int main()
 						killall();
 						drawSquare(2,2,800,480,BLACK);
 						system("sudo reboot");
-						system("killall -9 screenSave screenSaveHM");
+						system("sudo killall -9 screenSaveHM");
+						system("killall -9 screenSave");
+						return 0;
+					}
+				}
+				if((scaledX  > buttonCordsSStop[X] && scaledX < (buttonCordsSStop[X]+buttonCordsSStop[W])) && (scaledY > buttonCordsSStop[Y] && scaledY < (buttonCordsSStop[Y]+buttonCordsSStop[H]))){
+					if (mymillis() - buttonTimerSStop > 3000){
+						buttonTimerSStop = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownSStop);
+						sleep (2);
+						drawSquare(2,2,800,480,BLACK);
+						system("/home/pi/E3dcGui/stop &");
 						return 0;
 					}
 				}
@@ -554,7 +593,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -571,7 +610,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -588,7 +627,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -605,7 +644,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -622,7 +661,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -639,7 +678,7 @@ int main()
 							else snprintf (WbBtC, (size_t)128, "-BtCyes");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 							system(OUT);
 						}
 					}
@@ -655,7 +694,7 @@ int main()
 						else snprintf (WbBtC, (size_t)128, "-BtCyes");
 						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 						else snprintf (WbBbC, (size_t)128, "-BbCyes");
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 						system(OUT);
 					}
 				}
@@ -672,7 +711,7 @@ int main()
 						}
 						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
 						else snprintf (WbBbC, (size_t)128, "-BbCyes");
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 						system(OUT);
 						sleep(2);
 						buttonTimerWbBtC = mymillis();
@@ -694,7 +733,7 @@ int main()
 							snprintf (WbBtC, (size_t)128, "-BtCno");
 							snprintf (WbBbC, (size_t)128, "-BbCyes");
 						}
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpWb %s %i %s %s &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 						system(OUT);
 						sleep(2);
 						buttonTimerWbBbC = mymillis();
@@ -703,10 +742,50 @@ int main()
 						writeScreen(ScreenShutdown, ShutdownRun);
 					}
 				}
+				if((scaledX  > buttonCordsWbSwPh[X] && scaledX < (buttonCordsWbSwPh[X]+buttonCordsWbSwPh[W])) && (scaledY > buttonCordsWbSwPh[Y] && scaledY < (buttonCordsWbSwPh[Y]+buttonCordsWbSwPh[H]))){
+					if (mymillis() - buttonTimerWbSwPh > 500){
+						DrawImage("Switch/Send", WBPHX, WBPHY);
+						WbCurrent = readRscpWb(PosWbCurrent);
+						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+						else snprintf (WbMode, (size_t)128, "-sonne");
+						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+						else snprintf (WbBtC, (size_t)128, "-BtCyes");
+						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+						else snprintf (WbBbC, (size_t)128, "-BbCyes");
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -swPh &", WbMode, WbCurrent, WbBtC, WbBbC);
+						system(OUT);
+						sleep(2);
+						buttonTimerWbSwPh = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
+					}
+				}
+				if((scaledX  > buttonCordsWbStop[X] && scaledX < (buttonCordsWbStop[X]+buttonCordsWbStop[W])) && (scaledY > buttonCordsWbStop[Y] && scaledY < (buttonCordsWbStop[Y]+buttonCordsWbStop[H]))){
+					if (mymillis() - buttonTimerWbStop > 500){
+						if (readRscpWb(PosWbLED_BAT)==1){
+							DrawImage("Switch/Send", WBSTOPX, WBSTOPY);
+							WbCurrent = readRscpWb(PosWbCurrent);
+							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
+							else snprintf (WbMode, (size_t)128, "-sonne");
+							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
+							else snprintf (WbBtC, (size_t)128, "-BtCyes");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -stop &", WbMode, WbCurrent, WbBtC, WbBbC);
+							system(OUT);
+							sleep(2);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+							writeScreen(ScreenShutdown, ShutdownRun);
+						}
+						buttonTimerWbStop = mymillis();
+					}
+				}
 				break; // ScreenWallbox
 			}
 			case ScreenMonitor:{
-				if((scaledX  > buttonCordsSave[X] && scaledX < (buttonCordsSave[X]+buttonCordsSave[W])) && (scaledY > buttonCordsSave[Y] && scaledY < (buttonCordsSave[Y]+buttonCordsSave[H]))){
+				if((scaledX  > buttonCordsSaveHalb[X] && scaledX < (buttonCordsSaveHalb[X]+buttonCordsSaveHalb[W])) && (scaledY > buttonCordsSaveHalb[Y] && scaledY < (buttonCordsSaveHalb[Y]+buttonCordsSaveHalb[H]))){
 					if (mymillis() - buttonTimerSave > 500){
 						buttonTimerSave = mymillis();
 						int state = readScreen(ScreenState);
@@ -719,6 +798,75 @@ int main()
 							screenOff();
 							writeScreen(ScreenSaver, true);
 						}
+					}
+				}
+				if((scaledX  > buttonCordsMinus500[X] && scaledX < (buttonCordsMinus500[X]+buttonCordsMinus500[W])) && (scaledY > buttonCordsMinus500[Y] && scaledY < (buttonCordsMinus500[Y]+buttonCordsMinus500[H]))){
+					if (mymillis() - buttonTimerMinus500 > 500){
+						buttonTimerMinus500 = mymillis();
+						if(readTo(PosToEpSet)-500 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus500[X] && scaledX < (buttonCordsPlus500[X]+buttonCordsPlus500[W])) && (scaledY > buttonCordsPlus500[Y] && scaledY < (buttonCordsPlus500[Y]+buttonCordsPlus500[H]))){
+					if (mymillis() - buttonTimerPlus500 > 500){
+						buttonTimerPlus500 = mymillis();
+						if(readTo(PosToEpSet)+500 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsMinus2000[X] && scaledX < (buttonCordsMinus2000[X]+buttonCordsMinus2000[W])) && (scaledY > buttonCordsMinus2000[Y] && scaledY < (buttonCordsMinus2000[Y]+buttonCordsMinus2000[H]))){
+					if (mymillis() - buttonTimerMinus2000 > 2000){
+						buttonTimerMinus2000 = mymillis();
+						if(readTo(PosToEpSet)-2000 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus2000[X] && scaledX < (buttonCordsPlus2000[X]+buttonCordsPlus2000[W])) && (scaledY > buttonCordsPlus2000[Y] && scaledY < (buttonCordsPlus2000[Y]+buttonCordsPlus2000[H]))){
+					if (mymillis() - buttonTimerPlus2000 > 500){
+						buttonTimerPlus2000 = mymillis();
+						if(readTo(PosToEpSet)+2000 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsMinus10000[X] && scaledX < (buttonCordsMinus10000[X]+buttonCordsMinus10000[W])) && (scaledY > buttonCordsMinus10000[Y] && scaledY < (buttonCordsMinus10000[Y]+buttonCordsMinus10000[H]))){
+					if (mymillis() - buttonTimerMinus10000 > 10000){
+						buttonTimerMinus10000 = mymillis();
+						if(readTo(PosToEpSet)-10000 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-10000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsPlus10000[X] && scaledX < (buttonCordsPlus10000[X]+buttonCordsPlus10000[W])) && (scaledY > buttonCordsPlus10000[Y] && scaledY < (buttonCordsPlus10000[Y]+buttonCordsPlus10000[H]))){
+					if (mymillis() - buttonTimerPlus10000 > 500){
+						buttonTimerPlus10000 = mymillis();
+						if(readTo(PosToEpSet)+10000 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+10000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpSet[X] && scaledX < (buttonCordsEpSet[X]+buttonCordsEpSet[W])) && (scaledY > buttonCordsEpSet[Y] && scaledY < (buttonCordsEpSet[Y]+buttonCordsEpSet[H]))){
+					if (mymillis() - buttonTimerEpSet > 500){
+						buttonTimerEpSet = mymillis();
+						DrawImage("Switch/Send", EPSETS2, EPSETR1);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),readTo(PosToEpSet));
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsEpSetOnOff[X] && scaledX < (buttonCordsEpSetOnOff[X]+buttonCordsEpSetOnOff[W])) && (scaledY > buttonCordsEpSetOnOff[Y] && scaledY < (buttonCordsEpSetOnOff[Y]+buttonCordsEpSetOnOff[H]))){
+					if (mymillis() - buttonTimerEpSetOnOff > 500){
+						buttonTimerEpSetOnOff = mymillis();
+						DrawImage("Switch/Send", EPSETS2, EPSETR1);
+						if(readRscp(PosEpReservW) == 0){
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),readTo(PosToEpSet));
+						}
+						else {
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),0);
+						}
+						system(OUT);
 					}
 				}
 				break; // ScreenMonitor

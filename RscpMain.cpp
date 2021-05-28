@@ -150,6 +150,8 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           // free memory of sub-container as it is now copied to rootValue
           protocol.destroyValueData(WBContainer);
         }
+        // EP Reserve
+        protocol.appendValue(&rootValue, TAG_SE_REQ_EP_RESERVE);
     }
 
     // create buffer frame to send data to the S10
@@ -695,6 +697,45 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 }
             }
             protocol->destroyValueData(WBData);
+            break;
+        }
+        case TAG_SE_EP_RESERVE: {        // resposne for TAG_SE_REQ_EP_RESERVE
+            uint8_t ucSEIndex = 0;
+            std::vector<SRscpValue> SEData = protocol->getValueAsContainer(response);
+            for(size_t i = 0; i < SEData.size(); ++i) {
+              if(SEData[i].dataType == RSCP::eTypeError) {
+                  // handle error for example access denied errors
+                  uint32_t uiErrorCode = protocol->getValueAsUInt32(&SEData[i]);
+                  printf("Tag 0x%08X received error code %u.\n", SEData[i].tag, uiErrorCode);
+                  return -1;
+              }
+              switch(SEData[i].tag) {
+                case TAG_SE_PARAM_EP_RESERVE: {              // response for TAG_SE_PARAM_EP_RESERVE
+                    float OUT_SE_PARAM_EP_RESERVE = protocol->getValueAsFloat32(&SEData[i]);
+                    cout << setprecision(1) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE << " %\n";
+                    writeRscp(PosEpReserv, OUT_SE_PARAM_EP_RESERVE);
+                    break;
+                }
+                case TAG_SE_PARAM_EP_RESERVE_W: {              // response for TAG_SE_PARAM_EP_RESERVE_W
+                    float OUT_SE_PARAM_EP_RESERVE_W = protocol->getValueAsFloat32(&SEData[i]);
+                    cout << setprecision(0) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE_W << " Wh\n";
+                    writeRscp(PosEpReservW, OUT_SE_PARAM_EP_RESERVE_W);
+                    break;
+                }
+                case TAG_SE_PARAM_EP_RESERVE_MAX_W: {              // response for TAG_SE_PARAM_EP_RESERVE_MAX_W
+                    float OUT_SE_PARAM_EP_RESERVE_MAX_W = protocol->getValueAsFloat32(&SEData[i]);
+                    cout << setprecision(0) << fixed << "EP Reserve Max = " << OUT_SE_PARAM_EP_RESERVE_MAX_W << " Wh\n";
+                    writeRscp(PosEpReservMaxW, OUT_SE_PARAM_EP_RESERVE_MAX_W);
+                    break;
+                }
+              // ...
+              default:
+                  // default behaviour
+                  //printf("Unknown SE tag %08X\n", response->tag);
+                  break;
+              }
+            }
+            protocol->destroyValueData(SEData);
             break;
         }
         // ...

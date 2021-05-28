@@ -29,6 +29,9 @@ static char TAG_EMS_OUT_SERIAL_NUMBER [17];
 static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 
+static bool setModeWB = false, setModeEP = false, WbSwPh = false, WbStop = false;;
+static int inputEpReserveMax, inputEpReserve;
+
 using namespace std;
 
 int createRequestExample(SRscpFrameBuffer * frameBuffer) {
@@ -55,32 +58,53 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
     }
     else
     {
-        printf("____________________\nRequest data\n");
+        printf("____________________\n");
         // request data information
         protocol.appendValue(&rootValue, TAG_INFO_REQ_SERIAL_NUMBER);
-        protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_TO_CAR_MODE,(uint8_t)WbBtC);
-        protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE,(uint8_t)WbBbC);
+        if (setModeWB){
+          printf("Set Wallbox Parameter\nBat to Car    = %i\nBat bevor Car = %i\nLadestrom     = %i A\nWallboxmodus  = %i 1=Sonne/2=Mix\n", WbBtC, WbBbC, WbExt[1], WbExt[0]);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_TO_CAR_MODE,(uint8_t)WbBtC);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE,(uint8_t)WbBbC);
 
-        // request Wallbox information
-        SRscpValue WBContainer;
-        SRscpValue WBExtContainer;
-        // request Wallbox data
-        protocol.createContainerValue(&WBContainer, TAG_WB_REQ_DATA) ;
-        // add index 0 to select first wallbox
-        protocol.appendValue(&WBContainer, TAG_WB_INDEX,0);
-        protocol.createContainerValue(&WBExtContainer, TAG_WB_REQ_SET_EXTERN);
-        protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA_LEN,6);
-        protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA,WbExt,6);
-        protocol.appendValue(&WBContainer, WBExtContainer);
-        // free memory of sub-container as it is now copied to rootValue
-        protocol.destroyValueData(WBExtContainer);
-        // append sub-container to root container
-        protocol.appendValue(&rootValue, WBContainer);
-        //protocol.appendValue(&rootValue, WBExtContainer);
-        // free memory of sub-container as it is now copied to rootValue
-        protocol.destroyValueData(WBContainer);
-
-
+          // request Wallbox information
+          SRscpValue WBContainer;
+          SRscpValue WBExtContainer;
+          // request Wallbox data
+          protocol.createContainerValue(&WBContainer, TAG_WB_REQ_DATA) ;
+          // add index 0 to select first wallbox
+          protocol.appendValue(&WBContainer, TAG_WB_INDEX,0);
+          protocol.createContainerValue(&WBExtContainer, TAG_WB_REQ_SET_EXTERN);
+          protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA_LEN,6);
+          protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA,WbExt,6);
+          protocol.appendValue(&WBContainer, WBExtContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(WBExtContainer);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, WBContainer);
+          //protocol.appendValue(&rootValue, WBExtContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(WBContainer);
+        }
+        else if (setModeEP){
+          printf("Set Notstrom-Reserve\nEP Reserve    = %i Wh\n", inputEpReserve);
+          // Set EP_Reserve
+          SRscpValue SEContainer;
+          SRscpValue SESetContainer;
+          // request Wallbox data
+          protocol.createContainerValue(&SEContainer, TAG_SE_REQ_SET_EP_RESERVE) ;
+          // add index 0 to select first wallbox
+          //protocol.createContainerValue(&SESetContainer, TAG_SE_REQ_SET_EP_RESERVE);
+          protocol.appendValue(&SEContainer, TAG_SE_PARAM_INDEX,0);
+          protocol.appendValue(&SEContainer, TAG_SE_PARAM_EP_RESERVE,(float)0);
+          protocol.appendValue(&SEContainer, TAG_SE_PARAM_EP_RESERVE_W,(float)inputEpReserve);
+          //protocol.appendValue(&SEContainer, SESetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          //protocol.destroyValueData(SESetContainer);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, SEContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(SEContainer);
+        }
     }
 
     // create buffer frame to send data to the S10
@@ -140,18 +164,40 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
             }
             // check each battery sub tag
             switch(WBData[i].tag) {
-            case TAG_WB_INDEX: {
-                ucWBIndex = protocol->getValueAsUChar8(&WBData[i]);
-                break;
-            }
-            // ...
-            default:
+              case TAG_WB_INDEX: {
+                  ucWBIndex = protocol->getValueAsUChar8(&WBData[i]);
+                  break;
+              }
+              // ...
+              default:
                 // default behaviour
                 //printf("Unknown WB tag %08X\n", response->tag);
                 break;
             }
         }
         protocol->destroyValueData(WBData);
+        break;
+    }
+    case TAG_SE_EP_RESERVE: {        // resposne for TAG_WB_REQ_DATA
+        uint8_t ucSEIndex = 0;
+        std::vector<SRscpValue> SEData = protocol->getValueAsContainer(response);
+        for(size_t i = 0; i < SEData.size(); ++i) {
+            if(SEData[i].dataType == RSCP::eTypeError) {
+                // handle error for example access denied errors
+                uint32_t uiErrorCode = protocol->getValueAsUInt32(&SEData[i]);
+                printf("Tag 0x%08X received error code %u.\n", SEData[i].tag, uiErrorCode);
+                return -1;
+            }
+            // check each battery sub tag
+            switch(SEData[i].tag) {
+              // ...
+              default:
+                // default behaviour
+                //printf("Unknown SE tag %08X\n", response->tag);
+                break;
+            }
+        }
+        protocol->destroyValueData(SEData);
         break;
     }
     // ...
@@ -358,50 +404,99 @@ static void mainLoop(void)
 
 int main(int argc, char *argv[])
 {
-    // Sonnenmodus
-    if (strcmp(argv[1], "-sonne")==0) {
-      printf("Sonnenmodus\n");
-      WbExt[0] = 1;
+    // Set Mode
+    if (strcmp(argv[1], "-wb")==0) {
+      printf("Wallbox Set Parameter\n");
+      setModeWB = true;
     }
-    else if (strcmp(argv[1], "-mix")==0) {
-      printf("Mischbetrieb\n");
-      WbExt[0] = 2;
+    else if (strcmp(argv[1], "-ep")==0) {
+      printf("Notstromreserve setzen\n");
+      setModeEP = true;
     }
     else {
-      printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus  = -sonne\n  Mischbetrieb = -mix\n  Beispiel     = RscpWb -sonne 16 -BtCno -BbCno\n");
+      printf("Falsche Eingabe!\n Bitte wählen:\n  Wallbox        = -wb    \n  Notstromreserve = -ep\n  Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
       return 0;
     }
-    // Ladestrom
-    int maxAmp = atoi(argv[2]);
-    if (maxAmp < 0 || maxAmp > 32){
-      printf("Falsche Eingabe!\n Wert von 0 - 32 wählen\n  Beispiel     = RscpWb -sonne 16 -BtCno -BbCno\n");
-      return 0;
+    // Wallbox Parameter
+    if (setModeWB){
+      // Sonnenmodus
+      if (strcmp(argv[2], "-sonne")==0) {
+        printf("Sonnenmodus\n");
+        WbExt[0] = 1;
+      }
+      else if (strcmp(argv[2], "-mix")==0) {
+        printf("Mischbetrieb\n");
+        WbExt[0] = 2;
+      }
+      else {
+        printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+        return 0;
+      }
+      // Ladestrom
+      int maxAmp = atoi(argv[3]);
+      if (maxAmp < 0 || maxAmp > 32){
+        printf("Falsche Eingabe!\n Wert von 0 - 32 A wählen\n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+        return 0;
+      }
+      printf("Ladestrom = %s\n", argv[3]);
+      WbExt[1] = atoi(argv[3]);
+      // Battery to Car
+      if (strcmp(argv[4], "-BtCyes")==0) {
+        printf("Batterie ins Auto = Ein\n");
+        WbBtC = 1;
+      }
+      else if (strcmp(argv[4], "-BtCno")==0) {
+        printf("Batterie ins Auto = Aus\n");
+        WbBtC = 0;
+      }
+      else {
+        printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+      }
+      // Battery bevor Car
+      if (strcmp(argv[5], "-BbCyes")==0) {
+        printf("Batterie vor Auto = Ein\n");
+        WbBbC = 1;
+      }
+      else if (strcmp(argv[5], "-BbCno")==0) {
+        printf("Batterie vor Auto = Aus\n");
+        WbBbC = 0;
+      }
+      else {
+        printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+      }
+      // Anzahl Phasen tauschen oder Ladung stoppen
+      if (strcmp(argv[6], "-swPh")==0) {
+        printf("Anzahl Phasen tauschen\n");
+        WbExt[3] = 1;
+      }
+      else if (strcmp(argv[6], "-stop")==0) {
+        printf("Ladung stoppen\n");
+        WbExt[4] = 1;
+      }
+      else if (strcmp(argv[6], "-no")==0) {
+        // für keine Eingabe bei Anzahl Phasen tauschen oder stoppen der Ladung
+      }
+      else {
+        printf("Keine Eingabe für Anzahl Phasen tauschen \n Wert: -swPh \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -swPh\n");
+        printf("oder\nkeine Eingabe für das stoppen der Ladung\n Wert: -stop \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -stop\n");
+      }
     }
-    printf("Ladestrom = %s\n", argv[2]);
-    WbExt[1] = atoi(argv[2]);
-    // Battery to Car
-    if (strcmp(argv[3], "-BtCyes")==0) {
-      printf("Batterie ins Auto = Ein\n");
-      WbBtC = 1;
-    }
-    else if (strcmp(argv[3], "-BtCno")==0) {
-      printf("Batterie ins Auto = Aus\n");
-      WbBtC = 0;
-    }
-    else {
-      printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpWb -sonne 16 -BtCno -BbCno\n");
-    }
-    // Battery bevor Car
-    if (strcmp(argv[4], "-BbCyes")==0) {
-      printf("Batterie vor Auto = Ein\n");
-      WbBbC = 1;
-    }
-    else if (strcmp(argv[4], "-BbCno")==0) {
-      printf("Batterie vor Auto = Aus\n");
-      WbBbC = 0;
-    }
-    else {
-      printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpWb -sonne 16 -BtCno -BbCno\n");
+    else if (setModeEP){
+      // EP Reserve Max argv[2]
+      inputEpReserveMax = atoi(argv[2]);
+      if (inputEpReserveMax < 0 || inputEpReserveMax > 65535){
+        printf("Falsche Eingabe für argv[2] in Wh!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
+        return 0;
+      }
+      else printf("EP Reserve Max = %i\n",inputEpReserveMax);
+
+      // EP Reserve argv[3]
+      inputEpReserve = atoi(argv[3]);
+      if (inputEpReserve < 0 || inputEpReserve > inputEpReserveMax * 0.8){
+        printf("Falsche Eingabe für argv[3] in Wh!\n Wert von 0 - <= 80% von Max wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
+        return 0;
+      }
+      else printf("EP Reserve     = %i\n",inputEpReserve);
     }
 
 
