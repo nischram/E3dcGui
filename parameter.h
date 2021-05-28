@@ -56,6 +56,8 @@
 #define ISE_WB_SEND_MODE            0                // ISE_ID Sonnenmodus / Mischmodus
 #define ISE_WB_SEND_BTC             0                // ISE_ID Batterie vor Auto (Priorität)
 #define ISE_WB_SEND_BBC             0                // ISE_ID Batterie nach Auto (Batteriestrom erlauben)
+#define ISE_WB_SEND_STOP            0                // ISE_ID zum stoppen der Ladung
+#define ISE_WB_SEND_PH_CHANGE       0                // ISE_ID Anzahl der Phasen tauschen
 //Soll Seriennummer, Autarky und Eigenstrom auch zur Homematic gesendet werden
 // Ja = 1, Nien = 0, Wenn Ja bitte ISE_ID eingeben
 #define Seriennummer                0

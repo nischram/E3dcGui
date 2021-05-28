@@ -69,8 +69,8 @@ int main(){
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
 	int wbCheckSumOld = 0;
-	char wallboxSendNow[20], wallboxSendMode[20], wallboxSendCurrent[20], wallboxSendBtC[20], wallboxSendBbC[20];
-	char WbMode[24],WbBtC[24],WbBbC[24];
+	char wallboxSendNow[20], wallboxSendMode[20], wallboxSendCurrent[20], wallboxSendBtC[20], wallboxSendBbC[20], wallboxSendStop[20], wallboxSendPhC[20];
+	char WbMode[24],WbBtC[24],WbBbC[24],WbSet[24];
 	int WbCurrent, wallboxSendTime = 0;
 
 	screenOn();
@@ -1064,6 +1064,8 @@ int main(){
 				read_HM(ISE_WB_SEND_CURRENT, 2, wallboxSendCurrent);
 				read_HM(ISE_WB_SEND_BTC, 4, wallboxSendBtC);
 				read_HM(ISE_WB_SEND_BBC, 4, wallboxSendBbC);
+				read_HM(ISE_WB_SEND_STOP, 4, wallboxSendStop);
+				read_HM(ISE_WB_SEND_PH_CHANGE, 4, wallboxSendPhC);
 				if(strcmp ("true",wallboxSendMode) == 0) snprintf (WbMode, (size_t)128, "-sonne");
 				else snprintf (WbMode, (size_t)128, "-mix");
 				WbCurrent = atoi(wallboxSendCurrent);
@@ -1071,9 +1073,14 @@ int main(){
 				else snprintf (WbBtC, (size_t)128, "-BtCno");
 				if(strcmp ("true",wallboxSendBbC) == 0) snprintf (WbBbC, (size_t)128, "-BbCyes");
 				else snprintf (WbBbC, (size_t)128, "-BbCno");
-				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no", WbMode, WbCurrent, WbBtC, WbBbC);
+				if(strcmp ("true",wallboxSendStop) == 0) snprintf (WbSet, (size_t)128, "-stop");
+				else if(strcmp ("true",wallboxSendPhC) == 0) snprintf (WbSet, (size_t)128, "-swPh");
+				else snprintf (WbSet, (size_t)128, "-no");
+				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s %s &", WbMode, WbCurrent, WbBtC, WbBbC, WbSet);
 				system(OUT);
 				printsendHM(ISE_WB_SEND_NOW, "false");
+				printsendHM(ISE_WB_SEND_STOP, "false");
+				printsendHM(ISE_WB_SEND_PH_CHANGE, "false");
 			}
 		}
 	}
