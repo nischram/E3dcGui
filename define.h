@@ -28,6 +28,7 @@
 #define ShutdownHRS                 3    //!!
 #define ShutdownSDN                 4    //!!
 #define ShutdownWD                  5    //!!
+#define ShutdownSStop               6    //!!
 
 #define RscpTime                    1    //!!
 #define HomematicTime               2    //!!
@@ -134,6 +135,11 @@
 #define PosWbBtC                    20    //!!
 #define PosWbBbC                    21    //!!
 #define PosWbMAX                    22    //!!
+
+// Berschreibung Übergaben im Programm
+#define PosToEpSet                  0    //!!
+#define PosToEpMax                  1    //!!
+#define PosToMAX                    2    //!!
 
 // Berschreibung Grünbeck
 #define PosGB_CONSUMPTION           0    //!!
