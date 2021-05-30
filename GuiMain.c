@@ -644,9 +644,9 @@ int main(){
 					if(TAG_PVIState >= 1){
 						int TAG_PVIDCP1 = readRscp(PosPVIDCP1);
 						drawNumber(T1+30, 320, TAG_PVIDCP1, WATT, BLACK);
-						drawNumber(T1+30, 345, readRscp(PosPVIDCU2), VOLT, BLACK);
+						drawNumber(T1+30, 345, readRscp(PosPVIDCU1), VOLT, BLACK);
 						if(TAG_PVIDCP1 > 0){
-							double TAG_PVIDCI1 = readRscp(PosPVIDCI2);
+							double TAG_PVIDCI1 = readRscp(PosPVIDCI1);
 							int pviA = TAG_PVIDCI1/100;
 							int pviDotA = (TAG_PVIDCI1/100 - pviA) * 100;
 							int x = drawNumber(T1+30-5, 370, pviA, DOT, BLACK);
