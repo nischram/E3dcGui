@@ -20,6 +20,9 @@ gcc -g -o screenSaveHM  screenSaveHM.c
 
 int main()
 {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	signal(SIGINT, INThandler);
 
 	int  xres,yres;
