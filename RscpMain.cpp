@@ -17,7 +17,7 @@ g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cp
 #include <string>
 #include <limits>
 #include <ctime>
-#include "parameter.h"
+#include "checkPara.h"
 
 static int iSocket = -1;
 static int iAuthenticated = 0;
@@ -955,6 +955,9 @@ static void mainLoop(void)
 
 int main()
 {
+  //Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
   //Dateien erstellen
   makeCharRscp();
   writeRscp(PosPVI, 0);

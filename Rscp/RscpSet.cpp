@@ -9,6 +9,7 @@ g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cp
 #include "../Rscp/RscpTags.h"
 #include "../Rscp/SocketConnection.h"
 #include "../Rscp/AES.h"
+#include "../checkPara.h"
 #include "../Rscp/RWData.h"
 #include <cstdio>
 #include <iostream>
@@ -17,7 +18,6 @@ g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cp
 #include <string>
 #include <limits>
 #include <ctime>
-#include "../parameter.h"
 
 static int iSocket = -1;
 static int iAuthenticated = 0;
@@ -404,6 +404,9 @@ static void mainLoop(void)
 
 int main(int argc, char *argv[])
 {
+    //Parameter einbinden, checken oder default setzen
+  	checkDefinePara(0);
+
     // Set Mode
     if (strcmp(argv[1], "-wb")==0) {
       printf("Wallbox Set Parameter\n");

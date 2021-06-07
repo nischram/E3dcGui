@@ -1,4 +1,31 @@
 # Changelog Archiv
+V1.92 30.05.2021 [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Tracker 1 zeigt Strom und Spannung falsch  
+- [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Fehler behoben  
+
+V1.92 28.05.2021 in Version V1.91 das Programm "Rscp/wbCheckHM" vergessen  
+- Programm angepasst und die Funktion senden von HM zu WB erweitert um Stop und Phasen  
+
+V1.91 28.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Notstrom-Reserve des Speichers  
+- Für [Issue #58](https://github.com/nischram/E3dcGui/issues/58) kann nun die Reserve aktiviert oder eingestellt werden  
+- Für [Issue #59](https://github.com/nischram/E3dcGui/issues/59) Stop-Button im Setup-Menü  
+- Für [Issue #55](https://github.com/nischram/E3dcGui/issues/55) zur Wallbox kann jetzt die Anzahl der Phasen vorgewählt werden  
+- Für [Issue #56](https://github.com/nischram/E3dcGui/issues/56) kann jetzt eine Ladung gestoppt werden  
+
+V1.90 23.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Schriftgröße der Leistungswerte
+- Für Issue #58 Schriftgöße angepasset  
+
+V1.89 03.05.2021 Wallbox Daten an HM senden und auslesen
+- Wallbox-Werte an die HM senden
+- Wallbox-Parameter aus HM lesen und an WB senden
+
+V1.88 03.04.2021 Anleitung überarbeitet  
+
+V1.87 29.03.2021 Wallbox anzeigen o. steuern / Fehlerbehebung
+- Wallbox-Menü zur Anzeige und Steuerung
+- Fehlerkorrektur im Setup-Menü
+- kleine Fehlerkorrekturen
+- Changelog archiviert  
+
 V1.86 13.02.2021 Fehlerkorrektur für neuere Rasbain Versionen [Issue #48](https://github.com/nischram/E3dcGui/issues/48)
 - Issue #48
 - Anpassungen an der README

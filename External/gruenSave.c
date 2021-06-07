@@ -8,7 +8,7 @@
 #include <linux/input.h>
 #include <linux/ioctl.h>
 #include <sys/sysinfo.h>
-#include "../parameter.h"
+#include "../checkPara.h"
 #include "../Frame/framebuffer.c"
 #include "../Frame/DrawImage.h"
 #include "../Frame/DrawCorner.c"
@@ -27,6 +27,9 @@ void readWriteSendGB(char *name, char *unit, char *para, int pos, int ise)
 }
 void main()
 {
+  //Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
   char value[128];
   readWriteSendGB("Verbrauch", "l", GB_CONSUMPTION, PosGB_CONSUMPTION, ISE_GB_CONSUMPTION);
   readWriteSendGB("Regenerationsschritt", " ", GB_CURRENT_REGENERATION, PosGB_CURRENT_REGENERATION, ISE_GB_CURRENT_REGENERATION);

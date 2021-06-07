@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V1.93 30.05.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.00 06.06.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -61,21 +61,33 @@ git clone git://github.com/nischram/E3dcGui.git ~/E3dcGui
 ```
 
 ### Einstellungen vornehmen   
-In der Datei „parameter.h“ im Ordner E3dcGui kann nun alles eingestellt werden, was du zum nutzen der Software benötigst. Entweder öffnet man die Datei mit einem externen Editor. Hier können diverse Editoren zum Einsatz kommen, ich nutze auf meinem Mac „Atom“ und lade die Datei mit „Cyberduck“ runter. Unter Windows ist das runterladen und bearbeiten z.B. mit WinSCP möglich. Alternativ kann man die Datei direkt auf dem Raspberry bearbeiten, dies beschreibe ich jetzt.  
-Alle Befehle müssen mit Groß- und Kleinschreibung korrekt übernommen werden.
-Zuerst mit folgendem Befehl in den Ordner E3dcGui wechseln:
-
+Die Einstellungen die für deine individuelle Anwendung nötig ist, musst du in der "parameter.h" vornehmen. Bei der ersten Installation solltest du die Datei "parameter.h.temp" kopieren und dann deine Einstellung vornehmen. Parallel wir auch die parameterHM.h benötig und hierfür steht die "parameterHM.h.temp" zur Verfügung.  
+Um nicht versehentlich eine Vorhandene Datei zu überschreiben habe ich ein Programm erstellt mit dem du die Datei "parameter.h" kopieren kannst.
+Ins E3dcGui Verzeichnis wechseln:
 ```shell
 pi@raspberrypi:~ $  cd E3dcGui
 ```
+Parameter-Copy Programm kompilieren:
+```shell
+pi@raspberrypi:~/E3dcGui $ make copyPara
+```
+Parameter-Copy Programm starten:
+```shell
+pi@raspberrypi:~/E3dcGui $ ./copyPara
+```
+Nun werden auf Abfrage die beiden Dateien kopiert. Ggf. kannst du die Dateien auch selber kopieren.  
+__Achtung!__ Nur dann selber kopieren wenn noch keine Datei erstellt ist.
+Nun öffnet man die Datei "parameter.h" mit einem externen Editor. Hier können diverse Editoren zum Einsatz kommen, ich nutze auf meinem Mac „Atom“ und lade die Datei mit „Cyberduck“ runter. Unter Windows ist das runterladen und bearbeiten z.B. mit WinSCP möglich. Alternativ kann man die Datei direkt auf dem Raspberry bearbeiten, dies beschreibe ich jetzt.  
+Alle Befehle müssen mit Groß- und Kleinschreibung korrekt übernommen werden.
 Öffnen der Datei „parameter.h“ zum bearbeiten mit:
 
 ```shell
 pi@raspberrypi:~/E3dcGui $  nano parameter.h
 ```
-Es wird jetzt die Datei im Bearbeitungsprogramm „nano“ geöffnet und du kannst die Bearbeitung vornehmen.
+Es wird jetzt die Datei im Bearbeitungsprogramm „nano“ geöffnet und du kannst die Bearbeitung vornehmen.  
+Die Änderungen in der „parameter.h“ speicherst du mit „STRG“ + „O“ und beendet wird der Editor mit „STRG“ + „X“.
 
-Nach dem Bearbeiten müssen die Änderungen gespeichert werden. Die Änderungen in der „parameter.h“ speicherst du mit „STRG“ + „O“ und beendet wird der Editor mit „STRG“ + „X“.
+Die "parameterHM.h" muss nur dann bearbeitet werden, wenn die Anzeige für Homematic Variablen genutzt werden soll. Also bei Homematic_GUI = 1.
 
 ### Inhalt der „parameter.h“   
 Da ich in der Datei alles beschrieben habe, gehe ich jetzt nur auf das wichtigste Einstellungen ein.  
@@ -85,6 +97,7 @@ __Grundfunktionen__:
 #define GUI                         1
 #define E3DC_S10                    1
 #define Homematic_E3DC              1
+#define wallbox                     0
 #define Homematic_GUI               0
 #define wetterGui                   1
 #define Gruenbeck                   0
@@ -95,8 +108,15 @@ __Grundfunktionen__:
 ```
 Hier wird die Nutzung der Applikation definiert, also ob du das Display nutzen willst oder nicht und ob du eine Homematic anbinden willst oder nicht. Wenn du eine Funktion nutzen willst trag bitte eine „1“ ein sonst eine „0“.
 
+### Informationen zum Update
+Wenn du __nur__ an der parameter.h und ggf. an der parameterHM.h Änderungen vorgenommen hast, sollte ein update über git möglich sein.
+```shell
+git pull
+```
+Falls ich Äderungen an den oben genanten Dateien gemacht habe werden die parameter.h.temp oder die parameterHM.h.temp aktualisiert. Die Änderungen musst du selbstständig übernehmen. Damit du sehen kannst welche Parameter erforderlich sind, werden die neuen Parameter beim Start mit ./start angezeigt. Innerhalb der Programme werden diese Variablen dann mit einem default Wert gestartet.
+
 ### Zusätliche Software
-Vor dem ersten kompilieren der Applikation, musse auf dem Raspberry __WiringPi__ installiert werden. Eine Anleitung habe ich im Wiki unter [WiringPI einrichten](https://github.com/nischram/E3dcGui/wiki/WiringPI).  
+Vor dem ersten kompilieren der Applikation, muss auf dem Raspberry __WiringPi__ installiert werden. Eine Anleitung habe ich im Wiki unter [WiringPI einrichten](https://github.com/nischram/E3dcGui/wiki/WiringPI).  
 Auch muss zuvor __libcurl4__ installiert werden, wird für die Wetterdaten benötigt (Anleitung siehe unter "2. Wetteranzeige").  
 
 ### Speicherort RAMDisk einrichten  
@@ -331,6 +351,7 @@ Das Makefile ist so aufgebaut, dass jedes Programmteil auch einzeln Kompiliert w
 
 ```shell
 make       
+make copyPara
 make watchdog   
 make screenSave   
 make screenSaveHM   
@@ -341,9 +362,17 @@ make RscpMain
 make Rscp/RscpSet   
 make Rscp/wbCheckHM   
 make S10history/S10history   
+make External/LedMain   
+make External/gruenSave   
 make Frame/touchtest
 ```
-Diese Möglichkeit erspart zum Teil einiges an Zeit, wenn du eigene Änderungen testen möchtest.
+Diese Möglichkeit erspart zum Teil einiges an Zeit, wenn du eigene Änderungen testen möchtest.  
+Die einzel Aufrufe können auch kombiniert werden, z.B.: `make GuiMain screenSave`  
+Bei dem Standart `make` werden folgende Porgrammteile __nicht__ automatisch kompiliert:
+- External/LedMain  
+- External/gruenSave  
+- Frame/touchtest  
+Diese Programmteile müssen von Hand ausgeführt werden.
 
 ## Aktuelle Uhrzeit aus dem Internet holen
 Wenn der Watchdog den Pi neu startet, bleibt die Uhrzeit des Pi nicht Aktuell. Hier können schon mal ein paar Minuten Abweichung entstehen.
@@ -384,6 +413,7 @@ Hier eine tolle Idee das Raspberry-Display in die Wand einzulasse, so dass es b�
 
 ## Changelog
 ### Wichtige Ergänzungen
+V2.00 06.06.2021 Updatefähigkeit verbessert  
 V1.87 29.03.2021 Wallbox anzeigen o. steuern  
 V1.81 08.09.2020 WetterGui auf OpenWeatherMap.org umgestellt  
 V1.68 10.12.2017 Grünbeck softliQ SC18 eingebunden  
@@ -397,31 +427,12 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
-V1.92 30.05.2021 [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Tracker 1 zeigt Strom und Spannung falsch  
-- [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Fehler behoben  
-
-V1.92 28.05.2021 in Version V1.91 das Programm "Rscp/wbCheckHM" vergessen  
-- Programm angepasst und die Funktion senden von HM zu WB erweitert um Stop und Phasen  
-
-V1.91 28.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Notstrom-Reserve des Speichers  
-- Für [Issue #58](https://github.com/nischram/E3dcGui/issues/58) kann nun die Reserve aktiviert oder eingestellt werden  
-- Für [Issue #59](https://github.com/nischram/E3dcGui/issues/59) Stop-Button im Setup-Menü  
-- Für [Issue #55](https://github.com/nischram/E3dcGui/issues/55) zur Wallbox kann jetzt die Anzahl der Phasen vorgewählt werden  
-- Für [Issue #56](https://github.com/nischram/E3dcGui/issues/56) kann jetzt eine Ladung gestoppt werden  
-
-V1.90 23.05.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58) Schriftgröße der Leistungswerte
-- Für Issue #58 Schriftgöße angepasset
-
-V1.89 03.05.2021 Wallbox Daten an HM senden und auslesen
-- Wallbox-Werte an die HM senden
-- Wallbox-Parameter aus HM lesen und an WB senden
-
-V1.88 03.04.2021 Anleitung überarbeitet  
-
-V1.87 29.03.2021 Wallbox anzeigen o. steuern / Fehlerbehebung
-- Wallbox-Menü zur Anzeige und Steuerung
-- Fehlerkorrektur im Setup-Menü
-- kleine Fehlerkorrekturen
+V2.00 06.06.2021 [Issue #52](https://github.com/nischram/E3dcGui/issues/52) Updatefähigkeit verbessert  
+- Issue #52 parameter.h im .gitignore aktiviert und parameter.h.temp eingebunden
+- Schriftgröße fest auf 8x16 umgestellt  
+- Bei der Anzeige für Strom wurde die erste 0 nach dem Komma nicht angezeigt  
+- In der Ansicht Aktor / DHT die Schrift für Größe 8x16 angepasst  
+- Nur Programme die laufen werden beim ./stop beendet
 - Changelog archiviert  
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)

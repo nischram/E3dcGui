@@ -13,15 +13,10 @@
 #include <linux/kd.h>
 #include <linux/ioctl.h>
 #include <sys/sysinfo.h>
-#include "../parameter.h"
+#include "../checkPara.h"
 #include "../Frame/touch.h"
 #include "../Frame/touch.c"
-#ifdef FONT_8X8
-	#include "../Frame/framebuffer.c"
-#endif
-#ifdef FONT_8X16
-	#include "../Frame/framebuffer8x16.c"
-#endif
+#include "../Frame/framebuffer.c"
 #include "../Frame/DrawSkala.c"
 #include "../Frame/DrawLine.c"
 #include "../Frame/DrawSOC.c"
@@ -32,6 +27,9 @@
 
 //####################################
 int main(){
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	char OUT[128];
 	char wallboxSendNow[20], wallboxSendMode[20], wallboxSendCurrent[20], wallboxSendBtC[20], wallboxSendBbC[20], wallboxSendStop[20], wallboxSendPhC[20];
 	char WbMode[24],WbBtC[24],WbBbC[24],WbSet[24];

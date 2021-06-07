@@ -167,11 +167,11 @@ int drawDHTState(int DHTUse, int DHTPin, int DHTPosition, char *DHTName, int Lin
     }
     drawSquare(45+120,Line-17,225,54,WHITE);
     drawCorner(45+120,Line-17,225,54,GREY);
-    createData(205-30, Line-28, DHTName);
+    put_string(205-30, Line-18, DHTName, GREY);
     snprintf (OUT, (size_t)100, "Temperatur        %.1f %cC", DHTTemp, 248);
-    createData(205-30, Line-16, OUT);
+    put_string(205-30, Line-3, OUT, GREY);
     snprintf (OUT, (size_t)100, "Luftfeuchtigkeit  %.1f %%", DHTHum);
-    createData(205-30, Line-4, OUT);
+    put_string(205-30, Line+12, OUT, GREY);
   }
   else {
     drawSquare(45+80, Line,20,20,LTGREY);
@@ -182,11 +182,11 @@ int drawDHTState(int DHTUse, int DHTPin, int DHTPosition, char *DHTName, int Lin
 int makeDHTFrame()
 {
   if (useDHT == 1){
-    drawDHTFrame(DHT1Use, "Sensor 1", R1);
-    drawDHTFrame(DHT2Use, "Sensor 2", R2);
-    drawDHTFrame(DHT3Use, "Sensor 3", R3);
-    drawDHTFrame(DHT4Use, "Sensor 4", R4);
-    drawDHTFrame(DHT5Use, "Sensor 5", R5);
+    drawDHTFrame(DHT1Use, "Sensor 1", RP1);
+    drawDHTFrame(DHT2Use, "Sensor 2", RP2);
+    drawDHTFrame(DHT3Use, "Sensor 3", RP3);
+    drawDHTFrame(DHT4Use, "Sensor 4", RP4);
+    drawDHTFrame(DHT5Use, "Sensor 5", RP5);
     return 1;
   }
   return 0;
@@ -198,15 +198,15 @@ int makeDHTState()
     drawSquare(760,440,20,20,LIGHT_RED);
     drawCorner(760,440,20,20,WHITE);
     saveDHT(DHT1Use, DHT1Position, DHT1Pin);
-    drawDHTState(DHT1Use, DHT1Pin, DHT1Position, DHT1Name, R1);
+    drawDHTState(DHT1Use, DHT1Pin, DHT1Position, DHT1Name, RP1);
     saveDHT(DHT2Use, DHT2Position, DHT2Pin);
-    drawDHTState(DHT2Use, DHT2Pin, DHT2Position, DHT2Name, R2);
+    drawDHTState(DHT2Use, DHT2Pin, DHT2Position, DHT2Name, RP2);
     saveDHT(DHT3Use, DHT3Position, DHT3Pin);
-    drawDHTState(DHT3Use, DHT3Pin, DHT3Position, DHT3Name, R3);
+    drawDHTState(DHT3Use, DHT3Pin, DHT3Position, DHT3Name, RP3);
     saveDHT(DHT4Use, DHT4Position, DHT4Pin);
-    drawDHTState(DHT4Use, DHT4Pin, DHT4Position, DHT4Name, R4);
+    drawDHTState(DHT4Use, DHT4Pin, DHT4Position, DHT4Name, RP4);
     saveDHT(DHT5Use, DHT5Position,DHT5Pin);
-    drawDHTState(DHT5Use, DHT5Pin, DHT5Position, DHT5Name, R5);
+    drawDHTState(DHT5Use, DHT5Pin, DHT5Position, DHT5Name, RP5);
     //Read Daten Ende (grüner Punkt unten rechts)
     drawSquare(760,440,20,20,GREEN);
     drawCorner(760,440,20,20,WHITE);

@@ -276,52 +276,52 @@ int drawAktorFrame(int AktorTyp, int AktorPowerOn, int AktorPowerOff,
 							char *designation, char *AktorName, int Line)
 {
   char OUT[56];
-  drawSquare(405,Line-20,363,60,GREY);
-  drawCorner(405,Line-20,363,60,WHITE);
-  drawSquare(405+120,Line-17,240,54,WHITE);
-  drawCorner(405+120,Line-17,240,54,GREY);
-  put_string(405+6, Line+4, designation, WHITE);
+  drawSquare(405,Line-20,363,68,GREY);
+  drawCorner(405,Line-20,363,68,WHITE);
+  drawSquare(405+120,Line-17,240,62,WHITE);
+  drawCorner(405+120,Line-17,240,62,GREY);
+  put_string(405+6, Line, designation, WHITE);
   if (AktorTyp > 0){
-    createData(565-30, Line-36, AktorName);
+		put_string(565-30, Line-18, AktorName, GREY);
 		if (AktorTyp >= 11){
 			snprintf (OUT, (size_t)100, "On:  %s", AktorTimerOn);
-			createData(565+90, Line-22, OUT);
+			put_string(565+90, Line-3, OUT, GREY);
 			snprintf (OUT, (size_t)100, "Off: %s", AktorTimerOff);
-			createData(565+90, Line-10, OUT);
+			put_string(565+90, Line+12, OUT, GREY);
 		}
     if (AktorTyp == 1 || AktorTyp == 11){
-			put_string(405+6, Line-14, "\232berschuss", WHITE);
+			put_string(405+6, Line-16, "\232berschuss", WHITE);
       snprintf (OUT, (size_t)100, "On:  %i W", AktorPowerOn);
-      createData(565-30, Line-22, OUT);
+			put_string(565-30, Line-3, OUT, GREY);
       snprintf (OUT, (size_t)100, "Off: Bezug");
-      createData(565-30, Line-10, OUT);
+			put_string(565-30, Line+12, OUT, GREY);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
-      createData(565-30, Line+2, OUT);
+			put_string(565-30, Line+27, OUT, GREY);
     }
     else if (AktorTyp == 2 || AktorTyp == 12){
-			put_string(405+6, Line-14, "Solar", WHITE);
+			put_string(405+6, Line-16, "Solar", WHITE);
       snprintf (OUT, (size_t)100, "On:  %i W", AktorPowerOn);
-      createData(565-30, Line-22, OUT);
+			put_string(565-30, Line-3, OUT, GREY);
       snprintf (OUT, (size_t)100, "Off: %i W", AktorPowerOff);
-      createData(565-30, Line-10, OUT);
+			put_string(565-30, Line+12, OUT, GREY);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
-      createData(565-30, Line+2, OUT);
+			put_string(565-30, Line+27, OUT, GREY);
     }
 		else if (AktorTyp == 3 || AktorTyp == 13){
-			put_string(405+6, Line-14, "Battery", WHITE);
+			put_string(405+6, Line-16, "Battery", WHITE);
       snprintf (OUT, (size_t)100, "On:  > %i %%", AktorPercentOn);
-      createData(565-30, Line-22, OUT);
+			put_string(565-30, Line-3, OUT, GREY);
       snprintf (OUT, (size_t)100, "Off: < %i %%", AktorPercentOff);
-      createData(565-30, Line-10, OUT);
+			put_string(565-30, Line+12, OUT, GREY);
       snprintf (OUT, (size_t)100, "Min On: %i Off: %i Minuten", AktorMinOn, AktorMinOff);
-      createData(565-30, Line+2, OUT);
+			put_string(565-30, Line+27, OUT, GREY);
     }
 		else if (AktorTyp == 10){
-			put_string(405+6, Line-14, "Zeit", WHITE);
+			put_string(405+6, Line-16, "Zeit", WHITE);
       snprintf (OUT, (size_t)100, "On:  %s", AktorTimerOn);
-      createData(565-30, Line-22, OUT);
+			put_string(565-30, Line-3, OUT, GREY);
       snprintf (OUT, (size_t)100, "Off: %s", AktorTimerOff);
-      createData(565-30, Line-10, OUT);
+			put_string(565-30, Line+12, OUT, GREY);
     }
   }
   return 1;
@@ -369,15 +369,15 @@ int makeAktorFrame()
 {
   if (useAktor == 1){
     drawAktorFrame(Aktor1Typ, Aktor1PowerOn, Aktor1PowerOff, Aktor1PercentOn, Aktor1PercentOff,
-              Aktor1TimerOn, Aktor1TimerOff, Aktor1MinOn, Aktor1MinOff, "Aktor 1", Aktor1Name, R1);
+              Aktor1TimerOn, Aktor1TimerOff, Aktor1MinOn, Aktor1MinOff, "Aktor 1", Aktor1Name, RP1);
     drawAktorFrame(Aktor2Typ, Aktor2PowerOn, Aktor2PowerOff, Aktor2PercentOn, Aktor2PercentOff,
-              Aktor2TimerOn, Aktor2TimerOff, Aktor2MinOn, Aktor2MinOff, "Aktor 2", Aktor2Name, R2);
+              Aktor2TimerOn, Aktor2TimerOff, Aktor2MinOn, Aktor2MinOff, "Aktor 2", Aktor2Name, RP2);
     drawAktorFrame(Aktor3Typ, Aktor3PowerOn, Aktor3PowerOff, Aktor3PercentOn, Aktor3PercentOff,
-              Aktor3TimerOn, Aktor3TimerOff, Aktor3MinOn, Aktor3MinOff, "Aktor 3", Aktor3Name, R3);
+              Aktor3TimerOn, Aktor3TimerOff, Aktor3MinOn, Aktor3MinOff, "Aktor 3", Aktor3Name, RP3);
     drawAktorFrame(Aktor4Typ, Aktor4PowerOn, Aktor4PowerOff, Aktor4PercentOn, Aktor4PercentOff,
-              Aktor4TimerOn, Aktor4TimerOff, Aktor4MinOn, Aktor4MinOff, "Aktor 4", Aktor4Name, R4);
+              Aktor4TimerOn, Aktor4TimerOff, Aktor4MinOn, Aktor4MinOff, "Aktor 4", Aktor4Name, RP4);
     drawAktorFrame(Aktor5Typ, Aktor5PowerOn, Aktor5PowerOff, Aktor5PercentOn, Aktor5PercentOff,
-              Aktor5TimerOn, Aktor5TimerOff, Aktor5MinOn, Aktor5MinOff, "Aktor 5", Aktor5Name, R5);
+              Aktor5TimerOn, Aktor5TimerOff, Aktor5MinOn, Aktor5MinOff, "Aktor 5", Aktor5Name, RP5);
     return 1;
   }
   return 0;
@@ -388,11 +388,11 @@ int makeAktorState()
     int PowerGrid = readRscp(PosGrid);
     int PowerPVI = readRscp(PosPVI);
     int BatterySOC = readRscp(PosSOC);
-    drawAktorState(Aktor1Typ, Aktor1Prio, Aktor1Pin, R1, PowerGrid, PowerPVI, BatterySOC);
-    drawAktorState(Aktor2Typ, Aktor2Prio, Aktor2Pin, R2, PowerGrid, PowerPVI, BatterySOC);
-    drawAktorState(Aktor3Typ, Aktor3Prio, Aktor3Pin, R3, PowerGrid, PowerPVI, BatterySOC);
-    drawAktorState(Aktor4Typ, Aktor4Prio, Aktor4Pin, R4, PowerGrid, PowerPVI, BatterySOC);
-    drawAktorState(Aktor5Typ, Aktor5Prio, Aktor5Pin, R5, PowerGrid, PowerPVI, BatterySOC);
+    drawAktorState(Aktor1Typ, Aktor1Prio, Aktor1Pin, RP1, PowerGrid, PowerPVI, BatterySOC);
+    drawAktorState(Aktor2Typ, Aktor2Prio, Aktor2Pin, RP2, PowerGrid, PowerPVI, BatterySOC);
+    drawAktorState(Aktor3Typ, Aktor3Prio, Aktor3Pin, RP3, PowerGrid, PowerPVI, BatterySOC);
+    drawAktorState(Aktor4Typ, Aktor4Prio, Aktor4Pin, RP4, PowerGrid, PowerPVI, BatterySOC);
+    drawAktorState(Aktor5Typ, Aktor5Prio, Aktor5Pin, RP5, PowerGrid, PowerPVI, BatterySOC);
     return 1;
   }
   return 0;

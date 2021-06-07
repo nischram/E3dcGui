@@ -9,7 +9,7 @@ g++ -O1 Watchdog.cpp -o watchdog
 #include <fstream>
 #include <ctime>
 #include <string.h>
-#include "parameter.h"
+#include "checkPara.h"
 
 #define WDfail                    0
 #define WDwait                    1
@@ -138,6 +138,9 @@ int ping (char* respons)
 
 int main()
 {
+    //Parameter einbinden, checken oder default setzen
+  	checkDefinePara(0);
+
     int counterReboot = 0,counterRebootHM = 0,counterRebootGUI = 0,resetCounter = 0;
     int resetTime = resetMin *60 / sleepTimeWD;
     int jump = 0;

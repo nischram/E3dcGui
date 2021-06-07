@@ -9,8 +9,7 @@ gcc -g -o start  start.c
 #include <time.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
-#include "parameter.h"
-#include "parameterHM.h"
+#include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
@@ -20,6 +19,9 @@ gcc -g -o start  start.c
 
 int main()
 {
+  //Parameter einbinden, checken oder default setzen
+	checkDefinePara(1);
+
   sleep(2);
   if(GUI == 1){
     if(E3DC_S10 ==1){

@@ -52,7 +52,7 @@
 #include <linux/input.h>
 #include <linux/ioctl.h>
 #include <sys/sysinfo.h>
-#include "../parameter.h"
+#include "../checkPara.h"
 #include "../Frame/framebuffer.c"
 #include "../Frame/DrawImage.h"
 #include "../Frame/DrawCorner.c"
@@ -381,6 +381,8 @@ int PVI_TRACKER_Color()
 
 int main(void)
 {
+  //Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
 
   ws2811_return_t ret;
   setup_handlers();

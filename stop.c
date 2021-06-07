@@ -10,8 +10,7 @@ gcc -g -o stop  stop.c
 #include <time.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
-#include "parameter.h"
-#include "parameterHM.h"
+#include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
@@ -21,6 +20,9 @@ gcc -g -o stop  stop.c
 
 int main()
 {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	signal(SIGINT, INThandler);
 
 	int  xres,yres,x;
@@ -47,5 +49,7 @@ int main()
   killall();
 	screenOn();
 	drawSquare(360,3,440,240,BLACK);
-	system("killall -9 screenSave screenSaveHM");
+	system("setterm -cursor on");
+	if(pidCheck("screenSaveHM") != 0) system("killall -9 screenSaveHM");
+	if(pidCheck("screenSave") != 0) system("killall -9 screenSave");
 }

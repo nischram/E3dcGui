@@ -10,8 +10,7 @@ gcc -g -o screenSaveHM  screenSaveHM.c
 #include <time.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
-#include "parameter.h"
-#include "parameterHM.h"
+#include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
@@ -34,8 +33,11 @@ int main()
 
 	int screenChange;
 
-	system("fbset -fb /dev/fb0 -depth 16");    //Umschalten auf 16Bit Display
-	system("setterm -cursor off");             //Courser Abschalten
+	//Umschalten auf 16Bit Display
+	char OUT[128];
+	snprintf (OUT, (size_t)128, "fbset -fb %s -depth 16", framebuffer_File);
+	system(OUT);
+	//system("setterm -cursor off");             //Courser Abschalten
 
 	int screenShutdown = ShutdownRun;
 

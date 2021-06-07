@@ -17,16 +17,10 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include <linux/ioctl.h>
 #include <sys/sysinfo.h>
 #include <wiringPi.h>
-#include "parameter.h"
-#include "parameterHM.h"
+#include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
-#ifdef FONT_8X8
-	#include "Frame/framebuffer.c"
-#endif
-#ifdef FONT_8X16
-	#include "Frame/framebuffer8x16.c"
-#endif
+#include "Frame/framebuffer.c"
 #include "Frame/DrawSkala.c"
 #include "Frame/DrawLine.c"
 #include "Frame/DrawSOC.c"
@@ -43,6 +37,9 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 
 //####################################
 int main(){
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	picturePosition();
 	writeScreen(ScreenCounter, 0);
 	makeAktor();
@@ -63,7 +60,7 @@ int main(){
 
 	int rawX, rawY, rawPressure, scaledX, scaledY;
 
-	int GuiTime, change = 0, changeStop = 0, saveGBstate = 0;
+	int GuiTime, change = 1, changeStop = 0, saveGBstate = 0;
 	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64], gruenTime[24], changepf[20];
   char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;

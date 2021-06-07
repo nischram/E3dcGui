@@ -281,6 +281,26 @@
 #define DHT5Position                12   //!!
 #define DHT11MAX                    15   //!!
 
+//Spalten
+#define  SP0                        40   //!!
+#define  SP1                        120  //!!
+#define  SP2                        200  //!!
+#define  SP3                        280  //!!
+#define  SP4                        360  //!!
+#define  SP5                        450  //!!
+#define  SP6                        530  //!!
+#define  SP7                        610  //!!
+#define  SP8                        690  //!!
+//Reihen
+#define  RP1                        110  //!!
+#define  RP2                        182  //!!
+#define  RP3                        254  //!!
+#define  RP4                        326  //!!
+#define  RP5                        398  //!!
+//Größe
+#define  FPw                        50   //!!
+#define  FPhw                       25   //!!
+
 //#######################################
 
 #endif // __DEFINE_H_

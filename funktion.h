@@ -248,7 +248,7 @@ int drawMainScreen()
       DrawImage("Wallbox", Picture5, PictureLine1);
     DrawImage("MonitorImage", Picture6, PictureLine1);
   }
-  if(useAktor == 1 && useDHT == 1)
+  if(useAktor == 1 || useDHT == 1)
     DrawImage("SmartImage", Picture7, PictureLine1);
   if(Homematic_GUI ==1)
     DrawImage("HMImage", Picture8, PictureLine1);
@@ -316,7 +316,7 @@ int drawNumber(int x, int y, int input, int typ, int col){
     input = input - c * 100;
   }
   int d = input / 10;
-  if(d > 0 || num == 1){
+  if(d > 0 || num == 1 || typ == AMP){
     drawNo(x,y,d,col);
     num = 1;
   }
@@ -695,10 +695,27 @@ int madeBy(char *OUT){
 }
 
 //Killen der Applikationen
+int pidCheck(char process[20])
+{
+	char line[8], batch[100];
+  int pid = 0;
+  snprintf(batch, sizeof(batch), "pidof -s %s", process);
+	FILE *cmd = popen(batch, "r");
+    fgets(line, 8, cmd);
+  	pid = strtoul(line, NULL, 10);
+	pclose(cmd);
+  //printf("PID of %s %ld\n", process, pid);
+	return pid;
+}
+
 int killall()
 {
-  system("killall -9 GuiMain RscpMain watchdog wbCheckHM");
-  system("sudo killall LedMain");
+  if(pidCheck("GuiMain") != 0) system("killall -9 GuiMain");
+  if(pidCheck("RscpMain") != 0) system("killall -9 RscpMain");
+  if(pidCheck("watchdog") != 0) system("killall -9 watchdog");
+  if(pidCheck("wbCheckHM") != 0) system("killall -9 wbCheckHM");
+  if(pidCheck("LedMain") != 0) system("sudo killall gruenSave");
+  if(pidCheck("gruenSave") != 0) system("killall gruenSave");
 }
 
 //Hintergrundbeleuhtung ausschalten

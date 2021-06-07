@@ -8,7 +8,6 @@
 #define GUI                         1         //Wichtig!    // Wenn die RSCP-Applikation ohne Display genutzt werden soll 0, wenn das Display genutzt wird 1
 #define framebuffer_File            "/dev/fb0"              //Wichtig wenn GUI=1!    // Deitei in der die Parameter zum Display gespeichert werden Speicherort abfragen "ls /dev/" meistens "fb0"
 #define touch_File                  "/dev/input/event0"     //Wichtig wenn GUI=1!    // Deitei in der die Parameter zur Touchfunktion gespeichert werden Speicherort abfragen "ls /dev/input/" meistens "event0" kann aber variieren wenn Tastatur / Maus angeschschlossen sind. Auslesen der Datei mit: "udevadm info --name=/dev/input/eventX --attribute-walk" X ersetzen mit 0...7 etc.
-#define FONT_8X16                    // Schriftgöße einstellen "FONT_8X8" = Normal, "FONT_8X16" = Größer
 
 //#######################################
 //### E3DC S10 Einstellungen ###
@@ -21,27 +20,28 @@
 #define AES_PASS                    "1234567890"            // RSCP-Schlüssel wie am Display vom S10 eingestellt
 //#######################################
 //### Homematic Einstellungen für RSCP-Applikation ###
-#define Homematic_E3DC              1         //Wichtig!    // Sollen die Daten zur Homematic gesendet werden? Daten senden 1 eintragen sonst 0
+#define Homematic_E3DC              0         //Wichtig!    // Sollen die Daten zur Homematic gesendet werden? Daten senden 1 eintragen sonst 0
 #define HM_IP                       "192.168.178.yyy"       // IP-Adresse von der Homematic
 #define HM_Intervall                30                      // Sendeintervall der E3DC Daten zur Homematic und Abfrageintevall für Display
 // ISE-ID der diversen Systemvariablen
-#define TAG_EMS_ISE_POWER_PV        38872
-#define TAG_EMS_ISE_POWER_BAT       38873
-#define TAG_EMS_ISE_POWER_HOME      38874
-#define TAG_EMS_ISE_POWER_GRID      38947
-#define TAG_EMS_ISE_POWER_NET_IN    38875                   // Die Homematic kann keine negativen Werte auswerten somit wird NetIn und NetOut benötigt
-#define TAG_EMS_ISE_POWER_NET_OUT   38876
-#define TAG_BAT_ISE_SOC             38878
-#define TAG_EMS_ISE_UNIXTIME        38946
+#define TAG_EMS_ISE_POWER_PV        0                // ISE_ID_POWER_PV
+#define TAG_EMS_ISE_POWER_BAT       0                // ISE_ID_POWER_BAT
+#define TAG_EMS_ISE_POWER_HOME      0                // ISE_ID_POWER_HOME
+#define TAG_EMS_ISE_POWER_GRID      0                // ISE_ID_POWER_GRID
+        // Die Homematic kann keine negativen Werte nicht so gut auswerten somit wird NetIn und NetOut eine Option.
+#define TAG_EMS_ISE_POWER_NET_IN    0                // ISE_ID_POWER_NET_IN
+#define TAG_EMS_ISE_POWER_NET_OUT   0                // ISE_ID_POWER_NET_OUT
+#define TAG_BAT_ISE_SOC             0                // ISE_ID_SOC
+#define TAG_EMS_ISE_UNIXTIME        0                // ISE_ID_UNIXTIME
 #define sendTime                    0                       // Wenn der Zeitstempel gesendet werden soll =1; wenn die HM diesen Berechnen soll =0
-#define ISE_TIMESTAMP_HM            39619
+#define ISE_TIMESTAMP_HM            0                // ISE_ID_TIMESTAMP_HM
 //Wenn vorhandene Bitte für Additional (Externe-Quelle) ein 1, sonst 0 eintragen.
 #define Additional                  0
-#define TAG_EMS_ISE_POWER_ADD       38877
+#define TAG_EMS_ISE_POWER_ADD       0                // ISE_ID_POWER_ADD
 //Wenn vorhandene Bitte für die Wallbox ein 1, sonst 0 eintragen.
 #define Wallbox                     0
-#define TAG_EMS_ISE_POWER_WB_ALL    38879
-#define TAG_EMS_ISE_POWER_WB_SOLAR  38880
+#define TAG_EMS_ISE_POWER_WB_ALL    0                // ISE_ID_POWER_WB_ALL
+#define TAG_EMS_ISE_POWER_WB_SOLAR  0                // ISE_ID_POWER_WB_SOLAR
 #define TAG_EMS_ISE_WB_CURRENT      0                // ISE_ID Maximaler Ladestrom
 #define TAG_EMS_ISE_WB_MODE         0                // ISE_ID Sonnenmodus / Mischmodus
 #define TAG_EMS_ISE_WB_CHARGE       0                // ISE_ID Auto lädt / Auto lädt nicht
@@ -63,15 +63,15 @@
 #define Seriennummer                0
 #define Autarky                     0
 #define Eigenstrom                  0
-#define TAG_EMS_ISE_SERIAL_NUMBER   38881
-#define TAG_EMS_ISE_AUTARKY         38882
-#define TAG_EMS_ISE_SELFCON         38883
+#define TAG_EMS_ISE_SERIAL_NUMBER   0                // ISE_ID_SERIAL_NUMBER
+#define TAG_EMS_ISE_AUTARKY         0                // ISE_ID_AUTARKY
+#define TAG_EMS_ISE_SELFCON         0                // ISE_ID_SELFCON
 //Wieviele Tracker am Wechselrichter sind belegt, 1 oder 2
 #define PVI_TRACKER                 2
 //Weclche Werte sollen vom Tracker/ von den Trackern abgefragt werden
 #define TRACKER_POWER               1
-#define TAG_EMS_ISE_TRACKER_1       38884
-#define TAG_EMS_ISE_TRACKER_2       38885
+#define TAG_EMS_ISE_TRACKER_1       0                // ISE_ID_TRACKER_1
+#define TAG_EMS_ISE_TRACKER_2       0                // ISE_ID_TRACKER_2
 #define TRACKER_VOLTAGE             1
 #define TRACKER_CURRENT             1
 //Abfragen der History Values

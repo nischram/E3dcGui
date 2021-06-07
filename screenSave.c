@@ -10,8 +10,7 @@ gcc -g -o screenSave  screenSave.c
 #include <time.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
-#include "parameter.h"
-#include "parameterHM.h"
+#include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
 #include "Frame/framebuffer.c"
@@ -21,6 +20,9 @@ gcc -g -o screenSave  screenSave.c
 
 int main()
 {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	picturePosition();
 	makeScreen();
 	makeLegende();
@@ -117,25 +119,25 @@ int main()
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
 
-	int buttonCordsSD[4] = {S1,R2-20,180,30};
+	int buttonCordsSD[4] = {SP1,RP2-20,180,30};
 	int buttonTimerSD = mymillis();
-	int buttonCordsSDN[4] = {S1,R2-20,180,30};
+	int buttonCordsSDN[4] = {SP1,RP2-20,180,30};
 	int buttonTimerSDN = mymillis();
-	int buttonCordsSRS[4] = {S1,R3-20,180,30};
+	int buttonCordsSRS[4] = {SP1,RP3-20,180,30};
 	int buttonTimerSRS = mymillis();
-	int buttonCordsHRS[4] = {S1,R4-20,180,30};
+	int buttonCordsHRS[4] = {SP1,RP4-20,180,30};
 	int buttonTimerHRS = mymillis();
-	int buttonCordsSStop[4] = {S1,R5-20,180,30};
+	int buttonCordsSStop[4] = {SP1,RP5-20,180,30};
 	int buttonTimerSStop = mymillis();
-	int buttonCordsBrigh25[4] = {(S4+105),(R1),(Fw+6),(21+3)};
+	int buttonCordsBrigh25[4] = {(SP4+105),(RP1),(FPw+6),(21+3)};
 	int buttonTimerBrigh25 = mymillis();
-	int buttonCordsBrigh76[4] = {(S4+160),(R1),(Fw+6),(21+3)};
+	int buttonCordsBrigh76[4] = {(SP4+160),(RP1),(FPw+6),(21+3)};
 	int buttonTimerBrigh76 = mymillis();
-	int buttonCordsBrigh150[4] = {(S4+215),(R1),(Fw+6),(21+3)};
+	int buttonCordsBrigh150[4] = {(SP4+215),(RP1),(FPw+6),(21+3)};
 	int buttonTimerBrigh150 = mymillis();
-	int buttonCordsBrigh255[4] = {(S4+270),(R1),(Fw+6),(21+3)};
+	int buttonCordsBrigh255[4] = {(SP4+270),(RP1),(FPw+6),(21+3)};
 	int buttonTimerBrigh255 = mymillis();
-	int buttonCordsPIR[4] = {(S6-20), R2,(Fw+6),(21+3)};
+	int buttonCordsPIR[4] = {(SP6-20), RP2,(FPw+6),(21+3)};
 	int buttonTimerPIR = mymillis();
 
 	int buttonCordsLeSOC[4] = {364,438,50,30};
@@ -704,13 +706,15 @@ int main()
 						WbCurrent = readRscpWb(PosWbCurrent);
 						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 						else snprintf (WbMode, (size_t)128, "-sonne");
-						if(readRscpWb(PosWbBtC)==1) snprintf (WbBtC, (size_t)128, "-BtCno");
+						if(readRscpWb(PosWbBtC)==1) {
+							snprintf (WbBtC, (size_t)128, "-BtCno");
+							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
+							else snprintf (WbBbC, (size_t)128, "-BbCyes");
+						}
 						else {
 							snprintf (WbBtC, (size_t)128, "-BtCyes");
 							snprintf (WbBbC, (size_t)128, "-BbCno");
 						}
-						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-						else snprintf (WbBbC, (size_t)128, "-BbCyes");
 						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
 						system(OUT);
 						sleep(2);
