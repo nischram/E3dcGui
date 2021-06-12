@@ -714,7 +714,7 @@ int killall()
   if(pidCheck("RscpMain") != 0) system("killall -9 RscpMain");
   if(pidCheck("watchdog") != 0) system("killall -9 watchdog");
   if(pidCheck("wbCheckHM") != 0) system("killall -9 wbCheckHM");
-  if(pidCheck("LedMain") != 0) system("sudo killall gruenSave");
+  if(pidCheck("LedMain") != 0) system("sudo killall LedMain");
   if(pidCheck("gruenSave") != 0) system("killall gruenSave");
 }
 

@@ -140,22 +140,26 @@ int main()
 	int buttonCordsPIR[4] = {(SP6-20), RP2,(FPw+6),(21+3)};
 	int buttonTimerPIR = mymillis();
 
-	int buttonCordsLeSOC[4] = {364,438,50,30};
+	int buttonCordsLeSOC[4] = {LF01,438,50,30};
 	int buttonTimerLeSOC = mymillis();
-	int buttonCordsLeSolar[4] = {417,438,50,30};
+	int buttonCordsLeSolar[4] = {LF02,438,50,30};
 	int buttonTimerLeSolar = mymillis();
-	int buttonCordsLeHome[4] = {470,438,50,30};
+	int buttonCordsLeHome[4] = {LF03,438,50,30};
 	int buttonTimerLeHome = mymillis();
-	int buttonCordsLeNetIn[4] = {523,438,50,30};
+	int buttonCordsLeNetIn[4] = {LF04,438,50,30};
 	int buttonTimerLeNetIn = mymillis();
-	int buttonCordsLeNetOut[4] = {576,438,50,30};
+	int buttonCordsLeNetOut[4] = {LF05,438,50,30};
 	int buttonTimerLeNetOut = mymillis();
-	int buttonCordsLeBatIn[4] = {629,438,50,30};
+	int buttonCordsLeBatIn[4] = {LF06,438,50,30};
 	int buttonTimerLeBatIn = mymillis();
-	int buttonCordsLeBatOut[4] = {682,438,50,30};
+	int buttonCordsLeBatOut[4] = {LF07,438,50,30};
 	int buttonTimerLeBatOut = mymillis();
-	int buttonCordsLeADD[4] = {735,438,50,30};
+	int buttonCordsLeADD[4] = {LF08,438,50,30};
 	int buttonTimerLeADD = mymillis();
+	int buttonCordsLeWbAll[4] = {LF09,438,50,30};
+	int buttonTimerLeWbAll = mymillis();
+	int buttonCordsLeWbSolar[4] = {LF10,438,50,30};
+	int buttonTimerLeWbSolar = mymillis();
 
 	int buttonCordsMinus10[4] = {WBCURX-58-58-58, WBCURY,54,30};
 	int buttonTimerMinus10 = mymillis();
@@ -432,6 +436,24 @@ int main()
 						}
 					}
 				}
+				if(Wallbox == 1){
+					if((scaledX  > buttonCordsLeWbAll[X] && scaledX < (buttonCordsLeWbAll[X]+buttonCordsLeWbAll[W])) && (scaledY > buttonCordsLeWbAll[Y] && scaledY < (buttonCordsLeWbAll[Y]+buttonCordsLeWbAll[H]))){
+						if (mymillis() - buttonTimerLeWbAll > 300){
+							buttonTimerLeWbAll = mymillis();
+							changeLegende(WbAll);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+					}
+					if((scaledX  > buttonCordsLeWbSolar[X] && scaledX < (buttonCordsLeWbSolar[X]+buttonCordsLeWbSolar[W])) && (scaledY > buttonCordsLeWbSolar[Y] && scaledY < (buttonCordsLeWbSolar[Y]+buttonCordsLeWbSolar[H]))){
+						if (mymillis() - buttonTimerLeWbSolar > 300){
+							buttonTimerLeWbSolar = mymillis();
+							changeLegende(WbSolar);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+						}
+					}
+				}
 				break; // ScreenLangzeit
 			}
 			case ScreenSetup:{
@@ -455,8 +477,8 @@ int main()
 						killall();
 						system("/home/pi/E3dcGui/start &");
 						drawSquare(2,2,800,480,LTGREY);
-						system("sudo killall -9 screenSaveHM");
-						system("killall -9 screenSave");
+						if(pidCheck("screenSaveHM") != 0) system("killall -9 screenSaveHM");
+						if(pidCheck("screenSave") != 0) system("killall -9 screenSave");
 						return 0;
 					}
 				}
@@ -470,8 +492,8 @@ int main()
 						killall();
 						drawSquare(2,2,800,480,BLACK);
 						system("sudo reboot");
-						system("sudo killall -9 screenSaveHM");
-						system("killall -9 screenSave");
+						if(pidCheck("screenSaveHM") != 0) system("killall -9 screenSaveHM");
+						if(pidCheck("screenSave") != 0) system("killall -9 screenSave");
 						return 0;
 					}
 				}
@@ -539,7 +561,8 @@ int main()
 							sleep (2);
 							drawSquare(2,2,800,480,BLACK);
 							system("sudo shutdown -h now");
-							system("killall -9 screenSave screenSaveHM");
+							if(pidCheck("screenSaveHM") != 0) system("killall -9 screenSaveHM");
+							if(pidCheck("screenSave") != 0) system("killall -9 screenSave");
 							return 0;
 						}
 					}

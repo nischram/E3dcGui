@@ -45,7 +45,20 @@
 #define BatIn                       5    //!!
 #define BatOut                      6    //!!
 #define ADD                         7    //!!
-#define LegendeMAX                  8    //!!
+#define WbSolar                     8    //!!
+#define WbAll                       9    //!!
+#define LegendeMAX                  10   //!!
+
+#define LF01                        258  //!!
+#define LF02                        311  //!!
+#define LF03                        364  //!!
+#define LF04                        417  //!!
+#define LF05                        470  //!!
+#define LF06                        523  //!!
+#define LF07                        576  //!!
+#define LF08                        629  //!!
+#define LF09                        682  //!!
+#define LF10                        735  //!!
 
 #define UnixtimeE3dc                0    //!!
 #define UnixtimeHM                  1    //!!

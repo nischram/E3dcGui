@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         printf("Fehler: parameter.h ist nicht vorhanden.\n        Du musst die Datei erstellen.\n");
         printf("Oder soll jetzt kopiert werden? [j/n] :");
         c = getchar();
+        getchar();
         if(c == 'j' || c == 'J' || c == 'y' || c == 'Y'){
           system("cp parameter.h.temp parameter.h");
           printf("Die Datei wurde aus der 'parameter.h.temp' kopiert\n        und kann nun bearbeitet werden.\n");

@@ -359,69 +359,87 @@ int main(){
 //####################################################
 			//Langzeit Grafik erstellen
 			case ScreenLangzeit:{
-				GuiTime = RscpTime;
+				GuiTime = 0;
 	 		  //Legende
 				int Legende [LegendeMAX];
 
 				Legende[SOC] = readLegende(SOC);
 				if (Legende[SOC] == 0)
-					drawSquare(364,443,50,20, LTGREY);
+					drawSquare(LF01,443,50,20, LTGREY);
 				else
-		 			drawSquareRGB(364,443,50,20, 64, 134, 64);
-				put_string(366,449," SOC", WHITE);
+		 			drawSquareRGB(LF01,443,50,20, 64, 134, 64);
+				put_string(LF01+2,443," SOC", WHITE);
 
 				Legende[Solar] = readLegende(Solar);
 	 			if (Legende[Solar] == 0)
-	 				drawSquare(417,443,50,20, LTGREY);
+	 				drawSquare(LF02,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(417,443,50,20, 225, 122, 34);
-	 			put_string(419,449,"Solar", WHITE);
+	 				drawSquareRGB(LF02,443,50,20, 225, 122, 34);
+	 			put_string(LF02+2,443,"Solar", WHITE);
 
 				Legende[Home] = readLegende(Home);
 	 			if (Legende[Home] == 0)
-	 				drawSquare(470,443,50,20, LTGREY);
+	 				drawSquare(LF03,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(470,443,50,20, 225, 30, 30);
-				put_string(471,449," Home", WHITE);
+	 				drawSquareRGB(LF03,443,50,20, 225, 30, 30);
+				put_string(LF03+1,443," Home", WHITE);
 
 				Legende[NetIn] = readLegende(NetIn);
 	 			if (Legende[NetIn] == 0)
-	 				drawSquare(523,443,50,20, LTGREY);
+	 				drawSquare(LF04,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(523,443,50,20, 0, 172, 255);
-	 			put_string(526,449,"NetIn", WHITE);
+	 				drawSquareRGB(LF04,443,50,20, 0, 172, 255);
+	 			put_string(LF04+3,443,"NetIn", WHITE);
 
 				Legende[NetOut] = readLegende(NetOut);
 	 			if (Legende[NetOut] == 0)
-	 				drawSquare(576,443,50,20, LTGREY);
+	 				drawSquare(LF05,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(576,443,50,20, 0, 0, 172);
-	 			put_string(577,449,"NetOut", WHITE);
+	 				drawSquareRGB(LF05,443,50,20, 0, 0, 172);
+	 			put_string(LF05+1,443,"NetOut", WHITE);
 
 				Legende[BatIn] = readLegende(BatIn);
 	 			if (Legende[BatIn] == 0)
-	 				drawSquare(629,443,50,20, LTGREY);
+	 				drawSquare(LF06,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(629,443,50,20, 0, 225, 64);
-	 			put_string(632,449,"BatIn", WHITE);
+	 				drawSquareRGB(LF06,443,50,20, 0, 225, 64);
+	 			put_string(LF06+3,443,"BatIn", WHITE);
 
 				Legende[BatOut] = readLegende(BatOut);
 	 			if (Legende[BatOut] == 0)
-	 				drawSquare(682,443,50,20, LTGREY);
+	 				drawSquare(LF07,443,50,20, LTGREY);
 	 			else
-	 				drawSquareRGB(682,443,50,20, 0, 172, 0);
-	 			put_string(683,449,"BatOut", WHITE);
+	 				drawSquareRGB(LF07,443,50,20, 0, 172, 0);
+	 			put_string(LF07+1,443,"BatOut", WHITE);
 
 				if(Additional == 1 ){
 					Legende[ADD] = readLegende(ADD);
 		 			if (Legende[ADD] == 0)
-		 				drawSquare(735,443,50,20, LTGREY);
+		 				drawSquare(LF08,443,50,20, LTGREY);
 		 			else
-		 				drawSquareRGB(735,443,50,20, 172, 0, 172);
-		 			put_string(737,449," ADD", WHITE);
+		 				drawSquareRGB(LF08,443,50,20, 172, 0, 172);
+		 			put_string(LF08+2,443," ADD", WHITE);
 				}
 				else {
 					Legende[ADD] = 0;
+				}
+				if(Wallbox == 1 ){
+					Legende[WbSolar] = readLegende(WbSolar);
+					Legende[WbAll] = readLegende(WbAll);
+					if (Legende[WbAll] == 0)
+		 				drawSquare(LF09,443,50,20, LTGREY);
+		 			else
+		 				drawSquareRGB(LF09,443,50,20, 0, 234, 234);
+		 			put_string(LF09+2,443,"WBAll", WHITE);
+		 			if (Legende[WbSolar] == 0)
+		 				drawSquare(LF10,443,50,20, LTGREY);
+		 			else
+		 				drawSquareRGB(LF10,443,50,20, 234, 234, 0);
+		 			put_string(LF10+2,443,"WbSun", WHITE);
+				}
+				else {
+					Legende[WbSolar] = 0;
+					Legende[WbAll] = 0;
 				}
 
 	 			if(counter == 0){
@@ -470,6 +488,14 @@ int main(){
 	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/Add900.txt");
 	 					drawLine(Path, 225, 30, 30, PowerMax);
 	 				}
+					if(Legende[WbAll] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/WBAll900.txt");
+	 					drawLine(Path, 0, 234, 234, PowerMax);
+	 				}
+					if(Legende[WbSolar] == 1){
+	 					snprintf (Path, (size_t)100, "/home/pi/E3dcGui/Data/WBSolar900.txt");
+	 					drawLine(Path, 234, 234, 0, PowerMax);
+	 				}
 	 				drawSquareRGB(783-x24h, 430-330, 1, 330, 255, 172, 64);								//Ziechnen der 0:00 Uhr Linie in den Langzeitwerten
 					writeScreen(ScreenCounter, 60);
 				}
@@ -484,11 +510,11 @@ int main(){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
 						drawMainScreen();
-						drawSquare(WB1,R1-20,740,353,GREY);
-						drawCorner(WB1,R1-20,740,353,WHITE);
-						drawSquare(WB1+3,R1+40,734,290,WHITE);
-						drawCorner(WB1+3,R1+40,734,290,GREY);
-						put_string(370, R1+4, "Wallbox", WHITE);
+						drawSquare(WB1,RP1-20,740,353,GREY);
+						drawCorner(WB1,RP1-20,740,353,WHITE);
+						drawSquare(WB1+3,RP1+40,734,290,WHITE);
+						drawCorner(WB1+3,RP1+40,734,290,GREY);
+						put_string(370, RP1+4, "Wallbox", WHITE);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -611,28 +637,28 @@ int main(){
 					if(screenState == ScreenOn){
 						drawMainScreen();
 						// Grafik für Tracker1
-						drawSquare(T1,R1-20,160,340,GREY);
-						drawCorner(T1,R1-20,160,340,WHITE);
-						drawSquare(T1+3,R1+40,154,277,WHITE);
-						drawCorner(T1+3,R1+40,154,277,GREY);
-						DrawImage("EpReserve/Tracker1", T1+20, R1-5);
+						drawSquare(T1,RP1-20,160,340,GREY);
+						drawCorner(T1,RP1-20,160,340,WHITE);
+						drawSquare(T1+3,RP1+40,154,277,WHITE);
+						drawCorner(T1+3,RP1+40,154,277,GREY);
+						DrawImage("EpReserve/Tracker1", T1+20, RP1-5);
 						DrawImage("PV_Modul_aktiv", T1+20, 200);
 						// Grafik für Tracker2
-						drawSquare(T2,R1-20,160,340,GREY);
-						drawCorner(T2,R1-20,160,340,WHITE);
-						drawSquare(T2+3,R1+40,154,277,WHITE);
-						drawCorner(T2+3,R1+40,154,277,GREY);
-						DrawImage("EpReserve/Tracker2", T2+20, R1-5);
+						drawSquare(T2,RP1-20,160,340,GREY);
+						drawCorner(T2,RP1-20,160,340,WHITE);
+						drawSquare(T2+3,RP1+40,154,277,WHITE);
+						drawCorner(T2+3,RP1+40,154,277,GREY);
+						DrawImage("EpReserve/Tracker2", T2+20, RP1-5);
 						if (PVI_TRACKER == 2)
 							DrawImage("PV_Modul_aktiv", T2+20, 200);
 						else
 							DrawImage("PV_Modul_deaktiv", T2+20, 200);
 						// Grafik für EP_Reserve
-						drawSquare(EP,R1-20,335,340,GREY);
-						drawCorner(EP,R1-20,335,340,WHITE);
-						drawSquare(EP+3,R1+40,329,277,WHITE);
-						drawCorner(EP+3,R1+40,329,277,GREY);
-						DrawImage("EpReserve/NotRes", EP+60, R1-5);
+						drawSquare(EP,RP1-20,335,340,GREY);
+						drawCorner(EP,RP1-20,335,340,WHITE);
+						drawSquare(EP+3,RP1+40,329,277,WHITE);
+						drawCorner(EP+3,RP1+40,329,277,GREY);
+						DrawImage("EpReserve/NotRes", EP+60, RP1-5);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -725,33 +751,33 @@ int main(){
 					drawMainScreen();
 					switch(screenShutdown){
 						case ShutdownSD:{
-							drawSquare(S1,R2-20,180,30,GREY);
-							drawCorner(S1,R2-20,180,30, WHITE);
-							put_string(S1+20,R2-20+8, "3 Sekunden", LIGHT_RED);
+							drawSquare(SP1,RP2-20,180,30,GREY);
+							drawCorner(SP1,RP2-20,180,30, WHITE);
+							put_string(SP1+20,RP2-20+8, "3 Sekunden", LIGHT_RED);
 							break;
 						}
 						case ShutdownSRS:{
-							drawSquare(S1,R3-20,180,30,GREY);
-							drawCorner(S1,R3-20,180,30, WHITE);
-							put_string(S1+20,R3-20+8, "Software Neustart", GREEN);
+							drawSquare(SP1,RP3-20,180,30,GREY);
+							drawCorner(SP1,RP3-20,180,30, WHITE);
+							put_string(SP1+20,RP3-20+8, "Software Neustart", GREEN);
 							break;
 						}
 						case ShutdownHRS:{
-							drawSquare(S1,R4-20,180,30,RED);
-							drawCorner(S1,R4-20,180,30, WHITE);
-							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
+							drawSquare(SP1,RP4-20,180,30,RED);
+							drawCorner(SP1,RP4-20,180,30, WHITE);
+							put_string(SP1+20,RP4-20+8, "Hardware Neustart", WHITE);
 							break;
 						}
 						case ShutdownSStop:{
-							drawSquare(S1,R5-20,180,30,RED);
-							drawCorner(S1,R5-20,180,30, WHITE);
-							put_string(S1+20,R5-20+8, "Software Stoppen", WHITE);
+							drawSquare(SP1,RP5-20,180,30,RED);
+							drawCorner(SP1,RP5-20,180,30, WHITE);
+							put_string(SP1+20,RP5-20+8, "Software Stoppen", WHITE);
 							break;
 						}
 						case ShutdownSDN:{
-							drawSquare(S1,R2-20,180,30,RED);
-							drawCorner(S1,R2-20,180,30, WHITE);
-							put_string(S1+20,R2-20+8, "SHUTDOWN", WHITE);
+							drawSquare(SP1,RP2-20,180,30,RED);
+							drawCorner(SP1,RP2-20,180,30, WHITE);
+							put_string(SP1+20,RP2-20+8, "SHUTDOWN", WHITE);
 							break;
 						}
 						case ShutdownWD:{
@@ -764,18 +790,18 @@ int main(){
 							break;
 						}
 						case ShutdownRun:{
-							drawSquare(S1,R2-20,180,30,GREY);
-							drawCorner(S1,R2-20,180,30, WHITE);
-							put_string(S1+20,R2-20+8, "Ausschalten", WHITE);
-							drawSquare(S1,R3-20,180,30,GREY);
-							drawCorner(S1,R3-20,180,30, WHITE);
-							put_string(S1+20,R3-20+8, "Software Neustart", WHITE);
-							drawSquare(S1,R4-20,180,30,GREY);
-							drawCorner(S1,R4-20,180,30, WHITE);
-							put_string(S1+20,R4-20+8, "Hardware Neustart", WHITE);
-							drawSquare(S1,R5-20,180,30,GREY);
-							drawCorner(S1,R5-20,180,30, WHITE);
-							put_string(S1+20,R5-20+8, "Software Stoppen", WHITE);
+							drawSquare(SP1,RP2-20,180,30,GREY);
+							drawCorner(SP1,RP2-20,180,30, WHITE);
+							put_string(SP1+20,RP2-20+8, "Ausschalten", WHITE);
+							drawSquare(SP1,RP3-20,180,30,GREY);
+							drawCorner(SP1,RP3-20,180,30, WHITE);
+							put_string(SP1+20,RP3-20+8, "Software Neustart", WHITE);
+							drawSquare(SP1,RP4-20,180,30,GREY);
+							drawCorner(SP1,RP4-20,180,30, WHITE);
+							put_string(SP1+20,RP4-20+8, "Hardware Neustart", WHITE);
+							drawSquare(SP1,RP5-20,180,30,GREY);
+							drawCorner(SP1,RP5-20,180,30, WHITE);
+							put_string(SP1+20,RP5-20+8, "Software Stoppen", WHITE);
 							break;
 						}
 						default:{
@@ -785,10 +811,10 @@ int main(){
 					}
 					//Version anzeigen
 					readVersion(OUT, Value);
-					drawSquare(S1,R1-20,180,30,GREY);
-					drawCorner(S1,R1-20,180,30, WHITE);
-					put_string(S1+20,R1-20, OUT, WHITE);
-					put_string(S1+20,R1-8, Value, WHITE);
+					drawSquare(SP1,RP1-20,180,30,GREY);
+					drawCorner(SP1,RP1-20,180,30, WHITE);
+					put_string(SP1+20,RP1-20, OUT, WHITE);
+					put_string(SP1+20,RP1-8, Value, WHITE);
 					//Daten für PI Informationen laden
 					char PiTemp[20], PiUptime[40], PiCPU[20], PiIPeth0[24], PiIPwlan0[24], Pieth0[24], Piwlan0[24], Pihost[24];
 					//Pi Temp
@@ -810,100 +836,100 @@ int main(){
 					pirUse = readPirUse();
 					//Grafiken für Pi Informationen erstellen
 					// Grafik für Helligkeit
-					drawSquare(S4,R1-20,328,60,GREY);
-					drawCorner(S4,R1-20,328,60,WHITE);
-					drawSquare(S4+100,R1-17,225,54,WHITE);
-					drawCorner(S4+100,R1-17,225,54,GREY);
-					put_string(S4+6, R1+4, "Helligkeit", WHITE);
+					drawSquare(SP4,RP1-20,328,60,GREY);
+					drawCorner(SP4,RP1-20,328,60,WHITE);
+					drawSquare(SP4+100,RP1-17,225,54,WHITE);
+					drawCorner(SP4+100,RP1-17,225,54,GREY);
+					put_string(SP4+6, RP1+4, "Helligkeit", WHITE);
 					// Grafik für Uptime
-					drawSquare(S4,R2-20,328,60,GREY);
-					drawCorner(S4,R2-20,328,60,WHITE);
-					drawSquare(S4+100,R2-17,225,54,WHITE);
-					drawCorner(S4+100,R2-17,225,54,GREY);
-					put_string(S4+6, R2+4, "PIR", WHITE);
+					drawSquare(SP4,RP2-20,328,60,GREY);
+					drawCorner(SP4,RP2-20,328,60,WHITE);
+					drawSquare(SP4+100,RP2-17,225,54,WHITE);
+					drawCorner(SP4+100,RP2-17,225,54,GREY);
+					put_string(SP4+6, RP2+4, "PIR", WHITE);
 					// Grafik für Temp
-					drawSquare(S4,R3-20,328,60,GREY);
-					drawCorner(S4,R3-20,328,60,WHITE);
-					drawSquare(S4+100,R3-17,225,54,WHITE);
-					drawCorner(S4+100,R3-17,225,54,GREY);
-					put_string(S4+6, R3+4, "Uptime", WHITE);
+					drawSquare(SP4,RP3-20,328,60,GREY);
+					drawCorner(SP4,RP3-20,328,60,WHITE);
+					drawSquare(SP4+100,RP3-17,225,54,WHITE);
+					drawCorner(SP4+100,RP3-17,225,54,GREY);
+					put_string(SP4+6, RP3+4, "Uptime", WHITE);
 					// Grafik für CPU
-					drawSquare(S4,R4-20,328,60,GREY);
-					drawCorner(S4,R4-20,328,60,WHITE);
-					drawSquare(S4+100,R4-17,225,54,WHITE);
-					drawCorner(S4+100,R4-17,225,54,GREY);
-					put_string(S4+6, R4+4, "CPU / Temp", WHITE);
+					drawSquare(SP4,RP4-20,328,60,GREY);
+					drawCorner(SP4,RP4-20,328,60,WHITE);
+					drawSquare(SP4+100,RP4-17,225,54,WHITE);
+					drawCorner(SP4+100,RP4-17,225,54,GREY);
+					put_string(SP4+6, RP4+4, "CPU / Temp", WHITE);
 					// Grafik für IP
-					drawSquare(S4,R5-20,328,60,GREY);
-					drawCorner(S4,R5-20,328,60,WHITE);
-					drawSquare(S4+100,R5-17,225,54,WHITE);
-					drawCorner(S4+100,R5-17,225,54,GREY);
-					put_string(S4+6, R5+4, "IP", WHITE);
+					drawSquare(SP4,RP5-20,328,60,GREY);
+					drawCorner(SP4,RP5-20,328,60,WHITE);
+					drawSquare(SP4+100,RP5-17,225,54,WHITE);
+					drawCorner(SP4+100,RP5-17,225,54,GREY);
+					put_string(SP4+6, RP5+4, "IP", WHITE);
 					// Helligkeit
-					drawSquare(S4+105, R1, Fw, 21, LTGREY);
-					createData(S4+110, R1, "10%");
-					drawSquare(S4+160, R1, Fw, 21, LTGREY);
-					createData(S4+165, R1, "30%");
-					drawSquare(S4+215, R1, Fw, 21, LTGREY);
-					createData(S4+220, R1, "60%");
-					drawSquare(S4+270, R1, Fw, 21, LTGREY);
-					createData(S4+270, R1, "100%");
+					drawSquare(SP4+105, RP1, Fw, 21, LTGREY);
+					createData(SP4+110, RP1, "10%");
+					drawSquare(SP4+160, RP1, Fw, 21, LTGREY);
+					createData(SP4+165, RP1, "30%");
+					drawSquare(SP4+215, RP1, Fw, 21, LTGREY);
+					createData(SP4+220, RP1, "60%");
+					drawSquare(SP4+270, RP1, Fw, 21, LTGREY);
+					createData(SP4+270, RP1, "100%");
 					if (brightness == 25)
-					drawSquare(S4+105, R1, Fw, 21, GREEN);
+					drawSquare(SP4+105, RP1, Fw, 21, GREEN);
 					if (brightness == 76)
-					drawSquare(S4+160, R1, Fw, 21, GREEN);
+					drawSquare(SP4+160, RP1, Fw, 21, GREEN);
 					if (brightness == 150)
-					drawSquare(S4+215, R1, Fw, 21, GREEN);
+					drawSquare(SP4+215, RP1, Fw, 21, GREEN);
 					if (brightness == 255)
-					drawSquare(S4+270, R1, Fw, 21, GREEN);
+					drawSquare(SP4+270, RP1, Fw, 21, GREEN);
 					// PIR
 					if (pirUse == true){
-						drawSquare(S6-20, R2, Fw, 21, LIGHT_GREEN);
-						createData(S6-25, R2, "PIR On");
+						drawSquare(SP6-20, RP2, Fw, 21, LIGHT_GREEN);
+						createData(SP6-25, RP2, "PIR On");
 					}
 					else{
-						drawSquare(S6-20, R2, Fw, 21, LIGHT_RED);
-						createData(S6-25, R2, "PIR Off");
+						drawSquare(SP6-20, RP2, Fw, 21, LIGHT_RED);
+						createData(SP6-25, RP2, "PIR Off");
 					}
 					// Uptime
-					put_string(S6-50, R3+4, PiUptime, GREY);
+					put_string(SP6-50, RP3+4, PiUptime, GREY);
 					// Temp
 					if (T > 20){
-						drawSquare(S7-20, R4, Fw, 21, LIGHT_GREEN);
-						createData(S7-25, R4, PiTemp);
+						drawSquare(SP7-20, RP4, Fw, 21, LIGHT_GREEN);
+						createData(SP7-25, RP4, PiTemp);
 					}
 					else if (T > 40){
-						drawSquare(S7-20, R4, Fw, 21, LIGHT_RED);
-						createData(S7-25, R4, PiTemp);
+						drawSquare(SP7-20, RP4, Fw, 21, LIGHT_RED);
+						createData(SP7-25, RP4, PiTemp);
 					}
 					else if (T > 60){
-						drawSquare(S7-20, R4, Fw, 21, RED);
-						createData(S7-25, R4, PiTemp);
+						drawSquare(SP7-20, RP4, Fw, 21, RED);
+						createData(SP7-25, RP4, PiTemp);
 					}
 					else{
-						drawSquare(S7-20, R4, Fw, 21, GREEN);
-						createData(S7-25, R4, PiTemp);
+						drawSquare(SP7-20, RP4, Fw, 21, GREEN);
+						createData(SP7-25, RP4, PiTemp);
 					}
 					// CPU
 					if (PiCPUint > 5){
-						drawSquare(S6-20, R4, Fw, 21, LIGHT_GREEN);
-						createData(S6-15, R4, PiCPU);
+						drawSquare(SP6-20, RP4, Fw, 21, LIGHT_GREEN);
+						createData(SP6-15, RP4, PiCPU);
 					}
 					else if (PiCPUint > 10){
-						drawSquare(S6-20, R4, Fw, 21, LIGHT_RED);
-						createData(S6-15, R4, PiCPU);
+						drawSquare(SP6-20, RP4, Fw, 21, LIGHT_RED);
+						createData(SP6-15, RP4, PiCPU);
 					}
 					else if (PiCPUint > 20){
-						drawSquare(S6-20, R4, Fw, 21, RED);
-						createData(S6-15, R4, PiCPU);
+						drawSquare(SP6-20, RP4, Fw, 21, RED);
+						createData(SP6-15, RP4, PiCPU);
 					}
 					else{
-						drawSquare(S6-20, R4, Fw, 21, GREEN);
-						createData(S6-15, R4, PiCPU);
+						drawSquare(SP6-20, RP4, Fw, 21, GREEN);
+						createData(SP6-15, RP4, PiCPU);
 					}
 					// IP
-					createData(S6-50, R5-26, PiIPeth0);
-					createData(S6-50, R5-10, PiIPwlan0);
+					createData(SP6-50, RP5-26, PiIPeth0);
+					createData(SP6-50, RP5-10, PiIPwlan0);
 					writeScreen(ScreenCounter, 60);
 				}
 				break;

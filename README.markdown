@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.00 06.06.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.01 12.06.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -369,6 +369,7 @@ make Frame/touchtest
 Diese Möglichkeit erspart zum Teil einiges an Zeit, wenn du eigene Änderungen testen möchtest.  
 Die einzel Aufrufe können auch kombiniert werden, z.B.: `make GuiMain screenSave`  
 Bei dem Standart `make` werden folgende Porgrammteile __nicht__ automatisch kompiliert:
+- Rscp/wbCheckHM
 - External/LedMain  
 - External/gruenSave  
 - Frame/touchtest  
@@ -427,6 +428,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.01 12.06.2021 Fehlerbehebung + Wallbox Leistungswerte
+- Fehlerbehebung [Issue #61](https://github.com/nischram/E3dcGui/issues/61)
+- Fehler Setup Touch passt nicht zur Anzeigen  
+- Wallbox Leistungswerte im Screen Langzeit aufgenommen    
+
 V2.00 06.06.2021 [Issue #52](https://github.com/nischram/E3dcGui/issues/52) Updatefähigkeit verbessert  
 - Issue #52 parameter.h im .gitignore aktiviert und parameter.h.temp eingebunden
 - Schriftgröße fest auf 8x16 umgestellt  
