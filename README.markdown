@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.01 12.06.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.02 10.07.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -428,6 +428,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.02 10.07.2021 Fehlerbehebung RscpMain
+- #include Reihenfolge in der RscpMain.cpp war falsch
+
 V2.01 12.06.2021 Fehlerbehebung + Wallbox Leistungswerte
 - Fehlerbehebung [Issue #61](https://github.com/nischram/E3dcGui/issues/61)
 - Fehler Setup Touch passt nicht zur Anzeigen  
