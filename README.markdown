@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.02 10.07.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.03 29.07.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -428,6 +428,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.03 29.07.2021 [Issue #62](https://github.com/nischram/E3dcGui/issues/62) Fehler in der S10History seit Update V2.00  
+- Issue #62 Datei "S10History/RscpReader.cpp" Änderung in V2.00 nicht hochgeladen.
+
 V2.02 10.07.2021 Fehlerbehebung RscpMain
 - #include Reihenfolge in der RscpMain.cpp war falsch
 

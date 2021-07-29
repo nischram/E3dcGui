@@ -23,8 +23,8 @@
 #include "../Rscp/RscpTags.h"
 #include "../Rscp/SocketConnection.h"
 #include "../Rscp/AES.h"
+#include "../checkPara.h"
 #include "../Rscp/RWData.h"
-#include "../parameter.h"
 
 using namespace std;
 
@@ -665,6 +665,9 @@ int RscpReader() {
 //
 // wrapper, setting the time and interval
 int RscpReader_Day(struct tm *l, bool b, int wd) {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	printf("RscpReader_Day ");
 	writedata = wd;
 	brief = b;
@@ -683,6 +686,9 @@ int RscpReader_Day(struct tm *l, bool b, int wd) {
 }
 
 int RscpReader_Month(struct tm *l, bool b, int wd) {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	printf("RscpReader_Month ");
 	writedata = wd;
 	brief = b;
@@ -709,6 +715,9 @@ int RscpReader_Month(struct tm *l, bool b, int wd) {
 }
 
 int RscpReader_Year(struct tm *l, bool b, int wd) {
+	//Parameter einbinden, checken oder default setzen
+	checkDefinePara(0);
+
 	printf("RscpReader_Year ");
 	writedata = wd;
 	brief = b;
