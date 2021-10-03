@@ -124,6 +124,10 @@ int main()
 				//siehe screnSave.c
 				break; // ScreenWallbox
 			}
+			case ScreenFunktion:{
+				//siehe screnSave.c
+				break; // ScreenFunktion
+			}
 			case ScreenMonitor:{
 				//siehe screnSave.c
 				break; // ScreenMonitor

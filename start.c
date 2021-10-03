@@ -8,6 +8,7 @@ gcc -g -o start  start.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/sysinfo.h>
 #include "checkPara.h"
 #include "Frame/touch.h"
@@ -43,8 +44,8 @@ int main()
   else{
     system("/home/pi/E3dcGui/RscpMain &");
     system("/home/pi/E3dcGui/watchdog &");
-    if(WALLBOX_SEND == 1){
-      system("/home/pi/E3dcGui/Rscp/wbCheckHM &");
+    if(WALLBOX_ACTION == 1 || EP_RESERVE_ACTION == 1 || BATTERYLIMIT_ACTION == 1 || POWERSAVE_ACTION == 1 || WEATHER_REG_ACTION == 1){
+      system("/home/pi/E3dcGui/Rscp/actionCheckHM &");
     }
     if (E3DC_LED == 1){
       system("sudo /home/pi/E3dcGui/External/LedMain &");

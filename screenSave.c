@@ -9,7 +9,9 @@ gcc -g -o screenSave  screenSave.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/sysinfo.h>
+#include <math.h>
 #include "checkPara.h"
 #include "Frame/touch.h"
 #include "Frame/touch.c"
@@ -28,6 +30,8 @@ int main()
 	makeLegende();
 	makeUnixtime();
 	makeTo();
+	writeTo(PosToBlCharge, round(readRscp(PosBlCharge)/500)*500);
+	writeTo(PosToBlDischarge, round(readRscp(PosBlDischarge)/500)*500);
 	writeTo(PosToEpSet,2000);
 
 	signal(SIGINT, INThandler);
@@ -59,7 +63,7 @@ int main()
 	int Screen[ScreenMAX];
 
 	if(E3DC_S10 ==1)
-		writeScreen(ScreenChange, ScreenAktuell);
+		writeScreen(ScreenChange, ScreenFunktion);//ScreenAktuell);
 	else if(Homematic_GUI == 1)
 		writeScreen(ScreenChange, ScreenHM);
 	else
@@ -106,15 +110,17 @@ int main()
 	int buttonTimerLangzeit = mymillis();
 	int buttonCordsWallbox[4] = {Picture5,PictureLine1,PictureW,PictureH};
 	int buttonTimerWallbox = mymillis();
-	int buttonCordsMonitor[4] = {Picture6,PictureLine1,PictureW,PictureH};
+	int buttonCordsFunktion[4] = {Picture6,PictureLine1,PictureW,PictureH};
+	int buttonTimerFunktion = mymillis();
+	int buttonCordsMonitor[4] = {Picture7,PictureLine1,PictureW,PictureH};
 	int buttonTimerMonitor = mymillis();
-	int buttonCordsSmart[4] = {Picture7,PictureLine1,PictureW,PictureH};
+	int buttonCordsSmart[4] = {Picture8,PictureLine1,PictureW,PictureH};
 	int buttonTimerSmart = mymillis();
-	int buttonCordsHM[4] = {Picture8,PictureLine1,PictureW,PictureH};
+	int buttonCordsHM[4] = {Picture9,PictureLine1,PictureW,PictureH};
 	int buttonTimerHM = mymillis();
-	int buttonCordsGB[4] = {Picture9,PictureLine1,PictureW,PictureH};
+	int buttonCordsGB[4] = {Picture10,PictureLine1,PictureW,PictureH};
 	int buttonTimerGB = mymillis();
-	int buttonCordsMuell[4] = {Picture10,PictureLine1,PictureW,PictureH};
+	int buttonCordsMuell[4] = {Picture11,PictureLine1,PictureW,PictureH};
 	int buttonTimerMuell = mymillis();
 	int buttonCordsHistory[4] = {360,410,80,25};
 	int buttonTimerHistory = mymillis();
@@ -184,18 +190,41 @@ int main()
 	int buttonCordsWbStop[4] = {WBSTOPX,WBSTOPY,82,30};
 	int buttonTimerWbStop = mymillis();
 
-	int buttonCordsMinus500[4] = {EPSETS1-2, EPSETR1-2,82,32};
-	int buttonTimerMinus500 = mymillis();
-	int buttonCordsPlus500[4] = {EPSETS3-2, EPSETR1-2,82,32};
-	int buttonTimerPlus500 = mymillis();
-	int buttonCordsMinus2000[4] = {EPSETS1-2, EPSETR2-2,82,32};
-	int buttonTimerMinus2000 = mymillis();
-	int buttonCordsPlus2000[4] = {EPSETS3-2, EPSETR2-2,82,32};
-	int buttonTimerPlus2000 = mymillis();
-	int buttonCordsMinus10000[4] = {EPSETS1-2, EPSETR3-2,82,32};
-	int buttonTimerMinus10000 = mymillis();
-	int buttonCordsPlus10000[4] = {EPSETS3-2, EPSETR3-2,82,32};
-	int buttonTimerPlus10000 = mymillis();
+	int buttonCordsBlSetOnOff[4] = {BLS2-2, BLR1-2,82,32};
+	int buttonTimerBlSetOnOff = mymillis();
+	int buttonCordsBlCSet[4] = {BLS3-2, BLR4-2,82,32};
+	int buttonTimerBlCSet = mymillis();
+	int buttonCordsBlDSet[4] = {BLS3-2, BLR7-2,82,32};
+	int buttonTimerBlDSet = mymillis();
+	int buttonCordsBlCMinus500[4] = {BLS1-2, BLR3-2,82,32};
+	int buttonTimerBlCMinus500 = mymillis();
+	int buttonCordsBlCPlus500[4] = {BLS2-2, BLR3-2,82,32};
+	int buttonTimerBlCPlus500 = mymillis();
+	int buttonCordsBlCMinus2000[4] = {BLS1-2, BLR4-2,82,32};
+	int buttonTimerBlCMinus2000 = mymillis();
+	int buttonCordsBlCPlus2000[4] = {BLS2-2, BLR4-2,82,32};
+	int buttonTimerBlCPlus2000 = mymillis();
+	int buttonCordsBlDMinus500[4] = {BLS1-2, BLR6-2,82,32};
+	int buttonTimerBlDMinus500 = mymillis();
+	int buttonCordsBlDPlus500[4] = {BLS2-2, BLR6-2,82,32};
+	int buttonTimerBlDPlus500 = mymillis();
+	int buttonCordsBlDMinus2000[4] = {BLS1-2, BLR7-2,82,32};
+	int buttonTimerBlDMinus2000 = mymillis();
+	int buttonCordsBlDPlus2000[4] = {BLS2-2, BLR7-2,82,32};
+	int buttonTimerBlDPlus2000 = mymillis();
+
+	int buttonCordsEpMinus500[4] = {EPSETS1-2, EPSETR1-2,82,32};
+	int buttonTimerEpMinus500 = mymillis();
+	int buttonCordsEpPlus500[4] = {EPSETS3-2, EPSETR1-2,82,32};
+	int buttonTimerEpPlus500 = mymillis();
+	int buttonCordsEpMinus2000[4] = {EPSETS1-2, EPSETR2-2,82,32};
+	int buttonTimerEpMinus2000 = mymillis();
+	int buttonCordsEpPlus2000[4] = {EPSETS3-2, EPSETR2-2,82,32};
+	int buttonTimerEpPlus2000 = mymillis();
+	int buttonCordsEpMinus10000[4] = {EPSETS1-2, EPSETR3-2,82,32};
+	int buttonTimerEpMinus10000 = mymillis();
+	int buttonCordsEpPlus10000[4] = {EPSETS3-2, EPSETR3-2,82,32};
+	int buttonTimerEpPlus10000 = mymillis();
 	int buttonCordsEpSet[4] = {EPSETS2-2, EPSETR1-2,82,32};
 	int buttonTimerEpSet = mymillis();
 	int buttonCordsEpSetOnOff[4] = {EPSWX-2, EPSWY-2,82,32};
@@ -239,6 +268,15 @@ int main()
 						writeScreen(ScreenSaver, false);
 						writeScreen(ScreenShutdown, ShutdownRun);
 					}
+				}
+			}
+			if((scaledX  > buttonCordsFunktion[X] && scaledX < (buttonCordsFunktion[X]+buttonCordsFunktion[W])) && (scaledY > buttonCordsFunktion[Y] && scaledY < (buttonCordsFunktion[Y]+buttonCordsFunktion[H]))){
+				if (mymillis() - buttonTimerFunktion > 500){
+					buttonTimerFunktion = mymillis();
+					writeScreen(ScreenChange, ScreenFunktion);
+					writeScreen(ScreenCounter, 0);
+					writeScreen(ScreenSaver, false);
+					writeScreen(ScreenShutdown, ShutdownRun);
 				}
 			}
 			if((scaledX  > buttonCordsMonitor[X] && scaledX < (buttonCordsMonitor[X]+buttonCordsMonitor[W])) && (scaledY > buttonCordsMonitor[Y] && scaledY < (buttonCordsMonitor[Y]+buttonCordsMonitor[H]))){
@@ -468,7 +506,7 @@ int main()
 					}
 				} // if ScreenShutdownRun
 				if((scaledX  > buttonCordsSRS[X] && scaledX < (buttonCordsSRS[X]+buttonCordsSRS[W])) && (scaledY > buttonCordsSRS[Y] && scaledY < (buttonCordsSRS[Y]+buttonCordsSRS[H]))){
-					if (mymillis() - buttonTimerSRS > 3000){
+					if (mymillis() - buttonTimerSRS > 2000){
 						buttonTimerSRS = mymillis();
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenSaver, false);
@@ -483,7 +521,7 @@ int main()
 					}
 				}
 				if((scaledX  > buttonCordsHRS[X] && scaledX < (buttonCordsHRS[X]+buttonCordsHRS[W])) && (scaledY > buttonCordsHRS[Y] && scaledY < (buttonCordsHRS[Y]+buttonCordsHRS[H]))){
-					if (mymillis() - buttonTimerHRS > 3000){
+					if (mymillis() - buttonTimerHRS > 2000){
 						buttonTimerHRS = mymillis();
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenSaver, false);
@@ -498,7 +536,7 @@ int main()
 					}
 				}
 				if((scaledX  > buttonCordsSStop[X] && scaledX < (buttonCordsSStop[X]+buttonCordsSStop[W])) && (scaledY > buttonCordsSStop[Y] && scaledY < (buttonCordsSStop[Y]+buttonCordsSStop[H]))){
-					if (mymillis() - buttonTimerSStop > 3000){
+					if (mymillis() - buttonTimerSStop > 2000){
 						buttonTimerSStop = mymillis();
 						writeScreen(ScreenCounter, 0);
 						writeScreen(ScreenSaver, false);
@@ -811,6 +849,172 @@ int main()
 				}
 				break; // ScreenWallbox
 			}
+			case ScreenFunktion:{
+				//Battery-Limits
+				if((scaledX  > buttonCordsBlSetOnOff[X] && scaledX < (buttonCordsBlSetOnOff[X]+buttonCordsBlSetOnOff[W])) && (scaledY > buttonCordsBlSetOnOff[Y] && scaledY < (buttonCordsBlSetOnOff[Y]+buttonCordsBlSetOnOff[H]))){
+					if (mymillis() - buttonTimerBlSetOnOff > 500){
+						buttonTimerBlSetOnOff = mymillis();
+						DrawImage("Switch/Send", BLS2, BLR1);
+						if(readRscp(PosBlUsed)==0) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -bl -blYes %i %i &", readTo(PosToBlCharge),readTo(PosToBlDischarge));
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -bl -blNo %i %i &", readTo(PosToBlCharge),readTo(PosToBlDischarge));
+						printf("%s", OUT);
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsBlCSet[X] && scaledX < (buttonCordsBlCSet[X]+buttonCordsBlCSet[W])) && (scaledY > buttonCordsBlCSet[Y] && scaledY < (buttonCordsBlCSet[Y]+buttonCordsBlCSet[H]))){
+					if (mymillis() - buttonTimerBlCSet > 500){
+						buttonTimerBlCSet = mymillis();
+						DrawImage("Switch/Send", BLS3+30, BLR4);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -bl -blYes %i %i &",readTo(PosToBlCharge),readTo(PosToBlDischarge));
+						printf("%s", OUT);
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsBlDSet[X] && scaledX < (buttonCordsBlDSet[X]+buttonCordsBlDSet[W])) && (scaledY > buttonCordsBlDSet[Y] && scaledY < (buttonCordsBlDSet[Y]+buttonCordsBlDSet[H]))){
+					if (mymillis() - buttonTimerBlDSet > 500){
+						buttonTimerBlDSet = mymillis();
+						DrawImage("Switch/Send", BLS3+30, BLR7);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -bl -blYes %i %i &",readTo(PosToBlCharge),readTo(PosToBlDischarge));
+						printf("%s", OUT);
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsBlCMinus500[X] && scaledX < (buttonCordsBlCMinus500[X]+buttonCordsBlCMinus500[W])) && (scaledY > buttonCordsBlCMinus500[Y] && scaledY < (buttonCordsBlCMinus500[Y]+buttonCordsBlCMinus500[H]))){
+					if (mymillis() - buttonTimerBlCMinus500 > 500){
+						buttonTimerBlCMinus500 = mymillis();
+						if(readTo(PosToBlCharge)-500 >= 0){
+							writeTo(PosToBlCharge,readTo(PosToBlCharge)-500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlCPlus500[X] && scaledX < (buttonCordsBlCPlus500[X]+buttonCordsBlCPlus500[W])) && (scaledY > buttonCordsBlCPlus500[Y] && scaledY < (buttonCordsBlCPlus500[Y]+buttonCordsBlCPlus500[H]))){
+					if (mymillis() - buttonTimerBlCPlus500 > 500){
+						buttonTimerBlCPlus500 = mymillis();
+						if(readTo(PosToBlCharge)+500 <= 65535){
+							writeTo(PosToBlCharge,readTo(PosToBlCharge)+500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlCMinus2000[X] && scaledX < (buttonCordsBlCMinus2000[X]+buttonCordsBlCMinus2000[W])) && (scaledY > buttonCordsBlCMinus2000[Y] && scaledY < (buttonCordsBlCMinus2000[Y]+buttonCordsBlCMinus2000[H]))){
+					if (mymillis() - buttonTimerBlCMinus2000 > 500){
+						buttonTimerBlCMinus2000 = mymillis();
+						if(readTo(PosToBlCharge)-2000 >= 0){
+							writeTo(PosToBlCharge,readTo(PosToBlCharge)-2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlCPlus2000[X] && scaledX < (buttonCordsBlCPlus2000[X]+buttonCordsBlCPlus2000[W])) && (scaledY > buttonCordsBlCPlus2000[Y] && scaledY < (buttonCordsBlCPlus2000[Y]+buttonCordsBlCPlus2000[H]))){
+					if (mymillis() - buttonTimerBlCPlus2000 > 500){
+						buttonTimerBlCPlus2000 = mymillis();
+						if(readTo(PosToBlCharge)+2000 <= 65535){
+							writeTo(PosToBlCharge,readTo(PosToBlCharge)+2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlDMinus500[X] && scaledX < (buttonCordsBlDMinus500[X]+buttonCordsBlDMinus500[W])) && (scaledY > buttonCordsBlDMinus500[Y] && scaledY < (buttonCordsBlDMinus500[Y]+buttonCordsBlDMinus500[H]))){
+					if (mymillis() - buttonTimerBlDMinus500 > 500){
+						buttonTimerBlDMinus500 = mymillis();
+						if(readTo(PosToBlDischarge)-500 >= 0){
+							writeTo(PosToBlDischarge,readTo(PosToBlDischarge)-500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlDPlus500[X] && scaledX < (buttonCordsBlDPlus500[X]+buttonCordsBlDPlus500[W])) && (scaledY > buttonCordsBlDPlus500[Y] && scaledY < (buttonCordsBlDPlus500[Y]+buttonCordsBlDPlus500[H]))){
+					if (mymillis() - buttonTimerBlDPlus500 > 500){
+						buttonTimerBlDPlus500 = mymillis();
+						if(readTo(PosToBlDischarge)+500 <= 65535){
+							writeTo(PosToBlDischarge,readTo(PosToBlDischarge)+500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlDMinus2000[X] && scaledX < (buttonCordsBlDMinus2000[X]+buttonCordsBlDMinus2000[W])) && (scaledY > buttonCordsBlDMinus2000[Y] && scaledY < (buttonCordsBlDMinus2000[Y]+buttonCordsBlDMinus2000[H]))){
+					if (mymillis() - buttonTimerBlDMinus2000 > 500){
+						buttonTimerBlDMinus2000 = mymillis();
+						if(readTo(PosToBlDischarge)-2000 >= 0){
+							writeTo(PosToBlDischarge,readTo(PosToBlDischarge)-2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsBlDPlus2000[X] && scaledX < (buttonCordsBlDPlus2000[X]+buttonCordsBlDPlus2000[W])) && (scaledY > buttonCordsBlDPlus2000[Y] && scaledY < (buttonCordsBlDPlus2000[Y]+buttonCordsBlDPlus2000[H]))){
+					if (mymillis() - buttonTimerBlDPlus2000 > 500){
+						buttonTimerBlDPlus2000 = mymillis();
+						if(readTo(PosToBlDischarge)+2000 <= 65535){
+							writeTo(PosToBlDischarge,readTo(PosToBlDischarge)+2000);
+						}
+					}
+				}
+				//EP
+				if((scaledX  > buttonCordsEpMinus500[X] && scaledX < (buttonCordsEpMinus500[X]+buttonCordsEpMinus500[W])) && (scaledY > buttonCordsEpMinus500[Y] && scaledY < (buttonCordsEpMinus500[Y]+buttonCordsEpMinus500[H]))){
+					if (mymillis() - buttonTimerEpMinus500 > 500){
+						buttonTimerEpMinus500 = mymillis();
+						if(readTo(PosToEpSet)-500 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpPlus500[X] && scaledX < (buttonCordsEpPlus500[X]+buttonCordsEpPlus500[W])) && (scaledY > buttonCordsEpPlus500[Y] && scaledY < (buttonCordsEpPlus500[Y]+buttonCordsEpPlus500[H]))){
+					if (mymillis() - buttonTimerEpPlus500 > 500){
+						buttonTimerEpPlus500 = mymillis();
+						if(readTo(PosToEpSet)+500 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+500);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpMinus2000[X] && scaledX < (buttonCordsEpMinus2000[X]+buttonCordsEpMinus2000[W])) && (scaledY > buttonCordsEpMinus2000[Y] && scaledY < (buttonCordsEpMinus2000[Y]+buttonCordsEpMinus2000[H]))){
+					if (mymillis() - buttonTimerEpMinus2000 > 2000){
+						buttonTimerEpMinus2000 = mymillis();
+						if(readTo(PosToEpSet)-2000 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpPlus2000[X] && scaledX < (buttonCordsEpPlus2000[X]+buttonCordsEpPlus2000[W])) && (scaledY > buttonCordsEpPlus2000[Y] && scaledY < (buttonCordsEpPlus2000[Y]+buttonCordsEpPlus2000[H]))){
+					if (mymillis() - buttonTimerEpPlus2000 > 500){
+						buttonTimerEpPlus2000 = mymillis();
+						if(readTo(PosToEpSet)+2000 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+2000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpMinus10000[X] && scaledX < (buttonCordsEpMinus10000[X]+buttonCordsEpMinus10000[W])) && (scaledY > buttonCordsEpMinus10000[Y] && scaledY < (buttonCordsEpMinus10000[Y]+buttonCordsEpMinus10000[H]))){
+					if (mymillis() - buttonTimerEpMinus10000 > 10000){
+						buttonTimerEpMinus10000 = mymillis();
+						if(readTo(PosToEpSet)-10000 >= 0){
+							writeTo(PosToEpSet,readTo(PosToEpSet)-10000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpPlus10000[X] && scaledX < (buttonCordsEpPlus10000[X]+buttonCordsEpPlus10000[W])) && (scaledY > buttonCordsEpPlus10000[Y] && scaledY < (buttonCordsEpPlus10000[Y]+buttonCordsEpPlus10000[H]))){
+					if (mymillis() - buttonTimerEpPlus10000 > 500){
+						buttonTimerEpPlus10000 = mymillis();
+						if(readTo(PosToEpSet)+10000 <= readTo(PosToEpMax)){
+							writeTo(PosToEpSet,readTo(PosToEpSet)+10000);
+						}
+					}
+				}
+				if((scaledX  > buttonCordsEpSet[X] && scaledX < (buttonCordsEpSet[X]+buttonCordsEpSet[W])) && (scaledY > buttonCordsEpSet[Y] && scaledY < (buttonCordsEpSet[Y]+buttonCordsEpSet[H]))){
+					if (mymillis() - buttonTimerEpSet > 500){
+						buttonTimerEpSet = mymillis();
+						DrawImage("Switch/Send", EPSETS2, EPSETR1);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),readTo(PosToEpSet));
+						system(OUT);
+					}
+				}
+				if((scaledX  > buttonCordsEpSetOnOff[X] && scaledX < (buttonCordsEpSetOnOff[X]+buttonCordsEpSetOnOff[W])) && (scaledY > buttonCordsEpSetOnOff[Y] && scaledY < (buttonCordsEpSetOnOff[Y]+buttonCordsEpSetOnOff[H]))){
+					if (mymillis() - buttonTimerEpSetOnOff > 500){
+						buttonTimerEpSetOnOff = mymillis();
+						DrawImage("Switch/Send", EPSETS2, EPSETR1);
+						if(readRscp(PosEpReservW) == 0){
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),readTo(PosToEpSet));
+						}
+						else {
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i &", readRscp(PosEpReservMaxW),0);
+						}
+						system(OUT);
+					}
+				}
+				break; // ScreenFunktion
+			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSaveHalb[X] && scaledX < (buttonCordsSaveHalb[X]+buttonCordsSaveHalb[W])) && (scaledY > buttonCordsSaveHalb[Y] && scaledY < (buttonCordsSaveHalb[Y]+buttonCordsSaveHalb[H]))){
 					if (mymillis() - buttonTimerSave > 500){
@@ -827,7 +1031,7 @@ int main()
 						}
 					}
 				}
-				if((scaledX  > buttonCordsMinus500[X] && scaledX < (buttonCordsMinus500[X]+buttonCordsMinus500[W])) && (scaledY > buttonCordsMinus500[Y] && scaledY < (buttonCordsMinus500[Y]+buttonCordsMinus500[H]))){
+			/*	if((scaledX  > buttonCordsMinus500[X] && scaledX < (buttonCordsMinus500[X]+buttonCordsMinus500[W])) && (scaledY > buttonCordsMinus500[Y] && scaledY < (buttonCordsMinus500[Y]+buttonCordsMinus500[H]))){
 					if (mymillis() - buttonTimerMinus500 > 500){
 						buttonTimerMinus500 = mymillis();
 						if(readTo(PosToEpSet)-500 >= 0){
@@ -896,6 +1100,7 @@ int main()
 						system(OUT);
 					}
 				}
+				*/
 				break; // ScreenMonitor
 			}
 			case ScreenHM:{

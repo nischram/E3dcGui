@@ -29,8 +29,11 @@ static char TAG_EMS_OUT_SERIAL_NUMBER [17];
 static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 
-static bool setModeWB = false, setModeEP = false, WbSwPh = false, WbStop = false;;
+static bool setModeWB = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false;
+static bool WbSwPh = false, WbStop = false;
+static bool blUsed = false, psUsed = false, wrUsed = false;
 static int inputEpReserveMax, inputEpReserve;
+static uint32_t blChargeLimit, blDischargeLimit, blDischargeStart = 65;
 
 using namespace std;
 
@@ -104,6 +107,62 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.appendValue(&rootValue, SEContainer);
           // free memory of sub-container as it is now copied to rootValue
           protocol.destroyValueData(SEContainer);
+        }
+        else if (setModeBL){
+          // Set POWER_LIMITS
+          SRscpValue BlSetContainer;
+          // request data
+          protocol.createContainerValue(&BlSetContainer, TAG_EMS_REQ_SET_POWER_SETTINGS);
+          protocol.appendValue(&BlSetContainer, TAG_EMS_POWER_LIMITS_USED,blUsed);
+          if (blUsed){
+            protocol.appendValue(&BlSetContainer, TAG_EMS_MAX_CHARGE_POWER,blChargeLimit);
+            protocol.appendValue(&BlSetContainer, TAG_EMS_MAX_DISCHARGE_POWER,blDischargeLimit);
+    				protocol.appendValue(&BlSetContainer, TAG_EMS_DISCHARGE_START_POWER,blDischargeStart);
+          }
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlSetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlSetContainer);
+          SRscpValue BlGetContainer;
+          protocol.createContainerValue(&BlGetContainer, TAG_EMS_REQ_GET_POWER_SETTINGS);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlGetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlGetContainer);
+        }
+        else if (setModePS){
+          // Set POWER_LIMITS
+          SRscpValue BlSetContainer;
+          // request data
+          protocol.createContainerValue(&BlSetContainer, TAG_EMS_REQ_SET_POWER_SETTINGS);
+          protocol.appendValue(&BlSetContainer, TAG_EMS_POWERSAVE_ENABLED,psUsed);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlSetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlSetContainer);
+          SRscpValue BlGetContainer;
+          protocol.createContainerValue(&BlGetContainer, TAG_EMS_REQ_GET_POWER_SETTINGS);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlGetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlGetContainer);
+        }
+        else if (setModeWR){
+          // Set POWER_LIMITS
+          SRscpValue BlSetContainer;
+          // request data
+          protocol.createContainerValue(&BlSetContainer, TAG_EMS_REQ_SET_POWER_SETTINGS);
+          protocol.appendValue(&BlSetContainer, TAG_EMS_WEATHER_REGULATED_CHARGE_ENABLED,wrUsed);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlSetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlSetContainer);
+          SRscpValue BlGetContainer;
+          protocol.createContainerValue(&BlGetContainer, TAG_EMS_REQ_GET_POWER_SETTINGS);
+          // append sub-container to root container
+          protocol.appendValue(&rootValue, BlGetContainer);
+          // free memory of sub-container as it is now copied to rootValue
+          protocol.destroyValueData(BlGetContainer);
         }
     }
 
@@ -199,6 +258,84 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
         }
         protocol->destroyValueData(SEData);
         break;
+    }
+    case TAG_EMS_GET_POWER_SETTINGS:
+    case TAG_EMS_SET_POWER_SETTINGS: {
+      uint8_t ucBLIndex = 0;
+      std::vector<SRscpValue> BLData = protocol->getValueAsContainer(response);
+      for(size_t i = 0; i < BLData.size(); ++i) {
+        //printf("TAG_EMS_GET_POWER_SETTINGS/TAG_EMS_SET_POWER_SETTINGS Durchlauf # %i \n", i+1);
+        if(BLData[i].dataType == RSCP::eTypeError) {
+          // handle error for example access denied errors
+          uint32_t uiErrorCode = protocol->getValueAsUInt32(&BLData[i]);
+          printf("TAG_EMS_GET_POWER_SETTINGS 0x%08X received error code %u.\n", BLData[i].tag, uiErrorCode);
+          printf("TAG_EMS_GET_POWER_SETTINGS - Fehler beim Durchlauf!\n");
+          return -1;
+        }
+        // check each BL sub tag
+        switch(BLData[i].tag) {
+          case TAG_EMS_POWER_LIMITS_USED: {              // response for POWER_LIMITS_USED
+            bool powerLimitUsed = protocol->getValueAsBool(&BLData[i]);
+            writeRscp(PosBlUsed,powerLimitUsed);
+            if (powerLimitUsed){
+              if (setModeBL) cout << "Battery Limits = User\n";
+              }
+            else {
+              if (setModeBL) cout << "Battery Limits = System\n";
+            }
+            break;
+          }
+          case TAG_EMS_MAX_CHARGE_POWER: {              // 101 response for TAG_EMS_MAX_CHARGE_POWER
+            uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+            if (setModeBL) cout << "Battery Limits Charge = " << uPower << " W\n";
+            break;
+          }
+          case TAG_EMS_MAX_DISCHARGE_POWER: {              //102 response for TAG_EMS_MAX_DISCHARGE_POWER
+            uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+            if (setModeBL) cout << "Battery Limits Disharge = " << uPower << " W\n";
+            break;
+          }
+          case TAG_EMS_DISCHARGE_START_POWER:{              //103 response for TAG_EMS_DISCHARGE_START_POWER
+            uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+            if (setModeBL) cout << "Battery Start Power = " << uPower << " W\n";
+            break;
+          }
+          case TAG_EMS_POWERSAVE_ENABLED: {              //104 response for TAG_EMS_POWERSAVE_ENABLED
+            bool powerSave = protocol->getValueAsBool(&BLData[i]);
+            writeRscp(PosPowerSave,powerSave);
+            if (powerSave){
+              if (setModePS) cout << "Powersave = aktiv\n";
+            }
+            else {
+              if (setModePS) cout << "Powersave = deaktiv\n";
+            }
+            break;
+          }
+          case TAG_EMS_WEATHER_REGULATED_CHARGE_ENABLED: {//105 resp WEATHER_REGULATED_CHARGE_ENABLED
+            bool waetherReg = protocol->getValueAsBool(&BLData[i]);
+            if (waetherReg){
+              if (setModeWR) cout << "Weather regulated charge = aktiv \n";
+            }
+            else {
+              if (setModeWR) cout << "Weather regulated charge = deaktiv \n";
+            }
+            break;
+          }
+            // ...
+          default:
+            // default behaviour
+            /*printf("Unkonwn GET_POWER_SETTINGS tag %08X", BLData[i].tag);
+            printf(" len %08X", BLData[i].length);
+            printf(" datatype %08X", BLData[i].dataType);
+            uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+            printf(" Value  %i\n", uPower);
+            */
+            break;
+        }
+      }
+      protocol->destroyValueData(BLData);
+            // sleep(10);
+      break;
     }
     // ...
     default:
@@ -416,8 +553,26 @@ int main(int argc, char *argv[])
       printf("Notstromreserve setzen\n");
       setModeEP = true;
     }
+    else if (strcmp(argv[1], "-bl")==0) {
+      printf("Batterielimits setzen\n");
+      setModeBL = true;
+    }
+    else if (strcmp(argv[1], "-ps")==0) {
+      printf("Wechselrichter Powersave setzen\n");
+      setModePS = true;
+    }
+    else if (strcmp(argv[1], "-wr")==0) {
+      printf("Wetterprognose setzen\n");
+      setModeWR = true;
+    }
     else {
-      printf("Falsche Eingabe!\n Bitte wählen:\n  Wallbox        = -wb    \n  Notstromreserve = -ep\n  Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+      printf("Falsche Eingabe!\n Bitte wählen:\n");
+      printf("  Wallbox         = -wb\n");
+      printf("  Notstromreserve = -ep\n");
+      printf("  Batterielimits  = -bl\n");
+      //printf("  Powersave       = -ps\n");
+      //printf("  Wetterprognose  = -wr\n");
+      printf(" Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
       return 0;
     }
     // Wallbox Parameter
@@ -501,8 +656,78 @@ int main(int argc, char *argv[])
       }
       else printf("EP Reserve     = %i\n",inputEpReserve);
     }
-
-
+    else if (setModeBL){
+      // BL Used argv[2]
+      if (strcmp(argv[2], "-blYes")==0) {
+        printf("Batterielimits = manuell\n");
+        blUsed = true;
+      }
+      else if (strcmp(argv[2], "-blNo")==0) {
+        printf("Batterielimits = automatisch\n");
+        blUsed = false;
+      }
+      else {
+        printf("Falsche Eingabe für argv[2] Option: -blYes -blNo\n");
+        return 0;
+      }
+      if (blUsed){
+        // BL Charge Limit argv[3]
+        blChargeLimit = atoi(argv[3]);
+        if (blChargeLimit < 0 || blChargeLimit > 65535){
+          printf("Falsche Eingabe für argv[3] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+          return 0;
+        }
+        else printf("Batterielimit laden    = %i W\n",blChargeLimit);
+        // BL Discharge Limit argv[4]
+        blDischargeLimit = atoi(argv[4]);
+        if (blDischargeLimit < 0 || blDischargeLimit > 65535){
+          printf("Falsche Eingabe für argv[4] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+          return 0;
+        }
+        else printf("Batterielimit endladen = %i W\n",blDischargeLimit);
+        // BL Discharge Start argv[5]
+        if (argc > 5){
+          blDischargeStart = atoi(argv[5]);
+          if (blDischargeStart < 0 || blDischargeStart > 400){
+            printf("Falsche Eingabe für argv[5] in W!\nWert von 0 - 400 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+          }
+          else printf("Batteriestart endladen = %i W\n",blDischargeStart);
+        }
+        else printf("Batteriestart endladen = %i\n",blDischargeStart);
+      }
+    }
+  /* Das setzen von Powersave und Wetterprognose habe ich noch nicht hinbekommen.
+    else if (setModePS){
+      // BL Used argv[2]
+      if (strcmp(argv[2], "-psYes")==0) {
+        printf("Wechselrichter Powersave = aus\n");
+        psUsed = true;
+      }
+      else if (strcmp(argv[2], "-psNo")==0) {
+        printf("Wechselrichter Powersave = ein\n");
+        psUsed = false;
+      }
+      else {
+        printf("Falsche Eingabe für argv[2] Option: -psYes -psNo\n");
+        return 0;
+      }
+    }
+    else if (setModeWR){
+      // PS Used argv[2]
+      if (strcmp(argv[2], "-wrYes")==0) {
+        printf("Wetterprognose = aus\n");
+        wrUsed = true;
+      }
+      else if (strcmp(argv[2], "-wrNo")==0) {
+        printf("Wetterprognose = ein\n");
+        wrUsed = false;
+      }
+      else {
+        printf("Falsche Eingabe für argv[2] Option: -wrYes -wrNo\n");
+        return 0;
+      }
+    }
+  */
     printf("____________________\n");
 
 

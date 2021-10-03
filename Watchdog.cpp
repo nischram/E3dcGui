@@ -36,8 +36,38 @@ int ReadWatchdog()
     datei.close();
     return value;
   }
-  else cerr << "Konnte Datei WatchdogAktiv nicht erstellen!\n";
+  else cerr << "Konnte Datei WatchdogAktiv nicht öffnen!\n";
   return 0;
+}
+void writeReleaseLast(char* value)
+{
+  ofstream fout("/home/pi/E3dcGui/Data/S10_Release.txt");
+  if (fout.is_open()) {
+    fout << value << endl;
+    fout.close();
+  }
+}
+void readReleaseLast(char* value)
+{
+  fstream datei("/home/pi/E3dcGui/Data/S10_Release.txt");
+  if (datei.is_open()) {
+    datei.getline(value ,128, '\n');
+    datei.close();
+  }
+  else cerr << "Konnte Datei S10_Release.txt nicht öffnen!\n";
+}
+void readReleaseRscp(char* value)
+{
+  char del[128];
+  fstream datei("/mnt/RAMDisk/E3dcGuiChar.txt");
+  if (datei.is_open()) {
+    datei.getline(del ,20, '\n');
+    datei.getline(del ,20, '\n');
+    datei.getline(del ,20, '\n');
+    datei.getline(value ,20, '\n');
+    datei.close();
+  }
+  else cerr << "Konnte Datei S10_Release.txt nicht öffnen!\n";
 }
 
 void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, int resetCounter, char OUT[100]){
@@ -147,6 +177,7 @@ int main()
     char EmailAdress[128], EmailBetreff[128], EmailText[512];
     int Unixtime[4];
     char DATE[40], TIME[40], OUT[100], batch[256], pingOUT[128];
+    char releaseSwLast[40], releaseSwRscp[40];
 
     int readWD = ReadWatchdog();
     if (readWD == WDfail){
@@ -318,10 +349,28 @@ int main()
         }
       }
       jump = 0;
+
       cout << "Watchdog: " << DATE << " ; " << TIME << "\n";
       cout << "   PI " << AktuallTime << " ; RSCP " << UnixTimeE3dc << " ; HM "<< UnixTimeHM << " ; GUI "<< UnixTimeGUI << "\n";
       cout << "   Reset Zähler: " << resetCounter << " ; RSCP Zähler bis Reboot: " << counterReboot << " ; HM Zähler bis Reboot: " << counterRebootHM << "\n";
       cout << "   GUI Zähler bis Reboot: " << counterRebootGUI << " ; Ping: " << pingOUT << " ; Pingzeit: " << pingTime << " ms\n";
+
+      readReleaseLast(releaseSwLast);
+      readReleaseRscp(releaseSwRscp);
+      if (strcmp (releaseSwLast,releaseSwRscp) == 0){
+        cout << "   S10 Release Check Ready > Last: " << releaseSwLast << " Read: " << releaseSwRscp << "\n";
+      }
+      else{
+        cout << "   S10 Release Check Faild > Last: " << releaseSwLast << " Last: " << releaseSwRscp << "\n";
+        if (WDsendEmailRelease == 1){
+          snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
+          snprintf (EmailBetreff, (size_t)128, "Neue S10 Release Version erkannt");
+          snprintf (EmailText, (size_t)512, "E3dcGui Watchdog >>> Software-Release Kontrolle\n \nAltes Software-Release: %s\n Neues Software-Release: %s\n", releaseSwLast, releaseSwRscp);
+          sendEmail(EmailAdress, EmailBetreff, EmailText);
+        }
+        writeReleaseLast(releaseSwRscp);
+      }
+
       if (WDkontrolle == 1)
         WDcsvKontrolle( DATE, TIME ,pingOUT ,AktuallTime, UnixTimeE3dc, UnixTimeHM, UnixTimeGUI, OUT);
     }

@@ -15,6 +15,16 @@
 #include <fstream>
 
 using namespace std;
+// In future there should be an implementation for converting string to UTF8. Otherwise strings, e.g. with blanks wouldn't be written to Homematic.
+string replaceinString(std::string str, std::string tofind, std::string toreplace)
+{
+        size_t position = 0;
+        for ( position = str.find(tofind); position != std::string::npos; position = str.find(tofind,position) )
+        {
+                str.replace(position ,1, toreplace);
+        }
+        return(str);
+}
 
 void printsendHM(int CounterHM, int id, float value)
 {
@@ -22,7 +32,7 @@ void printsendHM(int CounterHM, int id, float value)
     if(CounterHM == HM_Intervall && id != 0){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.1f\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.1f\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %.3f\n",id, value);
       system(batch);
     }
@@ -34,7 +44,7 @@ void printsendCharHM(int CounterHM, int id, char value[32])
     if(CounterHM == HM_Intervall && id != 0){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
       printf("send to Homematic ISE_ID %i new Value = %s\n",id, value);
       system(batch);
     }
@@ -48,11 +58,11 @@ void printsendBitHM(int CounterHM, int id, int Value, int Bit)
       memset(batch, 0x00, sizeof(batch));
       bool response = Value&Bit;
       if(response){
-        snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=true\" > /dev/null 2>&1",HM_IP , id);
+        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=true\" > /dev/null 2>&1",HM_IP , id);
         printf("send to Homematic ISE_ID %i new Value = true\n",id);
       }
       else {
-        snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=false\" > /dev/null 2>&1",HM_IP , id);
+        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=false\" > /dev/null 2>&1",HM_IP , id);
         printf("send to Homematic ISE_ID %i new Value = false\n",id);
       }
       system(batch);
@@ -155,11 +165,11 @@ int makeData(char *Path, int NewValue, int max)
   }
  return 0;
 }
-int writeCharData(char *Path, char *CHAR1, char *CHAR2, char *CHAR3)
+int writeCharData(char *Path, char *CHAR1, char *CHAR2, char *CHAR3, char *CHAR4)
 {
   ofstream fout(Path);
   if (fout.is_open()) {
-    fout << CHAR1 << "\n" << CHAR2 << "\n" << CHAR3 << endl;
+    fout << CHAR1 << "\n" << CHAR2 << "\n" << CHAR3 << "\n" << CHAR4 << endl;
     fout.close();
   }
   else cerr << "Konnte Datei nicht erstellen!\n";
@@ -203,20 +213,21 @@ int writeRscp(int Position, int NewValue)
   writeData(PathRscp, Position, NewValue, PosMAX);
   return 1;
 }
-int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER)
+int writeCharRscp(char *TAG_EMS_OUT_DATE, char *TAG_EMS_OUT_TIME, char *TAG_EMS_OUT_SERIAL_NUMBER, char *TAG_INFO_OUT_SW_RELEASE)
 {
   char PathRscp [128];
   snprintf (PathRscp, (size_t)128, "/mnt/RAMDisk/E3dcGuiChar.txt");
-  writeCharData(PathRscp, TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
+  writeCharData(PathRscp, TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER, TAG_INFO_OUT_SW_RELEASE);
   return 1;
 }
 int makeCharRscp()
 {
-  char TAG_Date [128], TAG_Time [128], serialnumber [128];
+  char TAG_Date [128], TAG_Time [128], serialnumber [128], release [128];
   snprintf (TAG_Date, (size_t)128, "01.01.2016");
   snprintf (TAG_Time, (size_t)128, "00:00:00");
   snprintf (serialnumber, (size_t)128, "S10-XXXXXXXXXXXX");
-  writeCharRscp(TAG_Date, TAG_Time, serialnumber);
+  snprintf (release, (size_t)128, "S10_20XX_XX");
+  writeCharRscp(TAG_Date, TAG_Time, serialnumber, release);
   return 1;
 }
 int writeRscpWb(int Position, int NewValue)

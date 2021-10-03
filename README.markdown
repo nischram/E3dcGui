@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.03 29.07.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.04 03.10.2021](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -10,11 +10,10 @@ __Daten vom E3DC zur Homematic Hausautomation senden__
 __Daten vom S10 auf dem Display darstellen__  
 __Daten von der Homematic auf dem Display darstellen__  
 __Daten der E3DC Wallbox anzeigen oder steuern__  
-__Werte aus der Homematic lesen und an die Wallbox senden__  
+__Werte aus der Homematic lesen um Wallbox, Notstrom-Reserve oder Batterie-Limits steuern__  
 __Kleine Hausautomation mit GPIO's__  
 __Wetterinformationen von "OpenWeatherMap"__  
-__Daten einer Grünbeck SC18 anzeigen__  
-__Daten einer Grünbeck SC18 zur Homematic senden__  
+__Daten einer Grünbeck SC18 anzeigen oder zur Homematic senden__  
 __Dein eigener Abfuhrkalender__  
 __LED Stausanzeige__   
 
@@ -231,20 +230,27 @@ Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kan
 In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).  
 Ich habe die Funktion an meiner E3DC Walbox mit CAN-Bus getestet, die E3DC Easy Connect Wallbox mit Netzwerk hat Thomas (Issue #55) getestet.
 
-### 6. Monitor
+### 6. Funktion
 `  #define E3DC_S10                    1`  
-<img src="https://user-images.githubusercontent.com/19279623/120030046-40356300-bff7-11eb-8753-675c353bdb00.jpg" alt="Monitor">  
-Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Rechts kann die Notstrom-Reserve im Speicher aktiviert werden. Sie wird in % oder Wh angezeigt. Die Höhe der Reserve kann in 500, 2000, oder 10000 Wh Schritte vorgewählt und mit "Set" gesetzt werden. Der Schalter setzt die Reserve ggf. direkt auf 0 Wh. Im Hauptbildschirm wird die höhe der Reserve in Prozent mit einem grünen Rahmen bei der Batterie dargestellt.  
-<img src="https://user-images.githubusercontent.com/19279623/120030042-3f043600-bff7-11eb-8fa6-5c08ac469d0d.png" alt="Batterie">
+<img src="https://user-images.githubusercontent.com/19279623/135766961-f719ed87-29fa-491a-add5-f8b2124b458d.JPG" alt="Funktion">  
+Auf der linken Seite können die Batterie-Limits vom S10 geändert werden.  
+Rechts kann die Notstrom-Reserve im Speicher aktiviert werden. Sie wird in % oder Wh angezeigt. Die Höhe der Reserve kann in 500, 2000, oder 10000 Wh Schritte vorgewählt und mit "Set" gesetzt werden. Der Schalter setzt die Reserve ggf. direkt auf 0 Wh. Im Hauptbildschirm wird die höhe der Reserve in Prozent mit einem grünen Rahmen bei der Batterie dargestellt.  
+<img src="https://user-images.githubusercontent.com/19279623/120030042-3f043600-bff7-11eb-8fa6-5c08ac469d0d.png" alt="Batterie">  
+Die Notstromreserve oder die Batterie-Limits können auch in der HM gesetzt werden um das S10 zu steuern. Hier die Anleitung dazu: [HM abfragen und S10 steuern](https://github.com/nischram/E3dcGui/wiki/HM-abfragen-und-S10-steuern)  
 
-### 7. SmartHome
+### 7. Monitor
+`  #define E3DC_S10                    1`  
+<img src="https://user-images.githubusercontent.com/19279623/135766970-65498e6b-8740-44fd-9e33-bca1a006c11c.JPG" alt="Monitor">  
+Hier werden links die einzelnen Tracker des Wechselrichters dargestellt. Auf der rechten Seite werden ein paar zusätzliche Informationen vom S10 angezeigt.
+
+### 8. SmartHome
 <img src="https://s20.postimg.cc/ukme71x0d/Smart_Home.jpg" alt="SmartHome">  
 `  #define useDHT                      1`    
 Du kannst am Raspberry den Standard Temperatur/Luftfeuchtigkeits-Sensor DHT11 oder DHT22 anschließen. Ich habe in der parameter.h für fünf Sensoren die Einstellungen vorbereitet. Diese Fünf werden dann auf der linken Seite angezeigt. Der rote oder grüne Punkt zeigt den Status und die erfolgreiche Kommunikation zum Sensor. _Achtung:_ Sensor DHT22 ist nicht möglich!     
 `  #define useAktor                    1`  
 Rechts ist der Status von Schaltaktoren zu sehen. Diese Aktoren können in der parameter.h definiert und den entsprechenden GPIO's zugeordnet werden. Mit den GPIO's ist es dann möglich zum Beispiel eine Relaisplatine anzusteuern. Mit der Platine kannst du dann ein Schütz in deiner Installation aktivieren und z.B. dein Heizstab ansteuern. Diese Funktion ist für alle die keine Homematic angebunden haben, aber trotzdem ein Gerät bei Überschuss aktivieren möchten. Getestet habe ich die Funktion mit einem "2 Kanal 5V Relais Modul für Arduino". Zur Auswahl der Aktoren stehen ein Überschussaktor, ein Aktor für Solarleistung, einer für den Batterie-SOC und ein Zeitaktor. Der Überschuss und der Solar-Aktor schalten ein wenn die Bedingung mindestens 2 Minuten überschritten wird, wenn die Leistung unter 90% vom Sollwert sinkt beginnt die Zeit neu. Abgeschaltet wird wenn die Bedingung 30 Sekunden unterschritten wird. Der Batterieaktor schaltet sofort sobald der Wert überschritten oder unterschritten wird. Auch hier darfst du weitere Ideen, Anregungen oder Fehler gerne als Issue erstellen. Die mindest Einschatzeit und die mindest Auschaltzeit, kann in Minuten definiert werden, dies ist z.B. für die Ansteuerung einer Spülmaschiene wichtig. Die Vergebene Priorität wird unter der Statuslampe angezeigt. Der Status ist hellrot wenn die Priorität erreicht ist sonst dunkelrot. Die Priorität muss in der parameter.h deklariert werden. Es kann von 1-5 gesetzt werden, bei "0" ist keine Priorität vergeben. Weiter ist es möglich den Aktoren ein Zeitfenster zu zuweisen. Nur in diesem Fenster schaltet der Aktor ein und zum Ende des Zeitfensters aus, ein gestarteter Aktor mit einer mindest Einschaltzeit läuft noch so lange, bis zum ablauf der Mindestzeit.
 
-### 8. Homematic
+### 9. Homematic
 `  #define Homematic_GUI               1`  
 <img src="https://s20.postimg.cc/z0fw5rehp/Homematic.jpg" alt="Homematic">  
 Da es für die Homematic kein ideales Display gibt, habe ich diese Software genutzt um mir wichtige Daten der Homematic darzustellen. Die Nutzung für euch mit dieser Funktion ist nur mit Aufwand möglich. Es müssen nicht nur die ISE_ID der Geräte oder Variablen in der "parameterHM.h" definiert werden, sondern muss auch im Sourcecode einiges geändert werden.  
@@ -257,7 +263,7 @@ Ich biete den Teil der Software hier gerne an, aber da die auf meine Homematic u
 Das senden der Daten mit der RSCP-Applikation, ist hiervon nicht betroffen `#define Homematic_E3DC       1`.  
 Damit du am Sourcecode eigene Änderungen vornehmen kannst, aber gleichzeitig Änderungen von mir in anderen Programmteilen übernehmen kannst habe ich die HM-Darstellung und die Touchfunktion in extra Dateien mit ausgelagert. Zusätzlich habe ich einige Kommentarzeilen und Infos als Bearbeitungshilfe eingefügt. Auch die Parameterdatei habe ich getrennt. Wenn du also die HM-Darstellung für deine Zwecke anpasst dann bitte die Dateien `HMGui.h`, `screenSaveHM.c` und `parameterHM.h` __nicht__ aktualisieren.
 
-### 9. Grünbeck softliQ SC18
+### 10. Grünbeck softliQ SC18
 `  #define Gruenbeck               1`  
 <img src="https://s20.postimg.cc/4d5nbw3kt/Gr_nbeck.jpg˘" alt="Gruenbeck">  
 Du kannst mit dem Display Informationen einer Wasserenthärtungsanlage von Grünbeck holen und anzeigen lasen. Ich habe die Grünbeck softliQ SC18 eingebunden und lasse z.B. die Anlagenkapazität, den Verbrauch, die Restkapazität anzeigen, etc. Den Verbrauch summiere ich zum Monatsverbrauch, Jahresverbrauch und Gesamtverbrauch. Die Verbrauchsdaten werden jeden Tag in einer CSV-Datei gespeichert.  
@@ -267,7 +273,7 @@ Weiter ist es möglich die Daten zur Homematic zu senden. `#define GruenbeckHM 1
 Es sollten alle Greäte der Serie softliQ von Grünbeck auslesbar sein. Es könnten Probleme bei anderen Geräten entstehen da diese zum Teil 2 Austauscher haben. Es müssten ggf. Anpassungen an der `External/Gruenbeck.h` und an `External/gruenSave.c` der vorgenommen werden.  
 Es ist auch möglich eine Grünbeck __ohne Display__ am Raspberry mit einer Homematic zu verbinden. Hierfür müssen an der `parameter.h` und der `External/Gruenbeck.h` die entsprechenden Einstellungen vorgenommen werden. Das `make` muss ausgeführt werden, dann kann die Datei `External/gruenSave` z.B. per crontab in entsprechenden Abständen ausgeführt werden. Mit entsprechenden Systemvariablen und Scripten kann auch in der Homematic die Monats und Jahresberechnung vorgenommen werden. Auf wunsch kann ich per PN die Scripte zusenden.
 
-### 10. Abfuhrkalender
+### 11. Abfuhrkalender
 `  #define Abfuhrkalender               1`  
 <img src="https://s20.postimg.cc/brr85ul3x/Muell.jpg˘" alt="Entsorgung">  
 Hier kannst du dir deinen eigenen Entsorgungskalender einpflegen. Es werden dann die Aktuelle und die nächste Kalenderwoche angezeigt. Unter der Grafik ist eine Legende eingeblendet, die bei Bedarf auch deaktiviert werden kann. Für die Pflege musst du in dem Ordner "Data" die Datei "Entsorgung_2017.txt" anpassen. Wichtig ist, dass du das Format, die Aufteilung und Zeilenreihenfolge nicht veränderst. Für die Bearbeitung empfehle ich OpenOffice oder Excel, die Bearbeitung ist in einer Tabelle am besten. Es ist möglich bis zu zwei Tonnen an einem Tag einzupflegen. Es bestehen die Möglichkeit für Biomüll, Papier, Gelber Sack, Restmüll, Glas, Metall, Schadstoffmobil und Feiertag.
@@ -360,7 +366,7 @@ make start
 make stop   
 make RscpMain   
 make Rscp/RscpSet   
-make Rscp/wbCheckHM   
+make Rscp/actionCheckHM   
 make S10history/S10history   
 make External/LedMain   
 make External/gruenSave   
@@ -369,7 +375,7 @@ make Frame/touchtest
 Diese Möglichkeit erspart zum Teil einiges an Zeit, wenn du eigene Änderungen testen möchtest.  
 Die einzel Aufrufe können auch kombiniert werden, z.B.: `make GuiMain screenSave`  
 Bei dem Standart `make` werden folgende Porgrammteile __nicht__ automatisch kompiliert:
-- Rscp/wbCheckHM
+- Rscp/actionCheckHM
 - External/LedMain  
 - External/gruenSave  
 - Frame/touchtest  
@@ -428,6 +434,12 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.04 03.10.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58), [Issue #66](https://github.com/nischram/E3dcGui/issues/66), [Issue #67](https://github.com/nischram/E3dcGui/issues/67),  Diverse Verbesserungen
+- Issue #58 Mit der "Rscp/actionCheckHM.c" kann nun auch die Notstromreserve von der HM aus geändert werden.  
+- Issue #67 Auf dem Display so wie mit der "Rscp/actionCheckHM.c" können sie BAtterie-Limits des S10 geändert werden.  
+- Issue #66 Auf dem Display werden einige Sonderinformationen angezeigt.  
+- "Rscp/wbCheckHM.c" umgebaut nach "Rscp/actionCheckHM.c".  
+
 V2.03 29.07.2021 [Issue #62](https://github.com/nischram/E3dcGui/issues/62) Fehler in der S10History seit Update V2.00  
 - Issue #62 Datei "S10History/RscpReader.cpp" Änderung in V2.00 nicht hochgeladen.
 

@@ -12,6 +12,7 @@
 //#######################################
 //### E3DC S10 Einstellungen ###
 #define E3DC_S10                    1         //Wichtig!    // Ist ein E3DC Speicher vorhanden dann 1, soll das display nur für Homematic genutzt werden dann 0
+#define RSCP_DETAILED_OUTPUT        false                   // Detallierte Ausgabe = true / Minimal = false
 #define SleepTime                   1                       // Abfrageintervall für die RSCP-Applikation in Sekunden, wenn "GUI = 1 & E3DC_S10 = 1" ist der Intervall automatisch = 1
 // S10 Einstellungen wie IP-Adresse, Benutzername, Passwort und RSCP-Schlüssel
 #define SERVER_IP                   "192.168.178.xxx"       // IP-Adresse vom S10
@@ -42,16 +43,18 @@
 #define Wallbox                     0
 #define TAG_EMS_ISE_POWER_WB_ALL    0                // ISE_ID_POWER_WB_ALL
 #define TAG_EMS_ISE_POWER_WB_SOLAR  0                // ISE_ID_POWER_WB_SOLAR
+#define TAG_EMS_ISE_POWER_WB_GRID   0                // ISE_ID_POWER_WB_GRID
 #define TAG_EMS_ISE_WB_CURRENT      0                // ISE_ID Maximaler Ladestrom
 #define TAG_EMS_ISE_WB_MODE         0                // ISE_ID Sonnenmodus / Mischmodus
 #define TAG_EMS_ISE_WB_CHARGE       0                // ISE_ID Auto lädt / Auto lädt nicht
 #define TAG_EMS_ISE_WB_LOCKED       0                // ISE_ID verriegelt / nicht verriegelt
 #define TAG_EMS_ISE_WB_CONNECT      0                // ISE_ID Typ2 gesteckt / Typ2 nicht gesteckt
 #define TAG_EMS_ISE_WB_PHASES       0                // ISE_ID Anzahl der Pahsen
+#define TAG_EMS_ISE_WB_BBC          0                // ISE_ID Batterie vor Auto (Priorität)
+#define TAG_EMS_ISE_WB_BTC          0                // ISE_ID Batterie nach Auto (Batteriestrom erlauben)
 //Wallbox Werte lesen und senden
-#define WALLBOX_SEND                0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte zur Wallbox gesendet
-#define WALLBOX_INTERVAL            15               // Abfrageintervall in Sekunden, Empfehlung = 15 (nicht keliner, nur größer)
-#define ISE_WB_SEND_NOW             0                // ISE_ID Anvorderung fürs senden
+#define WALLBOX_ACTION              0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte zur Wallbox gesendet
+#define ISE_WB_SEND_NOW             0                // ISE_ID Anforderung fürs senden
 #define ISE_WB_SEND_CURRENT         0                // ISE_ID Maximaler Ladestrom
 #define ISE_WB_SEND_MODE            0                // ISE_ID Sonnenmodus / Mischmodus
 #define ISE_WB_SEND_BTC             0                // ISE_ID Batterie vor Auto (Priorität)
@@ -64,11 +67,12 @@
 #define Autarky                     0
 #define Eigenstrom                  0
 #define TAG_EMS_ISE_SERIAL_NUMBER   0                // ISE_ID_SERIAL_NUMBER
+#define TAG_EMS_ISE_SW_RELEASE      0                // ISE_ID_SW_RELEASE
 #define TAG_EMS_ISE_AUTARKY         0                // ISE_ID_AUTARKY
 #define TAG_EMS_ISE_SELFCON         0                // ISE_ID_SELFCON
 //Wieviele Tracker am Wechselrichter sind belegt, 1 oder 2
 #define PVI_TRACKER                 2
-//Weclche Werte sollen vom Tracker/ von den Trackern abgefragt werden
+//Welche Werte sollen vom Tracker/ von den Trackern abgefragt werden
 #define TRACKER_POWER               1
 #define TAG_EMS_ISE_TRACKER_1       0                // ISE_ID_TRACKER_1
 #define TAG_EMS_ISE_TRACKER_2       0                // ISE_ID_TRACKER_2
@@ -77,6 +81,46 @@
 //Abfragen der History Values
 #define historyAktiv                1                       //History Values Abfragen und Anzeigen aktiv=1 deaktiv=0
 #define historyDelay                900                     //Abfrageintervall in Sekunden mindestens 60, Empfehlung 900
+// Notstromreserve Senden und Abfragen
+#define EP_RESERVE_ACTION           0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte der EP-Reserve gesendet
+#define TAG_SE_ISE_EP_RESERVE_W     0                // ISE_ID Notstromreserve IST-Wert
+#define ISE_EP_RESERVE_SEND_NOW     0                // ISE_ID Anforderung fürs senden
+#define ISE_EP_RESERVE_SET_W        0                // ISE_ID Notstromreserve SOLL-Wert
+//Installallierte Leistung und Reduction
+#define ISE_INSTALLED_PEAK_POWER    0
+#define ISE_DERATE_AT_PERCENT       0
+#define ISE_DERATE_AT_POWER         0
+//Verschiedenes
+#define ISE_EMS_STATUS              0
+#define ISE_EP_STATUS               0
+#define ISE_EMERGENCY_POWER_STATUS_INFO          0
+#define ISE_INFO_PRODUCTION_DATE    0
+#define ISE_BAT_CHARGE_CYCLES       0
+#define ISE_BAT_DCB_COUNT           0
+#define ISE_BAT_TRAINING_MODE       0
+#define ISE_BAT_TRAINING_MODE_INFO  0
+#define ISE_BAT_DEVICE_NAME         0
+//batterylimits (im TAG enthalten)
+#define ISE_BAT_POWER_LIMITS_USED                0
+#define ISE_BAT_CHARGE_LIMIT                     0
+#define ISE_BAT_DISCHARGE_LIMIT                  0
+#define ISE_BAT_DISCHARGE_START_POWER            0
+#define ISE_POWERSAVE_ENABLED                    0
+#define ISE_WEATHER_REGULATED_CHARGE_ENABLED     0
+//batterylimits action
+#define BATTERYLIMIT_ACTION         0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte der Batterielimits gesendet
+#define ISE_BL_SEND_NOW             0                // ISE_HM Variable mit Befehl zum senden true=senden
+#define ISE_BL_SEND_MODE            0                // ISE_HM Variable Mode für Natterie-Limits true=mauell (user) / false=auto
+#define ISE_BL_SEND_CHARGE          0                // ISE_HM Variable Max. Ladeleistung in kW
+#define ISE_BL_SEND_DISCHARGE       0                // ISE_HM Variable Max. Endladeleistung in kW
+//powersave action
+#define POWERSAVE_ACTION            0  //Aktuell noch keine Funktion nicht auf 1 setzen!
+#define ISE_PS_SEND_NOW             0
+#define ISE_PS_SEND_MODE            0
+//weather regulated power action
+#define WEATHER_REG_ACTION          0  //Aktuell noch keine Funktion nicht auf 1 setzen!
+#define ISE_WR_SEND_NOW             0
+#define ISE_WR_SEND_MODE            0
 
 //#######################################
 // Homematic Parameter
@@ -122,7 +166,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define PingOn                      1                       // 1= Ping zu Router aktiv
 #define resetWLAN                   1                       // 1= Reset für WLAN bei Pingfehler
 #define PingWD                      1                       // 1= Reboot nach dem 3. Pingfehler
-
+//Release Version überwachen und E-Mail Senden
+#define WDsendEmailRelease          1                       //1=aktiv / 0=deaktiv
 //#######################################
 //Debug Option
 #define debugUse                    0                       // Einige Debug-Zeilen sind schon eingefügt, aktiv=1 deaktiv=0
@@ -145,6 +190,7 @@ Es kann aber zu darstellungsfehler kommen.
 //#######################################
 // Wetterdienst von OpenWeatherMap
 #define wetterGui                   1
+//#define WEATHER_ID                  2950159
 #define WEATHER_COUNTRY             "Deutschland"
 #define WEATHER_CITY                "Berlin"
 #define WEATHER_LAT                 "52.520855"

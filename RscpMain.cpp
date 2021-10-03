@@ -25,8 +25,10 @@ static AES aesEncrypter;
 static AES aesDecrypter;
 static uint8_t ucEncryptionIV[AES_BLOCK_SIZE];
 static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
-static int32_t TAG_EMS_OUT_UNIXTIME = 0;
-static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_TZ [20], TAG_EMS_OUT_SERIAL_NUMBER [17];
+static int32_t TAG_EMS_OUT_UNIXTIME = 0, TAG_EMS_OUT_POWER_WB_ALL = 0;
+static char TAG_EMS_OUT_DATE [20], TAG_EMS_OUT_TIME [20], TAG_EMS_OUT_TZ [20], TAG_EMS_OUT_SERIAL_NUMBER [17], TAG_INFO_OUT_SW_RELEASE[20];
+static char checkTime [20];
+static int checkTimeInt = -1, lastCheckTimeInt;
 static int CounterHM = 0;
 static int Counter900 = 0;
 static int time_zone = 7200;
@@ -63,6 +65,14 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         if(TAG_EMS_OUT_UNIXTIME == 0 || (Seriennummer == 1 && CounterHM == HM_Intervall)){
           protocol.appendValue(&rootValue, TAG_INFO_REQ_SERIAL_NUMBER);
         }
+        if(checkTimeInt != -1 && lastCheckTimeInt != checkTimeInt){
+          lastCheckTimeInt = checkTimeInt;
+          protocol.appendValue(&rootValue, TAG_INFO_REQ_SW_RELEASE);
+          protocol.appendValue(&rootValue, TAG_INFO_REQ_PRODUCTION_DATE);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_INSTALLED_PEAK_POWER);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_DERATE_AT_PERCENT_VALUE);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_DERATE_AT_POWER_VALUE);
+        }
         protocol.appendValue(&rootValue, TAG_INFO_REQ_TIME);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_PV);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_BAT);
@@ -77,6 +87,10 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         SRscpValue batteryContainer;
         protocol.createContainerValue(&batteryContainer, TAG_BAT_REQ_DATA);
         protocol.appendValue(&batteryContainer, TAG_BAT_INDEX, (uint8_t)0);
+        if (ISE_BAT_CHARGE_CYCLES != 0) protocol.appendValue(&batteryContainer, TAG_BAT_REQ_CHARGE_CYCLES);
+        if (ISE_BAT_DCB_COUNT != 0) protocol.appendValue(&batteryContainer, TAG_BAT_REQ_DCB_COUNT);
+        if (ISE_BAT_TRAINING_MODE != 0) protocol.appendValue(&batteryContainer, TAG_BAT_REQ_TRAINING_MODE);
+        if (ISE_BAT_DEVICE_NAME != 0) protocol.appendValue(&batteryContainer, TAG_BAT_REQ_DEVICE_NAME);
         //protocol.appendValue(&batteryContainer, TAG_BAT_REQ_RSOC);
         protocol.appendValue(&batteryContainer, TAG_BAT_REQ_DEVICE_STATE);
         //protocol.appendValue(&batteryContainer, TAG_BAT_REQ_CURRENT);
@@ -87,6 +101,8 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
 
         protocol.appendValue(&rootValue, TAG_EMS_REQ_AUTARKY);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_SELF_CONSUMPTION);
+        protocol.appendValue(&rootValue, TAG_EMS_REQ_STATUS);
+        protocol.appendValue(&rootValue, TAG_EMS_REQ_EMERGENCY_POWER_STATUS);
         if (Additional == 1)
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_ADD);
         else
@@ -152,6 +168,14 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         }
         // EP Reserve
         protocol.appendValue(&rootValue, TAG_SE_REQ_EP_RESERVE);
+        // request Bat-Limits
+        protocol.appendValue(&rootValue, TAG_EMS_REQ_GET_POWER_SETTINGS);
+        SRscpValue BLContainer;
+        /*protocol.createContainerValue(&BLContainer, TAG_EMS_REQ_SET_POWER_SETTINGS);
+        // append sub-container to root container
+        protocol.appendValue(&rootValue, BLContainer);
+        // free memory of sub-container as it is now copied to rootValue
+        protocol.destroyValueData(BLContainer);*/
     }
 
     // create buffer frame to send data to the S10
@@ -190,6 +214,22 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           printsendCharHM(CounterHM, TAG_EMS_ISE_SERIAL_NUMBER, TAG_EMS_OUT_SERIAL_NUMBER);
           break;
         }
+        case TAG_INFO_SW_RELEASE: {    // response for TAG_INFO_REQ_SW_RELEASE
+          string swRelease = protocol->getValueAsString(response);
+          cout << "Software Release is " << swRelease << "\n";
+          strcpy(TAG_INFO_OUT_SW_RELEASE, swRelease.c_str());
+          printsendCharHM(CounterHM, TAG_EMS_ISE_SW_RELEASE, TAG_INFO_OUT_SW_RELEASE);
+          break;
+        }
+        case TAG_INFO_PRODUCTION_DATE: {    // response for TAG_INFO_REQ_PRODUCTION_DATE
+    		  string  productiondate = protocol->getValueAsString(response);
+    		  cout << "Production-Date is " << productiondate << "\n";
+    		  productiondate = replaceinString(productiondate, " ", "%20");
+          char TAG_EMS_OUT_PRODUCTION_DATE [17];
+    		  strcpy(TAG_EMS_OUT_PRODUCTION_DATE, productiondate.c_str());
+    		  printsendCharHM(CounterHM, ISE_INFO_PRODUCTION_DATE, TAG_EMS_OUT_PRODUCTION_DATE);
+    		  break;
+        }
         case TAG_INFO_TIME: {    // response for TAG_INFO_REQ_TIME
             int32_t unixTimestamp = protocol->getValueAsInt32(response);
             time_t timestamp;
@@ -208,6 +248,8 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
             sys = localtime(&timestamp);
             strftime (TAG_EMS_OUT_DATE,40,"%d.%m.%Y",sys);
             strftime (TAG_EMS_OUT_TIME,40,"%H:%M:%S",sys);
+            strftime (checkTime,20,"%H",sys);
+            checkTimeInt = atoi(checkTime);
             writeUnixtime(UnixtimeE3dc, TAG_EMS_OUT_UNIXTIME);
             cout << "System Time is " << TAG_EMS_OUT_DATE << "_" << TAG_EMS_OUT_TIME << "\n";
             cout << "System Unix-Time is " << TAG_EMS_OUT_UNIXTIME << "\n";
@@ -220,7 +262,28 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
             }
             break;
         }
-        case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
+        case TAG_EMS_INSTALLED_PEAK_POWER: {    // response for TAG_EMS_REQ_INSTALLED_PEAK_POWER
+          uint32_t installedPeak = protocol->getValueAsUInt32(response);
+          if (RSCP_DETAILED_OUTPUT) cout << "Installed peak power " << installedPeak << " Wp\n";
+          writeRscp(PosInstalledPeak, installedPeak);
+          printsendHM(CounterHM, ISE_INSTALLED_PEAK_POWER, installedPeak);
+          break;
+        }
+        case TAG_EMS_DERATE_AT_PERCENT_VALUE: {    // response for TAG_EMS_REQ_DERATE_AT_PERCENT_VALUE
+          float derateAtPercent = protocol->getValueAsFloat32(response);
+          if (RSCP_DETAILED_OUTPUT) cout << "Derat at percent " << derateAtPercent*100 << " %\n";
+          writeRscp(PosDerateAtPercent, derateAtPercent*100);
+          printsendHM(CounterHM, ISE_DERATE_AT_PERCENT, derateAtPercent*100);
+          break;
+        }
+        case TAG_EMS_DERATE_AT_POWER_VALUE: {    // response for TAG_EMS_REQ_DERATE_AT_POWER_VALUE
+          float derateAtPower = protocol->getValueAsFloat32(response);
+          if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "Derat at power " << derateAtPower << " W\n";
+          writeRscp(PosDerateAtPower, derateAtPower);
+          printsendHM(CounterHM, ISE_DERATE_AT_POWER, derateAtPower);
+          break;
+        }
+      case TAG_EMS_POWER_PV: {    // response for TAG_EMS_REQ_POWER_PV
           int32_t TAG_EMS_OUT_POWER_PV = protocol->getValueAsInt32(response);
           cout << "PV Power is " << TAG_EMS_OUT_POWER_PV <<" W\n";
           writeRscp(PosPVI,TAG_EMS_OUT_POWER_PV);
@@ -297,17 +360,19 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           break;
         }
         case TAG_EMS_BATTERY_TO_CAR_MODE: {     // response for TAG_EMS_REQ_BATTERY_TO_CAR_MODE
-          float fSOC = protocol->getValueAsUChar8(response);
-          bool TAG_EMS_OUT_BATTERY_TO_CAR_MODE = fSOC;
-          cout << "Battery to Car " << TAG_EMS_OUT_BATTERY_TO_CAR_MODE << "\n";
+          float fBTC = protocol->getValueAsUChar8(response);
+          bool TAG_EMS_OUT_BATTERY_TO_CAR_MODE = fBTC;
+          if (RSCP_DETAILED_OUTPUT) cout << "Battery to Car " << TAG_EMS_OUT_BATTERY_TO_CAR_MODE << "\n";
           writeRscpWb(PosWbBtC,TAG_EMS_OUT_BATTERY_TO_CAR_MODE);
+          printsendHM(CounterHM, TAG_EMS_ISE_WB_BTC, TAG_EMS_OUT_BATTERY_TO_CAR_MODE);
           break;
         }
         case TAG_EMS_BATTERY_BEFORE_CAR_MODE: {     // response for TAG_EMS_REQ_BATTERY_BEFORE_CAR_MODE
-          float fSOC = protocol->getValueAsUChar8(response);
-          bool TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE = fSOC;
-          cout << "Battery bevor Car " << TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE << "\n";
+          float fBBC = protocol->getValueAsUChar8(response);
+          bool TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE = fBBC;
+          if (RSCP_DETAILED_OUTPUT) cout << "Battery bevor Car " << TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE << "\n";
           writeRscpWb(PosWbBbC,TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE);
+          printsendHM(CounterHM, TAG_EMS_ISE_WB_BTC, TAG_EMS_OUT_BATTERY_BEFORE_CAR_MODE);
           break;
         }
         case TAG_EMS_POWER_ADD: {    // response for TAG_EMS_REQ_POWER_ADD
@@ -322,7 +387,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           break;
         }
         case TAG_EMS_POWER_WB_ALL: {    // response for TAG_EMS_REQ_POWER_WB_ALL
-          int32_t TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
+          TAG_EMS_OUT_POWER_WB_ALL = protocol->getValueAsInt32(response);
           cout << "Wallbox Power All is " << TAG_EMS_OUT_POWER_WB_ALL << " W\n";
           writeRscp(PosWbAll,TAG_EMS_OUT_POWER_WB_ALL);
           char file[20];
@@ -339,6 +404,8 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           snprintf (file, (size_t)20, "WBSolar900");
           write900(PosWBSolar900, file, TAG_EMS_OUT_POWER_WB_SOLAR, Counter900);
           printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
+          cout << "Wallbox Power Grid is " << TAG_EMS_OUT_POWER_WB_ALL - TAG_EMS_OUT_POWER_WB_SOLAR << " W\n";
+          printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_GRID, TAG_EMS_OUT_POWER_WB_ALL - TAG_EMS_OUT_POWER_WB_SOLAR);
           break;
         }
         case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
@@ -357,6 +424,54 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           if (Eigenstrom == 1){
             printsendHM(CounterHM, TAG_EMS_ISE_SELFCON, TAG_EMS_OUT_SELF_CONSUMPTION);
           }
+          break;
+        }
+        case TAG_EMS_STATUS: {    // response for TAG_EMS_REQ_STATUS
+          float TAG_EMS_OUT_STATUS = protocol->getValueAsUChar8(response);
+          if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "EMS status 0x0" << TAG_EMS_OUT_STATUS << "\n";
+          writeRscp(PosEpState,TAG_EMS_OUT_STATUS);
+          printsendHM(CounterHM, ISE_EMS_STATUS, TAG_EMS_OUT_STATUS);
+          break;
+        }
+        case TAG_EMS_EMERGENCY_POWER_STATUS: {    // response for TAG_EMS_REQ_EMERGENCY_POWER_STATUS
+          int TAG_EMS_OUT_EMERGENCY_POWER_STATUS = protocol->getValueAsUChar8(response);
+          writeRscp(PosEpState,TAG_EMS_OUT_EMERGENCY_POWER_STATUS);
+          printsendHM(CounterHM, ISE_EP_STATUS, TAG_EMS_OUT_EMERGENCY_POWER_STATUS);
+          char TAG_OUT_DESCRIPTION [100];
+          string description, descriptionReplace;
+          switch(TAG_EMS_OUT_EMERGENCY_POWER_STATUS) {
+    			case 0: {
+    				description = "Nicht möglich";
+    				descriptionReplace = replaceinString(description, " ", "%20");
+    				strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+    				printsendCharHM(CounterHM, ISE_EMERGENCY_POWER_STATUS_INFO, TAG_OUT_DESCRIPTION);
+    			break; }
+    			case 1: {
+    				description = "Aktiv";
+    				descriptionReplace = replaceinString(description, " ", "%20");
+    				strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+    				printsendCharHM(CounterHM, ISE_EMERGENCY_POWER_STATUS_INFO, TAG_OUT_DESCRIPTION);
+    				break; }
+    			case 2: {
+    				description = "Nicht aktiv";
+    				descriptionReplace = replaceinString(description, " ", "%20");
+    				strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+    				printsendCharHM(CounterHM, ISE_EMERGENCY_POWER_STATUS_INFO, TAG_OUT_DESCRIPTION);
+    				break; }
+    			case 3: {
+    				description = "Nicht verfügbar";
+    				descriptionReplace = replaceinString(description, " ", "%20");
+    				strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+    				printsendCharHM(CounterHM, ISE_EMERGENCY_POWER_STATUS_INFO, TAG_OUT_DESCRIPTION);
+    				break; }
+    			case 4: {
+    				description = "Wechsel in Inselbetrieb";
+    				descriptionReplace = replaceinString(description, " ", "%20");
+    				strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+    				printsendCharHM(CounterHM, ISE_EMERGENCY_POWER_STATUS_INFO, TAG_OUT_DESCRIPTION);
+    				break; }
+    			}
+          if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "Emergency power status 0x0" << TAG_EMS_OUT_EMERGENCY_POWER_STATUS << " = " << description << "\n";
           break;
         }
         case TAG_BAT_DATA: {        // resposne for TAG_BAT_REQ_DATA
@@ -386,10 +501,59 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                     printsendHM(CounterHM, TAG_BAT_ISE_SOC, TAG_EMS_OUT_SOC);
                     break;
                 }
+                case TAG_BAT_CHARGE_CYCLES: {              // response for TAG_BAT_REQ_CHARGE_CYCLES
+                    uint32_t fBatCycles = protocol->getValueAsUInt32(&batteryData[i]);
+    				        if (RSCP_DETAILED_OUTPUT) cout << "Battery cycles " << fBatCycles << " \n";
+                    printsendHM(CounterHM, ISE_BAT_CHARGE_CYCLES, fBatCycles);
+                    break;
+                }
+                case TAG_BAT_DCB_COUNT: {              // response for TAG_BAT_REQ_DCB_COUNT
+            				int fDcbCount = protocol->getValueAsUChar8(&batteryData[i]) + 1;
+            				if (RSCP_DETAILED_OUTPUT) cout << "Modules of batteries " << fDcbCount << " \n";
+                    printsendHM(CounterHM, ISE_BAT_DCB_COUNT, fDcbCount);
+                    break;
+                }
                 case TAG_BAT_DEVICE_STATE: {    // response for TAG_BAT_REQ_DEVICE_STATE
                     bool TAG_EMS_OUT_BAT_STATE = protocol->getValueAsBool(&batteryData[i]);
                     writeRscp(PosBatState,TAG_EMS_OUT_BAT_STATE);
-                    cout << "Battery State = " << TAG_EMS_OUT_BAT_STATE << " \n";
+                    if (RSCP_DETAILED_OUTPUT) cout << "Battery State = " << TAG_EMS_OUT_BAT_STATE << " \n";
+                    break;
+                }
+                case TAG_BAT_TRAINING_MODE: {              // response for TAG_BAT_REQ_TRAINING_MODE
+            				float fDcbTraining = protocol->getValueAsUChar8(&batteryData[i]);
+            				int TAG_OUT_BAT_TRAINING_MODE = fDcbTraining;
+                    printsendHM(CounterHM, ISE_BAT_TRAINING_MODE, TAG_OUT_BAT_TRAINING_MODE);
+                    char TAG_OUT_DESCRIPTION [100];
+            				string description, descriptionReplace;
+            				switch(TAG_OUT_BAT_TRAINING_MODE) {
+            				case 0: {
+            					description = "Nicht im Training";
+            					descriptionReplace = replaceinString(description, " ", "%20");
+            					strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+            					printsendCharHM(CounterHM, ISE_BAT_TRAINING_MODE_INFO, TAG_OUT_DESCRIPTION);
+            				break; }
+            				case 1: {
+            					description = "Trainingmodus Entladen";
+            					descriptionReplace = replaceinString(description, " ", "%20");
+            					strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+            					printsendCharHM(CounterHM, ISE_BAT_TRAINING_MODE_INFO, TAG_OUT_DESCRIPTION);
+            					break; }
+            				case 2: {
+            					description = "Trainingmodus Laden";
+            					descriptionReplace = replaceinString(description, " ", "%20");
+            					strcpy(TAG_OUT_DESCRIPTION, descriptionReplace.c_str());
+            					printsendCharHM(CounterHM, ISE_BAT_TRAINING_MODE_INFO, TAG_OUT_DESCRIPTION);
+            					break; }
+            				}
+            				if (RSCP_DETAILED_OUTPUT) cout << "Training mode: " << description << " - (" << TAG_OUT_BAT_TRAINING_MODE << ") \n";
+                            break;
+                }
+                case TAG_BAT_DEVICE_NAME: {              // response for TAG_BAT_REQ_DEVICE_NAME
+            				string deviceName = protocol->getValueAsString(&batteryData[i]);
+            				if (RSCP_DETAILED_OUTPUT) cout << "Device Name is " << deviceName << "\n";
+                    char TAG_BAT_OUT_DEVICE_NAME [24];
+            				strcpy(TAG_BAT_OUT_DEVICE_NAME, deviceName.c_str());
+                    printsendCharHM(CounterHM, ISE_BAT_DEVICE_NAME, TAG_BAT_OUT_DEVICE_NAME);
                     break;
                 }
                 // ...
@@ -420,7 +584,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 }
                 case TAG_PVI_ON_GRID: {              // response for TAG_PVI_REQ_ON_GRID
                     bool TAG_EMS_OUT_PVI_STATE = protocol->getValueAsBool(&PVIData[i]);
-                    cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
+                    if (RSCP_DETAILED_OUTPUT) cout << "PVI State = " << TAG_EMS_OUT_PVI_STATE << " \n";
                     writeRscp(PosPVIState,TAG_EMS_OUT_PVI_STATE);
                     break;
                 }
@@ -435,12 +599,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                         else if((container[n].tag == TAG_PVI_VALUE)) {
                                 TAG_OUT_PVI_DC_POWER = protocol->getValueAsFloat32(&container[n]);
                                 if (index == 0){
-                                  cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Power 1 = " << TAG_OUT_PVI_DC_POWER << " \n";
                                   writeRscp(PosPVIDCP1,TAG_OUT_PVI_DC_POWER);
                                   printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_1, TAG_OUT_PVI_DC_POWER);
                                 }
                                 else if (index == 1){
-                                  cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Power 2 = " << TAG_OUT_PVI_DC_POWER << " \n";
                                   writeRscp(PosPVIDCP2,TAG_OUT_PVI_DC_POWER);
                                   printsendHM(CounterHM, TAG_EMS_ISE_TRACKER_2, TAG_OUT_PVI_DC_POWER);
                                 }
@@ -460,11 +624,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                         else if((container[n].tag == TAG_PVI_VALUE)) {
                                 TAG_OUT_PVI_DC_VOLTAGE = protocol->getValueAsFloat32(&container[n]);
                                 if (index == 0){
-                                  cout << "PVI DC-Voltage 1 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Voltage 1 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
                                   writeRscp(PosPVIDCU1,TAG_OUT_PVI_DC_VOLTAGE);
                                 }
                                 if (index == 1){
-                                  cout << "PVI DC-Voltage 2 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Voltage 2 = " << TAG_OUT_PVI_DC_VOLTAGE << " \n";
                                   writeRscp(PosPVIDCU2,TAG_OUT_PVI_DC_VOLTAGE);
                                 }
                         }
@@ -483,11 +647,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                         else if((container[n].tag == TAG_PVI_VALUE)) {
                                 TAG_OUT_PVI_DC_CURRENT = protocol->getValueAsFloat32(&container[n]);
                                 if (index == 0){
-                                  cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Current 1 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
                                   writeRscp(PosPVIDCI1,TAG_OUT_PVI_DC_CURRENT*100);
                                 }
                                 if (index == 1){
-                                  cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
+                                  if (RSCP_DETAILED_OUTPUT) cout << "PVI DC-Current 2 = " << TAG_OUT_PVI_DC_CURRENT << " \n";
                                   writeRscp(PosPVIDCI2,TAG_OUT_PVI_DC_CURRENT*100);
                                 }
                         }
@@ -523,13 +687,13 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                 }
                 case TAG_PM_DEVICE_STATE: {              // response for TAG_PM_REQ_DEVICE_STATE
                     bool TAG_EMS_OUT_PM_STATE = protocol->getValueAsBool(&PMData[i]);
-                    cout << "LM0 State = " << TAG_EMS_OUT_PM_STATE << " \n";
+                    if (RSCP_DETAILED_OUTPUT) cout << "LM0 State = " << TAG_EMS_OUT_PM_STATE << " \n";
                     writeRscp(PosPMState,TAG_EMS_OUT_PM_STATE);
                     break;
                 }
                 case TAG_PM_ACTIVE_PHASES: {              // response for TAG_PM_REQ_ACTIVE_PHASES
                     int32_t TAG_PM_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&PMData[i]);
-                    cout << "LM0 Aktiv Phases = " << TAG_PM_OUT_ACTIVE_PHASES << " \n";
+                    if (RSCP_DETAILED_OUTPUT) cout << "LM0 Aktiv Phases = " << TAG_PM_OUT_ACTIVE_PHASES << " \n";
                     writeRscp(PosPMPhases,TAG_PM_OUT_ACTIVE_PHASES);
                     break;
                 }
@@ -560,14 +724,14 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                   }
                   case TAG_WB_DEVICE_STATE: {              // response for TAG_WB_REQ_DEVICE_STATE
                       bool TAG_EMS_OUT_WB_STATE = protocol->getValueAsBool(&WBData[i]);
-                      cout << "WB0 State = " << TAG_EMS_OUT_WB_STATE << " \n";
+                      if (RSCP_DETAILED_OUTPUT) cout << "WB0 State = " << TAG_EMS_OUT_WB_STATE << " \n";
                       writeRscpWb(PosWbState, TAG_EMS_OUT_WB_STATE);
 
                       break;
                   }
                   case TAG_WB_PM_ACTIVE_PHASES: {              // response for TAG_WB_REQ_ACTIVE_PHASES
                       int32_t TAG_WB_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&WBData[i]);
-                      cout << "WB0 Aktiv Phases = " << TAG_WB_OUT_ACTIVE_PHASES << " \n";
+                      if (RSCP_DETAILED_OUTPUT) cout << "WB0 Aktiv Phases = " << TAG_WB_OUT_ACTIVE_PHASES << " \n";
                       writeRscpWb(PosWbActPhases, TAG_WB_OUT_ACTIVE_PHASES);
                       break;
                   }
@@ -663,7 +827,7 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                             writeRscpWb(PosWbLED_ERR  , checkBit(WbExt[4], 128));
                             writeRscpWb(PosWbDebug    , WbExt[6]);
                             writeRscpWb(PosWbCheckSum , WbExt[1]+ WbExt[2]+ WbExt[3]+ WbExt[4]+ WbExt[6]);
-                            printf("WB0 ALG EXTERN_DATA = ");
+                            if (RSCP_DETAILED_OUTPUT) printf("WB0 ALG EXTERN_DATA = ");
                             printsendHM(CounterHM, TAG_EMS_ISE_WB_PHASES, WbExt[1]);
                             printsendBitHM(CounterHM, TAG_EMS_ISE_WB_CONNECT, WbExt[2], 8);
                             printsendBitHM(CounterHM, TAG_EMS_ISE_WB_LOCKED, WbExt[2], 16);
@@ -673,9 +837,9 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                             for(size_t x = 0; x < sizeof(WbExt); ++x){
                               uint8_t y;
                               y=WbExt[x];
-                              printf("%02X ", y);
+                              if (RSCP_DETAILED_OUTPUT) printf("%02X ", y);
                             }
-                            printf("\n");
+                            if (RSCP_DETAILED_OUTPUT) printf("\n");
                             break;
                         }
                         case TAG_WB_EXTERN_DATA_LEN: {              // response for TAG_WB_REQ_EXTERN_DATA_ALG
@@ -712,19 +876,20 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
               switch(SEData[i].tag) {
                 case TAG_SE_PARAM_EP_RESERVE: {              // response for TAG_SE_PARAM_EP_RESERVE
                     float OUT_SE_PARAM_EP_RESERVE = protocol->getValueAsFloat32(&SEData[i]);
-                    cout << setprecision(1) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE << " %\n";
+                    if (RSCP_DETAILED_OUTPUT) cout << setprecision(1) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE << " %\n";
                     writeRscp(PosEpReserv, OUT_SE_PARAM_EP_RESERVE);
                     break;
                 }
                 case TAG_SE_PARAM_EP_RESERVE_W: {              // response for TAG_SE_PARAM_EP_RESERVE_W
                     float OUT_SE_PARAM_EP_RESERVE_W = protocol->getValueAsFloat32(&SEData[i]);
-                    cout << setprecision(0) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE_W << " Wh\n";
+                    if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "EP Reserve = " << OUT_SE_PARAM_EP_RESERVE_W << " Wh\n";
                     writeRscp(PosEpReservW, OUT_SE_PARAM_EP_RESERVE_W);
+                    printsendHM(CounterHM, TAG_SE_ISE_EP_RESERVE_W, OUT_SE_PARAM_EP_RESERVE_W/1000);
                     break;
                 }
                 case TAG_SE_PARAM_EP_RESERVE_MAX_W: {              // response for TAG_SE_PARAM_EP_RESERVE_MAX_W
                     float OUT_SE_PARAM_EP_RESERVE_MAX_W = protocol->getValueAsFloat32(&SEData[i]);
-                    cout << setprecision(0) << fixed << "EP Reserve Max = " << OUT_SE_PARAM_EP_RESERVE_MAX_W << " Wh\n";
+                    if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "EP Reserve Max = " << OUT_SE_PARAM_EP_RESERVE_MAX_W << " Wh\n";
                     writeRscp(PosEpReservMaxW, OUT_SE_PARAM_EP_RESERVE_MAX_W);
                     break;
                 }
@@ -738,6 +903,97 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
             protocol->destroyValueData(SEData);
             break;
         }
+        case TAG_EMS_GET_POWER_SETTINGS:
+        case TAG_EMS_SET_POWER_SETTINGS: {
+    			uint8_t ucBLIndex = 0;
+    			std::vector<SRscpValue> BLData = protocol->getValueAsContainer(response);
+    			for(size_t i = 0; i < BLData.size(); ++i) {
+    				//printf("TAG_EMS_GET_POWER_SETTINGS/TAG_EMS_SET_POWER_SETTINGS Durchlauf # %i \n", i+1);
+    				if(BLData[i].dataType == RSCP::eTypeError) {
+    					// handle error for example access denied errors
+    					uint32_t uiErrorCode = protocol->getValueAsUInt32(&BLData[i]);
+    					printf("TAG_EMS_GET_POWER_SETTINGS 0x%08X received error code %u.\n", BLData[i].tag, uiErrorCode);
+    					printf("TAG_EMS_GET_POWER_SETTINGS - Fehler beim Durchlauf!\n");
+    					return -1;
+    				}
+    				// check each BL sub tag
+    				switch(BLData[i].tag) {
+    					case TAG_EMS_POWER_LIMITS_USED: {              // response for POWER_LIMITS_USED
+                bool powerLimitUsed = protocol->getValueAsBool(&BLData[i]);
+                writeRscp(PosBlUsed,powerLimitUsed);
+    						if (powerLimitUsed){
+    							if (RSCP_DETAILED_OUTPUT) cout << "Battery Limits = User\n";
+    							printsendHM(CounterHM, ISE_BAT_POWER_LIMITS_USED, true);
+    							}
+    						else {
+    							if (RSCP_DETAILED_OUTPUT) cout << "Battery Limits = System\n";
+    							printsendHM(CounterHM, ISE_BAT_POWER_LIMITS_USED, false);
+    						}
+    						break;
+    					}
+    					case TAG_EMS_MAX_CHARGE_POWER: {              // 101 response for TAG_EMS_MAX_CHARGE_POWER
+    						uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+    						if (RSCP_DETAILED_OUTPUT) cout << "Battery Limits Charge = " << uPower << " W\n";
+                writeRscp(PosBlCharge,uPower);
+    						printsendHM(CounterHM, ISE_BAT_CHARGE_LIMIT, (float(uPower)/1000));
+    						break;
+    					}
+    					case TAG_EMS_MAX_DISCHARGE_POWER: {              //102 response for TAG_EMS_MAX_DISCHARGE_POWER
+    						uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+    						if (RSCP_DETAILED_OUTPUT) cout << "Battery Limits Disharge = " << uPower << " W\n";
+                writeRscp(PosBlDischarge,uPower);
+    						printsendHM(CounterHM, ISE_BAT_DISCHARGE_LIMIT, (float(uPower)/1000));
+    						break;
+    					}
+    					case TAG_EMS_DISCHARGE_START_POWER:{              //103 response for TAG_EMS_DISCHARGE_START_POWER
+    						uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+    						if (RSCP_DETAILED_OUTPUT) cout << "Battery Start Power = " << uPower << " W\n";
+                writeRscp(PosBlStart,uPower);
+    						printsendHM(CounterHM, ISE_BAT_DISCHARGE_START_POWER, uPower);
+    						break;
+    					}
+    					case TAG_EMS_POWERSAVE_ENABLED: {              //104 response for TAG_EMS_POWERSAVE_ENABLED
+                bool powerSave = protocol->getValueAsBool(&BLData[i]);
+                writeRscp(PosPowerSave,powerSave);
+    						if (powerSave){
+    							if (RSCP_DETAILED_OUTPUT) cout << "Powersave = aktiv\n";
+    							printsendHM(CounterHM, ISE_POWERSAVE_ENABLED, true);
+    						}
+    						else {
+    							if (RSCP_DETAILED_OUTPUT) cout << "Powersave = deaktiv\n";
+    							printsendHM(CounterHM, ISE_POWERSAVE_ENABLED, false);
+    						}
+    						break;
+    					}
+    					case TAG_EMS_WEATHER_REGULATED_CHARGE_ENABLED: {//105 resp WEATHER_REGULATED_CHARGE_ENABLED
+                bool waetherReg = protocol->getValueAsBool(&BLData[i]);
+                writeRscp(PosWeatherReg,waetherReg);
+    						if (waetherReg){
+    							if (RSCP_DETAILED_OUTPUT) cout << "Weather regulated charge = aktiv \n";
+    							printsendHM(CounterHM, ISE_WEATHER_REGULATED_CHARGE_ENABLED, true);
+    						}
+    						else {
+    							if (RSCP_DETAILED_OUTPUT) cout << "Weather regulated charge = deaktiv \n";
+    							printsendHM(CounterHM, ISE_WEATHER_REGULATED_CHARGE_ENABLED, false);
+    						}
+    						break;
+    					}
+    						// ...
+    					default:
+    						// default behaviour
+                /*printf("Unkonwn GET_POWER_SETTINGS tag %08X", BLData[i].tag);
+    						printf(" len %08X", BLData[i].length);
+    						printf(" datatype %08X", BLData[i].dataType);
+    						uint32_t uPower = protocol->getValueAsUInt32(&BLData[i]);
+    						printf(" Value  %i\n", uPower);
+                */
+                break;
+    				}
+    			}
+    			protocol->destroyValueData(BLData);
+                // sleep(10);
+    			break;
+    		}
         // ...
         default:
         // default behavior
@@ -935,7 +1191,7 @@ static void mainLoop(void)
           CounterHM = 0;
         CounterHM ++;
 
-        writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER);
+        writeCharRscp(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, TAG_EMS_OUT_SERIAL_NUMBER, TAG_INFO_OUT_SW_RELEASE);
 
         if(Counter900 == 900){
           Counter900 = 0;

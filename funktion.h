@@ -26,6 +26,7 @@ int Picture7;
 int Picture8;
 int Picture9;
 int Picture10;
+int Picture11;
 
 // Zusatzfunktion für die Jalousie-Funktin "readJalou_HM" und Aktor.h
 unsigned replace_character(char* string, char from, char to){
@@ -51,7 +52,7 @@ int read_HM(int id, int cutnumber, char* value){
   cutlast = 8 + cutnumber - 1;
   char batch[256];
   memset(&batch, 0, sizeof(batch));
-  snprintf(batch, (size_t)256, "curl -s http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, id, cutlast);
+  snprintf(batch, (size_t)256, "curl -k -s https://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, id, cutlast);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -73,7 +74,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
   char batch[256], res_Jal[20];
   memset(&batch, 0, sizeof(batch));
   memset(&res_Jal, 0, sizeof(res_Jal));
-  snprintf(batch, (size_t)256, "curl -s http://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, id);
+  snprintf(batch, (size_t)256, "curl -k -s https://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, id);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -97,7 +98,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
 void printsendHM(int id, char value[20]){
     char batch[128];
     memset(batch, 0x00, sizeof(batch));
-    snprintf(batch, sizeof(batch), "curl -s \"http://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\">/dev/null &",HM_IP , id, value);
+    snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\">/dev/null &",HM_IP , id, value);
     //printf("send :[%s]\n",batch);
     system(batch);
 }
@@ -184,7 +185,7 @@ int picturePosition()
   if(wetterGui ==1)
     numberPicture = numberPicture +1;
   if(E3DC_S10 ==1)
-    numberPicture = numberPicture +3;
+    numberPicture = numberPicture +4;
   if(Wallbox ==1)
     numberPicture = numberPicture +1;
   if(useAktor == 1 && useDHT == 1)
@@ -195,39 +196,41 @@ int picturePosition()
     numberPicture = numberPicture +1;
   if(Abfuhrkalender ==1)
     numberPicture = numberPicture +1;
-  int piece = (800 - (numberPicture * 76)) / 2;
+  int piece = (800 - (numberPicture * 68)) / 2;
   Picture1 = piece;
   if(wetterGui ==1){
-    piece = piece + 76;
+    piece = piece + 68;
     Picture2 = piece;
   }
   if(E3DC_S10 ==1){
-    piece = piece + 76;
+    piece = piece + 68;
     Picture3 = piece;
-    piece = piece + 76;
+    piece = piece + 68;
     Picture4 = piece;
     if(Wallbox ==1){
-      piece = piece + 76;
+      piece = piece + 68;
       Picture5 = piece;
     }
-    piece = piece + 76;
+    piece = piece + 68;
     Picture6 = piece;
-  }
-  if(useAktor == 1 && useDHT == 1){
-    piece = piece + 76;
+    piece = piece + 68;
     Picture7 = piece;
   }
-  if(Homematic_GUI ==1){
-    piece = piece + 76;
+  if(useAktor == 1 && useDHT == 1){
+    piece = piece + 68;
     Picture8 = piece;
   }
-  if(Gruenbeck ==1){
-    piece = piece + 76;
+  if(Homematic_GUI ==1){
+    piece = piece + 68;
     Picture9 = piece;
   }
-  if(Abfuhrkalender ==1){
-    piece = piece + 76;
+  if(Gruenbeck ==1){
+    piece = piece + 68;
     Picture10 = piece;
+  }
+  if(Abfuhrkalender ==1){
+    piece = piece + 68;
+    Picture11 = piece;
   }
   return 1;
 }
@@ -246,16 +249,16 @@ int drawMainScreen()
     DrawImage("LangzeitImage", Picture4, PictureLine1);
     if(Wallbox == 1)
       DrawImage("Wallbox", Picture5, PictureLine1);
-    DrawImage("MonitorImage", Picture6, PictureLine1);
+    DrawImage("FunktionImage", Picture6, PictureLine1);
+    DrawImage("MonitorImage", Picture7, PictureLine1);
   }
   if(useAktor == 1 || useDHT == 1)
-    DrawImage("SmartImage", Picture7, PictureLine1);
   if(Homematic_GUI ==1)
-    DrawImage("HMImage", Picture8, PictureLine1);
+    DrawImage("HMImage", Picture9, PictureLine1);
   if(Gruenbeck ==1)
-    DrawImage("GBImage", Picture9, PictureLine1);
+    DrawImage("GBImage", Picture10, PictureLine1);
   if(Abfuhrkalender ==1)
-    DrawImage("MuellImage", Picture10, PictureLine1);
+    DrawImage("MuellImage", Picture11, PictureLine1);
   return 1;
 }
 // Zahlen darstellen
@@ -563,7 +566,7 @@ int makeTo()
 }
 
 //Lesen der RSCP Daten aus dem RAMDisk
-void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
+void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr, char* TAG_SwRelease)
 {
   FILE *fp;
   fp = fopen("/mnt/RAMDisk/E3dcGuiChar.txt", "r");
@@ -577,6 +580,8 @@ void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr)
     strtok(TAG_Time, "\n");
     fgets(TAG_SerialNr,20,fp);
     strtok(TAG_SerialNr, "\n");
+    fgets(TAG_SwRelease,20,fp);
+    strtok(TAG_SwRelease, "\n");
     fclose(fp);
   }
 }
@@ -713,7 +718,7 @@ int killall()
   if(pidCheck("GuiMain") != 0) system("killall -9 GuiMain");
   if(pidCheck("RscpMain") != 0) system("killall -9 RscpMain");
   if(pidCheck("watchdog") != 0) system("killall -9 watchdog");
-  if(pidCheck("wbCheckHM") != 0) system("killall -9 wbCheckHM");
+  if(pidCheck("actionCheckHM") != 0) system("killall -9 actionCheckHM");
   if(pidCheck("LedMain") != 0) system("sudo killall LedMain");
   if(pidCheck("gruenSave") != 0) system("killall gruenSave");
 }

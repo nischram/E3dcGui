@@ -21,6 +21,7 @@
 #define ScreenSmart                 7    //!!
 #define ScreenGB                    8    //!!
 #define ScreenWallbox               9    //!!
+#define ScreenFunktion              10   //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!
@@ -77,7 +78,7 @@
 #define VOLT                        5    //!!
 #define DOT                         6    //!!
 
-#define PictureLine1                12   //!!
+#define PictureLine1                16   //!!
 #define PictureW                    75   //!!
 #define PictureH                    75   //!!
 
@@ -111,7 +112,18 @@
 #define PosEpReserv                 21   //!!
 #define PosEpReservW                22   //!!
 #define PosEpReservMaxW             23   //!!
-#define PosMAX                      24   //!!
+#define PosInstalledPeak            24   //!!
+#define PosDerateAtPercent          25   //!!
+#define PosDerateAtPower            26   //!!
+#define PosEmsState                 27   //!!
+#define PosEpState                  28   //!!
+#define PosBlUsed                   29   //!!
+#define PosBlCharge                 30   //!!
+#define PosBlDischarge              31   //!!
+#define PosBlStart                  32   //!!
+#define PosPowerSave                33   //!!
+#define PosWeatherReg               34   //!!
+#define PosMAX                      35   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!
@@ -152,7 +164,13 @@
 // Berschreibung Übergaben im Programm
 #define PosToEpSet                  0    //!!
 #define PosToEpMax                  1    //!!
-#define PosToMAX                    2    //!!
+#define PosToBlUsed                 2   //!!
+#define PosToBlCharge               3   //!!
+#define PosToBlDischarge            4   //!!
+#define PosToBlStart                5   //!!
+#define PosToPowerSave              6   //!!
+#define PosToWeatherReg             7   //!!
+#define PosToMAX                    8    //!!
 
 // Berschreibung Grünbeck
 #define PosGB_CONSUMPTION           0    //!!
@@ -226,9 +244,19 @@
 #define MuellZ2                     230 //!!
 #define MuellZ3                     340 //!!
 
-//Screen Monitor
-#define T1                          50  //!!
-#define T2                          225 //!!
+//Screen Funktion
+#define BL                          50  //!!
+#define BLR1                        168          //!!
+#define BLR2                        BLR1 + 36    //!!
+#define BLR3                        BLR2 + 36    //!!
+#define BLR4                        BLR3 + 36    //!!
+#define BLR5                        BLR4 + 36    //!!
+#define BLR6                        BLR5 + 36    //!!
+#define BLR7                        BLR6 + 36    //!!
+#define BLS2                        BL + 100     //!!
+#define BLS1                        BLS2 - 80    //!!
+#define BLS3                        BLS2 + 80    //!!
+
 #define EP                          420 //!!
 #define EPPERX                      EP + 120     //!!
 #define EPPERY                      160          //!!
@@ -246,6 +274,21 @@
 #define EPSETR1                     EPSETY + 36  //!!
 #define EPSETR2                     EPSETR1 + 36 //!!
 #define EPSETR3                     EPSETR2 + 36 //!!
+
+//Screen Monitor
+#define T1                          50  //!!
+#define T2                          225 //!!
+#define SI                          420 //!!
+#define SIR1                        168          //!!
+#define SIR2                        SIR1 + 36    //!!
+#define SIR3                        SIR2 + 36    //!!
+#define SIR4                        SIR3 + 36    //!!
+#define SIR5                        SIR4 + 36    //!!
+#define SIR6                        SIR5 + 36    //!!
+#define SIR7                        SIR6 + 36    //!!
+#define SIS1                        SI + 10      //!!
+#define SIS2                        SI + 120     //!!
+#define SIS3                        SI + 200     //!!
 
 //Screen Wallbox
 #define WB1                         30  //!!

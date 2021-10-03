@@ -28,6 +28,7 @@ gcc -g -o GuiMain  GuiMain.c -lwiringPi
 #include "Frame/DrawNetImage.h"
 #include "Frame/DrawCorner.c"
 #include "funktion.h"
+#include "Rscp/actionCheckHM.h"
 #include "HMGui.h"
 #include "External/WetterGui.h"
 #include "External/MuellGui.h"
@@ -62,13 +63,13 @@ int main(){
 
 	int GuiTime, change = 1, changeStop = 0, saveGBstate = 0;
 	char batch[256], OUT [100],Path[100],Value[20],writeTxt[20],TimestampHM[20],RscpTimestamp[40],weatherTime[64], gruenTime[24], changepf[20];
-  char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17];
+  char TAG_EMS_OUT_DATE[20], TAG_EMS_OUT_TIME[20], serialnumber[17], swrelease[20];
 	int counter, ScreenSaverCounter, HistoryCounter = 15, SmartCounter = 0;
 	int UnixTime;
 	int wbCheckSumOld = 0;
 	char wallboxSendNow[20], wallboxSendMode[20], wallboxSendCurrent[20], wallboxSendBtC[20], wallboxSendBbC[20], wallboxSendStop[20], wallboxSendPhC[20];
 	char WbMode[24],WbBtC[24],WbBbC[24],WbSet[24];
-	int WbCurrent, wallboxSendTime = 0;
+	int WbCurrent, actionSendTime = 0;
 
 	screenOn();
 	writeScreen(ScreenCounter, 0);
@@ -118,7 +119,7 @@ int main(){
 		system ("cp /mnt/RAMDisk/E3dcCache.txt /mnt/RAMDisk/E3dcGuiData.txt");
 		system ("cp /mnt/RAMDisk/E3dcWbCache.txt /mnt/RAMDisk/E3dcGuiWbData.txt ");
 
-		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber);
+		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber, swrelease);
 		GuiTime = PiTime;
 
 		int pirUse = readPirUse();
@@ -514,7 +515,7 @@ int main(){
 						drawCorner(WB1,RP1-20,740,353,WHITE);
 						drawSquare(WB1+3,RP1+40,734,290,WHITE);
 						drawCorner(WB1+3,RP1+40,734,290,GREY);
-						put_string(370, RP1+4, "Wallbox", WHITE);
+						DrawImage("Wallbox/Wallbox", 290, RP1-5);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -629,6 +630,98 @@ int main(){
 			}
 //####################################################
 			//Monitor Grafik erstellen
+			case ScreenFunktion:{
+				GuiTime = RscpTime;
+				int screenState = readScreen(ScreenState);
+				if(counter == 0 ){
+					writeScreen(ScreenCounter, 60);
+					if(screenState == ScreenOn){
+						drawMainScreen();
+						// Grafik für Batterie-Limits
+						drawSquare(BL,RP1-20,335,340,GREY);
+						drawCorner(BL,RP1-20,335,340,WHITE);
+						drawSquare(BL+3,RP1+40,329,277,WHITE);
+						drawCorner(BL+3,RP1+40,329,277,GREY);
+						DrawImage("Batterie/BatterieLimits", BL+60, RP1-5);
+						// Grafik für EP_Reserve
+						drawSquare(EP,RP1-20,335,340,GREY);
+						drawCorner(EP,RP1-20,335,340,WHITE);
+						drawSquare(EP+3,RP1+40,329,277,WHITE);
+						drawCorner(EP+3,RP1+40,329,277,GREY);
+						DrawImage("EpReserve/NotRes", EP+60, RP1-5);
+					}
+					// Battery-Limits
+					DrawImage("Batterie/Auto", BLS1, BLR1);
+					DrawImage("Batterie/Manuell", BLS3+30, BLR1);
+					DrawImage("Batterie/Charge", BLS1, BLR2);
+					if(readTo(PosToBlCharge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR3);
+					else DrawImage("EpReserve/Minus500Off", BLS1, BLR3);
+					if(readTo(PosToBlCharge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR3);
+					else DrawImage("EpReserve/Plus500Off", BLS2, BLR3);
+					if(readTo(PosToBlCharge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR4);
+					else DrawImage("EpReserve/Minus2000Off", BLS1, BLR4);
+					if(readTo(PosToBlCharge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR4);
+					else DrawImage("EpReserve/Plus2000Off", BLS2, BLR4);
+					DrawImage("Batterie/Discharge", BLS1, BLR5);
+					if(readTo(PosToBlDischarge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR6);
+					else DrawImage("EpReserve/Minus500Off", BLS1, BLR6);
+					if(readTo(PosToBlDischarge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR6);
+					else DrawImage("EpReserve/Plus500Off", BLS2, BLR6);
+					if(readTo(PosToBlDischarge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR7);
+					else DrawImage("EpReserve/Minus2000Off", BLS1, BLR7);
+					if(readTo(PosToBlDischarge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR7);
+					else DrawImage("EpReserve/Plus2000Off", BLS2, BLR7);
+
+					//EP_Reserve
+					int x;
+					int maxW = readRscp(PosEpReservMaxW)*0.8;
+					int maxC = maxW / 500;
+					int maxSet = maxC * 500;
+					writeTo(PosToEpMax,maxSet);
+					drawNumber(EPPERX -10+24, EPPERY, readRscp(PosEpReserv), PERCENT, BLACK);
+					x = drawNumber(EPWX -10, EPWY, readRscp(PosEpReservW), WATTH, BLACK);
+					DrawImage("EpReserve/reservesw", x, EPWY);
+					DrawImage("EpReserve/reservesw", x, EPPERY);
+					x = drawNumber(EPWMAXX -10, EPWMAXY, maxSet, WATTH, BLACK);
+					DrawImage("EpReserve/maxsw", x, EPWMAXY);
+					if (readRscp(PosEpReservW) > 0)
+						DrawImage("Switch/On", EPSWX, EPSWY);
+					else
+						DrawImage("Switch/Off", EPSWX, EPSWY);
+					x = drawNumber(EPSETX -10, EPSETY, readTo(PosToEpSet), WATTH, BLACK);
+					DrawImage("EpReserve/setsw", x, EPSETY);
+					DrawImage("EpReserve/Set", EPSETS2, EPSETR1);
+					if(readTo(PosToEpSet) - 500 >= 0 ) DrawImage("EpReserve/Minus500", EPSETS1, EPSETR1);
+					else DrawImage("EpReserve/Minus500Off", EPSETS1, EPSETR1);
+					if(readTo(PosToEpSet) + 500 <= maxSet ) DrawImage("EpReserve/Plus500", EPSETS3, EPSETR1);
+					else DrawImage("EpReserve/Plus500Off", EPSETS3, EPSETR1);
+					if(readTo(PosToEpSet) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", EPSETS1, EPSETR2);
+					else DrawImage("EpReserve/Minus2000Off", EPSETS1, EPSETR2);
+					if(readTo(PosToEpSet) + 2000 <= maxSet ) DrawImage("EpReserve/Plus2000", EPSETS3, EPSETR2);
+					else DrawImage("EpReserve/Plus2000Off", EPSETS3, EPSETR2);
+					if(readTo(PosToEpSet) - 10000 >= 0 ) DrawImage("EpReserve/Minus10000", EPSETS1, EPSETR3);
+					else DrawImage("EpReserve/Minus10000Off", EPSETS1, EPSETR3);
+					if(readTo(PosToEpSet) + 10000 <= maxSet ) DrawImage("EpReserve/Plus10000", EPSETS3, EPSETR3);
+					else DrawImage("EpReserve/Plus10000Off", EPSETS3, EPSETR3);
+				}
+				if ((counter % 2) == 0){
+					//BL Aktuell
+					if (readRscp(PosBlUsed) == 1)
+						DrawImage("Switch/On", BLS2, BLR1);
+					else
+						DrawImage("Switch/Off", BLS2, BLR1);
+					DrawImage("EpReserve/Set", BLS3+30, BLR4);
+					drawNumber(BLS3+18, BLR2, readRscp(PosBlCharge), WATT, BLACK);
+					drawNumber(BLS3+18, BLR3, readTo(PosToBlCharge), WATT, BLACK);
+					DrawImage("EpReserve/Set", BLS3+30, BLR7);
+					drawNumber(BLS3+18, BLR5, readRscp(PosBlDischarge), WATT, BLACK);
+					drawNumber(BLS3+18, BLR6, readTo(PosToBlDischarge), WATT, BLACK);
+				}
+
+				break;
+			}
+//####################################################
+			//Monitor Grafik erstellen
 			case ScreenMonitor:{
 				GuiTime = RscpTime;
 				int screenState = readScreen(ScreenState);
@@ -653,12 +746,12 @@ int main(){
 							DrawImage("PV_Modul_aktiv", T2+20, 200);
 						else
 							DrawImage("PV_Modul_deaktiv", T2+20, 200);
-						// Grafik für EP_Reserve
-						drawSquare(EP,RP1-20,335,340,GREY);
-						drawCorner(EP,RP1-20,335,340,WHITE);
-						drawSquare(EP+3,RP1+40,329,277,WHITE);
-						drawCorner(EP+3,RP1+40,329,277,GREY);
-						DrawImage("EpReserve/NotRes", EP+60, RP1-5);
+						// Grafik für System Info
+						drawSquare(SI,RP1-20,335,340,GREY);
+						drawCorner(SI,RP1-20,335,340,WHITE);
+						drawSquare(SI+3,RP1+40,329,277,WHITE);
+						drawCorner(SI+3,RP1+40,329,277,GREY);
+						DrawImage("SystemInfo", SI+60, RP1-5);
 					}
 				}
 				if(counter == 0 || screenState == ScreenOn){
@@ -697,37 +790,26 @@ int main(){
 						else
 							drawOutput(T2+30, 320,80,12, "PVI-DOWN", RED);
 					}
-					//EP_Reserve
-					int x;
-					int maxW = readRscp(PosEpReservMaxW)*0.8;
-					int maxC = maxW / 500;
-					int maxSet = maxC * 500;
-					writeTo(PosToEpMax,maxSet);
-					drawNumber(EPPERX -10+24, EPPERY, readRscp(PosEpReserv), PERCENT, BLACK);
-					x = drawNumber(EPWX -10, EPWY, readRscp(PosEpReservW), WATTH, BLACK);
-					DrawImage("EpReserve/reservesw", x, EPWY);
-					DrawImage("EpReserve/reservesw", x, EPPERY);
-					x = drawNumber(EPWMAXX -10, EPWMAXY, maxSet, WATTH, BLACK);
-					DrawImage("EpReserve/maxsw", x, EPWMAXY);
-					if (readRscp(PosEpReservW) > 0)
-						DrawImage("Switch/On", EPSWX, EPSWY);
-					else
-						DrawImage("Switch/Off", EPSWX, EPSWY);
-					x = drawNumber(EPSETX -10, EPSETY, readTo(PosToEpSet), WATTH, BLACK);
-					DrawImage("EpReserve/setsw", x, EPSETY);
-					DrawImage("EpReserve/Set", EPSETS2, EPSETR1);
-					if(readTo(PosToEpSet) - 500 >= 0 ) DrawImage("EpReserve/Minus500", EPSETS1, EPSETR1);
-					else DrawImage("EpReserve/Minus500Off", EPSETS1, EPSETR1);
-					if(readTo(PosToEpSet) + 500 <= maxSet ) DrawImage("EpReserve/Plus500", EPSETS3, EPSETR1);
-					else DrawImage("EpReserve/Plus500Off", EPSETS3, EPSETR1);
-					if(readTo(PosToEpSet) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", EPSETS1, EPSETR2);
-					else DrawImage("EpReserve/Minus2000Off", EPSETS1, EPSETR2);
-					if(readTo(PosToEpSet) + 2000 <= maxSet ) DrawImage("EpReserve/Plus2000", EPSETS3, EPSETR2);
-					else DrawImage("EpReserve/Plus2000Off", EPSETS3, EPSETR2);
-					if(readTo(PosToEpSet) - 10000 >= 0 ) DrawImage("EpReserve/Minus10000", EPSETS1, EPSETR3);
-					else DrawImage("EpReserve/Minus10000Off", EPSETS1, EPSETR3);
-					if(readTo(PosToEpSet) + 10000 <= maxSet ) DrawImage("EpReserve/Plus10000", EPSETS3, EPSETR3);
-					else DrawImage("EpReserve/Plus10000Off", EPSETS3, EPSETR3);
+					// System_Info
+					DrawImage("Info/Seriennummer", SIS1, SIR1);
+					drawOutput(SIS3,SIR1+8,120,12, serialnumber, GREY);
+					DrawImage("Info/SwRelease", SIS1, SIR2);
+					drawOutput(SIS3,SIR2+8,120,12, swrelease, GREY);
+					DrawImage("Info/InstPower", SIS1, SIR3);
+					snprintf (OUT, (size_t)100, "%i Wp", readRscp(PosInstalledPeak));
+					drawOutput(SIS3,SIR3+8,120,12, OUT, GREY);
+					DrawImage("Info/DeratePercent", SIS1, SIR4);
+					snprintf (OUT, (size_t)100, "%i %%", readRscp(PosDerateAtPercent));
+					drawOutput(SIS3,SIR4+8,120,12, OUT, GREY);
+					DrawImage("Info/DeratePower", SIS1, SIR5);
+					snprintf (OUT, (size_t)100, "%i W", readRscp(PosDerateAtPower));
+					drawOutput(SIS3,SIR5+8,120,12, OUT, GREY);
+					DrawImage("Info/EmsState", SIS1, SIR6);
+					snprintf (OUT, (size_t)100, "0x0%x", readRscp(PosEmsState));
+					drawOutput(SIS3,SIR6+8,120,12, OUT, GREY);
+					DrawImage("Info/EpState", SIS1, SIR7);
+					snprintf (OUT, (size_t)100, "0x0%x", readRscp(PosEpState));
+					drawOutput(SIS3,SIR7+8,120,12, OUT, GREY);
 				}
 				break;
 			}
@@ -1078,33 +1160,10 @@ int main(){
 		}
 //####################################################
 	//Wallbox HM read and senden
-	if(WALLBOX_SEND == 1){
-		if( time(NULL) - wallboxSendTime >= WALLBOX_INTERVAL){
-			wallboxSendTime = time(NULL);
-			read_HM(ISE_WB_SEND_NOW, 4, wallboxSendNow);
-			if (strcmp ("true",wallboxSendNow) == 0){
-				read_HM(ISE_WB_SEND_MODE, 4, wallboxSendMode);
-				read_HM(ISE_WB_SEND_CURRENT, 2, wallboxSendCurrent);
-				read_HM(ISE_WB_SEND_BTC, 4, wallboxSendBtC);
-				read_HM(ISE_WB_SEND_BBC, 4, wallboxSendBbC);
-				read_HM(ISE_WB_SEND_STOP, 4, wallboxSendStop);
-				read_HM(ISE_WB_SEND_PH_CHANGE, 4, wallboxSendPhC);
-				if(strcmp ("true",wallboxSendMode) == 0) snprintf (WbMode, (size_t)128, "-sonne");
-				else snprintf (WbMode, (size_t)128, "-mix");
-				WbCurrent = atoi(wallboxSendCurrent);
-				if(strcmp ("true",wallboxSendBtC) == 0) snprintf (WbBtC, (size_t)128, "-BtCyes");
-				else snprintf (WbBtC, (size_t)128, "-BtCno");
-				if(strcmp ("true",wallboxSendBbC) == 0) snprintf (WbBbC, (size_t)128, "-BbCyes");
-				else snprintf (WbBbC, (size_t)128, "-BbCno");
-				if(strcmp ("true",wallboxSendStop) == 0) snprintf (WbSet, (size_t)128, "-stop");
-				else if(strcmp ("true",wallboxSendPhC) == 0) snprintf (WbSet, (size_t)128, "-swPh");
-				else snprintf (WbSet, (size_t)128, "-no");
-				snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s %s &", WbMode, WbCurrent, WbBtC, WbBbC, WbSet);
-				system(OUT);
-				printsendHM(ISE_WB_SEND_NOW, "false");
-				printsendHM(ISE_WB_SEND_STOP, "false");
-				printsendHM(ISE_WB_SEND_PH_CHANGE, "false");
-			}
+	if(WALLBOX_ACTION == 1 || EP_RESERVE_ACTION == 1 || BATTERYLIMIT_ACTION == 1 || POWERSAVE_ACTION == 1 || WEATHER_REG_ACTION == 1){
+		if( time(NULL) - actionSendTime >= HM_Intervall){
+			actionSendTime = time(NULL);
+			actionCheckAll();
 		}
 	}
 //####################################################
