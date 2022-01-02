@@ -41,10 +41,16 @@ int ReadWatchdog()
 }
 void writeReleaseLast(char* value)
 {
-  ofstream fout("/home/pi/E3dcGui/Data/S10_Release.txt");
+  char path[128], batch[128];
+  snprintf(path, (size_t)128, "/home/pi/E3dcGui/Data/S10_Release.txt");
+  ofstream fout(path);
   if (fout.is_open()) {
     fout << value << endl;
     fout.close();
+  }
+  else {
+    snprintf(batch, (size_t)128, "echo %s > %s", value, path);
+    system(batch);
   }
 }
 void readReleaseLast(char* value)
@@ -54,7 +60,10 @@ void readReleaseLast(char* value)
     datei.getline(value ,128, '\n');
     datei.close();
   }
-  else cerr << "Konnte Datei S10_Release.txt nicht öffnen!\n";
+  else {
+    cerr << "Konnte Datei S10_Release.txt nicht öffnen!\n";
+    snprintf(value, (size_t)20, "");
+  }
 }
 void readReleaseRscp(char* value)
 {
@@ -67,7 +76,10 @@ void readReleaseRscp(char* value)
     datei.getline(value ,20, '\n');
     datei.close();
   }
-  else cerr << "Konnte Datei S10_Release.txt nicht öffnen!\n";
+  else {
+    cerr << "Konnte Datei E3dcGuiChar.txt nicht öffnen!\n";
+    snprintf(value, (size_t)20, "");
+  }
 }
 
 void WriteDataWDcsv(char DATE[40],char TIME[40], int AktuallTime, int UnixTime, int resetCounter, char OUT[100]){
@@ -357,11 +369,15 @@ int main()
 
       readReleaseLast(releaseSwLast);
       readReleaseRscp(releaseSwRscp);
-      if (strcmp (releaseSwLast,releaseSwRscp) == 0){
+      if (strcmp (releaseSwLast,"") == 0){
+        writeReleaseLast(releaseSwRscp);
+        snprintf(releaseSwLast, (size_t)20, "%s", releaseSwRscp);
+      }
+      if (strcmp (releaseSwLast,releaseSwRscp) == 0 || strcmp (releaseSwLast,"") == 0 || strcmp (releaseSwRscp,"") == 0){
         cout << "   S10 Release Check Ready > Last: " << releaseSwLast << " Read: " << releaseSwRscp << "\n";
       }
       else{
-        cout << "   S10 Release Check Faild > Last: " << releaseSwLast << " Last: " << releaseSwRscp << "\n";
+        cout << "   S10 Release Check Faild > Last: " << releaseSwLast << " Read: " << releaseSwRscp << "\n";
         if (WDsendEmailRelease == 1){
           snprintf (EmailAdress, (size_t)128, "%s", WDtoEmailAdress);
           snprintf (EmailBetreff, (size_t)128, "Neue S10 Release Version erkannt");

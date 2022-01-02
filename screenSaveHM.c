@@ -9,6 +9,7 @@ gcc -g -o screenSaveHM  screenSaveHM.c
 #include <signal.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/sysinfo.h>
 #include "checkPara.h"
 #include "Frame/touch.h"

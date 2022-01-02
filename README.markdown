@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.04 03.10.2021](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.05 02.01.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -434,6 +434,10 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.05 02.01.2022 Fehler screenSaveHM und Fehlerbehebung Watchdog
+  - Fehlermeldung aus dem HM-Forum, es fehlte ein include in der screenSaveHM.c   
+  - Watchdog für Release löst teilweise mit leerer Release-Version aus.  
+
 V2.04 03.10.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58), [Issue #66](https://github.com/nischram/E3dcGui/issues/66), [Issue #67](https://github.com/nischram/E3dcGui/issues/67),  Diverse Verbesserungen
 - Issue #58 Mit der "Rscp/actionCheckHM.c" kann nun auch die Notstromreserve von der HM aus geändert werden.  
 - Issue #67 Auf dem Display so wie mit der "Rscp/actionCheckHM.c" können sie BAtterie-Limits des S10 geändert werden.  
