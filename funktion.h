@@ -188,7 +188,7 @@ int picturePosition()
     numberPicture = numberPicture +4;
   if(Wallbox ==1)
     numberPicture = numberPicture +1;
-  if(useAktor == 1 && useDHT == 1)
+  if(useAktor == 1 || useDHT == 1)
     numberPicture = numberPicture +1;
   if(Homematic_GUI ==1)
     numberPicture = numberPicture +1;
