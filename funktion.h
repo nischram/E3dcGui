@@ -216,7 +216,7 @@ int picturePosition()
     piece = piece + 68;
     Picture7 = piece;
   }
-  if(useAktor == 1 && useDHT == 1){
+  if(useAktor == 1 || useDHT == 1){
     piece = piece + 68;
     Picture8 = piece;
   }

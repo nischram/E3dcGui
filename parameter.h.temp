@@ -6,8 +6,8 @@
 //#######################################
 //### Raspberry 7" Display ###
 #define GUI                         1         //Wichtig!    // Wenn die RSCP-Applikation ohne Display genutzt werden soll 0, wenn das Display genutzt wird 1
-#define framebuffer_File            "/dev/fb0"              //Wichtig wenn GUI=1!    // Deitei in der die Parameter zum Display gespeichert werden Speicherort abfragen "ls /dev/" meistens "fb0"
-#define touch_File                  "/dev/input/event0"     //Wichtig wenn GUI=1!    // Deitei in der die Parameter zur Touchfunktion gespeichert werden Speicherort abfragen "ls /dev/input/" meistens "event0" kann aber variieren wenn Tastatur / Maus angeschschlossen sind. Auslesen der Datei mit: "udevadm info --name=/dev/input/eventX --attribute-walk" X ersetzen mit 0...7 etc.
+#define framebuffer_File            "/dev/fb0"              //Wichtig wenn GUI=1!    // Datei in der die Parameter zum Display gespeichert werden Speicherort abfragen "ls /dev/" meistens "fb0"
+#define touch_File                  "/dev/input/event0"     //Wichtig wenn GUI=1!    // Datei in der die Parameter zur Touchfunktion gespeichert werden Speicherort abfragen "ls /dev/input/" meistens "event0" kann aber variieren wenn Tastatur / Maus angeschschlossen sind. Auslesen der Datei mit: "udevadm info --name=/dev/input/eventX --attribute-walk" X ersetzen mit 0...7 etc.
 
 //#######################################
 //### E3DC S10 Einstellungen ###
@@ -49,7 +49,7 @@
 #define TAG_EMS_ISE_WB_CHARGE       0                // ISE_ID Auto lädt / Auto lädt nicht
 #define TAG_EMS_ISE_WB_LOCKED       0                // ISE_ID verriegelt / nicht verriegelt
 #define TAG_EMS_ISE_WB_CONNECT      0                // ISE_ID Typ2 gesteckt / Typ2 nicht gesteckt
-#define TAG_EMS_ISE_WB_PHASES       0                // ISE_ID Anzahl der Pahsen
+#define TAG_EMS_ISE_WB_PHASES       0                // ISE_ID Anzahl der Phasen
 #define TAG_EMS_ISE_WB_BBC          0                // ISE_ID Batterie vor Auto (Priorität)
 #define TAG_EMS_ISE_WB_BTC          0                // ISE_ID Batterie nach Auto (Batteriestrom erlauben)
 //Wallbox Werte lesen und senden
@@ -110,7 +110,7 @@
 //batterylimits action
 #define BATTERYLIMIT_ACTION         0                // Mit dieser Funktion (aktiv = 1 / deaktiv = 0) wird eine Variable der HM überwacht, wenn diese "true" ist werden weitere Variablen ausgelesen und die Werte der Batterielimits gesendet
 #define ISE_BL_SEND_NOW             0                // ISE_HM Variable mit Befehl zum senden true=senden
-#define ISE_BL_SEND_MODE            0                // ISE_HM Variable Mode für Natterie-Limits true=mauell (user) / false=auto
+#define ISE_BL_SEND_MODE            0                // ISE_HM Variable Mode für Natterie-Limits true=manuell (user) / false=auto
 #define ISE_BL_SEND_CHARGE          0                // ISE_HM Variable Max. Ladeleistung in kW
 #define ISE_BL_SEND_DISCHARGE       0                // ISE_HM Variable Max. Endladeleistung in kW
 //powersave action
@@ -222,8 +222,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor1PercentOff            10                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor1Typ = 3"
 #define Aktor1TimerOn               "10:15"                 // Beginn Zeitfenster für ein Einschalten
 #define Aktor1TimerOff              "12:00"                 // Ausschalten (AktorMinOn hat Vorrang)
-#define Aktor1MinOn                 2                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
-#define Aktor1MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
+#define Aktor1MinOn                 2                       // Mindest Einschaltdauer bevor abgeschaltet wird in Minuten z.B. für Waschmaschine
+#define Aktor1MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschaltet wird in Minuten
 #define Aktor1Pin                   21                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor2Typ                   12                       // s.o.
@@ -235,8 +235,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor2PercentOff            0                       // Ausschaltschwelle in % für den Batterieaktor bei "Aktor2Typ = 3"
 #define Aktor2TimerOn               "08:00"                 // Beginn Zeitfenster für ein Einschalten
 #define Aktor2TimerOff              "17:30"                 // Ausschalten (AktorMinOn hat Vorrang)
-#define Aktor2MinOn                 60                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
-#define Aktor2MinOff                360                     // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
+#define Aktor2MinOn                 60                      // Mindest Einschaltdauer bevor abgeschaltet wird in Minuten z.B. für Waschmaschine
+#define Aktor2MinOff                360                     // Mindest Ausschaltdauer bevor wieder eingeschaltet wird in Minuten
 #define Aktor2Pin                   22                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor3Typ                   3                       // s.o.
@@ -248,8 +248,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor3PercentOff            35                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor3Typ = 3"
 #define Aktor3TimerOn               "12:00"                 // Beginn Zeitfenster für ein Einschalten
 #define Aktor3TimerOff              "20:00"                 // Ausschalten (AktorMinOn hat Vorrang)
-#define Aktor3MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
-#define Aktor3MinOff                10                      // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
+#define Aktor3MinOn                 10                      // Mindest Einschaltdauer bevor abgeschaltet wird in Minuten z.B. für Waschmaschine
+#define Aktor3MinOff                10                      // Mindest Ausschaltdauer bevor wieder eingeschaltet wird in Minuten
 #define Aktor3Pin                   23                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor4Typ                   2                       // s.o.
@@ -261,8 +261,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor4PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor4Typ = 3"
 #define Aktor4TimerOn               "00:00"                 // Beginn Zeitfenster für ein Einschalten
 #define Aktor4TimerOff              "00:00"                 // Ausschalten (AktorMinOn hat Vorrang)
-#define Aktor4MinOn                 0                       // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
-#define Aktor4MinOff                0                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
+#define Aktor4MinOn                 0                       // Mindest Einschaltdauer bevor abgeschaltet wird in Minuten z.B. für Waschmaschine
+#define Aktor4MinOff                0                       // Mindest Ausschaltdauer bevor wieder eingeschaltet wird in Minuten
 #define Aktor4Pin                   24                      // wiringPi Pin Nummer vom GPIO
 
 #define Aktor5Typ                   0                       // s.o.
@@ -274,8 +274,8 @@ Es kann aber zu darstellungsfehler kommen.
 #define Aktor5PercentOff            25                      // Ausschaltschwelle in % für den Batterieaktor bei "Aktor5Typ = 3"
 #define Aktor5TimerOn               "22:15"                 // Beginn Zeitfenster für ein Einschalten
 #define Aktor5TimerOff              "22:30"                 // Ausschalten (AktorMinOn hat Vorrang)
-#define Aktor5MinOn                 10                      // Mindest Einschaltdauer bevor abgeschltet wird in Miniten z.B. für Waschmaschien
-#define Aktor5MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschltet wird in Miniten
+#define Aktor5MinOn                 10                      // Mindest Einschaltdauer bevor abgeschaltet wird in Minuten z.B. für Waschmaschine
+#define Aktor5MinOff                2                       // Mindest Ausschaltdauer bevor wieder eingeschaltet wird in Minuten
 #define Aktor5Pin                   25                      // wiringPi Pin Nummer vom GPIO
 
 //Umlaute \204=ä \216=Ä \224=ö \231=Ö \201=ü \232=Ü \341=ß
@@ -286,22 +286,27 @@ Es kann aber zu darstellungsfehler kommen.
 #define DHT1Use                     1                       // DHT 1 deaktiv=0 / aktiv=1
 #define DHT1Name                    "Flur"                  // Bezeichnung
 #define DHT1Pin                     7                       // wiringPi Pin Nummer vom GPIO
+#define DHT1_OFFSET_TEMP            0.0                     // Offset Temperatur
 
 #define DHT2Use                     0                       // DHT 2 deaktiv=0 / aktiv=1
 #define DHT2Name                    "K\201che"              // Bezeichnung
 #define DHT2Pin                     0                       // wiringPi Pin Nummer vom GPIO
+#define DHT2_OFFSET_TEMP            0.0                     // Offset Temperatur
 
 #define DHT3Use                     0                       // DHT 3 deaktiv=0 / aktiv=1
 #define DHT3Name                    "Wohnzimmer"            // Bezeichnung
 #define DHT3Pin                     1                       // wiringPi Pin Nummer vom GPIO
+#define DHT3_OFFSET_TEMP            0.0                     // Offset Temperatur
 
 #define DHT4Use                     0                       // DHT 4 deaktiv=0 / aktiv=1
 #define DHT4Name                    "Flur"                  // Bezeichnung
 #define DHT4Pin                     2                       // wiringPi Pin Nummer vom GPIO
+#define DHT4_OFFSET_TEMP            0.0                     // Offset Temperatur
 
 #define DHT5Use                     0                       // DHT 5 deaktiv=0 / aktiv=1
 #define DHT5Name                    "Flur"                  // Bezeichnung
 #define DHT5Pin                     3                       // wiringPi Pin Nummer vom GPIO
+#define DHT5_OFFSET_TEMP            0.0                     // Offset Temperatur
 
 //#######################################
 // Status-LED's für E3DC Informationen

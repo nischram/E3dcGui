@@ -352,6 +352,46 @@ void checkDefine(int print){
     sleep(2);
   }
 #endif
+#ifndef DHT1_OFFSET_TEMP
+  #define DHT1_OFFSET_TEMP 0
+  if(print == 1){
+    printf("Der Parameter \"DHT1_OFFSET_TEMP\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"DHT1_OFFSET_TEMP\" folgender Wert gesetzt: %i\n", DHT1_OFFSET_TEMP);
+    sleep(2);
+  }
+#endif
+#ifndef DHT2_OFFSET_TEMP
+  #define DHT2_OFFSET_TEMP 0
+  if(print == 1){
+    printf("Der Parameter \"DHT2_OFFSET_TEMP\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"DHT2_OFFSET_TEMP\" folgender Wert gesetzt: %i\n", DHT2_OFFSET_TEMP);
+    sleep(2);
+  }
+#endif
+#ifndef DHT3_OFFSET_TEMP
+  #define DHT3_OFFSET_TEMP 0
+  if(print == 1){
+    printf("Der Parameter \"DHT3_OFFSET_TEMP\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"DHT3_OFFSET_TEMP\" folgender Wert gesetzt: %i\n", DHT3_OFFSET_TEMP);
+    sleep(2);
+  }
+#endif
+#ifndef DHT4_OFFSET_TEMP
+  #define DHT4_OFFSET_TEMP 0
+  if(print == 1){
+    printf("Der Parameter \"DHT4_OFFSET_TEMP\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"DHT4_OFFSET_TEMP\" folgender Wert gesetzt: %i\n", DHT4_OFFSET_TEMP);
+    sleep(2);
+  }
+#endif
+#ifndef DHT5_OFFSET_TEMP
+  #define DHT5_OFFSET_TEMP 0
+  if(print == 1){
+    printf("Der Parameter \"DHT5_OFFSET_TEMP\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"DHT5_OFFSET_TEMP\" folgender Wert gesetzt: %i\n", DHT5_OFFSET_TEMP);
+    sleep(2);
+  }
+#endif
 }
 
 void checkDefineHM(int print){
