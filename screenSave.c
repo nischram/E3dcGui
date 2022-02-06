@@ -63,7 +63,7 @@ int main()
 	int Screen[ScreenMAX];
 
 	if(E3DC_S10 ==1)
-		writeScreen(ScreenChange, ScreenFunktion);//ScreenAktuell);
+		writeScreen(ScreenChange, ScreenAktuell);
 	else if(Homematic_GUI == 1)
 		writeScreen(ScreenChange, ScreenHM);
 	else
@@ -309,7 +309,7 @@ int main()
 				}
 			}
 		}
-		if(useAktor == 1 && useDHT == 1){
+		if(useAktor == 1 || useDHT == 1){
 			if((scaledX  > buttonCordsSmart[X] && scaledX < (buttonCordsSmart[X]+buttonCordsSmart[W])) && (scaledY > buttonCordsSmart[Y] && scaledY < (buttonCordsSmart[Y]+buttonCordsSmart[H]))){
 				if (mymillis() - buttonTimerSmart > 500){
 					buttonTimerSmart = mymillis();

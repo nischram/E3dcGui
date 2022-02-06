@@ -253,6 +253,7 @@ int drawMainScreen()
     DrawImage("MonitorImage", Picture7, PictureLine1);
   }
   if(useAktor == 1 || useDHT == 1)
+    DrawImage("SmartImage", Picture8, PictureLine1);
   if(Homematic_GUI ==1)
     DrawImage("HMImage", Picture9, PictureLine1);
   if(Gruenbeck ==1)
