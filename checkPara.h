@@ -392,6 +392,14 @@ void checkDefine(int print){
     sleep(2);
   }
 #endif
+#ifndef PM_POSITION
+  #define PM_POSITION 0
+  if(print == 1){
+    printf("Der Parameter \"PM_POSITION\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"PM_POSITION\" folgender Wert gesetzt: %i\n", PM_POSITION);
+    sleep(2);
+  }
+#endif
 }
 
 void checkDefineHM(int print){

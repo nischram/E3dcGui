@@ -144,7 +144,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         // request PM information
         SRscpValue PMContainer;
         protocol.createContainerValue(&PMContainer, TAG_PM_REQ_DATA);
-        protocol.appendValue(&PMContainer, TAG_PM_INDEX, (uint8_t)0);
+        protocol.appendValue(&PMContainer, TAG_PM_INDEX, (uint8_t)PM_POSITION);
         protocol.appendValue(&PMContainer, TAG_PM_REQ_DEVICE_STATE);
         protocol.appendValue(&PMContainer, TAG_PM_REQ_ACTIVE_PHASES);
         // append sub-container to root container

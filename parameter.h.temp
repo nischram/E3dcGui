@@ -36,6 +36,7 @@
 #define TAG_EMS_ISE_UNIXTIME        0                // ISE_ID_UNIXTIME
 #define sendTime                    0                       // Wenn der Zeitstempel gesendet werden soll =1; wenn die HM diesen Berechnen soll =0
 #define ISE_TIMESTAMP_HM            0                // ISE_ID_TIMESTAMP_HM
+#define PM_POSITION                 0                // nur 0 oder 6 möglich > Der Leistungsmesser hat unterschiedliche Adressen wenn er intern oder extern verbaut ist, bei Fehlermeldung in der Ausgabe "Tag 0x05860000 received error code 6" ggf. andere Nummer testen.
 //Wenn vorhandene Bitte für Additional (Externe-Quelle) ein 1, sonst 0 eintragen.
 #define Additional                  0
 #define TAG_EMS_ISE_POWER_ADD       0                // ISE_ID_POWER_ADD
