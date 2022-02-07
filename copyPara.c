@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include <sys/time.h>
 #include <string.h>
+#include "checkPara.h"
 
 int main(int argc, char *argv[])
 {
@@ -43,4 +44,5 @@ int main(int argc, char *argv[])
           printf("Du musst nun die Datei selber erstelln,\n        z.B. mit 'cp parameterHM.h.temp parameterHM.h'\n");
         }
       }
+      checkDefine(1);
 }

@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.06 06.02.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.07 07.02.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -434,6 +434,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.07 07.02.2022 Fehlende Parameter mit "./copyPara" prüfen
+- Idee ist in Issue #70 entstanden   
+
 V2.06 06.02.2022 [Issue #70](https://github.com/nischram/E3dcGui/issues/70)
 - Issue #70 Fehlerkorrektur der Anzeige und Ergänzung eines Offset für DHT Temperatursensor  
 - Tippfehler in der README behoben      
