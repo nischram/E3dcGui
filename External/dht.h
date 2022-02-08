@@ -150,11 +150,11 @@ int drawDHTFrame(int DHTUse, char *designation, int Line)
   put_string(45+6, Line+4, designation, WHITE);
   return 1;
 }
-int drawDHTState(int DHTUse, int DHTPin, int DHTPosition, char *DHTName, int Line)
+int drawDHTState(int DHTUse, int DHTPin, int DHTPosition, char *DHTName, int Line, float offsetTemp)
 {
   char OUT[56];
   if (DHTUse > 0){
-    float DHTTemp = readDHT11(DHTPosition)/10.0;
+    float DHTTemp = readDHT11(DHTPosition)/10.0 + offsetTemp;
     float DHTHum = readDHT11(DHTPosition+1)/10.0;
     int DHTState = readDHT11(DHTPosition+2);
     if (DHTState == 1){
@@ -198,15 +198,15 @@ int makeDHTState()
     drawSquare(760,440,20,20,LIGHT_RED);
     drawCorner(760,440,20,20,WHITE);
     saveDHT(DHT1Use, DHT1Position, DHT1Pin);
-    drawDHTState(DHT1Use, DHT1Pin, DHT1Position, DHT1Name, RP1);
+    drawDHTState(DHT1Use, DHT1Pin, DHT1Position, DHT1Name, RP1, DHT1_OFFSET_TEMP);
     saveDHT(DHT2Use, DHT2Position, DHT2Pin);
-    drawDHTState(DHT2Use, DHT2Pin, DHT2Position, DHT2Name, RP2);
+    drawDHTState(DHT2Use, DHT2Pin, DHT2Position, DHT2Name, RP2, DHT2_OFFSET_TEMP);
     saveDHT(DHT3Use, DHT3Position, DHT3Pin);
-    drawDHTState(DHT3Use, DHT3Pin, DHT3Position, DHT3Name, RP3);
+    drawDHTState(DHT3Use, DHT3Pin, DHT3Position, DHT3Name, RP3, DHT3_OFFSET_TEMP);
     saveDHT(DHT4Use, DHT4Position, DHT4Pin);
-    drawDHTState(DHT4Use, DHT4Pin, DHT4Position, DHT4Name, RP4);
+    drawDHTState(DHT4Use, DHT4Pin, DHT4Position, DHT4Name, RP4, DHT4_OFFSET_TEMP);
     saveDHT(DHT5Use, DHT5Position,DHT5Pin);
-    drawDHTState(DHT5Use, DHT5Pin, DHT5Position, DHT5Name, RP5);
+    drawDHTState(DHT5Use, DHT5Pin, DHT5Position, DHT5Name, RP5, DHT5_OFFSET_TEMP);
     //Read Daten Ende (grüner Punkt unten rechts)
     drawSquare(760,440,20,20,GREEN);
     drawCorner(760,440,20,20,WHITE);
