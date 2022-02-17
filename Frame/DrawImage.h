@@ -218,7 +218,7 @@ int DrawImage(char* fileName, int posx, int posy)
               fbfd,
               0);
 
-    if ((int)fbpI == -1) {
+    if ((intptr_t)fbpI == -1) {
         //printf("Failed to mmap.\n");
     }
     else {

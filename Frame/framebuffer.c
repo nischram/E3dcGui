@@ -25,7 +25,7 @@
 #include <linux/fb.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include "font_8x8.c"
+#include "font_8x16.c"
 
 
 #define KNRM  "\x1B[0m"
@@ -62,18 +62,19 @@ typedef enum {
   LIGHT_CYAN   = 11, /*  84, 255, 255 */
   LIGHT_RED    = 12, /* 255,  84,  84 */
   LIGHT_PURPLE = 13, /* 255,  84, 255 */
-  YELLOW       = 14, /* 255, 255,  84 */
-  WHITE        = 15  /* 255, 255, 255 */
+	YELLOW       = 14, /* 255, 255,  84 */
+	DKYELLOW     = 15, /* 172, 172,  84 */
+  WHITE        = 16  /* 255, 255, 255 */
 } COLOR_INDEX_T;
 static unsigned short def_r[] =
     { 0,   0,   0,   0, 172, 172, 172, 168,
-     84,  84,  84,  84, 255, 255, 255, 255};
+     84,  84,  84,  84, 255, 255, 255, 172, 255};
 static unsigned short def_g[] =
     { 0,   0, 168, 168,   0,   0,  84, 168,
-     84,  84, 255, 255,  84,  84, 255, 255};
+     84,  84, 255, 255,  84,  84, 255, 172, 255};
 static unsigned short def_b[] =
     { 0, 172,   0, 168,   0, 172,   0, 168,
-     84, 255,  84, 255,  84, 255,  84, 255};
+     84, 255,  84, 255,  84, 255,  84,  84, 255};
 
 void put_pixel_16bpp(int x, int y, int r, int g, int b)
 {
@@ -84,7 +85,7 @@ void put_pixel_16bpp(int x, int y, int r, int g, int b)
         pix_offset = x*2 + y * fix.line_length;
 
         //some magic to work out the color
-        c = ((r / 8) << 11) + ((g / 4) << 5) + (b / 8);
+				c = ((r / 8) << 11) + ((g / 4) << 5) + (b / 8);
 
         // write 'two bytes at once'
         *((unsigned short*)(fbp + pix_offset)) = c;
@@ -116,9 +117,9 @@ void drawSquareRGB(int x, int y,int height, int width, int ro, int gr, int bl)
 void put_char(int x, int y, int c, int ro, int gr, int bl)
 {
 	int i,j,bits;
-	for (i = 0; i < font_vga_8x8.height; i++) {
-	bits = font_vga_8x8.data [font_vga_8x8.height * c + i];
-		for (j = 0; j < font_vga_8x8.width; j++, bits <<= 1)
+	for (i = 0; i < font_vga_8x16.height; i++) {
+	bits = font_vga_8x16.data [font_vga_8x16.height * c + i];
+		for (j = 0; j < font_vga_8x16.width; j++, bits <<= 1)
 			if (bits & 0x80){
 				put_pixel_16bpp(x+j,  y+i, ro, gr, bl);
 			}
@@ -129,7 +130,7 @@ void put_char(int x, int y, int c, int ro, int gr, int bl)
 void put_string(int x, int y, char *s, int c)
 {
 	int i;
-	for (i = 0; *s; i++, x += font_vga_8x8.width, s++){
+	for (i = 0; *s; i++, x += font_vga_8x16.width, s++){
 		put_char (x, y, *s, def_r[c],def_g[c],def_b[c]);
 	}
 	return;
@@ -138,26 +139,26 @@ void put_string(int x, int y, char *s, int c)
 void put_stringRGB(int x, int y, char *s, int ro, int gr, int bl)
 {
 	int i;
-	for (i = 0; *s; i++, x += font_vga_8x8.width, s++)
+	for (i = 0; *s; i++, x += font_vga_8x16.width, s++)
 	put_char (x, y, *s, ro, gr, bl);
 	return;
 }
-void drawOutput (int x, int y, int height, int width, char *s, int c)
+void drawOutput (int x, int y, int width, int height, char *s, int c)
 {
-	drawSquare(x, y,height,width,WHITE);
-	put_string(x, y, s, c);
+	drawSquare(x, y-2,width,height+4,WHITE);
+	put_string(x, y-2, s, c);
 	return;
 }
-void drawOutputRGB (int x, int y, int height, int width, char *s, int ro, int gr, int bl)
+void drawOutputRGB (int x, int y, int width, int height, char *s, int ro, int gr, int bl)
 {
-	drawSquare(x, y,height,width,WHITE);
-	put_stringRGB(x, y, s, ro, gr, bl);
+	drawSquare(x, y-2,width,height+4,WHITE);
+	put_stringRGB(x, y-2, s, ro, gr, bl);
 	return;
 }
-void drawColorOutput (int x, int y, int height, int width, char *s, int c, int bgc)
+void drawColorOutput (int x, int y, int width, int height, char *s, int c, int bgc)
 {
-	drawSquare(x, y,height,width,bgc);
-	put_string(x, y, s, c);
+	drawSquare(x, y-2,width,height+4,bgc);
+	put_string(x, y-2, s, c);
 	return;
 }
 
@@ -219,7 +220,7 @@ int framebufferInitialize(int *xres, int *yres)
                     PROT_READ | PROT_WRITE,
                     MAP_SHARED,
                     fb, 0);
-	if ((int)fbp == -1) {
+	if ((intptr_t)fbp == -1) {
 	printf("Failed to mmap.\n");
 	}
 

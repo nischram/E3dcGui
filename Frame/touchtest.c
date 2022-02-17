@@ -86,7 +86,7 @@ int main()
   int buttonTimerExit = mymillis();
   int buttonCordsExit[4] = {350,310,100,40};
   int buttonCordsOff[4] = {4,4,796,476};
-
+  drawSquare(2,2,796,476,WHITE);
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
 		scaledX = rawX/scaleXvalue;

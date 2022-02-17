@@ -223,7 +223,7 @@ int main(){
 						else DrawImage("Zahlen/pf0", 180, 140);
 					}
 					else
-						drawOutput(160,115,80,12, "PVI-DOWN", RED);
+						DrawImage("Zahlen/pvOff", 180, 115);
 					//Grid
 					int TAG_Grid = readRscp(PosGrid);
 					int TAG_PMState = readRscp(PosPMState);
@@ -256,7 +256,7 @@ int main(){
 						}
 					}
 					else
-						drawOutput(550,115,80,12, "LM-DOWN", RED);
+						DrawImage("Zahlen/lmOff", 550, 115);
 					//Home
 					int TAG_Home = readRscp(PosHome);
 					DEBUG("Home ");
@@ -629,7 +629,7 @@ int main(){
 				break;
 			}
 //####################################################
-			//Monitor Grafik erstellen
+			//Funktion Grafik erstellen
 			case ScreenFunktion:{
 				GuiTime = RscpTime;
 				int screenState = readScreen(ScreenState);
@@ -650,73 +650,72 @@ int main(){
 						drawCorner(EP+3,RP1+40,329,277,GREY);
 						DrawImage("EpReserve/NotRes", EP+60, RP1-5);
 					}
-					// Battery-Limits
-					DrawImage("Batterie/Auto", BLS1, BLR1);
-					DrawImage("Batterie/Manuell", BLS3+30, BLR1);
-					DrawImage("Batterie/Charge", BLS1, BLR2);
-					if(readTo(PosToBlCharge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR3);
-					else DrawImage("EpReserve/Minus500Off", BLS1, BLR3);
-					if(readTo(PosToBlCharge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR3);
-					else DrawImage("EpReserve/Plus500Off", BLS2, BLR3);
-					if(readTo(PosToBlCharge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR4);
-					else DrawImage("EpReserve/Minus2000Off", BLS1, BLR4);
-					if(readTo(PosToBlCharge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR4);
-					else DrawImage("EpReserve/Plus2000Off", BLS2, BLR4);
-					DrawImage("Batterie/Discharge", BLS1, BLR5);
-					if(readTo(PosToBlDischarge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR6);
-					else DrawImage("EpReserve/Minus500Off", BLS1, BLR6);
-					if(readTo(PosToBlDischarge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR6);
-					else DrawImage("EpReserve/Plus500Off", BLS2, BLR6);
-					if(readTo(PosToBlDischarge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR7);
-					else DrawImage("EpReserve/Minus2000Off", BLS1, BLR7);
-					if(readTo(PosToBlDischarge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR7);
-					else DrawImage("EpReserve/Plus2000Off", BLS2, BLR7);
+				}
+				// Battery-Limits
+				DrawImage("Batterie/Auto", BLS1, BLR1);
+				DrawImage("Batterie/Manuell", BLS3+30, BLR1);
+				DrawImage("Batterie/Charge", BLS1, BLR2);
+				if(readTo(PosToBlCharge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR3);
+				else DrawImage("EpReserve/Minus500Off", BLS1, BLR3);
+				if(readTo(PosToBlCharge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR3);
+				else DrawImage("EpReserve/Plus500Off", BLS2, BLR3);
+				if(readTo(PosToBlCharge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR4);
+				else DrawImage("EpReserve/Minus2000Off", BLS1, BLR4);
+				if(readTo(PosToBlCharge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR4);
+				else DrawImage("EpReserve/Plus2000Off", BLS2, BLR4);
+				DrawImage("Batterie/Discharge", BLS1, BLR5);
+				if(readTo(PosToBlDischarge) - 500 >= 0 ) DrawImage("EpReserve/Minus500", BLS1, BLR6);
+				else DrawImage("EpReserve/Minus500Off", BLS1, BLR6);
+				if(readTo(PosToBlDischarge) + 500 <= 65355 ) DrawImage("EpReserve/Plus500", BLS2, BLR6);
+				else DrawImage("EpReserve/Plus500Off", BLS2, BLR6);
+				if(readTo(PosToBlDischarge) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", BLS1, BLR7);
+				else DrawImage("EpReserve/Minus2000Off", BLS1, BLR7);
+				if(readTo(PosToBlDischarge) + 2000 <= 65355 ) DrawImage("EpReserve/Plus2000", BLS2, BLR7);
+				else DrawImage("EpReserve/Plus2000Off", BLS2, BLR7);
 
-					//EP_Reserve
-					int x;
-					int maxW = readRscp(PosEpReservMaxW)*0.8;
-					int maxC = maxW / 500;
-					int maxSet = maxC * 500;
-					writeTo(PosToEpMax,maxSet);
-					drawNumber(EPPERX -10+24, EPPERY, readRscp(PosEpReserv), PERCENT, BLACK);
-					x = drawNumber(EPWX -10, EPWY, readRscp(PosEpReservW), WATTH, BLACK);
-					DrawImage("EpReserve/reservesw", x, EPWY);
-					DrawImage("EpReserve/reservesw", x, EPPERY);
-					x = drawNumber(EPWMAXX -10, EPWMAXY, maxSet, WATTH, BLACK);
-					DrawImage("EpReserve/maxsw", x, EPWMAXY);
-					if (readRscp(PosEpReservW) > 0)
-						DrawImage("Switch/On", EPSWX, EPSWY);
-					else
-						DrawImage("Switch/Off", EPSWX, EPSWY);
-					x = drawNumber(EPSETX -10, EPSETY, readTo(PosToEpSet), WATTH, BLACK);
-					DrawImage("EpReserve/setsw", x, EPSETY);
-					DrawImage("EpReserve/Set", EPSETS2, EPSETR1);
-					if(readTo(PosToEpSet) - 500 >= 0 ) DrawImage("EpReserve/Minus500", EPSETS1, EPSETR1);
-					else DrawImage("EpReserve/Minus500Off", EPSETS1, EPSETR1);
-					if(readTo(PosToEpSet) + 500 <= maxSet ) DrawImage("EpReserve/Plus500", EPSETS3, EPSETR1);
-					else DrawImage("EpReserve/Plus500Off", EPSETS3, EPSETR1);
-					if(readTo(PosToEpSet) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", EPSETS1, EPSETR2);
-					else DrawImage("EpReserve/Minus2000Off", EPSETS1, EPSETR2);
-					if(readTo(PosToEpSet) + 2000 <= maxSet ) DrawImage("EpReserve/Plus2000", EPSETS3, EPSETR2);
-					else DrawImage("EpReserve/Plus2000Off", EPSETS3, EPSETR2);
-					if(readTo(PosToEpSet) - 10000 >= 0 ) DrawImage("EpReserve/Minus10000", EPSETS1, EPSETR3);
-					else DrawImage("EpReserve/Minus10000Off", EPSETS1, EPSETR3);
-					if(readTo(PosToEpSet) + 10000 <= maxSet ) DrawImage("EpReserve/Plus10000", EPSETS3, EPSETR3);
-					else DrawImage("EpReserve/Plus10000Off", EPSETS3, EPSETR3);
-				}
-				if ((counter % 2) == 0){
-					//BL Aktuell
-					if (readRscp(PosBlUsed) == 1)
-						DrawImage("Switch/On", BLS2, BLR1);
-					else
-						DrawImage("Switch/Off", BLS2, BLR1);
-					DrawImage("EpReserve/Set", BLS3+30, BLR4);
-					drawNumber(BLS3+18, BLR2, readRscp(PosBlCharge), WATT, BLACK);
-					drawNumber(BLS3+18, BLR3, readTo(PosToBlCharge), WATT, BLACK);
-					DrawImage("EpReserve/Set", BLS3+30, BLR7);
-					drawNumber(BLS3+18, BLR5, readRscp(PosBlDischarge), WATT, BLACK);
-					drawNumber(BLS3+18, BLR6, readTo(PosToBlDischarge), WATT, BLACK);
-				}
+				//EP_Reserve
+				int x;
+				int maxW = readRscp(PosEpReservMaxW)*0.8;
+				int maxC = maxW / 500;
+				int maxSet = maxC * 500;
+				writeTo(PosToEpMax,maxSet);
+				drawNumber(EPPERX -10+24, EPPERY, readRscp(PosEpReserv), PERCENT, BLACK);
+				x = drawNumber(EPWX -10, EPWY, readRscp(PosEpReservW), WATTH, BLACK);
+				DrawImage("EpReserve/reservesw", x, EPWY);
+				DrawImage("EpReserve/reservesw", x, EPPERY);
+				x = drawNumber(EPWMAXX -10, EPWMAXY, maxSet, WATTH, BLACK);
+				DrawImage("EpReserve/maxsw", x, EPWMAXY);
+				if (readRscp(PosEpReservW) > 0)
+					DrawImage("Switch/On", EPSWX, EPSWY);
+				else
+					DrawImage("Switch/Off", EPSWX, EPSWY);
+				x = drawNumber(EPSETX -10, EPSETY, readTo(PosToEpSet), WATTH, BLACK);
+				DrawImage("EpReserve/setsw", x, EPSETY);
+				DrawImage("EpReserve/Set", EPSETS2, EPSETR1);
+				if(readTo(PosToEpSet) - 500 >= 0 ) DrawImage("EpReserve/Minus500", EPSETS1, EPSETR1);
+				else DrawImage("EpReserve/Minus500Off", EPSETS1, EPSETR1);
+				if(readTo(PosToEpSet) + 500 <= maxSet ) DrawImage("EpReserve/Plus500", EPSETS3, EPSETR1);
+				else DrawImage("EpReserve/Plus500Off", EPSETS3, EPSETR1);
+				if(readTo(PosToEpSet) - 2000 >= 0 ) DrawImage("EpReserve/Minus2000", EPSETS1, EPSETR2);
+				else DrawImage("EpReserve/Minus2000Off", EPSETS1, EPSETR2);
+				if(readTo(PosToEpSet) + 2000 <= maxSet ) DrawImage("EpReserve/Plus2000", EPSETS3, EPSETR2);
+				else DrawImage("EpReserve/Plus2000Off", EPSETS3, EPSETR2);
+				if(readTo(PosToEpSet) - 10000 >= 0 ) DrawImage("EpReserve/Minus10000", EPSETS1, EPSETR3);
+				else DrawImage("EpReserve/Minus10000Off", EPSETS1, EPSETR3);
+				if(readTo(PosToEpSet) + 10000 <= maxSet ) DrawImage("EpReserve/Plus10000", EPSETS3, EPSETR3);
+				else DrawImage("EpReserve/Plus10000Off", EPSETS3, EPSETR3);
+
+				//BL Aktuell
+				if (readRscp(PosBlUsed) == 1)
+					DrawImage("Switch/On", BLS2, BLR1);
+				else
+					DrawImage("Switch/Off", BLS2, BLR1);
+				DrawImage("EpReserve/Set", BLS3+30, BLR4);
+				drawNumber(BLS3+18, BLR2, readRscp(PosBlCharge), WATT, BLACK);
+				drawNumber(BLS3+18, BLR3, readTo(PosToBlCharge), WATT, BLACK);
+				DrawImage("EpReserve/Set", BLS3+30, BLR7);
+				drawNumber(BLS3+18, BLR5, readRscp(PosBlDischarge), WATT, BLACK);
+				drawNumber(BLS3+18, BLR6, readTo(PosToBlDischarge), WATT, BLACK);
 
 				break;
 			}
@@ -770,7 +769,7 @@ int main(){
 						}
 					}
 					else{
-						drawOutput(T1+30, 320,80,12,"PVI-DOWN", RED);
+						DrawImage("Zahlen/pvOff", T1+40, 320);
 					}
 					//PVI Tracker 2
 					if (PVI_TRACKER == 2){
@@ -788,7 +787,7 @@ int main(){
 							}
 						}
 						else
-							drawOutput(T2+30, 320,80,12, "PVI-DOWN", RED);
+						DrawImage("Zahlen/pvOff", T2+40, 320);
 					}
 					// System_Info
 					DrawImage("Info/Seriennummer", SIS1, SIR1);

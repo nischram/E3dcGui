@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.08 07.02.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.09 17.02.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -434,6 +434,12 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.09 17.02.2022 [Issue #71](https://github.com/nischram/E3dcGui/issues/71) + [Issue #72](https://github.com/nischram/E3dcGui/issues/72) + [Issue #73](https://github.com/nischram/E3dcGui/issues/73) Fehlerbehebung und Diverses
+- Issue #71 Anderer cast für Variable um Fehler zu vermeiden       
+- Issue #72 Refresh für die Displayanzeige war falsch in der IF-Schleife eingefügt      
+- Issue #73 Fehlende Datei hochgeladen und überflüssige Dateien gelöscht         
+- Text in Anzeige für "PVI-Down" und "LM-Down" ersetzt duch Grafiken für "PV Off" und "LM Off"   
+
 V2.08 07.02.2022 [Issue #70](https://github.com/nischram/E3dcGui/issues/70) RSCP Abfrage für PM benötigt unterschiedliche Indexnummern
 - Issue #70 Variable in der parameter.h aufgenommen um den Index unterschiedlich zu setzen   
 
