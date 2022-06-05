@@ -435,6 +435,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.11 05.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Falschen Issue angegeben
+- Beim Commit zuvor falschen Issue angegebne richtig ist Issue #75  
+
 V2.10 05.06.2022 [Issue #76](https://github.com/nischram/E3dcGui/issues/76) Ladegrenze "Batterie zu Auto" einstellbar
 - Issue #76 üner Tasten ist in 10% Stufen die Ladegrenze "Batterie zu Auto" jetzt einstellbar      
 - Changelog archiviert  
