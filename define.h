@@ -123,7 +123,8 @@
 #define PosBlStart                  32   //!!
 #define PosPowerSave                33   //!!
 #define PosWeatherReg               34   //!!
-#define PosMAX                      35   //!!
+#define PosWbUntil                  35   //!!
+#define PosMAX                      36   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!
@@ -294,7 +295,7 @@
 #define WB1                         30  //!!
 #define WBCARX                      375 //!!
 #define WBCARY                      199 //!!
-#define WBCURX                      228 //!!
+#define WBCURX                      230 //!!
 #define WBCURY                      160 //!!
 #define WBMODEX                     WBCURX       //!!
 #define WBMODEY                     WBCURY  + 55 //!!
@@ -306,6 +307,15 @@
 #define WBPHY                       WBBBCY  + 55 //!!
 #define WBSTOPX                     655          //!!
 #define WBSTOPY                     WBCURY       //!!
+#define WBUNTILX                    60           //!!
+#define WBUNTILY                    WBMODEY      //!!
+#define WBPERLX                     WBCURX-58-58-58    //!! Percent Left
+#define WBPERRX                     WBCURX-58-58       //!! Percent Right
+#define WBPER9Y                     WBBTCY       //!!
+#define WBPER7Y                     WBPER9Y +38  //!!
+#define WBPER5Y                     WBPER7Y +38  //!!
+#define WBPER3Y                     WBPER7Y +38  //!!
+#define WBPER1Y                     WBPER3Y +38  //!!
 
 //wiringPi
 #define OK                          1   //!!

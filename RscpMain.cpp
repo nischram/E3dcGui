@@ -80,8 +80,15 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_GRID);
         protocol.appendValue(&rootValue, TAG_EMS_REQ_BAT_SOC);
         if (Wallbox == 1){
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_ALL);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_SOLAR);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_TO_CAR_MODE);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_BEFORE_CAR_MODE);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL);
+        }
+        else {
+          writeRscp(PosWbAll,0);
+          writeRscp(PosWbSolar,0);
         }
         // request battery information
         SRscpValue batteryContainer;
@@ -107,15 +114,6 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_ADD);
         else
           writeRscp(PosADD,0);
-        if (Wallbox == 1){
-          protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_ALL);
-          protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_WB_SOLAR);
-        }
-        else {
-          writeRscp(PosWbAll,0);
-          writeRscp(PosWbSolar,0);
-        }
-
         // request PVI information
         SRscpValue PVIContainer;
         protocol.createContainerValue(&PVIContainer, TAG_PVI_REQ_DATA);
@@ -406,6 +404,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_SOLAR, TAG_EMS_OUT_POWER_WB_SOLAR);
           cout << "Wallbox Power Grid is " << TAG_EMS_OUT_POWER_WB_ALL - TAG_EMS_OUT_POWER_WB_SOLAR << " W\n";
           printsendHM(CounterHM, TAG_EMS_ISE_POWER_WB_GRID, TAG_EMS_OUT_POWER_WB_ALL - TAG_EMS_OUT_POWER_WB_SOLAR);
+          break;
+        }
+        case TAG_EMS_GET_WB_DISCHARGE_BAT_UNTIL: {    // response for TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL
+          float wbDischargeUntil = protocol->getValueAsUChar8(response);
+          cout << "Wallbox discharge until " << wbDischargeUntil << " %\n";
+          writeRscp(PosWbUntil,wbDischargeUntil);
           break;
         }
         case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY

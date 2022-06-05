@@ -174,6 +174,10 @@
 #define TAG_EMS_REQ_ALIVE                                   	0x01050000
 #define TAG_EMS_ALIVE                                       	0x01850000
 #define TAG_EMS_GENERAL_ERROR                               	0x01FFFFFF
+#define TAG_EMS_GET_WB_DISCHARGE_BAT_UNTIL                   	0x0180027d
+#define TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL               	0x0100027d
+#define TAG_EMS_SET_WB_DISCHARGE_BAT_UNTIL                  	0x0180027c
+#define TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL               	0x0100027c
 
 
 #define TAG_BAT_REQ_DATA                                    	0x03040000

@@ -1,4 +1,49 @@
 # Changelog Archiv
+
+V2.09 17.02.2022 [Issue #71](https://github.com/nischram/E3dcGui/issues/71) + [Issue #72](https://github.com/nischram/E3dcGui/issues/72) + [Issue #73](https://github.com/nischram/E3dcGui/issues/73) Fehlerbehebung und Diverses
+- Issue #71 Anderer cast für Variable um Fehler zu vermeiden       
+- Issue #72 Refresh für die Displayanzeige war falsch in der IF-Schleife eingefügt      
+- Issue #73 Fehlende Datei hochgeladen und überflüssige Dateien gelöscht         
+- Text in Anzeige für "PVI-Down" und "LM-Down" ersetzt duch Grafiken für "PV Off" und "LM Off"   
+
+V2.08 07.02.2022 [Issue #70](https://github.com/nischram/E3dcGui/issues/70) RSCP Abfrage für PM benötigt unterschiedliche Indexnummern
+- Issue #70 Variable in der parameter.h aufgenommen um den Index unterschiedlich zu setzen   
+
+V2.07 07.02.2022 Fehlende Parameter mit "./copyPara" prüfen
+- Idee ist in Issue #70 entstanden   
+
+V2.06 06.02.2022 [Issue #70](https://github.com/nischram/E3dcGui/issues/70)
+- Issue #70 Fehlerkorrektur der Anzeige und Ergänzung eines Offset für DHT Temperatursensor  
+- Tippfehler in der README behoben      
+
+V2.05 02.01.2022 Fehler screenSaveHM und Fehlerbehebung Watchdog
+  - Fehlermeldung aus dem HM-Forum, es fehlte ein include in der screenSaveHM.c   
+  - Watchdog für Release löst teilweise mit leerer Release-Version aus.  
+
+V2.04 03.10.2021 [Issue #58](https://github.com/nischram/E3dcGui/issues/58), [Issue #66](https://github.com/nischram/E3dcGui/issues/66), [Issue #67](https://github.com/nischram/E3dcGui/issues/67),  Diverse Verbesserungen
+- Issue #58 Mit der "Rscp/actionCheckHM.c" kann nun auch die Notstromreserve von der HM aus geändert werden.  
+- Issue #67 Auf dem Display so wie mit der "Rscp/actionCheckHM.c" können sie BAtterie-Limits des S10 geändert werden.  
+- Issue #66 Auf dem Display werden einige Sonderinformationen angezeigt.  
+- "Rscp/wbCheckHM.c" umgebaut nach "Rscp/actionCheckHM.c".  
+
+V2.03 29.07.2021 [Issue #62](https://github.com/nischram/E3dcGui/issues/62) Fehler in der S10History seit Update V2.00  
+- Issue #62 Datei "S10History/RscpReader.cpp" Änderung in V2.00 nicht hochgeladen.
+
+V2.02 10.07.2021 Fehlerbehebung RscpMain
+- #include Reihenfolge in der RscpMain.cpp war falsch
+
+V2.01 12.06.2021 Fehlerbehebung + Wallbox Leistungswerte
+- Fehlerbehebung [Issue #61](https://github.com/nischram/E3dcGui/issues/61)
+- Fehler Setup Touch passt nicht zur Anzeigen  
+- Wallbox Leistungswerte im Screen Langzeit aufgenommen    
+
+V2.00 06.06.2021 [Issue #52](https://github.com/nischram/E3dcGui/issues/52) Updatefähigkeit verbessert  
+- Issue #52 parameter.h im .gitignore aktiviert und parameter.h.temp eingebunden
+- Schriftgröße fest auf 8x16 umgestellt  
+- Bei der Anzeige für Strom wurde die erste 0 nach dem Komma nicht angezeigt  
+- In der Ansicht Aktor / DHT die Schrift für Größe 8x16 angepasst  
+- Nur Programme die laufen werden beim ./stop beendet
+
 V1.92 30.05.2021 [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Tracker 1 zeigt Strom und Spannung falsch  
 - [Issue #60](https://github.com/nischram/E3dcGui/issues/60) Fehler behoben  
 

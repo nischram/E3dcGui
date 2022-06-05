@@ -28,8 +28,9 @@ static uint8_t ucDecryptionIV[AES_BLOCK_SIZE];
 static char TAG_EMS_OUT_SERIAL_NUMBER [17];
 static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
+static int WbDisUntil = 0;
 
-static bool setModeWB = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false;
+static bool setModeWB = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false;
 static bool WbSwPh = false, WbStop = false;
 static bool blUsed = false, psUsed = false, wrUsed = false;
 static int inputEpReserveMax, inputEpReserve;
@@ -164,6 +165,10 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           // free memory of sub-container as it is now copied to rootValue
           protocol.destroyValueData(BlGetContainer);
         }
+        if (setModeWbUntil){
+          printf("Set Wallbox Discharge Until\nEntladegrenze    = %i%\n", WbDisUntil);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL, WbDisUntil);
+        }
     }
 
     // create buffer frame to send data to the S10
@@ -208,6 +213,11 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
     }
     case TAG_EMS_SET_BATTERY_BEFORE_CAR_MODE: {    // response for TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE
       uint8_t BbC = protocol->getValueAsUChar8(response);
+      //cout << "Set Battery bevor Car = " << BbC << "\n";
+      break;
+    }
+    case TAG_EMS_SET_WB_DISCHARGE_BAT_UNTIL: {    // response for TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL
+      bool wbdisRes = protocol->getValueAsUChar8(response);
       //cout << "Set Battery bevor Car = " << BbC << "\n";
       break;
     }
@@ -565,11 +575,16 @@ int main(int argc, char *argv[])
       printf("Wetterprognose setzen\n");
       setModeWR = true;
     }
+    else if (strcmp(argv[1], "-wbUntil")==0) {
+      printf("Ladegrenze setzen\n");
+      setModeWbUntil = true;
+    }
     else {
       printf("Falsche Eingabe!\n Bitte wählen:\n");
       printf("  Wallbox         = -wb\n");
       printf("  Notstromreserve = -ep\n");
       printf("  Batterielimits  = -bl\n");
+      printf("  Wallbox discharge until  = -wbUntil\n");
       //printf("  Powersave       = -ps\n");
       //printf("  Wetterprognose  = -wr\n");
       printf(" Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
@@ -622,21 +637,23 @@ int main(int argc, char *argv[])
       else {
         printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
       }
-      // Anzahl Phasen tauschen oder Ladung stoppen
-      if (strcmp(argv[6], "-swPh")==0) {
-        printf("Anzahl Phasen tauschen\n");
-        WbExt[3] = 1;
-      }
-      else if (strcmp(argv[6], "-stop")==0) {
-        printf("Ladung stoppen\n");
-        WbExt[4] = 1;
-      }
-      else if (strcmp(argv[6], "-no")==0) {
-        // für keine Eingabe bei Anzahl Phasen tauschen oder stoppen der Ladung
-      }
-      else {
-        printf("Keine Eingabe für Anzahl Phasen tauschen \n Wert: -swPh \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -swPh\n");
-        printf("oder\nkeine Eingabe für das stoppen der Ladung\n Wert: -stop \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -stop\n");
+      if (argc > 6){
+        // Anzahl Phasen tauschen oder Ladung stoppen
+        if (strcmp(argv[6], "-swPh")==0) {
+          printf("Anzahl Phasen tauschen\n");
+          WbExt[3] = 1;
+        }
+        else if (strcmp(argv[6], "-stop")==0) {
+          printf("Ladung stoppen\n");
+          WbExt[4] = 1;
+        }
+        else if (strcmp(argv[6], "-no")==0) {
+          // für keine Eingabe bei Anzahl Phasen tauschen oder stoppen der Ladung
+        }
+        else {
+          printf("Keine Eingabe für Anzahl Phasen tauschen \n Wert: -swPh \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -swPh\n");
+          printf("oder\nkeine Eingabe für das stoppen der Ladung\n Wert: -stop \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -stop\n");
+        }
       }
     }
     else if (setModeEP){
@@ -694,6 +711,17 @@ int main(int argc, char *argv[])
           else printf("Batteriestart endladen = %i W\n",blDischargeStart);
         }
         else printf("Batteriestart endladen = %i\n",blDischargeStart);
+      }
+    }
+    else if (setModeWbUntil){
+      // PS Used argv[2]
+      WbDisUntil = atoi(argv[2]);
+      if (WbDisUntil >= 0 && WbDisUntil <= 99) {
+        printf("SOC Endladegrenze = %s%\n", argv[2]);
+      }
+      else {
+        printf("Falsche Eingabe für argv[2] Option: 0 - 99\n  Beispiel     = RscpSet -wbUntil 60 ");
+        return 0;
       }
     }
   /* Das setzen von Powersave und Wetterprognose habe ich noch nicht hinbekommen.

@@ -586,8 +586,21 @@ int main(){
 						else
 							DrawImage("Switch/Off", WBMODEX, WBMODEY);
 						put_string(WBMODEX-8,WBMODEY+33,"Sonnenmodus",GREY);
-						if (readRscpWb(PosWbBtC)==1)
+						if (readRscpWb(PosWbBtC)==1){
 							DrawImage("Switch/On", WBBTCX, WBBTCY);
+							DrawImage("Switch/90percent", WBPERLX, WBPER9Y);
+							DrawImage("Switch/80percent", WBPERRX, WBPER9Y);
+							DrawImage("Switch/70percent", WBPERLX, WBPER7Y);
+							DrawImage("Switch/60percent", WBPERRX, WBPER7Y);
+							DrawImage("Switch/50percent", WBPERLX, WBPER5Y);
+							DrawImage("Switch/40percent", WBPERRX, WBPER5Y);
+							DrawImage("Switch/30percent", WBPERLX, WBPER3Y);
+							DrawImage("Switch/20percent", WBPERRX, WBPER3Y);
+							DrawImage("Switch/10percent", WBPERLX, WBPER1Y);
+							DrawImage("Switch/0percent", WBPERRX, WBPER1Y);
+							drawNumber(WBUNTILX+18, WBUNTILY, readRscp(PosWbUntil), PERCENT, BLACK);
+							put_string(WBUNTILX-1,WBUNTILY+33,"Entladegrenze",GREY);
+						}
 						else
 							DrawImage("Switch/Off", WBBTCX, WBBTCY);
 						put_string(WBBTCX-19,WBBTCY+33,"Batterie zu Auto",GREY);
