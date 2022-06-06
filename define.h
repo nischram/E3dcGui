@@ -312,10 +312,10 @@
 #define WBPERLX                     WBCURX-58-58-58    //!! Percent Left
 #define WBPERRX                     WBCURX-58-58       //!! Percent Right
 #define WBPER9Y                     WBBTCY       //!!
-#define WBPER7Y                     WBPER9Y +38  //!!
-#define WBPER5Y                     WBPER7Y +38  //!!
-#define WBPER3Y                     WBPER7Y +38  //!!
-#define WBPER1Y                     WBPER3Y +38  //!!
+#define WBPER7Y                     WBPER9Y +34  //!!
+#define WBPER5Y                     WBPER7Y +34  //!!
+#define WBPER3Y                     WBPER5Y +34  //!!
+#define WBPER1Y                     WBPER3Y +34  //!!
 
 //wiringPi
 #define OK                          1   //!!
