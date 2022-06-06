@@ -24,7 +24,10 @@ int wallboxAction(){
 			if(strcmp ("true",wallboxSendStop) == 0) snprintf (WbSet, (size_t)128, "-stop");
 			else if(strcmp ("true",wallboxSendPhC) == 0) snprintf (WbSet, (size_t)128, "-swPh");
 			else snprintf (WbSet, (size_t)128, "-no");
-			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s %s &", WbMode, WbCurrent, WbBtC, WbBbC, WbSet);
+			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s &", WbMode, WbCurrent, WbSet);
+			system(SEND_OUT);
+			sleep(1);
+			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbEMS %s %s &", WbBtC, WbBbC);
 			system(SEND_OUT);
 			printsendHM(ISE_WB_SEND_NOW, "false");
 			printsendHM(ISE_WB_SEND_STOP, "false");

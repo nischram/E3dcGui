@@ -672,11 +672,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) -10;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -689,11 +685,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) -2;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -706,11 +698,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) -1;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -723,11 +711,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) +1;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -740,11 +724,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) +2;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -757,11 +737,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent) +10;
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 							system(OUT);
 						}
 					}
@@ -773,20 +749,13 @@ int main()
 						WbCurrent = readRscpWb(PosWbCurrent);
 						if(readRscpWb(PosWbMode)==1) snprintf (WbMode, (size_t)128, "-mix");
 						else snprintf (WbMode, (size_t)128, "-sonne");
-						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-						else snprintf (WbBtC, (size_t)128, "-BtCyes");
-						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-						else snprintf (WbBbC, (size_t)128, "-BbCyes");
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -no &", WbMode, WbCurrent);
 						system(OUT);
 					}
 				}
 				if((scaledX  > buttonCordsWbBtC[X] && scaledX < (buttonCordsWbBtC[X]+buttonCordsWbBtC[W])) && (scaledY > buttonCordsWbBtC[Y] && scaledY < (buttonCordsWbBtC[Y]+buttonCordsWbBtC[H]))){
 					if (mymillis() - buttonTimerWbBtC > 500){
 						DrawImage("Switch/Send", WBBTCX, WBBTCY);
-						WbCurrent = readRscpWb(PosWbCurrent);
-						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
-						else snprintf (WbMode, (size_t)128, "-sonne");
 						if(readRscpWb(PosWbBtC)==1) {
 							snprintf (WbBtC, (size_t)128, "-BtCno");
 							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
@@ -796,7 +765,7 @@ int main()
 							snprintf (WbBtC, (size_t)128, "-BtCyes");
 							snprintf (WbBbC, (size_t)128, "-BbCno");
 						}
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbEMS %s %s &", WbBtC, WbBbC);
 						system(OUT);
 						sleep(2);
 						buttonTimerWbBtC = mymillis();
@@ -808,9 +777,6 @@ int main()
 				if((scaledX  > buttonCordsWbBbC[X] && scaledX < (buttonCordsWbBbC[X]+buttonCordsWbBbC[W])) && (scaledY > buttonCordsWbBbC[Y] && scaledY < (buttonCordsWbBbC[Y]+buttonCordsWbBbC[H]))){
 					if (mymillis() - buttonTimerWbBbC > 500){
 						DrawImage("Switch/Send", WBBBCX, WBBBCY);
-						WbCurrent = readRscpWb(PosWbCurrent);
-						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
-						else snprintf (WbMode, (size_t)128, "-sonne");
 						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
 						else snprintf (WbBtC, (size_t)128, "-BtCyes");
 						if(readRscpWb(PosWbBbC)==1) snprintf (WbBbC, (size_t)128, "-BbCno");
@@ -818,7 +784,7 @@ int main()
 							snprintf (WbBtC, (size_t)128, "-BtCno");
 							snprintf (WbBbC, (size_t)128, "-BbCyes");
 						}
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -no &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbEMS %s %s &", WbBtC, WbBbC);
 						system(OUT);
 						sleep(2);
 						buttonTimerWbBbC = mymillis();
@@ -833,11 +799,7 @@ int main()
 						WbCurrent = readRscpWb(PosWbCurrent);
 						if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 						else snprintf (WbMode, (size_t)128, "-sonne");
-						if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-						else snprintf (WbBtC, (size_t)128, "-BtCyes");
-						if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-						else snprintf (WbBbC, (size_t)128, "-BbCyes");
-						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -swPh &", WbMode, WbCurrent, WbBtC, WbBbC);
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -swPh &", WbMode, WbCurrent);
 						system(OUT);
 						sleep(2);
 						buttonTimerWbSwPh = mymillis();
@@ -853,11 +815,7 @@ int main()
 							WbCurrent = readRscpWb(PosWbCurrent);
 							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
 							else snprintf (WbMode, (size_t)128, "-sonne");
-							if(readRscpWb(PosWbBtC)==0) snprintf (WbBtC, (size_t)128, "-BtCno");
-							else snprintf (WbBtC, (size_t)128, "-BtCyes");
-							if(readRscpWb(PosWbBbC)==0) snprintf (WbBbC, (size_t)128, "-BbCno");
-							else snprintf (WbBbC, (size_t)128, "-BbCyes");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s %s -stop &", WbMode, WbCurrent, WbBtC, WbBbC);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -stop &", WbMode, WbCurrent);
 							system(OUT);
 							sleep(2);
 							writeScreen(ScreenCounter, 0);

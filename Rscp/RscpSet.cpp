@@ -30,7 +30,7 @@ static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 static int WbDisUntil = 0;
 
-static bool setModeWB = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false;
+static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false;
 static bool WbSwPh = false, WbStop = false;
 static bool blUsed = false, psUsed = false, wrUsed = false;
 static int inputEpReserveMax, inputEpReserve;
@@ -66,9 +66,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         // request data information
         protocol.appendValue(&rootValue, TAG_INFO_REQ_SERIAL_NUMBER);
         if (setModeWB){
-          printf("Set Wallbox Parameter\nBat to Car    = %i\nBat bevor Car = %i\nLadestrom     = %i A\nWallboxmodus  = %i 1=Sonne/2=Mix\n", WbBtC, WbBbC, WbExt[1], WbExt[0]);
-          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_TO_CAR_MODE,(uint8_t)WbBtC);
-          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE,(uint8_t)WbBbC);
+          printf("Set Wallbox Parameter\nLadestrom     = %i A\nWallboxmodus  = %i 1=Sonne/2=Mix\n", WbExt[1], WbExt[0]);
 
           // request Wallbox information
           SRscpValue WBContainer;
@@ -88,6 +86,12 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           //protocol.appendValue(&rootValue, WBExtContainer);
           // free memory of sub-container as it is now copied to rootValue
           protocol.destroyValueData(WBContainer);
+        }
+        if (setModeWBEMS){
+          printf("Set Wallbox EMS Parameter\nBat to Car    = %i\nBat bevor Car = %i\n", WbBtC, WbBbC);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_TO_CAR_MODE,(uint8_t)WbBtC);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_BATTERY_BEFORE_CAR_MODE,(uint8_t)WbBbC);
+
         }
         else if (setModeEP){
           printf("Set Notstrom-Reserve\nEP Reserve    = %i Wh\n", inputEpReserve);
@@ -579,15 +583,21 @@ int main(int argc, char *argv[])
       printf("Ladegrenze setzen\n");
       setModeWbUntil = true;
     }
+    else if (strcmp(argv[1], "-wbEMS")==0) {
+      printf("Wallbox EMS Parameter\n");
+      setModeWBEMS = true;
+    }
     else {
       printf("Falsche Eingabe!\n Bitte wählen:\n");
       printf("  Wallbox         = -wb\n");
       printf("  Notstromreserve = -ep\n");
       printf("  Batterielimits  = -bl\n");
       printf("  Wallbox discharge until  = -wbUntil\n");
+      printf("  Wallbox EMS     = -wbEMS\n");
       //printf("  Powersave       = -ps\n");
       //printf("  Wetterprognose  = -wr\n");
-      printf(" Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+      printf(" Beispiel        = RscpSet -wb -sonne 16\n");
+      printf(" Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
       return 0;
     }
     // Wallbox Parameter
@@ -602,58 +612,60 @@ int main(int argc, char *argv[])
         WbExt[0] = 2;
       }
       else {
-        printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  Beispiel        = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+        printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  Beispiel        = RscpSet -wb -sonne 16\n");
         return 0;
       }
       // Ladestrom
       int maxAmp = atoi(argv[3]);
       if (maxAmp < 0 || maxAmp > 32){
-        printf("Falsche Eingabe!\n Wert von 0 - 32 A wählen\n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+        printf("Falsche Eingabe!\n Wert von 0 - 32 A wählen\n  Beispiel     = RscpSet -wb -sonne 16\n");
         return 0;
       }
       printf("Ladestrom = %s\n", argv[3]);
       WbExt[1] = atoi(argv[3]);
+      if (argc > 4){
+        // Anzahl Phasen tauschen oder Ladung stoppen
+        if (strcmp(argv[4], "-swPh")==0) {
+          printf("Anzahl Phasen tauschen\n");
+          WbExt[3] = 1;
+        }
+        else if (strcmp(argv[4], "-stop")==0) {
+          printf("Ladung stoppen\n");
+          WbExt[4] = 1;
+        }
+        else if (strcmp(argv[4], "-no")==0) {
+          // für keine Eingabe bei Anzahl Phasen tauschen oder stoppen der Ladung
+        }
+        else {
+          printf("Keine Eingabe für Anzahl Phasen tauschen \n Wert: -swPh \n  Beispiel     = RscpSet -wb -sonne 16 -swPh\n");
+          printf("oder\nkeine Eingabe für das stoppen der Ladung\n Wert: -stop \n  Beispiel     = RscpSet -wb -sonne 16 -stop\n");
+        }
+      }
+    }
+    else if (setModeWBEMS){
       // Battery to Car
-      if (strcmp(argv[4], "-BtCyes")==0) {
+      if (strcmp(argv[2], "-BtCyes")==0) {
         printf("Batterie ins Auto = Ein\n");
         WbBtC = 1;
       }
-      else if (strcmp(argv[4], "-BtCno")==0) {
+      else if (strcmp(argv[2], "-BtCno")==0) {
         printf("Batterie ins Auto = Aus\n");
         WbBtC = 0;
       }
       else {
-        printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
+        printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
       }
       // Battery bevor Car
-      if (strcmp(argv[5], "-BbCyes")==0) {
+      if (strcmp(argv[3], "-BbCyes")==0) {
         printf("Batterie vor Auto = Ein\n");
         WbBbC = 1;
       }
-      else if (strcmp(argv[5], "-BbCno")==0) {
+      else if (strcmp(argv[3], "-BbCno")==0) {
         printf("Batterie vor Auto = Aus\n");
         WbBbC = 0;
       }
       else {
-        printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno\n");
-      }
-      if (argc > 6){
-        // Anzahl Phasen tauschen oder Ladung stoppen
-        if (strcmp(argv[6], "-swPh")==0) {
-          printf("Anzahl Phasen tauschen\n");
-          WbExt[3] = 1;
-        }
-        else if (strcmp(argv[6], "-stop")==0) {
-          printf("Ladung stoppen\n");
-          WbExt[4] = 1;
-        }
-        else if (strcmp(argv[6], "-no")==0) {
-          // für keine Eingabe bei Anzahl Phasen tauschen oder stoppen der Ladung
-        }
-        else {
-          printf("Keine Eingabe für Anzahl Phasen tauschen \n Wert: -swPh \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -swPh\n");
-          printf("oder\nkeine Eingabe für das stoppen der Ladung\n Wert: -stop \n  Beispiel     = RscpSet -wb -sonne 16 -BtCno -BbCno -stop\n");
-        }
+        printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
       }
     }
     else if (setModeEP){
