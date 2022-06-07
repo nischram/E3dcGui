@@ -30,9 +30,12 @@ static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 static int WbDisUntil = 0;
 
-static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false;
+static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false, setModeIdle = false;
 static bool WbSwPh = false, WbStop = false;
 static bool blUsed = false, psUsed = false, wrUsed = false;
+static bool idleAktive = false;
+static int idleMode = CHARGE, idleDay = MON;
+static int idleStartH, idleStartM, idleStopH, idleStopM;
 static int inputEpReserveMax, inputEpReserve;
 static uint32_t blChargeLimit, blDischargeLimit, blDischargeStart = 65;
 
@@ -172,6 +175,48 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         if (setModeWbUntil){
           printf("Set Wallbox Discharge Until\nEntladegrenze    = %i%\n", WbDisUntil);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL, WbDisUntil);
+        }
+        if (setModeIdle){
+          printf("Set Idletime\n",idleMode,idleDay,idleAktive);
+          SRscpValue setTimeContainer;
+        	protocol.createContainerValue(&setTimeContainer,
+        				      TAG_EMS_REQ_SET_IDLE_PERIODS);
+
+        	    SRscpValue setDayContainer;
+        	    protocol.createContainerValue(&setDayContainer,
+        					  TAG_EMS_IDLE_PERIOD);
+        	    protocol.appendValue(&setDayContainer,
+        				 TAG_EMS_IDLE_PERIOD_TYPE, (uint8_t)idleMode);
+        	    protocol.appendValue(&setDayContainer,
+        				 TAG_EMS_IDLE_PERIOD_DAY, (uint8_t)idleDay);
+        	    protocol.appendValue(&setDayContainer,
+        				 TAG_EMS_IDLE_PERIOD_ACTIVE, (bool)idleAktive);
+
+              		SRscpValue setStartContainer;
+              		protocol.createContainerValue(&setStartContainer,
+              					  TAG_EMS_IDLE_PERIOD_START);
+              		protocol.appendValue(&setStartContainer,
+              				 TAG_EMS_IDLE_PERIOD_MINUTE, (uint8_t)idleStartM);
+              		protocol.appendValue(&setStartContainer,
+              				 TAG_EMS_IDLE_PERIOD_HOUR, (uint8_t)idleStartH);
+              		protocol.appendValue(&setDayContainer, setStartContainer);
+              		protocol.destroyValueData(setStartContainer);
+
+              		SRscpValue setStopContainer;
+              		protocol.createContainerValue(&setStopContainer,
+              					  TAG_EMS_IDLE_PERIOD_END);
+              		protocol.appendValue(&setStopContainer,
+              				 TAG_EMS_IDLE_PERIOD_MINUTE, (uint8_t)idleStopM);
+              		protocol.appendValue(&setStopContainer,
+              				 TAG_EMS_IDLE_PERIOD_HOUR, (uint8_t)idleStopH);
+              		protocol.appendValue(&setDayContainer, setStopContainer);
+              		protocol.destroyValueData(setStopContainer);
+
+        	    protocol.appendValue(&setTimeContainer, setDayContainer);
+        	    protocol.destroyValueData(setDayContainer);
+
+        	protocol.appendValue(&rootValue, setTimeContainer);
+        	protocol.destroyValueData(setTimeContainer);
         }
     }
 
@@ -349,6 +394,9 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
       }
       protocol->destroyValueData(BLData);
             // sleep(10);
+      break;
+    }
+    case TAG_EMS_SET_IDLE_PERIODS: {
       break;
     }
     // ...
@@ -557,62 +605,88 @@ int main(int argc, char *argv[])
 {
     //Parameter einbinden, checken oder default setzen
   	checkDefinePara(0);
-
-    // Set Mode
-    if (strcmp(argv[1], "-wb")==0) {
-      printf("Wallbox Set Parameter\n");
-      setModeWB = true;
-    }
-    else if (strcmp(argv[1], "-ep")==0) {
-      printf("Notstromreserve setzen\n");
-      setModeEP = true;
-    }
-    else if (strcmp(argv[1], "-bl")==0) {
-      printf("Batterielimits setzen\n");
-      setModeBL = true;
-    }
-    else if (strcmp(argv[1], "-ps")==0) {
-      printf("Wechselrichter Powersave setzen\n");
-      setModePS = true;
-    }
-    else if (strcmp(argv[1], "-wr")==0) {
-      printf("Wetterprognose setzen\n");
-      setModeWR = true;
-    }
-    else if (strcmp(argv[1], "-wbUntil")==0) {
-      printf("Ladegrenze setzen\n");
-      setModeWbUntil = true;
-    }
-    else if (strcmp(argv[1], "-wbEMS")==0) {
-      printf("Wallbox EMS Parameter\n");
-      setModeWBEMS = true;
+    if(argc > 1){
+      // Set Mode
+      if (strcmp(argv[1], "-wb")==0) {
+        printf("Wallbox Set Parameter\n");
+        setModeWB = true;
+      }
+      else if (strcmp(argv[1], "-ep")==0) {
+        printf("Notstromreserve setzen\n");
+        setModeEP = true;
+      }
+      else if (strcmp(argv[1], "-bl")==0) {
+        printf("Batterielimits setzen\n");
+        setModeBL = true;
+      }
+      else if (strcmp(argv[1], "-ps")==0) {
+        printf("Wechselrichter Powersave setzen\n");
+        setModePS = true;
+      }
+      else if (strcmp(argv[1], "-wr")==0) {
+        printf("Wetterprognose setzen\n");
+        setModeWR = true;
+      }
+      else if (strcmp(argv[1], "-wbUntil")==0) {
+        printf("Ladegrenze setzen\n");
+        setModeWbUntil = true;
+      }
+      else if (strcmp(argv[1], "-wbEMS")==0) {
+        printf("Wallbox EMS Parameter\n");
+        setModeWBEMS = true;
+      }
+      else if (strcmp(argv[1], "-idle")==0) {
+        printf("Set Idle Time\n");
+        setModeIdle = true;
+      }
+      else {
+        printf("Falsche Eingabe!\n Bitte wählen:\n");
+        printf("  Wallbox         = -wb\n");
+        printf("  Notstromreserve = -ep\n");
+        printf("  Batterielimits  = -bl\n");
+        printf("  Wallbox discharge until  = -wbUntil\n");
+        printf("  Wallbox EMS     = -wbEMS\n");
+        printf("  Set Idle Time   = -idle\n");
+        //printf("  Powersave       = -ps\n");
+        //printf("  Wetterprognose  = -wr\n");
+        printf("  Beispiel        = RscpSet -wb -sonne 16\n");
+        printf("  Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
+        return 0;
+      }
     }
     else {
-      printf("Falsche Eingabe!\n Bitte wählen:\n");
+      printf("Keine Eingabe!\n Bitte wählen:\n");
       printf("  Wallbox         = -wb\n");
       printf("  Notstromreserve = -ep\n");
       printf("  Batterielimits  = -bl\n");
       printf("  Wallbox discharge until  = -wbUntil\n");
       printf("  Wallbox EMS     = -wbEMS\n");
+      printf("  Set Idle Time   = -idle\n");
       //printf("  Powersave       = -ps\n");
       //printf("  Wetterprognose  = -wr\n");
-      printf(" Beispiel        = RscpSet -wb -sonne 16\n");
-      printf(" Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
+      printf("  Beispiel        = RscpSet -wb -sonne 16\n");
+      printf("  Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
       return 0;
     }
     // Wallbox Parameter
     if (setModeWB){
-      // Sonnenmodus
-      if (strcmp(argv[2], "-sonne")==0) {
-        printf("Sonnenmodus\n");
-        WbExt[0] = 1;
-      }
-      else if (strcmp(argv[2], "-mix")==0) {
-        printf("Mischbetrieb\n");
-        WbExt[0] = 2;
+      if(argc > 3){
+        // Sonnenmodus
+        if (strcmp(argv[2], "-sonne")==0) {
+          printf("Sonnenmodus\n");
+          WbExt[0] = 1;
+        }
+        else if (strcmp(argv[2], "-mix")==0) {
+          printf("Mischbetrieb\n");
+          WbExt[0] = 2;
+        }
+        else {
+          printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  Beispiel        = RscpSet -wb -sonne 16\n");
+          return 0;
+        }
       }
       else {
-        printf("Falsche Eingabe!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  Beispiel        = RscpSet -wb -sonne 16\n");
+        printf("Eingaben fehlen!\n Bitte wählen:\n  Sonnenmodus    = -sonne \n  Mischbetrieb   = -mix\n  \n  & und Ladestrom Beispiel        = RscpSet -wb -sonne 16\n");
         return 0;
       }
       // Ladestrom
@@ -643,98 +717,202 @@ int main(int argc, char *argv[])
       }
     }
     else if (setModeWBEMS){
-      // Battery to Car
-      if (strcmp(argv[2], "-BtCyes")==0) {
-        printf("Batterie ins Auto = Ein\n");
-        WbBtC = 1;
-      }
-      else if (strcmp(argv[2], "-BtCno")==0) {
-        printf("Batterie ins Auto = Aus\n");
-        WbBtC = 0;
+      if(argc > 3){
+        // Battery to Car
+        if (strcmp(argv[2], "-BtCyes")==0) {
+          printf("Batterie ins Auto = Ein\n");
+          WbBtC = 1;
+        }
+        else if (strcmp(argv[2], "-BtCno")==0) {
+          printf("Batterie ins Auto = Aus\n");
+          WbBtC = 0;
+        }
+        else {
+          printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
+          return 0;
+        }
+        // Battery bevor Car
+        if (strcmp(argv[3], "-BbCyes")==0) {
+          printf("Batterie vor Auto = Ein\n");
+          WbBbC = 1;
+        }
+        else if (strcmp(argv[3], "-BbCno")==0) {
+          printf("Batterie vor Auto = Aus\n");
+          WbBbC = 0;
+        }
+        else {
+          printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
+          return 0;
+        }
       }
       else {
-        printf("Falsche Eingabe!\n Wert: -BtCyes or -BtCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
-      }
-      // Battery bevor Car
-      if (strcmp(argv[3], "-BbCyes")==0) {
-        printf("Batterie vor Auto = Ein\n");
-        WbBbC = 1;
-      }
-      else if (strcmp(argv[3], "-BbCno")==0) {
-        printf("Batterie vor Auto = Aus\n");
-        WbBbC = 0;
-      }
-      else {
-        printf("Falsche Eingabe!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
+        printf("Eingaben fehlen!\n Wert: -BbCyes or -BbCno \n  Beispiel     = RscpSet -wbEMS -BtCno -BbCno\n");
+        return 0;
       }
     }
     else if (setModeEP){
-      // EP Reserve Max argv[2]
-      inputEpReserveMax = atoi(argv[2]);
-      if (inputEpReserveMax < 0 || inputEpReserveMax > 65535){
-        printf("Falsche Eingabe für argv[2] in Wh!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
-        return 0;
-      }
-      else printf("EP Reserve Max = %i\n",inputEpReserveMax);
+      if(argc > 3){
+        // EP Reserve Max argv[2]
+        inputEpReserveMax = atoi(argv[2]);
+        if (inputEpReserveMax < 0 || inputEpReserveMax > 65535){
+          printf("Falsche Eingabe für argv[2] in Wh!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
+          return 0;
+        }
+        else printf("EP Reserve Max = %i\n",inputEpReserveMax);
 
-      // EP Reserve argv[3]
-      inputEpReserve = atoi(argv[3]);
-      if (inputEpReserve < 0 || inputEpReserve > inputEpReserveMax * 0.8){
-        printf("Falsche Eingabe für argv[3] in Wh!\n Wert von 0 - <= 80% von Max wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
-        return 0;
-      }
-      else printf("EP Reserve     = %i\n",inputEpReserve);
-    }
-    else if (setModeBL){
-      // BL Used argv[2]
-      if (strcmp(argv[2], "-blYes")==0) {
-        printf("Batterielimits = manuell\n");
-        blUsed = true;
-      }
-      else if (strcmp(argv[2], "-blNo")==0) {
-        printf("Batterielimits = automatisch\n");
-        blUsed = false;
+        // EP Reserve argv[3]
+        inputEpReserve = atoi(argv[3]);
+        if (inputEpReserve < 0 || inputEpReserve > inputEpReserveMax * 0.8){
+          printf("Falsche Eingabe für argv[3] in Wh!\n Wert von 0 - <= 80% von Max wählen\n  Beispiel     = RscpSet -ep 12800 4000\n");
+          return 0;
+        }
+        else printf("EP Reserve     = %i\n",inputEpReserve);
       }
       else {
-        printf("Falsche Eingabe für argv[2] Option: -blYes -blNo\n");
+        printf("Eingaben fehlen für argv[2] & argv[3]\n  Beispiel     = RscpSet -ep 12800 4000\n");
         return 0;
       }
-      if (blUsed){
-        // BL Charge Limit argv[3]
-        blChargeLimit = atoi(argv[3]);
-        if (blChargeLimit < 0 || blChargeLimit > 65535){
-          printf("Falsche Eingabe für argv[3] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+    }
+    else if (setModeBL){
+      if(argc > 4){
+        // BL Used argv[2]
+        if (strcmp(argv[2], "-blYes")==0) {
+          printf("Batterielimits = manuell\n");
+          blUsed = true;
+        }
+        else if (strcmp(argv[2], "-blNo")==0) {
+          printf("Batterielimits = automatisch\n");
+          blUsed = false;
+        }
+        else {
+          printf("Falsche Eingabe für argv[2] Option: -blYes -blNo\n");
           return 0;
         }
-        else printf("Batterielimit laden    = %i W\n",blChargeLimit);
-        // BL Discharge Limit argv[4]
-        blDischargeLimit = atoi(argv[4]);
-        if (blDischargeLimit < 0 || blDischargeLimit > 65535){
-          printf("Falsche Eingabe für argv[4] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
-          return 0;
-        }
-        else printf("Batterielimit endladen = %i W\n",blDischargeLimit);
-        // BL Discharge Start argv[5]
-        if (argc > 5){
-          blDischargeStart = atoi(argv[5]);
-          if (blDischargeStart < 0 || blDischargeStart > 400){
-            printf("Falsche Eingabe für argv[5] in W!\nWert von 0 - 400 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+        if (blUsed){
+          // BL Charge Limit argv[3]
+          blChargeLimit = atoi(argv[3]);
+          if (blChargeLimit < 0 || blChargeLimit > 65535){
+            printf("Falsche Eingabe für argv[3] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+            return 0;
           }
-          else printf("Batteriestart endladen = %i W\n",blDischargeStart);
+          else printf("Batterielimit laden    = %i W\n",blChargeLimit);
+          // BL Discharge Limit argv[4]
+          blDischargeLimit = atoi(argv[4]);
+          if (blDischargeLimit < 0 || blDischargeLimit > 65535){
+            printf("Falsche Eingabe für argv[4] in W!\n Wert von 0 - 65535 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+            return 0;
+          }
+          else printf("Batterielimit endladen = %i W\n",blDischargeLimit);
+          // BL Discharge Start argv[5]
+          if (argc > 5){
+            blDischargeStart = atoi(argv[5]);
+            if (blDischargeStart < 0 || blDischargeStart > 400){
+              printf("Falsche Eingabe für argv[5] in W!\nWert von 0 - 400 wählen\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+              return 0;
+            }
+            else printf("Batteriestart endladen = %i W\n",blDischargeStart);
+          }
+          else printf("Batteriestart endladen = %i\n",blDischargeStart);
         }
-        else printf("Batteriestart endladen = %i\n",blDischargeStart);
+        else {
+          printf("Eingaben fehlen für argv[2] bis argv[4]\n  Beispiel     = RscpSet -bl -blYes 3500 4000 65\n");
+          return 0;
+        }
       }
     }
     else if (setModeWbUntil){
-      // PS Used argv[2]
-      WbDisUntil = atoi(argv[2]);
-      if (WbDisUntil >= 0 && WbDisUntil <= 99) {
-        printf("SOC Endladegrenze = %s%\n", argv[2]);
+      if (argc > 2){
+        // PS Used argv[2]
+        WbDisUntil = atoi(argv[2]);
+        if (WbDisUntil >= 0 && WbDisUntil <= 99) {
+          printf("SOC Endladegrenze = %s%\n", argv[2]);
+        }
+        else {
+          printf("Falsche Eingabe für argv[2] Option: 0 - 99\n  Beispiel     = RscpSet -wbUntil 60\n");
+          return 0;
+        }
       }
       else {
-        printf("Falsche Eingabe für argv[2] Option: 0 - 99\n  Beispiel     = RscpSet -wbUntil 60 ");
+        printf("Fehlende Eingabe für argv[2] Option: 0 - 99\n  Beispiel     = RscpSet -wbUntil 60\n");
         return 0;
       }
+    }
+    else if (setModeIdle){
+      if (argc > 4){
+        // Idel-Mode
+        if (strcmp(argv[2], "-charge")==0) {
+          printf("Ladesperre ");
+          idleMode = CHARGE;
+        }
+        else if (strcmp(argv[2], "-discharge")==0) {
+          printf("Entladesperre ");
+          idleMode = DISCHARGE;
+        }
+        else {
+          printf("Falsche Eingabe!\n Bitte wählen:\n  Ladesperre    = -charge \n  Entladesperre   = -discharge\n  Beispiel        = RscpSet -idle -discharge -lock -tue 00 00 23 59\n");
+          return 0;
+        }
+        // Idle Aktive
+        if (strcmp(argv[3], "-lock")==0) {
+          printf("aktiv\n");
+          idleAktive = true;
+        }
+        else if (strcmp(argv[3], "-open")==0) {
+          printf("deaktiv\n");
+          idleAktive = false;
+        }
+        else {
+          printf("Falsche Eingabe!\n Bitte wählen:\n  Aktiv    = -lock \n  Deaktiv  = -open\n  Beispiel        = RscpSet -idle -discharge -lock -tue 00 00 23 59\n");
+          return 0;
+        }
+        // Idle Day
+        if (strcmp(argv[4], "-mon")==0) {
+          printf("MONDAY ");
+          idleDay = MON;
+        }
+        else if (strcmp(argv[4], "-tue")==0) {
+          printf("TUESDAY ");
+          idleDay = TUE;
+        }
+        else if (strcmp(argv[4], "-wed")==0) {
+          printf("WEDNESDAY ");
+          idleDay = WED;
+        }
+        else if (strcmp(argv[4], "-thu")==0) {
+          printf("THURSDAY ");
+          idleDay = THU;
+        }
+        else if (strcmp(argv[4], "-fri")==0) {
+          printf("FRIDAY ");
+          idleDay = FRI;
+        }
+        else if (strcmp(argv[4], "-sat")==0) {
+          printf("SATURDAY ");
+          idleDay = SAT;
+        }
+        else if (strcmp(argv[4], "-sun")==0) {
+          printf("SUNDAY ");
+          idleDay = SUN;
+        }
+        else {
+          printf("Falsche Eingabe!\n Bitte wählen:\n  -mon -tue -wed -thu -fri -sat -sun\n  Beispiel        = RscpSet -idle -discharge -lock -tue 01 00 23 59\n");
+          return 0;
+        }
+      }
+      else {
+        printf("Fehlende Eingabe für argv[2] bis argv[4]\n  Beispiel     = RscpSet -idle -discharge -lock -tue 00 00 23 59\n");
+        return 0;
+      }
+      // Idle Time
+      if (argc > 5)idleStartH = atoi(argv[5]);
+      else idleStartH = 0;
+      if (argc > 6)idleStartM = atoi(argv[6]);
+      else idleStartM = 0;
+      if (argc > 7)idleStopH = atoi(argv[7]);
+      else idleStopH = 23;
+      if (argc > 8)idleStopM = atoi(argv[8]);
+      else idleStopM = 59;
+      printf("Start=%02i:%02i End=%02i:%02i\n",idleStartH,idleStartM,idleStopH,idleStopM);
     }
   /* Das setzen von Powersave und Wetterprognose habe ich noch nicht hinbekommen.
     else if (setModePS){

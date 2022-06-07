@@ -317,6 +317,17 @@
 #define WBPER3Y                     WBPER5Y +34  //!!
 #define WBPER1Y                     WBPER3Y +34  //!!
 
+//for Idletime
+#define MON                         0
+#define TUE                         1
+#define WED                         2
+#define THU                         3
+#define FRI                         4
+#define SAT                         5
+#define SUN                         6
+#define CHARGE                      0
+#define DISCHARGE                   1
+
 //wiringPi
 #define OK                          1   //!!
 #define ERROR                       -1  //!!

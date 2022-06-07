@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.13 06.06.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.14 07.06.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -435,9 +435,13 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
-V2.13 05.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Fehlerkorrektor
-- Fehler in den 10% Stufen behoben
--
+V2.14 07.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) RscpSet ergänzt um die Lade- und Entladesperrzeiten
+- Issue #77 "RscpSet -idle ..." für die Sperrzeiten  
+- Einige Anpassungen an der RscpSet vorgenommen  
+
+V2.13 06.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Fehlerkorrektor
+- Fehler in den 10% Stufen behoben  
+
 V2.12 06.06.2022 RscpSet geändert die Parameter der Wallbox werden in der EMS und WB jetzt getrennt geändert
 - Änderung an der RscpSet  
 
@@ -445,7 +449,7 @@ V2.11 05.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Fals
 - Beim Commit zuvor falschen Issue angegebne richtig ist Issue #75  
 
 V2.10 05.06.2022 [Issue #76](https://github.com/nischram/E3dcGui/issues/76) Ladegrenze "Batterie zu Auto" einstellbar
-- Issue #76 üner Tasten ist in 10% Stufen die Ladegrenze "Batterie zu Auto" jetzt einstellbar      
+- Issue #76 über Tasten ist in 10% Stufen die Ladegrenze "Batterie zu Auto" jetzt einstellbar      
 - Changelog archiviert  
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)
