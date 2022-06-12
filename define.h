@@ -22,6 +22,7 @@
 #define ScreenGB                    8    //!!
 #define ScreenWallbox               9    //!!
 #define ScreenFunktion              10   //!!
+#define ScreenIdlePeriods           11   //!!
 
 #define ShutdownRun                 0    //!!
 #define ShutdownSD                  1    //!!
@@ -124,7 +125,8 @@
 #define PosPowerSave                33   //!!
 #define PosWeatherReg               34   //!!
 #define PosWbUntil                  35   //!!
-#define PosMAX                      36   //!!
+#define PosWbBaM                    36   //!!
+#define PosMAX                      37   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!
@@ -171,7 +173,8 @@
 #define PosToBlStart                5   //!!
 #define PosToPowerSave              6   //!!
 #define PosToWeatherReg             7   //!!
-#define PosToMAX                    8    //!!
+#define PosToIdlePeriod             8    //!!
+#define PosToMAX                    9    //!!
 
 // Berschreibung Grünbeck
 #define PosGB_CONSUMPTION           0    //!!
@@ -317,7 +320,7 @@
 #define WBPER3Y                     WBPER5Y +34  //!!
 #define WBPER1Y                     WBPER3Y +34  //!!
 
-//for Idletime
+//for IdlePeriods
 #define MON                         0
 #define TUE                         1
 #define WED                         2
@@ -327,6 +330,44 @@
 #define SUN                         6
 #define CHARGE                      0
 #define DISCHARGE                   1
+
+#define PosMonCharge                0    //!!
+#define PosTueCharge                5    //!!
+#define PosWedCharge                10   //!!
+#define PosThuCharge                15   //!!
+#define PosFriCharge                20   //!!
+#define PosSatCharge                25   //!!
+#define PosSunCharge                30   //!!
+#define PosMonDischarge             35   //!!
+#define PosTueDischarge             40   //!!
+#define PosWedDischarge             45   //!!
+#define PosThuDischarge             50   //!!
+#define PosFriDischarge             55   //!!
+#define PosSatDischarge             60   //!!
+#define PosSunDischarge             65   //!!
+#define PosIdleMax                  70   //!!
+
+#define IX                          30   //!!
+#define IY                          90   //!!
+#define IW                          740  //!!
+#define IH                          170  //!!
+#define IRC                         IY + 32 + 12  //!!
+#define IRD                         IY + 32 + 12 + IH + 6  //!!
+#define IB                          24  //!!
+#define ION                         IB + 42  //!!
+#define ITX                         ION + 18  //!!
+#define IOFF                        ITX + 18  //!!
+#define ISP1                        IX + 22  //!!
+#define ISP2                        ISP1 + 78  + 25  //!!
+#define ISP3                        ISP2 + 78  + 25  //!!
+#define ISP4                        ISP3 + 78  + 25  //!!
+#define ISP5                        ISP4 + 78  + 25  //!!
+#define ISP6                        ISP5 + 78  + 25  //!!
+#define ISP7                        ISP6 + 78  + 25  //!!
+
+// walbox parameters
+#define BAT_ON_AT_MIX               true
+#define BAT_OFF_AT_MIX              false
 
 //wiringPi
 #define OK                          1   //!!

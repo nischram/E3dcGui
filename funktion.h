@@ -178,90 +178,6 @@ void createData(int x, int y, char *c){
   drawSquare(x-5,y+19,60,12,WHITE);
 	put_string(x+5, (y+20), c,GREY);
 }
-// PicturPosition
-int picturePosition()
-{
-  int numberPicture = 1;   // 1=Standard-Button ohne Wetter
-  if(wetterGui ==1)
-    numberPicture = numberPicture +1;
-  if(E3DC_S10 ==1)
-    numberPicture = numberPicture +4;
-  if(Wallbox ==1)
-    numberPicture = numberPicture +1;
-  if(useAktor == 1 || useDHT == 1)
-    numberPicture = numberPicture +1;
-  if(Homematic_GUI ==1)
-    numberPicture = numberPicture +1;
-  if(Gruenbeck ==1)
-    numberPicture = numberPicture +1;
-  if(Abfuhrkalender ==1)
-    numberPicture = numberPicture +1;
-  int piece = (800 - (numberPicture * 68)) / 2;
-  Picture1 = piece;
-  if(wetterGui ==1){
-    piece = piece + 68;
-    Picture2 = piece;
-  }
-  if(E3DC_S10 ==1){
-    piece = piece + 68;
-    Picture3 = piece;
-    piece = piece + 68;
-    Picture4 = piece;
-    if(Wallbox ==1){
-      piece = piece + 68;
-      Picture5 = piece;
-    }
-    piece = piece + 68;
-    Picture6 = piece;
-    piece = piece + 68;
-    Picture7 = piece;
-  }
-  if(useAktor == 1 || useDHT == 1){
-    piece = piece + 68;
-    Picture8 = piece;
-  }
-  if(Homematic_GUI ==1){
-    piece = piece + 68;
-    Picture9 = piece;
-  }
-  if(Gruenbeck ==1){
-    piece = piece + 68;
-    Picture10 = piece;
-  }
-  if(Abfuhrkalender ==1){
-    piece = piece + 68;
-    Picture11 = piece;
-  }
-  return 1;
-}
-// Hintergrundbild mit Bildern erzeugen
-int drawMainScreen()
-{
-  drawSquare(2,2,800,480,LTGREY);
-  drawCorner(2, 2, 800, 480, BLACK);
-  drawSquare(12,12,778,458,WHITE);
-  drawCorner(12, 12, 778, 458, LTGREY);
-  DrawImage("EinstImage", Picture1, PictureLine1);
-  if(wetterGui == 1)
-    DrawImage("WetterImage", Picture2, PictureLine1);
-  if(E3DC_S10 ==1){
-    DrawImage("AktuellImage", Picture3, PictureLine1);
-    DrawImage("LangzeitImage", Picture4, PictureLine1);
-    if(Wallbox == 1)
-      DrawImage("Wallbox", Picture5, PictureLine1);
-    DrawImage("FunktionImage", Picture6, PictureLine1);
-    DrawImage("MonitorImage", Picture7, PictureLine1);
-  }
-  if(useAktor == 1 || useDHT == 1)
-    DrawImage("SmartImage", Picture8, PictureLine1);
-  if(Homematic_GUI ==1)
-    DrawImage("HMImage", Picture9, PictureLine1);
-  if(Gruenbeck ==1)
-    DrawImage("GBImage", Picture10, PictureLine1);
-  if(Abfuhrkalender ==1)
-    DrawImage("MuellImage", Picture11, PictureLine1);
-  return 1;
-}
 // Zahlen darstellen
 int drawNo(int x, int y, int i, int col){
   char pic[20], color[6];
@@ -565,6 +481,16 @@ int makeTo()
 	BitMake("/mnt/RAMDisk/ValueTo.txt", PosToMAX);
   return 0;
 }
+int writeIdle(int Position, int NewValue)
+{
+  BitWrite("/mnt/RAMDisk/IdlePeriods.txt", Position, NewValue, PosIdleMax);
+  return 1;
+}
+int readIdle(int Position)
+{
+  int ret = BitRead("/mnt/RAMDisk/IdlePeriods.txt", Position,PosIdleMax);
+  return ret;
+}
 
 //Lesen der RSCP Daten aus dem RAMDisk
 void readRscpChar(char* TAG_Date, char* TAG_Time, char* TAG_SerialNr, char* TAG_SwRelease)
@@ -624,6 +550,91 @@ int makeHistory()
     for( data = 0; data < 7; ++data )
       writeHistory(data, 0, writedata, 7);
   }
+  return 1;
+}
+// PicturPosition
+int picturePosition()
+{
+  int numberPicture = 1;   // 1=Standard-Button ohne Wetter
+  if(wetterGui ==1)
+    numberPicture = numberPicture +1;
+  if(E3DC_S10 ==1)
+    numberPicture = numberPicture +4;
+  if(Wallbox ==1)
+    numberPicture = numberPicture +1;
+  if(useAktor == 1 || useDHT == 1)
+    numberPicture = numberPicture +1;
+  if(Homematic_GUI ==1)
+    numberPicture = numberPicture +1;
+  if(Gruenbeck ==1)
+    numberPicture = numberPicture +1;
+  if(Abfuhrkalender ==1)
+    numberPicture = numberPicture +1;
+  int piece = (800 - (numberPicture * 68)) / 2;
+  Picture1 = piece;
+  if(wetterGui ==1){
+    piece = piece + 68;
+    Picture2 = piece;
+  }
+  if(E3DC_S10 ==1){
+    piece = piece + 68;
+    Picture3 = piece;
+    piece = piece + 68;
+    Picture4 = piece;
+    if(Wallbox ==1){
+      piece = piece + 68;
+      Picture5 = piece;
+    }
+    piece = piece + 68;
+    Picture6 = piece;
+    piece = piece + 68;
+    Picture7 = piece;
+  }
+  if(useAktor == 1 || useDHT == 1){
+    piece = piece + 68;
+    Picture8 = piece;
+  }
+  if(Homematic_GUI ==1){
+    piece = piece + 68;
+    Picture9 = piece;
+  }
+  if(Gruenbeck ==1){
+    piece = piece + 68;
+    Picture10 = piece;
+  }
+  if(Abfuhrkalender ==1){
+    piece = piece + 68;
+    Picture11 = piece;
+  }
+  return 1;
+}
+// Hintergrundbild mit Bildern erzeugen
+int drawMainScreen()
+{
+  drawSquare(2,2,800,480,LTGREY);
+  drawCorner(2, 2, 800, 480, BLACK);
+  drawSquare(12,12,778,458,WHITE);
+  drawCorner(12, 12, 778, 458, LTGREY);
+  DrawImage("EinstImage", Picture1, PictureLine1);
+  if(wetterGui == 1)
+    DrawImage("WetterImage", Picture2, PictureLine1);
+  if(E3DC_S10 ==1){
+    DrawImage("AktuellImage", Picture3, PictureLine1);
+    DrawImage("LangzeitImage", Picture4, PictureLine1);
+    if(Wallbox == 1)
+      DrawImage("Wallbox", Picture5, PictureLine1);
+    if (readScreen(ScreenChange) != ScreenFunktion) DrawImage("FunktionImage", Picture6, PictureLine1);
+    else if (readScreen(ScreenChange) == ScreenFunktion) DrawImage("IdlePeriods", Picture6, PictureLine1);
+    DrawImage("MonitorImage", Picture7, PictureLine1);
+  }
+  if(useAktor == 1 || useDHT == 1)
+    DrawImage("SmartImage", Picture8, PictureLine1);
+  if(Homematic_GUI ==1)
+    DrawImage("HMImage", Picture9, PictureLine1);
+  if(Gruenbeck ==1)
+    DrawImage("GBImage", Picture10, PictureLine1);
+  if(Abfuhrkalender ==1)
+    DrawImage("MuellImage", Picture11, PictureLine1);
   return 1;
 }
 
@@ -883,4 +894,22 @@ int putAktuell(int x, int y)
   drawOutput(x+120,y,170,12, OUT, GREEN);
   return 1;
 }
+// IdlePeriods Anzeige
+int drawIdlePeriodsDay(char *s,int isp,int ir,int position)
+{
+  //drawIdlePeriodsDay("Montag",ISP1,IRC,PosMonCharge);
+  char OUT[100];
+
+  drawOutput(isp,ir,78,12,s,GREY);
+
+  if(readIdle(position)) DrawImage("Switch/On", isp-4, ir + IB);
+  else DrawImage("Switch/Off", isp-4, ir + IB);
+
+  snprintf (OUT, (size_t)100, "%02i:%02i Uhr", readIdle(position+1),readIdle(position+2));
+  drawOutput(isp,ir + ION,78,12,OUT,GREY);
+  drawOutput(isp,ir + ITX,78,12,"bis",GREY);
+  snprintf (OUT, (size_t)100, "%02i:%02i Uhr", readIdle(position+3),readIdle(position+4));
+  drawOutput(isp,ir + IOFF,78,12,OUT,GREY);
+}
+
 #endif // __FUNKTION_H_

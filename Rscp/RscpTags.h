@@ -174,11 +174,14 @@
 #define TAG_EMS_REQ_ALIVE                                   	0x01050000
 #define TAG_EMS_ALIVE                                       	0x01850000
 #define TAG_EMS_GENERAL_ERROR                               	0x01FFFFFF
-#define TAG_EMS_GET_WB_DISCHARGE_BAT_UNTIL                   	0x0180027d
-#define TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL               	0x0100027d
-#define TAG_EMS_SET_WB_DISCHARGE_BAT_UNTIL                  	0x0180027c
-#define TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL               	0x0100027c
-
+#define TAG_EMS_GET_WB_DISCHARGE_BAT_UNTIL                   	0x0180027D
+#define TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL               	0x0100027D
+#define TAG_EMS_SET_WB_DISCHARGE_BAT_UNTIL                  	0x0180027C
+#define TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL               	0x0100027C
+#define TAG_EMS_GET_WALLBOX_ENFORCE_POWER_ASSIGNMENT           0x0180027B
+#define TAG_EMS_REQ_GET_WALLBOX_ENFORCE_POWER_ASSIGNMENT       0x0100027B
+#define TAG_EMS_SET_WALLBOX_ENFORCE_POWER_ASSIGNMENT           0x0180027A
+#define TAG_EMS_REQ_SET_WALLBOX_ENFORCE_POWER_ASSIGNMENT       0x0100027A
 
 #define TAG_BAT_REQ_DATA                                    	0x03040000
 #define TAG_BAT_INDEX                                       	0x03040001

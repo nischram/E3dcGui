@@ -301,5 +301,198 @@ int writeHistoryTime(int Position,int AktuellTime, int NewValue, int writedata)
     ret = writeHistory(Position, NewValue, writedata);
   return ret;
 }
+int readTo(int Position)
+{
+  char Path [128];
+  snprintf (Path, (size_t)128, "/mnt/RAMDisk/ValueTo.txt");
+  return readData(Path, Position, PosToMAX);
+}
+int writeTo(int Position, int NewValue)
+{
+  char Path [128];
+  snprintf (Path, (size_t)128, "/mnt/RAMDisk/ValueTo.txt");
+  writeData(Path, Position, NewValue, PosToMAX);
+  return 1;
+}
+int writeIdle(int Position, int State, int startH, int startM, int stopH, int stopM)
+{
+  char Path [128];
+  snprintf (Path, (size_t)128, "/mnt/RAMDisk/IdlePeriods.txt");
+  writeData(Path, Position, State, PosIdleMax);
+  writeData(Path, Position+1, startH, PosIdleMax);
+  writeData(Path, Position+2, startM, PosIdleMax);
+  writeData(Path, Position+3, stopH, PosIdleMax);
+  writeData(Path, Position+4, stopM, PosIdleMax);
+  return 1;
+}
+int makeIdle()
+{
+  char Path [128];
+  snprintf (Path, (size_t)128, "/mnt/RAMDisk/IdlePeriods.txt");
+  makeData(Path, 0, PosIdleMax);
+  return 1;
+}
+
+typedef struct {
+    uint8_t hour;
+    uint8_t minute;
+}idle_time_t;
+
+typedef struct {
+    uint8_t type;
+    uint8_t day;
+    uint8_t active;
+    idle_time_t start;
+    idle_time_t stop;
+}idle_period_t;
+
+int handleResponseEMSGetIdlePeriods(RscpProtocol * protocol,SRscpValue * emsData,idle_period_t *periods)
+{
+  // check each idle periods sub tag
+  switch (emsData->tag) {
+    case TAG_EMS_IDLE_PERIOD:{
+	    std::vector < SRscpValue > idleData = protocol->getValueAsContainer(emsData);
+	    // check each idle period sub tag
+      for (size_t j = 0; j < idleData.size(); ++j) {
+        if (idleData[j].dataType == RSCP::eTypeError) {
+          // handle error for example access denied errors
+          uint32_t uiErrorCode = protocol->getValueAsUInt32(&idleData[j]);
+          printf("Tag 0x%08X received error code %u.\n",idleData[j].tag, uiErrorCode);
+          return -1;
+        }
+        switch (idleData[j].tag) {
+          case TAG_EMS_IDLE_PERIOD_TYPE:{
+            periods->type = protocol->getValueAsUChar8(&idleData[j]);
+            break;
+          }
+          case TAG_EMS_IDLE_PERIOD_DAY:{
+            periods->day = protocol->getValueAsUChar8(&idleData[j]);
+            break;
+          }
+          case TAG_EMS_IDLE_PERIOD_ACTIVE:{
+            periods->active = protocol->getValueAsUChar8(&idleData[j]);
+            break;
+          }
+          case TAG_EMS_IDLE_PERIOD_START:{
+            std::vector < SRscpValue > periodData = protocol->getValueAsContainer(&idleData[j]);
+            // check each idle period start sub tag
+            for (size_t k = 0; k < periodData.size(); ++k) {
+              if (periodData[k].dataType == RSCP::eTypeError) {
+                // handle error for example access denied errors
+                uint32_t uiErrorCode = protocol->getValueAsUInt32(&periodData[k]);
+                printf("Tag 0x%08X received error code %u.\n",periodData[k].tag, uiErrorCode);
+                return -1;
+              }
+              switch (periodData[k].tag) {
+                case TAG_EMS_IDLE_PERIOD_HOUR:{
+                  periods->start.hour = protocol->getValueAsUChar8(&periodData[k]);
+                  break;
+                }
+                case TAG_EMS_IDLE_PERIOD_MINUTE:{
+                  periods->start.minute = protocol->getValueAsUChar8(&periodData[k]);
+                  break;
+                }
+                default:
+                // default behaviour
+                uint8_t unknown = protocol->getValueAsUChar8(&periodData[k]);
+                printf("Unknown period tag %08X -> %i.\n",periodData[k].tag, unknown);
+                break;
+              }
+            }
+            break;
+          }
+          case TAG_EMS_IDLE_PERIOD_END:{
+            std::vector < SRscpValue > periodData = protocol->getValueAsContainer(&idleData[j]);
+            // check each idle period stop sub tag
+            for (size_t k = 0; k < periodData.size(); ++k) {
+              if (periodData[k].dataType == RSCP::eTypeError) {
+                // handle error for example access denied errors
+                uint32_t uiErrorCode = protocol->getValueAsUInt32(&periodData[k]);
+                printf("Tag 0x%08X received error code %u.\n",periodData[k].tag, uiErrorCode);
+                return -1;
+              }
+              switch (periodData[k].tag) {
+                case TAG_EMS_IDLE_PERIOD_HOUR:{
+                  periods->stop.hour = protocol->getValueAsUChar8(&periodData[k]);
+                  break;
+                }
+                case TAG_EMS_IDLE_PERIOD_MINUTE:{
+                  periods->stop.minute = protocol->getValueAsUChar8(&periodData[k]);
+                  break;
+                }
+                default:
+                // default behaviour
+                uint8_t unknown = protocol->getValueAsUChar8(&periodData[k]);
+                printf("Unknown period tag %08X -> %i.\n",periodData[k].tag, unknown);
+                break;
+              }
+            }
+            break;
+          }
+        }
+	    }
+	    // print idle periods summary
+	    if (periods->day == MON){
+		    printf("Monday:     \t");
+        if (periods->type == CHARGE)writeIdle(PosMonCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosMonDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == TUE){
+		    printf("Tuesday:    \t");
+        if (periods->type == CHARGE)writeIdle(PosTueCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosTueDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == WED){
+		    printf("Wednesday:  \t");
+        if (periods->type == CHARGE)writeIdle(PosWedCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosWedDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == THU){
+		    printf("Thursday:   \t");
+        if (periods->type == CHARGE)writeIdle(PosThuCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosThuDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == FRI){
+		    printf("Friday:     \t");
+        if (periods->type == CHARGE)writeIdle(PosFriCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosFriDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == SAT){
+		    printf("Saturday:   \t");
+        if (periods->type == CHARGE)writeIdle(PosSatCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosSatDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else if (periods->day == SUN){
+		    printf("Sunday:     \t");
+        if (periods->type == CHARGE)writeIdle(PosSunCharge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+        else if (periods->type == DISCHARGE)writeIdle(PosSunDischarge, periods->active, periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+      }
+	    else
+		    printf("Unknown day:\t");
+
+	    if (periods->type == CHARGE)
+		    printf("Ladesperre    ");
+	    else if (periods->type == DISCHARGE)
+		    printf("Entladesperre ");
+	    else
+		    printf("Unknown type!");
+
+	    if (periods->active)
+		    printf("aktiv von %02i:%02i - %02i:%02i",periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+	    else if (!periods->active)
+        printf("inaktiv  (%02i:%02i - %02i:%02i)",periods->start.hour, periods->start.minute, periods->stop.hour, periods->stop.minute);
+	    else
+		    printf("Activity unknown! ");
+	    printf("\n");
+	    break;
+    }
+    default:
+    // default behaviour
+    uint8_t unknown = protocol->getValueAsUChar8(emsData);
+    printf("Unknown ems tag %08X -> %i.\n", emsData->tag, unknown);
+    break;
+  }
+  protocol->destroyValueData(emsData);
+}
 
 #endif // __RWData_H_

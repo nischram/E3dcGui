@@ -618,24 +618,29 @@ int main(){
 							DrawImage("Switch/Stop", WBSTOPX, WBSTOPY);
 						else
 							DrawImage("Switch/StopOff", WBSTOPX, WBSTOPY);
+						if (readRscp(PosWbBaM)==1)
+							DrawImage("Switch/On", WBMODEX+58+58-3, WBMODEY);
+						else
+							DrawImage("Switch/Off", WBMODEX+58+58-3, WBMODEY);
+						put_string(WBMODEX+58+58-3-8, WBMODEY+33,"Bat. im Mix-Mode",GREY);
 					}
 					int x;
 					if(TAG_WbSolar > 200 && WbGrid < 200){
-						x = drawNumber(390, 270, TAG_WbAll, WATT, GREEN);
+						x = drawNumber(470, 270, TAG_WbAll, WATT, GREEN);
 						DrawImage("Wallbox/Autogr", x, 270);
 					}
 					else if(TAG_WbSolar < 200 && WbGrid > 200){
-						x = drawNumber(390, 270, TAG_WbAll, WATT, ORANGE);
+						x = drawNumber(470, 270, TAG_WbAll, WATT, ORANGE);
 						DrawImage("Wallbox/Autoor", x, 270);
 					}
 					else{
-						x = drawNumber(390, 270, TAG_WbAll, WATT, BLACK);
+						x = drawNumber(470, 270, TAG_WbAll, WATT, BLACK);
 						DrawImage("Wallbox/Autosw", x, 270);
 					}
 
-					x = drawNumber(390, 220, WbGrid, WATT, BLUE);
+					x = drawNumber(470, 220, WbGrid, WATT, BLUE);
 					DrawImage("Wallbox/Netzbl", x, 220);
-					x = drawNumber(390, 245, TAG_WbSolar, WATT, ORANGE);
+					x = drawNumber(470, 245, TAG_WbSolar, WATT, ORANGE);
 					DrawImage("Wallbox/Solaror", x, 245);
 					wbCheckSumOld = readRscpWb(PosWbCheckSum);
 				}
@@ -729,6 +734,50 @@ int main(){
 				DrawImage("EpReserve/Set", BLS3+30, BLR7);
 				drawNumber(BLS3+18, BLR5, readRscp(PosBlDischarge), WATT, BLACK);
 				drawNumber(BLS3+18, BLR6, readTo(PosToBlDischarge), WATT, BLACK);
+
+				break;
+			}
+//####################################################
+			//Monitor Grafik erstellen
+			case ScreenIdlePeriods:{
+				GuiTime = RscpTime;
+				int screenState = readScreen(ScreenState);
+				if(counter == 0 ){
+					writeScreen(ScreenCounter, 60);
+					if(screenState == ScreenOn){
+						writeTo(PosToIdlePeriod,1);
+						sleep(1);
+						drawMainScreen();
+						// Grafik für Ladesperrzeit
+						drawSquare(IX,IY,IW,IH,GREY);
+						drawCorner(IX,IY,IW,IH,WHITE);
+						drawSquare(IX+3,IY+32,IW-6,IH-32-3,WHITE);
+						drawCorner(IX+3,IY+32,IW-6,IH-32-3,GREY);
+						DrawImage("IdleCharge", 80,IY+2);
+						// Grafik für Entladesperrzeit
+						drawSquare(IX,IY+IH+6,IW,IH,GREY);
+						drawCorner(IX,IY+IH+6,IW,IH,WHITE);
+						drawSquare(IX+3,IY+IH+6+32,IW-6,IH-32-3,WHITE);
+						drawCorner(IX+3,IY+IH+6+32,IW-6,IH-32-3,GREY);
+						DrawImage("IdleDischarge", 80,IY+2+IH+6);
+						// Day
+						drawIdlePeriodsDay("Montag",ISP1,IRC,PosMonCharge);
+						drawIdlePeriodsDay("Dienstag",ISP2,IRC,PosTueCharge);
+						drawIdlePeriodsDay("Mitwoch",ISP3,IRC,PosWedCharge);
+						drawIdlePeriodsDay("Donnerstag",ISP4,IRC,PosThuCharge);
+						drawIdlePeriodsDay("Freitag",ISP5,IRC,PosFriCharge);
+						drawIdlePeriodsDay("Samstag",ISP6,IRC,PosSatCharge);
+						drawIdlePeriodsDay("Sonntag",ISP7,IRC,PosSunCharge);
+
+						drawIdlePeriodsDay("Montag",ISP1,IRD,PosMonDischarge);
+						drawIdlePeriodsDay("Dienstag",ISP2,IRD,PosTueDischarge);
+						drawIdlePeriodsDay("Mitwoch",ISP3,IRD,PosWedDischarge);
+						drawIdlePeriodsDay("Donnerstag",ISP4,IRD,PosThuDischarge);
+						drawIdlePeriodsDay("Freitag",ISP5,IRD,PosFriDischarge);
+						drawIdlePeriodsDay("Samstag",ISP6,IRD,PosSatDischarge);
+						drawIdlePeriodsDay("Sonntag",ISP7,IRD,PosSunDischarge);
+					}
+				}
 
 				break;
 			}

@@ -49,7 +49,7 @@ int main()
 
 	//Umschalten auf 16Bit Display
 	char OUT[128];
-	char WbMode[24],WbBtC[24],WbBbC[24];
+	char WbMode[24],WbBtC[24],WbBbC[24],WbMode[24];
 	int WbCurrent;
 	snprintf (OUT, (size_t)128, "fbset -fb %s -depth 16", framebuffer_File);
 	system(OUT);
@@ -209,6 +209,8 @@ int main()
 	int buttonTimerWbPer10 = mymillis();
 	int buttonCordsWbPer0[4] = {WBPERRX,WBPER1Y,54,30};
 	int buttonTimerWbPer0 = mymillis();
+	int buttonCordsWbBaM[4] = {WBMODEX+58+58-3,WBMODEY,54,30};
+	int buttonTimerWbBaM = mymillis();
 
 	int buttonCordsBlSetOnOff[4] = {BLS2-2, BLR1-2,82,32};
 	int buttonTimerBlSetOnOff = mymillis();
@@ -249,6 +251,35 @@ int main()
 	int buttonTimerEpSet = mymillis();
 	int buttonCordsEpSetOnOff[4] = {EPSWX-2, EPSWY-2,82,32};
 	int buttonTimerEpSetOnOff = mymillis();
+
+	int buttonCordsIdleMonCharge[4] = {ISP1-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleMonCharge = mymillis();
+	int buttonCordsIdleTueCharge[4] = {ISP2-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleTueCharge = mymillis();
+	int buttonCordsIdleWedCharge[4] = {ISP3-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleWedCharge = mymillis();
+	int buttonCordsIdleThuCharge[4] = {ISP4-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleThuCharge = mymillis();
+	int buttonCordsIdleFriCharge[4] = {ISP5-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleFriCharge = mymillis();
+	int buttonCordsIdleSatCharge[4] = {ISP6-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleSatCharge = mymillis();
+	int buttonCordsIdleSunCharge[4] = {ISP7-2-4, IRC+IB-2,82,32};
+	int buttonTimerIdleSunCharge = mymillis();
+	int buttonCordsIdleMonDischarge[4] = {ISP1-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleMonDischarge = mymillis();
+	int buttonCordsIdleTueDischarge[4] = {ISP2-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleTueDischarge = mymillis();
+	int buttonCordsIdleWedDischarge[4] = {ISP3-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleWedDischarge = mymillis();
+	int buttonCordsIdleThuDischarge[4] = {ISP4-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleThuDischarge = mymillis();
+	int buttonCordsIdleFriDischarge[4] = {ISP5-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleFriDischarge = mymillis();
+	int buttonCordsIdleSatDischarge[4] = {ISP6-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleSatDischarge = mymillis();
+	int buttonCordsIdleSunDischarge[4] = {ISP7-2-4, IRD+IB-2,82,32};
+	int buttonTimerIdleSunDischarge = mymillis();
 
 	while(1){
 		getTouchSample(&rawX, &rawY, &rawPressure);
@@ -293,7 +324,8 @@ int main()
 			if((scaledX  > buttonCordsFunktion[X] && scaledX < (buttonCordsFunktion[X]+buttonCordsFunktion[W])) && (scaledY > buttonCordsFunktion[Y] && scaledY < (buttonCordsFunktion[Y]+buttonCordsFunktion[H]))){
 				if (mymillis() - buttonTimerFunktion > 500){
 					buttonTimerFunktion = mymillis();
-					writeScreen(ScreenChange, ScreenFunktion);
+					if (readScreen(ScreenChange) != ScreenFunktion) writeScreen(ScreenChange, ScreenFunktion);
+					else writeScreen(ScreenChange, ScreenIdlePeriods);
 					writeScreen(ScreenCounter, 0);
 					writeScreen(ScreenSaver, false);
 					writeScreen(ScreenShutdown, ShutdownRun);
@@ -965,6 +997,20 @@ int main()
 						buttonTimerWbPer0 = mymillis();
 					}
 				}
+				if((scaledX  > buttonCordsWbBaM[X] && scaledX < (buttonCordsWbBaM[X]+buttonCordsWbBaM[W])) && (scaledY > buttonCordsWbBaM[Y] && scaledY < (buttonCordsWbBaM[Y]+buttonCordsWbBaM[H]))){
+					if (mymillis() - buttonTimerWbBaM > 500){
+						DrawImage("Switch/Send", WBMODEX+58+58-3, WBMODEY);
+						if(readRscp(PosWbBaM)==0) snprintf (WbBaM, (size_t)128, "-BaMon");
+						else snprintf (WbBaM, (size_t)128, "-BaMoff");
+						snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbBaM %s &", WbBaM);
+						system(OUT);
+						sleep(2);
+						buttonTimerWbBaM = mymillis();
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+						writeScreen(ScreenShutdown, ShutdownRun);
+					}
+				}
 				break; // ScreenWallbox
 			}
 			case ScreenFunktion:{
@@ -1132,6 +1178,164 @@ int main()
 					}
 				}
 				break; // ScreenFunktion
+			}
+			case ScreenIdlePeriods:{
+				//IdlePeriods
+				if((scaledX  > buttonCordsIdleMonCharge[X] && scaledX < (buttonCordsIdleMonCharge[X]+buttonCordsIdleMonCharge[W])) && (scaledY > buttonCordsIdleMonCharge[Y] && scaledY < (buttonCordsIdleMonCharge[Y]+buttonCordsIdleMonCharge[H]))){
+					if (mymillis() - buttonTimerIdleMonCharge > 500){
+						buttonTimerIdleMonCharge = mymillis();
+						DrawImage("Switch/Send", ISP1-4, IRC + IB);
+ 						if(readIdle(PosMonCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -mon &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -mon &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleTueCharge[X] && scaledX < (buttonCordsIdleTueCharge[X]+buttonCordsIdleTueCharge[W])) && (scaledY > buttonCordsIdleTueCharge[Y] && scaledY < (buttonCordsIdleTueCharge[Y]+buttonCordsIdleTueCharge[H]))){
+					if (mymillis() - buttonTimerIdleTueCharge > 500){
+						buttonTimerIdleTueCharge = mymillis();
+						DrawImage("Switch/Send", ISP2-4, IRC + IB);
+						if(readIdle(PosTueCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -tue &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -tue &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleWedCharge[X] && scaledX < (buttonCordsIdleWedCharge[X]+buttonCordsIdleWedCharge[W])) && (scaledY > buttonCordsIdleWedCharge[Y] && scaledY < (buttonCordsIdleWedCharge[Y]+buttonCordsIdleWedCharge[H]))){
+					if (mymillis() - buttonTimerIdleWedCharge > 500){
+						buttonTimerIdleWedCharge = mymillis();
+						DrawImage("Switch/Send", ISP3-4, IRC + IB);
+						if(readIdle(PosWedCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -wed &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -wed &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleThuCharge[X] && scaledX < (buttonCordsIdleThuCharge[X]+buttonCordsIdleThuCharge[W])) && (scaledY > buttonCordsIdleThuCharge[Y] && scaledY < (buttonCordsIdleThuCharge[Y]+buttonCordsIdleThuCharge[H]))){
+					if (mymillis() - buttonTimerIdleThuCharge > 500){
+						buttonTimerIdleThuCharge = mymillis();
+						DrawImage("Switch/Send", ISP4-4, IRC + IB);
+						if(readIdle(PosThuCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -thu &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -thu &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleFriCharge[X] && scaledX < (buttonCordsIdleFriCharge[X]+buttonCordsIdleFriCharge[W])) && (scaledY > buttonCordsIdleFriCharge[Y] && scaledY < (buttonCordsIdleFriCharge[Y]+buttonCordsIdleFriCharge[H]))){
+					if (mymillis() - buttonTimerIdleFriCharge > 500){
+						buttonTimerIdleFriCharge = mymillis();
+						DrawImage("Switch/Send", ISP5-4, IRC + IB);
+						if(readIdle(PosFriCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -fri &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -fri &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleSatCharge[X] && scaledX < (buttonCordsIdleSatCharge[X]+buttonCordsIdleSatCharge[W])) && (scaledY > buttonCordsIdleSatCharge[Y] && scaledY < (buttonCordsIdleSatCharge[Y]+buttonCordsIdleSatCharge[H]))){
+					if (mymillis() - buttonTimerIdleSatCharge > 500){
+						buttonTimerIdleSatCharge = mymillis();
+						DrawImage("Switch/Send", ISP6-4, IRC + IB);
+						if(readIdle(PosSatCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -sat &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -sat &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleSunCharge[X] && scaledX < (buttonCordsIdleSunCharge[X]+buttonCordsIdleSunCharge[W])) && (scaledY > buttonCordsIdleSunCharge[Y] && scaledY < (buttonCordsIdleSunCharge[Y]+buttonCordsIdleSunCharge[H]))){
+					if (mymillis() - buttonTimerIdleSunCharge > 500){
+						buttonTimerIdleSunCharge = mymillis();
+						DrawImage("Switch/Send", ISP7-4, IRC + IB);
+						if(readIdle(PosSunCharge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -open -sun &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -charge -lock -sun &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleMonDischarge[X] && scaledX < (buttonCordsIdleMonDischarge[X]+buttonCordsIdleMonDischarge[W])) && (scaledY > buttonCordsIdleMonDischarge[Y] && scaledY < (buttonCordsIdleMonDischarge[Y]+buttonCordsIdleMonDischarge[H]))){
+					if (mymillis() - buttonTimerIdleMonDischarge > 500){
+						buttonTimerIdleMonDischarge = mymillis();
+						DrawImage("Switch/Send", ISP1-4, IRD + IB);
+						if(readIdle(PosMonDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -mon &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -mon &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleTueDischarge[X] && scaledX < (buttonCordsIdleTueDischarge[X]+buttonCordsIdleTueDischarge[W])) && (scaledY > buttonCordsIdleTueDischarge[Y] && scaledY < (buttonCordsIdleTueDischarge[Y]+buttonCordsIdleTueDischarge[H]))){
+					if (mymillis() - buttonTimerIdleTueDischarge > 500){
+						buttonTimerIdleTueDischarge = mymillis();
+						DrawImage("Switch/Send", ISP2-4, IRD + IB);
+						if(readIdle(PosTueDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -tue &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -tue &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleWedDischarge[X] && scaledX < (buttonCordsIdleWedDischarge[X]+buttonCordsIdleWedDischarge[W])) && (scaledY > buttonCordsIdleWedDischarge[Y] && scaledY < (buttonCordsIdleWedDischarge[Y]+buttonCordsIdleWedDischarge[H]))){
+					if (mymillis() - buttonTimerIdleWedDischarge > 500){
+						buttonTimerIdleWedDischarge = mymillis();
+						DrawImage("Switch/Send", ISP3-4, IRD + IB);
+						if(readIdle(PosWedDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -wed &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -wed &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleThuDischarge[X] && scaledX < (buttonCordsIdleThuDischarge[X]+buttonCordsIdleThuDischarge[W])) && (scaledY > buttonCordsIdleThuDischarge[Y] && scaledY < (buttonCordsIdleThuDischarge[Y]+buttonCordsIdleThuDischarge[H]))){
+					if (mymillis() - buttonTimerIdleThuDischarge > 500){
+						buttonTimerIdleThuDischarge = mymillis();
+						DrawImage("Switch/Send", ISP4-4, IRD + IB);
+						if(readIdle(PosThuDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -thu &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -thu &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleFriDischarge[X] && scaledX < (buttonCordsIdleFriDischarge[X]+buttonCordsIdleFriDischarge[W])) && (scaledY > buttonCordsIdleFriDischarge[Y] && scaledY < (buttonCordsIdleFriDischarge[Y]+buttonCordsIdleFriDischarge[H]))){
+					if (mymillis() - buttonTimerIdleFriDischarge > 500){
+						buttonTimerIdleFriDischarge = mymillis();
+						DrawImage("Switch/Send", ISP5-4, IRD + IB);
+						if(readIdle(PosFriDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -fri &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -fri &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleSatDischarge[X] && scaledX < (buttonCordsIdleSatDischarge[X]+buttonCordsIdleSatDischarge[W])) && (scaledY > buttonCordsIdleSatDischarge[Y] && scaledY < (buttonCordsIdleSatDischarge[Y]+buttonCordsIdleSatDischarge[H]))){
+					if (mymillis() - buttonTimerIdleSatDischarge > 500){
+						buttonTimerIdleSatDischarge = mymillis();
+						DrawImage("Switch/Send", ISP6-4, IRD + IB);
+						if(readIdle(PosSatDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -sat &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -sat &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				if((scaledX  > buttonCordsIdleSunDischarge[X] && scaledX < (buttonCordsIdleSunDischarge[X]+buttonCordsIdleSunDischarge[W])) && (scaledY > buttonCordsIdleSunDischarge[Y] && scaledY < (buttonCordsIdleSunDischarge[Y]+buttonCordsIdleSunDischarge[H]))){
+					if (mymillis() - buttonTimerIdleSunDischarge > 500){
+						buttonTimerIdleSunDischarge = mymillis();
+						DrawImage("Switch/Send", ISP7-4, IRD + IB);
+						if(readIdle(PosSunDischarge)) snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -open -sun &");
+						else snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -idle -discharge -lock -sun &");
+						system(OUT);
+						writeScreen(ScreenCounter, 0);
+						writeScreen(ScreenSaver, false);
+					}
+				}
+				break; // IdlePeriods
 			}
 			case ScreenMonitor:{
 				if((scaledX  > buttonCordsSaveHalb[X] && scaledX < (buttonCordsSaveHalb[X]+buttonCordsSaveHalb[W])) && (scaledY > buttonCordsSaveHalb[Y] && scaledY < (buttonCordsSaveHalb[Y]+buttonCordsSaveHalb[H]))){

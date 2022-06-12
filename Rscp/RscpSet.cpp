@@ -30,10 +30,10 @@ static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 static int WbDisUntil = 0;
 
-static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false, setModeIdle = false;
+static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false, setModeIdle = false, setModeWbBaM = false;
 static bool WbSwPh = false, WbStop = false;
 static bool blUsed = false, psUsed = false, wrUsed = false;
-static bool idleAktive = false;
+static bool idleAktive = false, wbBatAtMix = BAT_ON_AT_MIX;
 static int idleMode = CHARGE, idleDay = MON;
 static int idleStartH, idleStartM, idleStopH, idleStopM;
 static int inputEpReserveMax, inputEpReserve;
@@ -218,6 +218,10 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         	protocol.appendValue(&rootValue, setTimeContainer);
         	protocol.destroyValueData(setTimeContainer);
         }
+        if (setModeWbBaM){
+          printf("Set Battery at Mix-Mode  = %i\n", wbBatAtMix);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_SET_WALLBOX_ENFORCE_POWER_ASSIGNMENT, wbBatAtMix);
+        }
     }
 
     // create buffer frame to send data to the S10
@@ -267,7 +271,10 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
     }
     case TAG_EMS_SET_WB_DISCHARGE_BAT_UNTIL: {    // response for TAG_EMS_REQ_SET_WB_DISCHARGE_BAT_UNTIL
       bool wbdisRes = protocol->getValueAsUChar8(response);
-      //cout << "Set Battery bevor Car = " << BbC << "\n";
+      break;
+    }
+    case TAG_EMS_SET_WALLBOX_ENFORCE_POWER_ASSIGNMENT: {    // response for TAG_EMS_REQ_SET_WALLBOX_ENFORCE_POWER_ASSIGNMENT
+      bool wbBaMres = protocol->getValueAsBool(response);
       break;
     }
     case TAG_WB_DATA: {        // resposne for TAG_WB_REQ_DATA
@@ -638,6 +645,11 @@ int main(int argc, char *argv[])
       else if (strcmp(argv[1], "-idle")==0) {
         printf("Set Idle Time\n");
         setModeIdle = true;
+        writeTo(PosToIdlePeriod, 1);
+      }
+      else if (strcmp(argv[1], "-wbBaM")==0) {
+        printf("Set Battery at Mix-Mode\n");
+        setModeWbBaM = true;
       }
       else {
         printf("Falsche Eingabe!\n Bitte wählen:\n");
@@ -647,6 +659,7 @@ int main(int argc, char *argv[])
         printf("  Wallbox discharge until  = -wbUntil\n");
         printf("  Wallbox EMS     = -wbEMS\n");
         printf("  Set Idle Time   = -idle\n");
+        printf("  Set Battery at Mix-Mode  = -wbBaM\n");
         //printf("  Powersave       = -ps\n");
         //printf("  Wetterprognose  = -wr\n");
         printf("  Beispiel        = RscpSet -wb -sonne 16\n");
@@ -662,6 +675,7 @@ int main(int argc, char *argv[])
       printf("  Wallbox discharge until  = -wbUntil\n");
       printf("  Wallbox EMS     = -wbEMS\n");
       printf("  Set Idle Time   = -idle\n");
+      printf("  Set Battery at Mix-Mode  = -wbBaM\n");
       //printf("  Powersave       = -ps\n");
       //printf("  Wetterprognose  = -wr\n");
       printf("  Beispiel        = RscpSet -wb -sonne 16\n");
@@ -913,6 +927,27 @@ int main(int argc, char *argv[])
       if (argc > 8)idleStopM = atoi(argv[8]);
       else idleStopM = 59;
       printf("Start=%02i:%02i End=%02i:%02i\n",idleStartH,idleStartM,idleStopH,idleStopM);
+    }
+    else if (setModeWbBaM){
+      if (argc > 2){
+        // Idel-Mode
+        if (strcmp(argv[2], "-BaMon")==0) {
+          printf("Ladesperre ");
+          wbBatAtMix = BAT_ON_AT_MIX;
+        }
+        else if (strcmp(argv[2], "-BaMoff")==0) {
+          printf("Entladesperre ");
+          wbBatAtMix = BAT_OFF_AT_MIX;
+        }
+        else {
+          printf("Falshe Eingabe für argv[2] Option: Battery on at Mix-Mode = -BaMon\n  BBattery off at Mix-Mode = -BaMoff\n  eispiel     = RscpSet -wbUntil 60\n");
+          return 0;
+        }
+      }
+      else {
+        printf("Fehlende Eingabe für argv[2] Option: Battery on at Mix-Mode = -BaMon\n  BBattery off at Mix-Mode = -BaMoff\n  eispiel     = RscpSet -wbUntil 60\n");
+        return 0;
+      }
     }
   /* Das setzen von Powersave und Wetterprognose habe ich noch nicht hinbekommen.
     else if (setModePS){

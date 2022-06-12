@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.14 07.06.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.15 12.06.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -226,6 +226,7 @@ Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kan
 - Anzahl der Phasen für Solarladung vorwählen.  
 - Ladung stoppen.  
 - Ladegrenze bei "Batterie zu Auto" kann in 10% Stufen vorgewählt werden.  
+- Batterienutzung im Mischbetrieb kann eingestellt werden (keine SOC grenze!).
   *sind abhängig voneinander  
 
 In der Ansicht ist zu erkennen ob das Auto, angeschlossen und verriegelt ist. Bei der Ladung ist farblich zu erkennen, ob die Ladung aus dem Netz, der Sonne oder gemischt kommt (Schwellwert je bei 200W).  
@@ -238,6 +239,11 @@ Auf der linken Seite können die Batterie-Limits vom S10 geändert werden.
 Rechts kann die Notstrom-Reserve im Speicher aktiviert werden. Sie wird in % oder Wh angezeigt. Die Höhe der Reserve kann in 500, 2000, oder 10000 Wh Schritte vorgewählt und mit "Set" gesetzt werden. Der Schalter setzt die Reserve ggf. direkt auf 0 Wh. Im Hauptbildschirm wird die höhe der Reserve in Prozent mit einem grünen Rahmen bei der Batterie dargestellt.  
 <img src="https://user-images.githubusercontent.com/19279623/120030042-3f043600-bff7-11eb-8fa6-5c08ac469d0d.png" alt="Batterie">  
 Die Notstromreserve oder die Batterie-Limits können auch in der HM gesetzt werden um das S10 zu steuern. Hier die Anleitung dazu: [HM abfragen und S10 steuern](https://github.com/nischram/E3dcGui/wiki/HM-abfragen-und-S10-steuern)  
+
+### 6b. Sperrzeiten
+`  #define E3DC_S10                    1`  
+<img src="https://user-images.githubusercontent.com/19279623/173245363-31b5d248-bd29-42e9-8e87-0de1d9ee6f35.JPG" alt="IdelPeriods">  
+Wenn man sich im Menü "Funktion" befindet, kann man über das Schloss-Symbol zu den Sperrzeiten gelangen. In dem Sperrzeit-Menü können die Ladesperrzeiten und Entladesperrzeiten angesehen und aktiviert/deaktiviert werden. Die Zeiten können nur angesehen werden, beim setzen wird immer der ganze Tag von 00:00 bis 23:59 gesetz.   
 
 ### 7. Monitor
 `  #define E3DC_S10                    1`  
@@ -435,6 +441,10 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.15 12.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) Lade- und Entladesperrzeiten in Anziege eingebaut
+- Issue #77 Menü Sperrzeiten eingabaut aktivieren und deaktivieren der Sperrzeiten möglich    
+- Issue #75 Batterienutzung im Mischbetrieb kann eingestellt werden     
+
 V2.14 07.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) RscpSet ergänzt um die Lade- und Entladesperrzeiten
 - Issue #77 "RscpSet -idle ..." für die Sperrzeiten  
 - Einige Anpassungen an der RscpSet vorgenommen  

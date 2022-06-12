@@ -85,6 +85,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_TO_CAR_MODE);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_BATTERY_BEFORE_CAR_MODE);
           protocol.appendValue(&rootValue, TAG_EMS_REQ_GET_WB_DISCHARGE_BAT_UNTIL);
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_GET_WALLBOX_ENFORCE_POWER_ASSIGNMENT);
         }
         else {
           writeRscp(PosWbAll,0);
@@ -114,6 +115,10 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.appendValue(&rootValue, TAG_EMS_REQ_POWER_ADD);
         else
           writeRscp(PosADD,0);
+        if(readTo(PosToIdlePeriod)){
+          protocol.appendValue(&rootValue, TAG_EMS_REQ_GET_IDLE_PERIODS);
+          writeTo(PosToIdlePeriod, 0);
+        }
         // request PVI information
         SRscpValue PVIContainer;
         protocol.createContainerValue(&PVIContainer, TAG_PVI_REQ_DATA);
@@ -412,6 +417,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
           writeRscp(PosWbUntil,wbDischargeUntil);
           break;
         }
+        case TAG_EMS_GET_WALLBOX_ENFORCE_POWER_ASSIGNMENT: {    // response for TAG_EMS_REQ_GET_WALLBOX_ENFORCE_POWER_ASSIGNMENT
+          bool wbBaMres = protocol->getValueAsBool(response);
+          cout << "Wallbox Battery at Mix-Mode " << wbBaMres << "\n";
+          writeRscp(PosWbBaM,wbBaMres);
+          break;
+        }
         case TAG_EMS_AUTARKY: {    // response for TAG_EMS_REQ_AUTARKY
           float TAG_EMS_OUT_AUTARKY = protocol->getValueAsFloat32(response);
           cout << "Autarky is " << setprecision(3) << TAG_EMS_OUT_AUTARKY << " %\n";
@@ -476,6 +487,21 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
     				break; }
     			}
           if (RSCP_DETAILED_OUTPUT) cout << setprecision(0) << fixed << "Emergency power status 0x0" << TAG_EMS_OUT_EMERGENCY_POWER_STATUS << " = " << description << "\n";
+          break;
+        }
+        case TAG_EMS_GET_IDLE_PERIODS:{
+          // resposne for TAG_EMS_REQ_GET_IDLE_PERIODS
+          std::vector < SRscpValue > emsData = protocol->getValueAsContainer(response);
+          idle_period_t periods[14];
+          for (size_t i = 0; i < emsData.size(); ++i) {
+            if (emsData[i].dataType == RSCP::eTypeError) {
+              // handle error for example access denied errors
+              uint32_t uiErrorCode = protocol->getValueAsUInt32(&emsData[i]);
+              printf("Tag 0x%08X received error code %u.\n",emsData[i].tag, uiErrorCode);
+              return -1;
+            }
+            handleResponseEMSGetIdlePeriods(protocol, &emsData[i], &periods[i]);
+          }
           break;
         }
         case TAG_BAT_DATA: {        // resposne for TAG_BAT_REQ_DATA
@@ -1235,6 +1261,8 @@ int main()
   writeRscp(PosPMState, 1);
   writeRscp(PosTimeZone,time_zone);
   make900();
+  writeTo(PosToIdlePeriod, 1);
+  makeIdle();
   for(int i = 0; i < PosWbMAX; i++){
     writeRscpWb(i,0);
   }
