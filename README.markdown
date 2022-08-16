@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.15 12.06.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.16 16.08.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -441,6 +441,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.16 16.08.2022 Fehlerkorrektur "screnSave.c" erkannt im Homematic-Forum + [Issue #75](https://github.com/nischram/E3dcGui/issues/75)
+- Variable falsch gesetzt  
+- Kleine Anpassungen an der GuiMain.c   
+- Issue #75 Anpassung für Schalter Batterie im Mischmode   
+
 V2.15 12.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) Lade- und Entladesperrzeiten in Anziege eingebaut
 - Issue #77 Menü Sperrzeiten eingabaut aktivieren und deaktivieren der Sperrzeiten möglich    
 - Issue #75 Batterienutzung im Mischbetrieb kann eingestellt werden     

@@ -122,10 +122,10 @@ int main(){
 		readRscpChar(TAG_EMS_OUT_DATE, TAG_EMS_OUT_TIME, serialnumber, swrelease);
 		GuiTime = PiTime;
 
+		int screenState = readScreen(ScreenState);
 		int pirUse = readPirUse();
 		if (pirUse == true){
 			if (wiringPi == OK){
-				int screenState = readScreen(ScreenState);
 				if ( digitalRead( PirPin ) == true && screenState == ScreenOff){
 					screenOn();
 					writeScreen(ScreenCounter, 0);
@@ -155,7 +155,6 @@ int main(){
 			//Aktuell Grafik erstellen
 			case ScreenAktuell:{
 				GuiTime = RscpTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
@@ -506,7 +505,6 @@ int main(){
 			//Wallbox Grafik erstellen
 			case ScreenWallbox:{
 				GuiTime = RscpTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
@@ -619,9 +617,9 @@ int main(){
 						else
 							DrawImage("Switch/StopOff", WBSTOPX, WBSTOPY);
 						if (readRscp(PosWbBaM)==1)
-							DrawImage("Switch/On", WBMODEX+58+58-3, WBMODEY);
-						else
 							DrawImage("Switch/Off", WBMODEX+58+58-3, WBMODEY);
+						else
+							DrawImage("Switch/On", WBMODEX+58+58-3, WBMODEY);
 						put_string(WBMODEX+58+58-3-8, WBMODEY+33,"Bat. im Mix-Mode",GREY);
 					}
 					int x;
@@ -650,7 +648,6 @@ int main(){
 			//Funktion Grafik erstellen
 			case ScreenFunktion:{
 				GuiTime = RscpTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
@@ -741,7 +738,6 @@ int main(){
 			//Monitor Grafik erstellen
 			case ScreenIdlePeriods:{
 				GuiTime = RscpTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
@@ -785,7 +781,6 @@ int main(){
 			//Monitor Grafik erstellen
 			case ScreenMonitor:{
 				GuiTime = RscpTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					if(screenState == ScreenOn){
@@ -1081,7 +1076,6 @@ int main(){
 			//SmartHome Grafik erstellen
 			case ScreenSmart:{
 				GuiTime = PiTime;
-				int screenState = readScreen(ScreenState);
 				if(counter == 0 ){
 					writeScreen(ScreenCounter, 60);
 					SmartCounter = 0;
@@ -1157,7 +1151,6 @@ int main(){
 		}
 //####################################################
 	//Time
-		int screenState = readScreen(ScreenState);
 		if(GuiTime == RscpTime && E3DC_S10 == 1 && screenState == ScreenOn){
 			put_string(330, 454, "Letzter Zeitstempel: ", GREY);
 			int AktuallTime = time(NULL);

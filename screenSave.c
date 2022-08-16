@@ -49,7 +49,7 @@ int main()
 
 	//Umschalten auf 16Bit Display
 	char OUT[128];
-	char WbMode[24],WbBtC[24],WbBbC[24],WbMode[24];
+	char WbMode[24],WbBtC[24],WbBbC[24],WbBaM[24];
 	int WbCurrent;
 	snprintf (OUT, (size_t)128, "fbset -fb %s -depth 16", framebuffer_File);
 	system(OUT);
