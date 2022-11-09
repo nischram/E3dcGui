@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.17 16.08.2022](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.18 09.11.2022](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -441,8 +441,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.18 09.11.2022 Fehler in Rscp/RWData.h behoben
+- In  Rscp/RWData.h fehlte ein "return 1"  
+
 V2.17 16.08.2022 git clone geängert von git:// auf https://
-- git-Server geändert auf http://  
+- git-Server geändert auf https://  
 
 V2.16 16.08.2022 Fehlerkorrektur "screnSave.c" erkannt im Homematic-Forum + [Issue #75](https://github.com/nischram/E3dcGui/issues/75)
 - Variable falsch gesetzt  

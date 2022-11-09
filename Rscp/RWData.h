@@ -493,6 +493,7 @@ int handleResponseEMSGetIdlePeriods(RscpProtocol * protocol,SRscpValue * emsData
     break;
   }
   protocol->destroyValueData(emsData);
+  return 1;
 }
 
 #endif // __RWData_H_
