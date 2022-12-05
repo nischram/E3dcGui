@@ -448,7 +448,9 @@ int changePirUse()
 
 int readRscp(int RscpPosition)
 {
-  int ret = BitRead("/mnt/RAMDisk/E3dcGuiData.txt", RscpPosition,PosMAX);
+  int ret;
+  if(GUI == 1) ret = BitRead("/mnt/RAMDisk/E3dcGuiData.txt", RscpPosition,PosMAX);
+  else ret = BitRead("/mnt/RAMDisk/E3dcRscpData.txt", RscpPosition,PosMAX);
   return ret;
 }
 int read100Rscp(int RscpPosition)
