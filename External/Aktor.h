@@ -47,7 +47,7 @@ int netInAktor(int PowerGrid, int AktorPrio, int AktorPower, int AktorMinOn, int
 	  }
 	}
   int AktorPower90 = AktorPower /10 *9;
-  if (NetInput <=  AktorPower90 && PowerGrid <=  100){
+  if (TimerState == true && NetInput <=  AktorPower90 && PowerGrid <=  100){
     writeAktor(AktorPosition + counterOn, 0);
     writeAktor(AktorPosition + counterOff, 0);
   }
@@ -103,7 +103,7 @@ int solarAktor(int PowerPVI, int AktorPrio, int AktorPowerOn, int AktorPowerOff,
 	  }
 	}
   int AktorPower90 = AktorPowerOn /10 *9;
-  if (PowerPVI <=  AktorPower90 && PowerPVI >= AktorPowerOff){
+  if (TimerState == true && PowerPVI <=  AktorPower90 && PowerPVI >= AktorPowerOff){
     writeAktor(AktorPosition + counterOn, 0);
     writeAktor(AktorPosition + counterOff, 0);
   }
@@ -158,7 +158,7 @@ int batteryAktor(int BatterySOC, int AktorPrio, int AktorPercentOn, int AktorPer
 	    }
 	  }
 	}
-  if (BatterySOC < AktorPercentOn && BatterySOC > AktorPercentOff){
+  if (TimerState == true && BatterySOC < AktorPercentOn && BatterySOC > AktorPercentOff){
     writeAktor(AktorPosition + counterOn, 0);
     writeAktor(AktorPosition + counterOff, 0);
   }
