@@ -400,6 +400,14 @@ void checkDefine(int print){
     sleep(2);
   }
 #endif
+#ifndef HM_XML_TOKEN
+  #define HM_XML_TOKEN "aaAAbbBBccCC"
+  if(print == 1){
+    printf("Der Parameter \"HM_XML_TOKEN\" ist in der \"parameter.h\" nicht vorhanden.\n");
+    printf("    Als default wurde für \"HM_XML_TOKEN\" folgender Wert gesetzt: %i\n", HM_XML_TOKEN);
+    sleep(2);
+  }
+#endif
 }
 
 void checkDefineHM(int print){

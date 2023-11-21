@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.20 21.02.2023](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.21 21.11.2023](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -175,6 +175,10 @@ Damit die Applikation gestartet wird, kann nun der Raspberry neu gestartet werde
 pi@raspberrypi ~/E3dcGui $  sudo reboot
 ```
 Der Raspberry Pi startet neu und die Applikation wird im Hintergrund ohne Bildschirmausgaben ausgeführt. Nach ca. 1 Minute werden die Werte der Systemvariablen der Homematic wieder aktualisiert. Oder das Display zeigt die Applikation
+
+### Display drehen
+Für den Einbau im Gehäuse oder über Kopf muss ggf. das Display um 180° gedreht werden.
+Für weitere Informationen gibt es diesen Wiki-Eintrag: [Display drehen](https://github.com/nischram/E3dcGui/wiki/Display-drehen)
 
 ## Display bedienen und einrichten
 Die Darstellung ist in bis zu 10 Bildschirmen unterteilt. Diese werden über die Symbole in der oberen Ziele abgerufen. Sollten Funktionen der Software nicht aktiviert sein, bleiben die Symbole ausgeblendet.
@@ -422,7 +426,7 @@ Homematic-Forum: [Anbindung an Stromspeicher E3DC](https://homematic-forum.de/fo
 Bildschirmfotos aus dem E3DC Portal
 
 ## Ideen
-Hier eine tolle Idee das Raspberry-Display in die Wand einzulasse, so dass es bündig aufliegt.  
+Hier eine tolle Idee das Raspberry-Display in die Wand einzulassen, so dass es bündig aufliegt.  
 [https://christian-bleser.de/raspberry-pi-touch-display-wandeinbau/](https://christian-bleser.de/raspberry-pi-touch-display-wandeinbau/)  
 
 ## Changelog
@@ -441,6 +445,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.21 21.11.2023 [Issue #87](https://github.com/nischram/E3dcGui/issues/87) Änderung XML-API.
+- Anpassung zur neuen Version der XML-API für Issue #87
+
 V2.20 21.02.2023 [Issue #79](https://github.com/nischram/E3dcGui/issues/79) Probleme mit Aktor behoben.
 - Issue #79 Anpassung in Aktor.h vorgenommen
 

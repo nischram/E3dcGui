@@ -9,8 +9,9 @@ Ich nutze eine RaspbarryMatic, aber ich sehe bislang keine Einschränkungen für
 
 ### Schnittstelle
 Die abgefragten Werte vom S10 wie z.B. Leistungswerte oder Batteriefüllstand werden per CURL-Befehl an die XML-API Schnittstelle der HomeMatic gesendet (Zusatz-Software)
+__Wichtig__: ab V2.21 meiner Applipation wird eine Version der XML-API > 2.0 benötigt!
 
-## Vorbereitung der HomeMatic CCU /CCU2
+## Vorbereitung der HomeMatic CCU / CCU2 / CCU3 / RaspbarryMatic
 
 Wenn du in den Einstellungen die Nutzung der HomeMatic aktiviert hast, muss die HomeMatic nun vorbereitet werden. Sollte die Nutzung aktiviert sein und die HM nicht vorbereitet dann würde die Applikation für jeden Sendebefehl mehrere Sekunden benötigen und nicht ordnungsgemäss laufen.
 
@@ -128,13 +129,13 @@ Hier im Wiki findest du detallierte Informationen dazu: [Wallbox in die Homemati
 ### XML-API einrichten
 Damit der Raspberry Pi die Werte des S10 zur HomeMatic senden kann, benötigt die HomeMatic die Zusatz-Software „XML-API“.
 Alle technischen Informationen entnehmen Sie bitte der Anleitung des Anbieters.
-Den Download und eine Installationsanleitung finden Sie unter dem folgenden Link:
-[http://www.homematic-inside.de/software/xml-api]( http://www.homematic-inside.de/software/xml-api)
+Informationen findest du unter dem folgenden Link:
+[https://github.com/homematic-community/XML-API]( https://github.com/homematic-community/XML-API)
 Ich gehe hier nicht näher auf die Installation der XML-API ein.
+Für die erste Konfiguration wird ein Token benötigt. Es muss nach der Installation unter den Einstellungen der XML-API mit tokenregister.cgi ein Token generiert werden. Diesen kann man danach mit tokenlist.cgi auslesen und übertragen in die parameter.h unter "#define HM_XML_TOKEN".
 
 ### „ise_id“ auslesen
-Damit über die „XML-API“ die Werte in die HomeMatic übertragen werden können, muss die „ise_id“ der zuvor erstellten Systemvariablen abgefragt werden. Die Abfrage kann z. B. über den Webbrowser mit diesem Befehl erfolgen:
-`http://IP-HomeMatic/config/xmlapi/sysvarlist.cgi `
+Damit über die „XML-API“ die Werte in die HomeMatic übertragen werden können, muss die „ise_id“ der zuvor erstellten Systemvariablen abgefragt werden. In den Einstellungen der XML-API kann man sich mit sysvarlist.cgi eine Liste aller Variablen ausgeben lassen. Alternativ findet man die ise_id auch in der HQ-WebUI.
 „IP-HomeMatic“ steht für die IP-Adresse der HomeMatic. Ich setzen voraus, dass dir die tatsächliche IP-Adresse bekannt ist. I.d.R. steht sie in der Adresszeile des Webbrowsers, wenn man mit der WebUi auf der HomeMatic eingeloggt ist.
 In der Browserausgabe auf den zuvor eingegebenen Befehl sind alle konfigurierten Systemvariablen alphabetisch sortiert zu finden. Die „ise-id“ zu den zuvor konfigurierten Variablen werden in der „parameter.h“ benötigt
 
@@ -271,7 +272,10 @@ Passend dazu ist das Skript „S10-min-maxSOC.hm“ ist im Ordner „HM-Scripte�
 Die Scripte für die HM habe ich mir zu Teil aus Informationen des Homematic-Forum zusammengebaut.
 
 ## Changelog
-25.06.2018 [Issue #30](https://github.com/nischram/E3dcGui/issues/30)
+21.11.2023 [Issue #87](https://github.com/nischram/E3dcGui/issues/87)
+- Anpassung zur neuen Version der XML-API für Issue #87
+
+  25.06.2018 [Issue #30](https://github.com/nischram/E3dcGui/issues/30)
 - Beispieländerung für Issue #30
 
 14.08.2016 Repository neu erstellt

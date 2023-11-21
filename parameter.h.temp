@@ -24,6 +24,9 @@
 #define Homematic_E3DC              0         //Wichtig!    // Sollen die Daten zur Homematic gesendet werden? Daten senden 1 eintragen sonst 0
 #define HM_IP                       "192.168.178.yyy"       // IP-Adresse von der Homematic
 #define HM_Intervall                30                      // Sendeintervall der E3DC Daten zur Homematic und Abfrageintevall für Display
+#define HM_XML_TOKEN                "aaAAbbBBccCC"          // HM XML-API Token HM > Einstellungen > Systemsteuerung > Zusatzsoftware > XML-API > Einstellungen
+                                                            // mit tokenregister.cgi einen Token generieren
+                                                            // mit tokenlist.cgi den erstellten Token ausgeben und hier statt "aaAAbbBBccCC" hinterlegen
 // ISE-ID der diversen Systemvariablen
 #define TAG_EMS_ISE_POWER_PV        0                // ISE_ID_POWER_PV
 #define TAG_EMS_ISE_POWER_BAT       0                // ISE_ID_POWER_BAT

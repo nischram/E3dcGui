@@ -52,7 +52,7 @@ int read_HM(int id, int cutnumber, char* value){
   cutlast = 8 + cutnumber - 1;
   char batch[256];
   memset(&batch, 0, sizeof(batch));
-  snprintf(batch, (size_t)256, "curl -k -s https://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, id, cutlast);
+  snprintf(batch, (size_t)256, "curl -k -s \"https://%s/addons/xmlapi/state.cgi?sid=%s&datapoint_id=%i\" |cut -d \" \" -f 6 | cut -b 8-%i", HM_IP, HM_XML_TOKEN, id, cutlast);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -74,7 +74,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
   char batch[256], res_Jal[20];
   memset(&batch, 0, sizeof(batch));
   memset(&res_Jal, 0, sizeof(res_Jal));
-  snprintf(batch, (size_t)256, "curl -k -s https://%s/config/xmlapi/state.cgi?datapoint_id=%i |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, id);
+  snprintf(batch, (size_t)256, "curl -k -s \"https://%s/addons/xmlapi/state.cgi?sid=%s&datapoint_id=%i\" |cut -d \" \" -f 6 | cut -b 8-11", HM_IP, HM_XML_TOKEN, id);
   FILE *out = NULL;
   out = popen( batch, "r" );
   if( out != NULL ){
@@ -98,7 +98,7 @@ int readJalou_HM(int id, char* value){  //id= ISE_ID, Hm_IP= IP der Homematic
 void printsendHM(int id, char value[20]){
     char batch[128];
     memset(batch, 0x00, sizeof(batch));
-    snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\">/dev/null &",HM_IP , id, value);
+    snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=%s\">/dev/null &", HM_IP, HM_XML_TOKEN, id, value);
     //printf("send :[%s]\n",batch);
     system(batch);
 }

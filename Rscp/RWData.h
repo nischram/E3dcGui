@@ -32,7 +32,7 @@ void printsendHM(int CounterHM, int id, float value)
     if(CounterHM == HM_Intervall && id != 0){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%.1f\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=%.1f\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id, value);
       printf("send to Homematic ISE_ID %i new Value = %.3f\n",id, value);
       system(batch);
     }
@@ -44,7 +44,7 @@ void printsendCharHM(int CounterHM, int id, char value[32])
     if(CounterHM == HM_Intervall && id != 0){
       char batch[128];
       memset(batch, 0x00, sizeof(batch));
-      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=%s\" > /dev/null 2>&1",HM_IP , id, value);
+      snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=%s\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id, value);
       printf("send to Homematic ISE_ID %i new Value = %s\n",id, value);
       system(batch);
     }
@@ -58,11 +58,11 @@ void printsendBitHM(int CounterHM, int id, int Value, int Bit)
       memset(batch, 0x00, sizeof(batch));
       bool response = Value&Bit;
       if(response){
-        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=true\" > /dev/null 2>&1",HM_IP , id);
+        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=true\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id);
         printf("send to Homematic ISE_ID %i new Value = true\n",id);
       }
       else {
-        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/config/xmlapi/statechange.cgi?ise_id=%i&new_value=false\" > /dev/null 2>&1",HM_IP , id);
+        snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=false\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id);
         printf("send to Homematic ISE_ID %i new Value = false\n",id);
       }
       system(batch);
