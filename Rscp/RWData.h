@@ -30,7 +30,7 @@ void printsendHM(int CounterHM, int id, float value)
 {
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall && id != 0){
-      char batch[128];
+      char batch[256];
       memset(batch, 0x00, sizeof(batch));
       snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=%.1f\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id, value);
       printf("send to Homematic ISE_ID %i new Value = %.3f\n",id, value);
@@ -42,7 +42,7 @@ void printsendCharHM(int CounterHM, int id, char value[32])
 {
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall && id != 0){
-      char batch[128];
+      char batch[256];
       memset(batch, 0x00, sizeof(batch));
       snprintf(batch, sizeof(batch), "curl -k -s \"https://%s/addons/xmlapi/statechange.cgi?sid=%s&ise_id=%i&new_value=%s\" > /dev/null 2>&1", HM_IP, HM_XML_TOKEN, id, value);
       printf("send to Homematic ISE_ID %i new Value = %s\n",id, value);
@@ -54,7 +54,7 @@ void printsendBitHM(int CounterHM, int id, int Value, int Bit)
 {
   if(Homematic_E3DC == 1){
     if(CounterHM == HM_Intervall && id != 0){
-      char batch[128];
+      char batch[256];
       memset(batch, 0x00, sizeof(batch));
       bool response = Value&Bit;
       if(response){
@@ -283,9 +283,11 @@ int writeHistory(int Position, int NewValue, int writedata)
 		char filePath[128];
 		if (writedata == today){
 			snprintf (filePath, (size_t)128, "%s", today_path);
+      if (Position == dataPV)printsendHM(HM_Intervall, 70350, NewValue); // Nico
 		}
 		else if (writedata == yesterday){
 			snprintf (filePath, (size_t)128, "%s", yesterday_path);
+      if (Position == dataPV)printsendHM(HM_Intervall, 70351, NewValue); // Nico
 		}
     writeData(filePath, Position, NewValue, dataMax);
     return 1;
