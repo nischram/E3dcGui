@@ -283,11 +283,9 @@ int writeHistory(int Position, int NewValue, int writedata)
 		char filePath[128];
 		if (writedata == today){
 			snprintf (filePath, (size_t)128, "%s", today_path);
-      if (Position == dataPV)printsendHM(HM_Intervall, 70350, NewValue); // Nico
 		}
 		else if (writedata == yesterday){
 			snprintf (filePath, (size_t)128, "%s", yesterday_path);
-      if (Position == dataPV)printsendHM(HM_Intervall, 70351, NewValue); // Nico
 		}
     writeData(filePath, Position, NewValue, dataMax);
     return 1;
