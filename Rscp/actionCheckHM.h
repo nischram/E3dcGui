@@ -25,9 +25,11 @@ int wallboxAction(){
 			else if(strcmp ("true",wallboxSendPhC) == 0) snprintf (WbSet, (size_t)128, "-swPh");
 			else snprintf (WbSet, (size_t)128, "-no");
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i %s &", WbMode, WbCurrent, WbSet);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			sleep(1);
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbEMS %s %s &", WbBtC, WbBbC);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			printsendHM(ISE_WB_SEND_NOW, "false");
 			printsendHM(ISE_WB_SEND_STOP, "false");
@@ -45,6 +47,7 @@ int epReserveAction(){
 			read_HM(ISE_EP_RESERVE_SET_W, 4, hmSendEmergencyPowerSize);
 			S10CurrentBatEmergencyPowerSize = (int)(atof(hmSendEmergencyPowerSize) * 1000); // Umrechnung von kW in W
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ep %i %i", readRscp(PosEpReservMaxW), S10CurrentBatEmergencyPowerSize);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			printsendHM(ISE_EP_RESERVE_SEND_NOW, "false");
 		}
@@ -63,9 +66,10 @@ int batterylimitsAction(){
 			read_HM(ISE_BL_SEND_DISCHARGE, 4, blSendDischarge);
 			if(strcmp ("true",blSendMode) == 0) snprintf (blMode, (size_t)128, "-blYes");
 			else snprintf (blMode, (size_t)128, "-blNo");
-			blCharge = atoi(blSendCharge)*1000;
-			blDischarge = atoi(blSendDischarge)*1000;
+			blCharge = atof(blSendCharge)*1000;
+			blDischarge = atof(blSendDischarge)*1000;
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -bl %s %i %i &", blMode, blCharge, blDischarge);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			printsendHM(ISE_BL_SEND_NOW, "false");
 		}
@@ -82,6 +86,7 @@ int powersaveAction(){
 			if(strcmp ("true",psSendMode) == 0) snprintf (psMode, (size_t)128, "-psYes");
 			else snprintf (psMode, (size_t)128, "-psNo");
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -ps %s &", psMode);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			printsendHM(ISE_PS_SEND_NOW, "false");
 		}
@@ -98,6 +103,7 @@ int weatherRegAction(){
 			if(strcmp ("true",wrSendMode) == 0) snprintf (wrMode, (size_t)128, "-wrYes");
 			else snprintf (wrMode, (size_t)128, "-wrNo");
 			snprintf (SEND_OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wr %s &", wrMode);
+			//printf("%s\n", SEND_OUT);
 			system(SEND_OUT);
 			printsendHM(ISE_WR_SEND_NOW, "false");
 		}

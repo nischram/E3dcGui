@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.22 26.01.2024](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.23 04.02.2024](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -445,6 +445,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.23 04.02.2024 Fehler actionCheckHM aus der HM können keine Baterielimits gesetzt werden
+- in der actionCheckHM "atoi" gegen "atof" ersetzt.
+
 V2.22 26.01.2024 Fehler printsendHM bei bestimmten Werten.
 - Größe des array angepasst von 128 nach 256
 
