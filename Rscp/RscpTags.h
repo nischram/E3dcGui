@@ -151,6 +151,7 @@
 #define TAG_EMS_MANUAL_CHARGE_ACTIVE                        	0x01000151
 #define TAG_EMS_MANUAL_CHARGE_ENERGY_COUNTER                	0x01000152
 #define TAG_EMS_MANUAL_CHARGE_LASTSTART                     	0x01000153
+#define TAG_EMS_MANUAL_CHARGE_TARGET                          0x0100003E
 #define TAG_EMS_REQ_START_MANUAL_CHARGE                     	0x0100008F
 #define TAG_EMS_START_MANUAL_CHARGE                         	0x0180008F
 #define TAG_EMS_REQ_START_EMERGENCYPOWER_TEST               	0x01000090
@@ -702,6 +703,10 @@
 #define TAG_WB_RSP_PARAM_2                                  	0x0E84101A
 #define TAG_WB_REQ_PARAM_1                                  	0x0E04101B
 #define TAG_WB_RSP_PARAM_1                                  	0x0E84101B
+#define TAG_WB_ABORT_CHARGING                                 0x0E84103D
+#define TAG_WB_SET_ABORT_CHARGING                             0x0E84103F
+#define TAG_WB_REQ_ABORT_CHARGING                             0x0E04103D
+#define TAG_WB_REQ_SET_ABORT_CHARGING                         0x0E04103E
 
 #define TAG_SE_REQ_SET_EP_RESERVE                             0x1B000010
 #define TAG_SE_REQ_EP_RESERVE                                 0x1B000009

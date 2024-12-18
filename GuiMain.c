@@ -612,10 +612,14 @@ int main(){
 						else
 							DrawImage("Switch/1Ph", WBPHX, WBPHY);
 						put_string(WBPHX-23,WBPHY+33,"Erwartete Phasen",GREY);
-						if (readRscpWb(PosWbLED_BAT)==1)
-							DrawImage("Switch/Stop", WBSTOPX, WBSTOPY);
-						else
-							DrawImage("Switch/StopOff", WBSTOPX, WBSTOPY);
+						if (readRscp(PosWbAbort)==1){
+							DrawImage("Switch/HaltOff", WBHALTX, WBHALTY);
+							DrawImage("Switch/Weiter", WBWEITERX, WBWEITERY);
+						}
+						else{
+							DrawImage("Switch/Halt", WBHALTX, WBHALTY);
+							DrawImage("Switch/WeiterOff", WBWEITERX, WBWEITERY);
+						}
 						if (readRscp(PosWbBaM)==1)
 							DrawImage("Switch/Off", WBMODEX+58+58-3, WBMODEY);
 						else

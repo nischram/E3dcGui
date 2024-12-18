@@ -126,7 +126,8 @@
 #define PosWeatherReg               34   //!!
 #define PosWbUntil                  35   //!!
 #define PosWbBaM                    36   //!!
-#define PosMAX                      37   //!!
+#define PosWbAbort                  37   //!!
+#define PosMAX                      38   //!!
 
 #define PosPVI900                   0    //!!
 #define PosSOC900                   1    //!!

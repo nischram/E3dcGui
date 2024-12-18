@@ -19,7 +19,7 @@ g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cp
 #include <limits>
 #include <ctime>
 
-static int iSocket = -1;
+static int iSocket x= -1;
 static int iAuthenticated = 0;
 static AES aesEncrypter;
 static AES aesDecrypter;
@@ -30,7 +30,7 @@ static uint8_t WbExt[6];
 static int WbBtC, WbBbC;
 static int WbDisUntil = 0;
 
-static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false, setModeIdle = false, setModeWbBaM = false;
+static bool setModeWB = false, setModeWBEMS = false, setModeEP = false, setModeBL = false, setModePS = false, setModeWR = false, setModeWbUntil = false, setModeIdle = false, setModeWbBaM = false, setWbAbort = false, setWbResume = false;
 static bool WbSwPh = false, WbStop = false;
 static bool blUsed = false, psUsed = false, wrUsed = false;
 static bool idleAktive = false, wbBatAtMix = BAT_ON_AT_MIX;
@@ -68,8 +68,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
         printf("____________________\n");
         // request data information
         protocol.appendValue(&rootValue, TAG_INFO_REQ_SERIAL_NUMBER);
-        if (setModeWB){
-          printf("Set Wallbox Parameter\nLadestrom     = %i A\nWallboxmodus  = %i 1=Sonne/2=Mix\n", WbExt[1], WbExt[0]);
+        if (setModeWB || setWbAbort || setWbResume){
 
           // request Wallbox information
           SRscpValue WBContainer;
@@ -78,12 +77,23 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.createContainerValue(&WBContainer, TAG_WB_REQ_DATA) ;
           // add index 0 to select first wallbox
           protocol.appendValue(&WBContainer, TAG_WB_INDEX,0);
-          protocol.createContainerValue(&WBExtContainer, TAG_WB_REQ_SET_EXTERN);
-          protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA_LEN,6);
-          protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA,WbExt,6);
-          protocol.appendValue(&WBContainer, WBExtContainer);
-          // free memory of sub-container as it is now copied to rootValue
-          protocol.destroyValueData(WBExtContainer);
+          if (setModeWB){
+            printf("Set Wallbox Parameter\nLadestrom     = %i A\nWallboxmodus  = %i 1=Sonne/2=Mix\n", WbExt[1], WbExt[0]);
+            protocol.createContainerValue(&WBExtContainer, TAG_WB_REQ_SET_EXTERN);
+            protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA_LEN,6);
+            protocol.appendValue(&WBExtContainer, TAG_WB_EXTERN_DATA,WbExt,6);
+            protocol.appendValue(&WBContainer, WBExtContainer);
+            // free memory of sub-container as it is now copied to rootValue
+            protocol.destroyValueData(WBExtContainer);
+          }
+          else if (setWbAbort){
+            printf("send Wallbox abort charging\n");
+            protocol.appendValue(&WBContainer, TAG_WB_REQ_SET_ABORT_CHARGING, true);
+          }
+          else if (setWbResume){
+            printf("send Wallbox resume charging\n");
+            protocol.appendValue(&WBContainer, TAG_WB_REQ_SET_ABORT_CHARGING, false);
+          }
           // append sub-container to root container
           protocol.appendValue(&rootValue, WBContainer);
           //protocol.appendValue(&rootValue, WBExtContainer);
@@ -293,7 +303,12 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                   ucWBIndex = protocol->getValueAsUChar8(&WBData[i]);
                   break;
               }
-              // ...
+              case TAG_WB_SET_ABORT_CHARGING: {    // response for TAG_WB_REQ_SET_ABORT_CHARGING
+                int32_t TAG_WB_OUT_ABORT_CHARGING = protocol->getValueAsInt32(&WBData[i]);
+                if (TAG_WB_OUT_ABORT_CHARGING == 1) cout << "WB0 SETABORT_CHARGING = ABORT\n";
+                else cout << "WB0 SET ABORT_CHARGING = RESUME\n";
+                break;
+              }
               default:
                 // default behaviour
                 //printf("Unknown WB tag %08X\n", response->tag);
@@ -651,35 +666,49 @@ int main(int argc, char *argv[])
         printf("Set Battery at Mix-Mode\n");
         setModeWbBaM = true;
       }
+      else if (strcmp(argv[1], "-wbAbort")==0) {
+        printf("Set Wallboox abort charging\n");
+        setWbAbort = true;
+      }
+      else if (strcmp(argv[1], "-wbResume")==0) {
+        printf("Set Wallboox resume charging\n");
+        setWbResume = true;
+      }
       else {
         printf("Falsche Eingabe!\n Bitte wählen:\n");
-        printf("  Wallbox         = -wb\n");
-        printf("  Notstromreserve = -ep\n");
-        printf("  Batterielimits  = -bl\n");
-        printf("  Wallbox discharge until  = -wbUntil\n");
-        printf("  Wallbox EMS     = -wbEMS\n");
-        printf("  Set Idle Time   = -idle\n");
-        printf("  Set Battery at Mix-Mode  = -wbBaM\n");
+        printf("  Wallbox                   = -wb\n");
+        printf("  Notstromreserve           = -ep\n");
+        printf("  Batterielimits            = -bl\n");
+        printf("  Wallbox discharge until   = -wbUntil\n");
+        printf("  Wallbox EMS               = -wbEMS\n");
+        printf("  Set Idle Time             = -idle\n");
+        printf("  Set Battery at Mix-Mode   = -wbBaM\n");
+        printf("  Wallboox abort charging   = -wbAbort\n");
+        printf("  Wallboox resume charging  = -wbResume\n");
         //printf("  Powersave       = -ps\n");
         //printf("  Wetterprognose  = -wr\n");
         printf("  Beispiel        = RscpSet -wb -sonne 16\n");
         printf("  Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
+        printf("  Beispiel 3      = RscpSet -wbAbort\n");
         return 0;
       }
     }
     else {
       printf("Keine Eingabe!\n Bitte wählen:\n");
-      printf("  Wallbox         = -wb\n");
-      printf("  Notstromreserve = -ep\n");
-      printf("  Batterielimits  = -bl\n");
-      printf("  Wallbox discharge until  = -wbUntil\n");
-      printf("  Wallbox EMS     = -wbEMS\n");
-      printf("  Set Idle Time   = -idle\n");
-      printf("  Set Battery at Mix-Mode  = -wbBaM\n");
+      printf("  Wallbox                   = -wb\n");
+      printf("  Notstromreserve           = -ep\n");
+      printf("  Batterielimits            = -bl\n");
+      printf("  Wallbox discharge until   = -wbUntil\n");
+      printf("  Wallbox EMS               = -wbEMS\n");
+      printf("  Set Idle Time             = -idle\n");
+      printf("  Set Battery at Mix-Mode   = -wbBaM\n");
+      printf("  Wallboox abort charging   = -wbAbort\n");
+      printf("  Wallboox resume charging  = -wbResume\n");
       //printf("  Powersave       = -ps\n");
       //printf("  Wetterprognose  = -wr\n");
       printf("  Beispiel        = RscpSet -wb -sonne 16\n");
       printf("  Beispiel 2      = RscpSet -wbEMS -BtCno -BbCno\n");
+      printf("  Beispiel 3      = RscpSet -wbAbort\n");
       return 0;
     }
     // Wallbox Parameter

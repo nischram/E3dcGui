@@ -164,6 +164,7 @@ int createRequestExample(SRscpFrameBuffer * frameBuffer) {
           protocol.appendValue(&WBContainer, TAG_WB_REQ_DEVICE_STATE);
           protocol.appendValue(&WBContainer, TAG_WB_REQ_PM_ACTIVE_PHASES);
           protocol.appendValue(&WBContainer, TAG_WB_REQ_EXTERN_DATA_ALG);
+          protocol.appendValue(&WBContainer, TAG_WB_REQ_ABORT_CHARGING);
           // append sub-container to root container
           protocol.appendValue(&rootValue, WBContainer);
           // free memory of sub-container as it is now copied to rootValue
@@ -763,6 +764,15 @@ int handleResponseValue(RscpProtocol *protocol, SRscpValue *response) {
                       int32_t TAG_WB_OUT_ACTIVE_PHASES = protocol->getValueAsInt32(&WBData[i]);
                       if (RSCP_DETAILED_OUTPUT) cout << "WB0 Aktiv Phases = " << TAG_WB_OUT_ACTIVE_PHASES << " \n";
                       writeRscpWb(PosWbActPhases, TAG_WB_OUT_ACTIVE_PHASES);
+                      break;
+                  }
+                  case TAG_WB_ABORT_CHARGING: {              // response for TAG_WB_REQ_ABORT_CHARGING
+                      int32_t TAG_WB_OUT_ABORT_CHARGING = protocol->getValueAsInt32(&WBData[i]);
+                      if (RSCP_DETAILED_OUTPUT){
+                        if (TAG_WB_OUT_ABORT_CHARGING == 1) cout << "WB0 ABORT_CHARGING = ABORT\n";
+                        else cout << "WB0 ABORT_CHARGING = RESUME\n";
+                        writeRscp(PosWbAbort, TAG_WB_OUT_ABORT_CHARGING);
+                      }
                       break;
                   }
                   case TAG_WB_EXTERN_DATA_ALG: {              // response for TAG_WB_REQ_EXTERN_DATA_ALG

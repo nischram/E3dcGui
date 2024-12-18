@@ -125,6 +125,10 @@
 #define WEATHER_REG_ACTION          0  //Aktuell noch keine Funktion nicht auf 1 setzen!
 #define ISE_WR_SEND_NOW             0
 #define ISE_WR_SEND_MODE            0
+// MyPV
+#define MYPV_USE                    1                // MyPV verbaut (Ja/aktiv = 1 / Nein/deaktiv = 0)
+#define ISE_MYPV_POWER              83551
+#define ISE_MYPV_TEMP               83552
 
 //#######################################
 // Homematic Parameter

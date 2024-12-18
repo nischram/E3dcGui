@@ -1,5 +1,43 @@
 # Changelog Archiv
 
+V2.20 21.02.2023 [Issue #79](https://github.com/nischram/E3dcGui/issues/79) Probleme mit Aktor behoben.
+- Issue #79 Anpassung in Aktor.h vorgenommen
+
+V2.19 05.12.2022 Fehler in funktion.h behoben
+- Funktionsaufruf aus der "actionCheckHM" bei GUI=0 war fehlgeschlagen
+
+V2.18 09.11.2022 Fehler in Rscp/RWData.h behoben
+- In  Rscp/RWData.h fehlte ein "return 1"  
+
+V2.17 16.08.2022 git clone geängert von git:// auf https://
+- git-Server geändert auf https://  
+
+V2.16 16.08.2022 Fehlerkorrektur "screnSave.c" erkannt im Homematic-Forum + [Issue #75](https://github.com/nischram/E3dcGui/issues/75)
+- Variable falsch gesetzt  
+- Kleine Anpassungen an der GuiMain.c   
+- Issue #75 Anpassung für Schalter Batterie im Mischmode   
+
+V2.15 12.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) Lade- und Entladesperrzeiten in Anziege eingebaut
+- Issue #77 Menü Sperrzeiten eingabaut aktivieren und deaktivieren der Sperrzeiten möglich    
+- Issue #75 Batterienutzung im Mischbetrieb kann eingestellt werden     
+
+V2.14 07.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) RscpSet ergänzt um die Lade- und Entladesperrzeiten
+- Issue #77 "RscpSet -idle ..." für die Sperrzeiten  
+- Einige Anpassungen an der RscpSet vorgenommen  
+
+V2.13 06.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Fehlerkorrektor
+- Fehler in den 10% Stufen behoben  
+
+V2.12 06.06.2022 RscpSet geändert die Parameter der Wallbox werden in der EMS und WB jetzt getrennt geändert
+- Änderung an der RscpSet  
+
+V2.11 05.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Falschen Issue angegeben
+- Beim Commit zuvor falschen Issue angegebne richtig ist Issue #75  
+
+V2.10 05.06.2022 [Issue #76](https://github.com/nischram/E3dcGui/issues/76) Ladegrenze "Batterie zu Auto" einstellbar
+- Issue #76 über Tasten ist in 10% Stufen die Ladegrenze "Batterie zu Auto" jetzt einstellbar      
+- Changelog archiviert  
+
 V2.09 17.02.2022 [Issue #71](https://github.com/nischram/E3dcGui/issues/71) + [Issue #72](https://github.com/nischram/E3dcGui/issues/72) + [Issue #73](https://github.com/nischram/E3dcGui/issues/73) Fehlerbehebung und Diverses
 - Issue #71 Anderer cast für Variable um Fehler zu vermeiden       
 - Issue #72 Refresh für die Displayanzeige war falsch in der IF-Schleife eingefügt      

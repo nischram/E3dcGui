@@ -187,8 +187,10 @@ int main()
 	int buttonTimerWbBbC = mymillis();
 	int buttonCordsWbSwPh[4] = {WBPHX,WBPHY,82,30};
 	int buttonTimerWbSwPh = mymillis();
-	int buttonCordsWbStop[4] = {WBSTOPX,WBSTOPY,82,30};
-	int buttonTimerWbStop = mymillis();
+	int buttonCordsWbHalt[4] = {WBHALTX,WBHALTY,82,30};
+	int buttonTimerWbHalt = mymillis();
+	int buttonCordsWbWeiter[4] = {WBWEITERX,WBWEITERY,82,30};
+	int buttonTimerWbWeiter = mymillis();
 	int buttonCordsWbPer90[4] = {WBPERLX,WBPER9Y,54,30};
 	int buttonTimerWbPer90 = mymillis();
 	int buttonCordsWbPer80[4] = {WBPERRX,WBPER9Y,54,30};
@@ -840,21 +842,32 @@ int main()
 						writeScreen(ScreenShutdown, ShutdownRun);
 					}
 				}
-				if((scaledX  > buttonCordsWbStop[X] && scaledX < (buttonCordsWbStop[X]+buttonCordsWbStop[W])) && (scaledY > buttonCordsWbStop[Y] && scaledY < (buttonCordsWbStop[Y]+buttonCordsWbStop[H]))){
-					if (mymillis() - buttonTimerWbStop > 500){
-						if (readRscpWb(PosWbLED_BAT)==1){
-							DrawImage("Switch/Send", WBSTOPX, WBSTOPY);
-							WbCurrent = readRscpWb(PosWbCurrent);
-							if(readRscpWb(PosWbMode)==0) snprintf (WbMode, (size_t)128, "-mix");
-							else snprintf (WbMode, (size_t)128, "-sonne");
-							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wb %s %i -stop &", WbMode, WbCurrent);
+				if((scaledX  > buttonCordsWbHalt[X] && scaledX < (buttonCordsWbHalt[X]+buttonCordsWbHalt[W])) && (scaledY > buttonCordsWbHalt[Y] && scaledY < (buttonCordsWbHalt[Y]+buttonCordsWbHalt[H]))){
+					if (mymillis() - buttonTimerWbHalt > 500){
+						if (readRscp(PosWbAbort)==0){
+							DrawImage("Switch/Send", WBHALTX, WBHALTY);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbAbort");
 							system(OUT);
 							sleep(2);
 							writeScreen(ScreenCounter, 0);
 							writeScreen(ScreenSaver, false);
 							writeScreen(ScreenShutdown, ShutdownRun);
 						}
-						buttonTimerWbStop = mymillis();
+						buttonTimerWbHalt = mymillis();
+					}
+				}
+				if((scaledX  > buttonCordsWbWeiter[X] && scaledX < (buttonCordsWbWeiter[X]+buttonCordsWbWeiter[W])) && (scaledY > buttonCordsWbWeiter[Y] && scaledY < (buttonCordsWbWeiter[Y]+buttonCordsWbWeiter[H]))){
+					if (mymillis() - buttonTimerWbWeiter > 500){
+						if (readRscp(PosWbAbort)==1){
+							DrawImage("Switch/Send", WBWEITERX, WBWEITERY);
+							snprintf (OUT, (size_t)128, "/home/pi/E3dcGui/Rscp/RscpSet -wbResume");
+							system(OUT);
+							sleep(2);
+							writeScreen(ScreenCounter, 0);
+							writeScreen(ScreenSaver, false);
+							writeScreen(ScreenShutdown, ShutdownRun);
+						}
+						buttonTimerWbWeiter = mymillis();
 					}
 				}
 				if((scaledX  > buttonCordsWbPer90[X] && scaledX < (buttonCordsWbPer90[X]+buttonCordsWbPer90[W])) && (scaledY > buttonCordsWbPer90[Y] && scaledY < (buttonCordsWbPer90[Y]+buttonCordsWbPer90[H]))){

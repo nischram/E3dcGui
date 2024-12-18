@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.23 04.02.2024](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.24 18.12.2024](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -222,13 +222,13 @@ Damit die verschiedenen Größen der PV-Anlagen auch dargestellt werden können,
 ### 5. Wallbox
 `  #define Wallbox                    1`  
 <img src="https://user-images.githubusercontent.com/19279623/120030051-40cdf980-bff7-11eb-8e55-b255f24432c4.jpg" alt="Wallbox">  
-Hier werden Inofrmationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kann man per Schalter steuern. Gesteuert werden kann:
+Hier werden Informationen zu deiner E3DC-Wallbox angezeigt. Einige Parameter kann man per Schalter steuern. Gesteuert werden kann:
 - Ladestrom > maximaler Ladestrom je Phase mit dem das Auto geladen wird.  
 - Sonnenmodus > wechseln zwischen Sonnenmode oder Mischbetrieb.  
 - Batterie vor Auto > hiermit wird zuvor die Batterie geladen dann erst das Auto. *  
 - Batterie zu Auto > hiermit wird freigegeben ob die Batterie entladen werde darf. *  
 - Anzahl der Phasen für Solarladung vorwählen.  
-- Ladung stoppen.  
+- Ladung unterbrechen (Halt) und fortsetzen (Weiter).  
 - Ladegrenze bei "Batterie zu Auto" kann in 10% Stufen vorgewählt werden.  
 - Batterienutzung im Mischbetrieb kann eingestellt werden (keine SOC grenze!).
   *sind abhängig voneinander  
@@ -445,7 +445,11 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
-V2.23 04.02.2024 Fehler actionCheckHM aus der HM können keine Baterielimits gesetzt werden
+V2.24 18.12.2024 [Issue #82](https://github.com/nischram/E3dcGui/issues/82) Stop für neue Wallboxen
+- Stop-Button ersetzt durch Halt und Weiter um die Wallbox-Ladung zu unterbrechen und fortzusetzen für Issue #82
+- Changelog archiviert
+
+V2.23 04.02.2024 actionCheckHM aus der HM können keine Baterielimits gesetzt werden
 - in der actionCheckHM "atoi" gegen "atof" ersetzt.
 
 V2.22 26.01.2024 Fehler printsendHM bei bestimmten Werten.
@@ -453,43 +457,5 @@ V2.22 26.01.2024 Fehler printsendHM bei bestimmten Werten.
 
 V2.21 21.11.2023 [Issue #87](https://github.com/nischram/E3dcGui/issues/87) Änderung XML-API.
 - Anpassung zur neuen Version der XML-API für Issue #87
-
-V2.20 21.02.2023 [Issue #79](https://github.com/nischram/E3dcGui/issues/79) Probleme mit Aktor behoben.
-- Issue #79 Anpassung in Aktor.h vorgenommen
-
-V2.19 05.12.2022 Fehler in funktion.h behoben
-- Funktionsaufruf aus der "actionCheckHM" bei GUI=0 war fehlgeschlagen
-
-V2.18 09.11.2022 Fehler in Rscp/RWData.h behoben
-- In  Rscp/RWData.h fehlte ein "return 1"  
-
-V2.17 16.08.2022 git clone geängert von git:// auf https://
-- git-Server geändert auf https://  
-
-V2.16 16.08.2022 Fehlerkorrektur "screnSave.c" erkannt im Homematic-Forum + [Issue #75](https://github.com/nischram/E3dcGui/issues/75)
-- Variable falsch gesetzt  
-- Kleine Anpassungen an der GuiMain.c   
-- Issue #75 Anpassung für Schalter Batterie im Mischmode   
-
-V2.15 12.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) Lade- und Entladesperrzeiten in Anziege eingebaut
-- Issue #77 Menü Sperrzeiten eingabaut aktivieren und deaktivieren der Sperrzeiten möglich    
-- Issue #75 Batterienutzung im Mischbetrieb kann eingestellt werden     
-
-V2.14 07.06.2022 [Issue #77](https://github.com/nischram/E3dcGui/issues/77) RscpSet ergänzt um die Lade- und Entladesperrzeiten
-- Issue #77 "RscpSet -idle ..." für die Sperrzeiten  
-- Einige Anpassungen an der RscpSet vorgenommen  
-
-V2.13 06.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Fehlerkorrektor
-- Fehler in den 10% Stufen behoben  
-
-V2.12 06.06.2022 RscpSet geändert die Parameter der Wallbox werden in der EMS und WB jetzt getrennt geändert
-- Änderung an der RscpSet  
-
-V2.11 05.06.2022 [Issue #75](https://github.com/nischram/E3dcGui/issues/75) Falschen Issue angegeben
-- Beim Commit zuvor falschen Issue angegebne richtig ist Issue #75  
-
-V2.10 05.06.2022 [Issue #76](https://github.com/nischram/E3dcGui/issues/76) Ladegrenze "Batterie zu Auto" einstellbar
-- Issue #76 über Tasten ist in 10% Stufen die Ladegrenze "Batterie zu Auto" jetzt einstellbar      
-- Changelog archiviert  
 
 [Changelog Archiv](https://github.com/nischram/E3dcGui/tree/master/Changelog_Archiv)
