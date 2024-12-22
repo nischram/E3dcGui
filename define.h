@@ -311,6 +311,10 @@
 #define WBPHY                       WBBBCY  + 55 //!!
 #define WBSTOPX                     655          //!!
 #define WBSTOPY                     WBCURY       //!!
+#define WBHALTX                     600          //!!
+#define WBHALTY                     WBCURY       //!!
+#define WBWEITERX                   WBHALTX + 82       //!!
+#define WBWEITERY                   WBCURY       //!!
 #define WBUNTILX                    60           //!!
 #define WBUNTILY                    WBMODEY      //!!
 #define WBPERLX                     WBCURX-58-58-58    //!! Percent Left

@@ -1,5 +1,5 @@
 # E3DC to Homematic mit GUI
-[Stand: V2.24 18.12.2024](https://github.com/nischram/E3dcGui#changelog)
+[Stand: V2.25 22.12.2024](https://github.com/nischram/E3dcGui#changelog)
 
 Hier beschreibe ich, wie du dein S10 Hauskraftwerk von E3DC an eine Homematic Hausautomation anbinden kannst.
 
@@ -445,6 +445,9 @@ Mit folgendem Befehl kann man direkt die Version ohne Display abfragen:
 `grep "Stand: " README.markdown |cut -d " " -f 2`
 
 ### Versionen
+V2.25 22.12.2024 [Issue #95](https://github.com/nischram/E3dcGui/issues/95) Fehlende Parameter in der define.h
+- Fehlerkorrektur für Issue #95
+
 V2.24 18.12.2024 [Issue #82](https://github.com/nischram/E3dcGui/issues/82) Stop für neue Wallboxen
 - Stop-Button ersetzt durch Halt und Weiter um die Wallbox-Ladung zu unterbrechen und fortzusetzen für Issue #82
 - Changelog archiviert
