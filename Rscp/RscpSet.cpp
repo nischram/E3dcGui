@@ -19,7 +19,7 @@ g++ -O3 RscpMain.cpp Rscp/RscpProtocol.cpp Rscp/AES.cpp Rscp/SocketConnection.cp
 #include <limits>
 #include <ctime>
 
-static int iSocket x= -1;
+static int iSocket = -1;
 static int iAuthenticated = 0;
 static AES aesEncrypter;
 static AES aesDecrypter;
